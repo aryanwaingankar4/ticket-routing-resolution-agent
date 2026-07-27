@@ -315,6 +315,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "the data volume for {db} is at 100% usage and the database has switched to read-only mode",
             "Archived old WAL/transaction logs and expanded the {db} data volume, then brought the database back into read-write mode.",
         ),
+        (
+            "Can't pull up records in {app}",
+            "trying to view customer or order records in {app} just spins and then shows an error saying it cannot reach the records system",
+            "The application server's connection pool to {db} had exhausted; restarted the pooler and verified {app} could reach {db} again, restoring record lookups.",
+        ),
+        (
+            "{app} says it can't find the data",
+            "{app} shows an error mentioning a broken connection to where the data is kept, and no records load at all",
+            "Diagnosed a dropped connection between {app} and {db} caused by a credentials rotation; updated the stored connection string and confirmed {app} could load data again.",
+        ),
+        (
+            "Reports in {app} won't generate",
+            "users trying to run reports in {app} get stuck loading forever and eventually see a timeout error about the underlying data source",
+            "Found the report queries in {app} were timing out against {db} due to a missing index; added the index and reports now generate within seconds.",
+        ),
     ],
     "Storage": [
         (
