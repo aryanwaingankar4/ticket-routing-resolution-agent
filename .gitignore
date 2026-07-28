@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 data/ticket_embeddings.npy
 models/
+.env
