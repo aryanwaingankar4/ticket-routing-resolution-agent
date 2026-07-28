@@ -18,7 +18,6 @@ Run from the project root:
 import os
 import sys
 import random
-
 import numpy as np
 import pandas as pd
 
@@ -267,6 +266,12 @@ def main():
     clf.fit(X_train, y_train)
 
     y_pred = clf.predict(X_test)
+    
+    import joblib
+    CLASSIFIER_PATH = os.path.join(PROJECT_ROOT, "models", "ticket_classifier.joblib")
+    os.makedirs(os.path.dirname(CLASSIFIER_PATH), exist_ok=True)
+    joblib.dump(clf, CLASSIFIER_PATH)
+    print(f"[save] Classifier saved to: {CLASSIFIER_PATH}")
 
     # -----------------------------------------------------------------------
     # Metrics (same structure as train_baseline_tfidf.py).
