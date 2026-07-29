@@ -6,7 +6,7 @@ Synthetic IT Support Ticket Dataset Generator
 ----------------------------------------------
 
 PURPOSE
-    Produces `data/synthetic_tickets.csv`: 1000 synthetic IT support tickets
+    Produces `data/synthetic_tickets.csv`: 4000 synthetic IT support tickets
     used to (a) train a supervised text classifier that maps a ticket to one of
     seven IT domains, and (b) seed a Retrieval-Augmented-Generation (RAG)
     resolution suggester that proposes a fix given a similar past ticket.
@@ -14,7 +14,7 @@ PURPOSE
 WHY THE KEY DESIGN DECISIONS WERE MADE
     (Written so the choices can be defended in a project viva.)
 
-    1. BALANCED CATEGORIES (~140-145 rows each).
+    1. BALANCED CATEGORIES (~571-572 rows each).
        A text classifier trained on imbalanced data learns the *prior* instead
        of the *signal* - it will happily predict the majority class and still
        score high accuracy while being useless in production. Keeping every
@@ -101,7 +101,7 @@ np.random.seed(SEED)
 # --------------------------------------------------------------------------- #
 # Configuration
 # --------------------------------------------------------------------------- #
-TOTAL_TICKETS = 1000
+TOTAL_TICKETS = 4000
 OUTPUT_DIR = "data"
 OUTPUT_PATH = os.path.join(OUTPUT_DIR, "synthetic_tickets.csv")
 
@@ -116,16 +116,18 @@ CATEGORIES = [
 ]
 
 # Validation tolerances --------------------------------------------------------
-# With 1000 tickets across 7 categories, a perfectly even split is ~142-143.
-# We allow a small band around that mean so the categories stay "roughly
-# balanced" without demanding an exact split that the integer division cannot
-# always achieve.
-MIN_CATEGORY_SIZE = 135
-MAX_CATEGORY_SIZE = 150
+# With 4000 tickets across 7 categories, integer division gives base = 571 and
+# a remainder of 4, so the first 4 categories get 572 and the last 3 get 571.
+# The band below comfortably brackets that 571-572 range with a safety margin,
+# leaving headroom for the planned class-imbalance experiment (shrinking a
+# category) without a shrunk category collapsing to single digits.
+MIN_CATEGORY_SIZE = 540
+MAX_CATEGORY_SIZE = 610
 # A modest number of exact (title, description) collisions is acceptable because
 # templates are reused with different resolved entities; but a large number
 # would indicate the entity pools are too small and the data lacks variety.
-MAX_DUPLICATE_PAIRS = 60
+# Scaled up alongside TOTAL_TICKETS (originally 60 at 1000 rows).
+MAX_DUPLICATE_PAIRS = 100
 
 # --------------------------------------------------------------------------- #
 # Entity pools used to resolve placeholders
@@ -219,6 +221,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "the nightly batch job on {srv} has failed three consecutive runs with a non-zero exit code",
             "Found the cron job on {srv} was hitting a full /tmp; cleaned the directory and moved the job's scratch space to a larger volume.",
         ),
+        (
+            "Load balancer dropping backends behind {srv}",
+            "the load balancer keeps marking {srv} as unhealthy and pulling it out of rotation despite the service running",
+            "The health-check endpoint on {srv} was timing out under load; raised the probe timeout and interval, and {srv} stayed reliably in rotation.",
+        ),
+        (
+            "Disk I/O saturation on {srv}",
+            "{srv} shows near-100% disk utilization with high I/O wait, stalling every service on the host",
+            "Traced the I/O saturation on {srv} to verbose debug logging writing synchronously; disabled debug logging and moved logs to a dedicated volume.",
+        ),
+        (
+            "Automatic scaling not triggering for {srv}",
+            "the autoscaling group for {srv} is not adding capacity even though CPU has been pinned high for over an hour",
+            "Found the autoscaling policy for {srv} referenced a stale metric; corrected the scaling metric and cooldown, and new instances now launch on demand.",
+        ),
     ],
     "Application": [
         (
@@ -251,6 +268,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "the {app} integration with {vendor} has stopped syncing and shows repeated authentication failures",
             "The {vendor} API credentials used by {app} had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
         ),
+        (
+            "{app} scheduled report emails not sending",
+            "the scheduled report emails from {app} have silently stopped going out and users are not receiving their daily summaries",
+            "The outbound mail worker for {app} had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+        ),
+        (
+            "Search returning no results in {app}",
+            "the search feature in {app} returns zero results for queries that clearly should match existing records",
+            "The {app} search index had drifted out of sync with the database; triggered a full reindex and scheduled incremental reindexing to keep results accurate.",
+        ),
+        (
+            "{app} throwing errors after latest deploy",
+            "immediately after the most recent {app} release, users are seeing unexpected errors on pages that worked yesterday",
+            "A missed database migration accompanied the {app} deploy; ran the pending migration and redeployed, and the post-release errors cleared.",
+        ),
     ],
     "Security": [
         (
@@ -282,6 +314,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "Exposed secret found in repository",
             "an automated scan detected a live cloud access key committed to a source repository",
             "Revoked the leaked cloud key immediately, rotated all affected credentials, and enabled pre-commit secret scanning to block future leaks.",
+        ),
+        (
+            "Brute-force attack against {app} login",
+            "monitoring shows a high-volume password-guessing attack hammering the {app} login endpoint from many IP addresses",
+            "Enabled rate limiting and account lockout on the {app} login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures.",
+        ),
+        (
+            "Unauthorized privilege escalation detected for {user}",
+            "audit logs show account {user} was granted administrator rights outside the normal approval workflow",
+            "Revoked the unauthorized admin rights from {user}, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+        ),
+        (
+            "Open management port {port} exposed on {srv}",
+            "an external scan found management port {port} on {srv} reachable from the public internet",
+            "Restricted port {port} on {srv} to the internal management network via firewall and security-group rules, then verified it was no longer externally reachable.",
         ),
     ],
     "Database": [
@@ -330,6 +377,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "users trying to run reports in {app} get stuck loading forever and eventually see a timeout error about the underlying data source",
             "Found the report queries in {app} were timing out against {db} due to a missing index; added the index and reports now generate within seconds.",
         ),
+        (
+            "Data corruption suspected on {db}",
+            "queries against {db} are returning inconsistent row counts and the application flags checksum mismatches on some tables",
+            "Ran consistency checks on {db}, identified a corrupted index from an unclean shutdown, rebuilt the affected indexes, and validated integrity against the last good backup.",
+        ),
+        (
+            "Failover did not promote replica for {db}",
+            "the primary for {db} went down but the standby replica never got promoted, leaving the application without a writable database",
+            "Manually promoted the {db} replica to primary, repointed the application connection string, and fixed the failover automation that had a stale health-check.",
+        ),
+        (
+            "Autovacuum not keeping up on {db}",
+            "{db} is showing severe table bloat and rising query times because dead tuples are accumulating faster than they are cleaned up",
+            "Tuned the autovacuum thresholds and cost limits on {db}, ran a manual vacuum on the worst tables, and query performance and disk usage recovered.",
+        ),
     ],
     "Storage": [
         (
@@ -361,6 +423,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "Storage quota exceeded for {office}",
             "the {office} team has hit its storage quota and can no longer save new files to their share",
             "Reviewed usage for {office}, archived stale data to cold storage, and raised their quota after manager approval.",
+        ),
+        (
+            "Permissions incorrect on {share}",
+            "several {office} users report they can see the folder {share} but get 'access denied' when opening files inside it",
+            "Corrected the inherited NTFS permissions on {share} for the relevant {office} group and re-propagated ACLs so the files opened as expected.",
+        ),
+        (
+            "RAID array degraded on {srv}",
+            "the storage array on {srv} is reporting a degraded state after a single drive failed, running without redundancy",
+            "Replaced the failed drive in the {srv} array, let the array rebuild, and confirmed full redundancy was restored with no data loss.",
+        ),
+        (
+            "Cannot mount {share} on new machines",
+            "recently provisioned machines fail to map the file share {share}, though existing machines connect fine",
+            "The new machines were missing the updated SMB protocol setting required by {share}; pushed the correct client configuration via policy and the share mapped successfully.",
         ),
     ],
     "Network": [
@@ -394,6 +471,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "the wireless network at {office} is down and no devices can associate to any access point",
             "The wireless controller at {office} had lost its config after a power event; restored the configuration and access points came back online.",
         ),
+        (
+            "Packet loss on the link to {office}",
+            "the WAN link to {office} is showing steady packet loss, causing choppy calls and dropped sessions",
+            "Isolated the packet loss to a faulty circuit segment on the {office} link; the carrier replaced the segment and loss dropped back to zero.",
+        ),
+        (
+            "DHCP not assigning addresses at {office}",
+            "new devices at {office} are failing to get an IP address and fall back to self-assigned addresses",
+            "The DHCP scope for {office} had exhausted its available leases; expanded the scope range and shortened the lease time, and devices began getting addresses again.",
+        ),
+        (
+            "Service on port {port} unreachable from {office}",
+            "users at {office} cannot connect to an internal service on port {port} although it works from other sites",
+            "A routing change had removed the path from {office} to the service subnet on port {port}; restored the missing route and confirmed connectivity from {office}.",
+        ),
     ],
     "Access Management": [
         (
@@ -425,6 +517,21 @@ SCENARIOS: Dict[str, List[Scenario]] = {
             "MFA reset request for {user}",
             "user {user} lost their phone and cannot complete multi-factor authentication to sign in",
             "Verified {user} out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+        ),
+        (
+            "Shared mailbox access request for {user}",
+            "user {user} needs delegated access to the {office} shared mailbox to cover for a colleague on leave",
+            "Granted {user} delegate permissions on the {office} shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+        ),
+        (
+            "Role change access review for {user}",
+            "user {user} has moved teams and still holds permissions from their previous {app} role that need to be reconciled",
+            "Reviewed the entitlements for {user}, removed the obsolete {app} permissions from the prior role, and assigned the correct role for their new team.",
+        ),
+        (
+            "SSO access failing for {user} to {vendor}",
+            "user {user} cannot reach the {vendor} application through single sign-on and is bounced back to the login screen",
+            "Found {user} was missing from the {vendor} SSO assignment group; added them to the group and confirmed federated login to {vendor} succeeded.",
         ),
     ],
 }
