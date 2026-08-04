@@ -1,0 +1,1577 @@
+[
+  {
+    "id": 3494,
+    "text": "Hi, I'm trying to get my daily tasks done, but the main work computer everyone uses has completely slowed to a crawl over the last three quarters of an hour and keeps dropping my connections. Everything I try to open freezes up, so I really need someone to take a look at it.",
+    "expected": "Infrastructure",
+    "original_title": "High CPU on server STG-APP-08",
+    "original_description": "[TCK-17944] Ticket raised because sustained CPU utilization above 95% on STG-APP-08 for the last 40 minutes, causing request timeouts. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 388,
+    "text": "Hey, I need some urgent help because our main caching server just crashed completely and stopped running its most important programs, and our monitoring tools are saying it ran out of internal working memory.",
+    "expected": "Infrastructure",
+    "original_title": "Memory exhaustion on PRD-CACHE-02",
+    "original_description": "[TCK-20739] Monitoring alerted us that PRD-CACHE-02 is reporting out-of-memory kills and the OOM killer has terminated critical services. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 765,
+    "text": "Hi, I'm really worried because the main database server we rely on for our work keeps crashing today, and important background programs keep shutting down automatically by themselves. Could someone please check on this right away before we lose more work?",
+    "expected": "Infrastructure",
+    "original_title": "Memory exhaustion on PRD-DB-11",
+    "original_description": "[TCK-32185] User k.verma reports that PRD-DB-11 is reporting out-of-memory kills and the OOM killer has terminated critical services. Kindly look into this at the earliest.",
+    "flagged": true,
+    "gemini_guess": "Database"
+  },
+  {
+    "id": 2797,
+    "text": "Hi, I am having trouble with our main website system because the computer server it runs on seems completely unresponsive today, and all our automated tasks and background processes are frozen and not running at all, which is really getting in the way of what our team needs to do right now.",
+    "expected": "Infrastructure",
+    "original_title": "Kubernetes node PRD-WEB-02 in NotReady state",
+    "original_description": "[TCK-61497] Ticket raised because node PRD-WEB-02 shows NotReady in the cluster and pods scheduled on it are stuck in Pending. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3753,
+    "text": "Hi, my computer completely froze up out of nowhere this morning and I can't get anything to work properly. Every time I click on a file or try to open a program, it just hangs forever, and it's making it impossible for me to get any of my daily tasks done.",
+    "expected": "Infrastructure",
+    "original_title": "Disk I/O saturation on K8S-NODE-14",
+    "original_description": "[TCK-14379] Ticket raised because K8S-NODE-14 shows near-100% disk utilization with high I/O wait, stalling every service on the host. This is impacting daily work.",
+    "flagged": true,
+    "gemini_guess": "Storage"
+  },
+  {
+    "id": 2166,
+    "text": "Hi, I'm calling because our main customer-facing website machine that got restarted this morning never actually woke back up, and nobody in the office can connect to it or even reach it over the network right now, so we really need someone to look at this urgently.",
+    "expected": "Infrastructure",
+    "original_title": "Server PRD-WEB-03 unresponsive after reboot",
+    "original_description": "[TCK-13113] We are observing that PRD-WEB-03 failed to come back online following a scheduled reboot and is not responding to SSH or ping. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1170,
+    "text": "Hi, I need some help because my service keeps acting like it's broken and the main routing system keeps taking one of our computers offline by mistake, even though the program is actually running fine. Can someone please check on this as soon as possible?",
+    "expected": "Infrastructure",
+    "original_title": "Load balancer dropping backends behind K8S-NODE-14",
+    "original_description": "[TCK-93307] User r.sharma reports that the load balancer keeps marking K8S-NODE-14 as unhealthy and pulling it out of rotation despite the service running. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 174,
+    "text": "Hi, I need some urgent help with the computer server that runs our daily batch processing tasks. For some reason, the system keeps deciding that the machine is down and cutting off all connection to it, even though our actual program is up and running fine without any issues. Can someone please look into why this keeps happening?",
+    "expected": "Infrastructure",
+    "original_title": "Load balancer dropping backends behind VM-BATCH-09",
+    "original_description": "[TCK-61740] Support desk logged the following: the load balancer keeps marking VM-BATCH-09 as unhealthy and pulling it out of rotation despite the service running. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 450,
+    "text": "Hey, I'm not really sure what's going on, but our main caching system seems completely frozen up right now. For the past little while—maybe around three quarters of an hour—things have been locking up and dropping connections whenever people try to use it. Could someone take a look at what's making it work so hard and get it running smoothly again?",
+    "expected": "Infrastructure",
+    "original_title": "High CPU on server PRD-CACHE-02",
+    "original_description": "[TCK-10089] Flagged during routine checks: sustained CPU utilization above 95% on PRD-CACHE-02 for the last 40 minutes, causing request timeouts. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2101,
+    "text": "Hi, I need some urgent help because one of our main computers running behind the scenes just ran out of memory and completely crashed important programs. Can someone please look into this right away?",
+    "expected": "Infrastructure",
+    "original_title": "Memory exhaustion on K8S-NODE-14",
+    "original_description": "[TCK-84233] We are observing that K8S-NODE-14 is reporting out-of-memory kills and the OOM killer has terminated critical services. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3107,
+    "text": "Hey, I'm trying to get some work done on my assigned virtual machine, but the whole system is completely frozen up and nothing will load. Every time I click on something, it just hangs forever, and it's making it impossible for me to finish my tasks today. Can someone please check on it?",
+    "expected": "Infrastructure",
+    "original_title": "Disk I/O saturation on VM-BATCH-10",
+    "original_description": "[TCK-69314] User d.mehta reports that VM-BATCH-10 shows near-100% disk utilization with high I/O wait, stalling every service on the host. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1901,
+    "text": "Hey, I tried to get into our batch processing machine this morning after it went through its usual restart, but it completely vanished. None of my connection commands are getting through to it at all, and it's like the whole thing is just frozen dead.",
+    "expected": "Infrastructure",
+    "original_title": "Server VM-BATCH-10 unresponsive after reboot",
+    "original_description": "[TCK-64387] Monitoring alerted us that VM-BATCH-10 failed to come back online following a scheduled reboot and is not responding to SSH or ping. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3669,
+    "text": "Hi, I'm trying to use the main public website today, but something seems totally broken behind the scenes. All the pages that depend on our primary online server aren't loading properly, and any new requests our team tries to send just keep spinning forever without getting processed. Could someone please take a look at what's going on?",
+    "expected": "Infrastructure",
+    "original_title": "Kubernetes node PRD-WEB-02 in NotReady state",
+    "original_description": "[TCK-49361] Monitoring alerted us that node PRD-WEB-02 shows NotReady in the cluster and pods scheduled on it are stuck in Pending. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3496,
+    "text": "Hi, I was just checking on our main database computer, and it seems completely frozen or offline. None of the extra services running on it are starting up either, they're just stuck waiting. Can you take a look and figure out what broke?",
+    "expected": "Infrastructure",
+    "original_title": "Kubernetes node PRD-DB-11 in NotReady state",
+    "original_description": "[TCK-55830] Flagged during routine checks: node PRD-DB-11 shows NotReady in the cluster and pods scheduled on it are stuck in Pending. Please confirm root cause and next steps.",
+    "flagged": true,
+    "gemini_guess": "Database"
+  },
+  {
+    "id": 3621,
+    "text": "Hey, I'm trying to use the main company website right now, but nothing is loading and the pages keep timing out completely. It seems like the main computer running everything is completely overwhelmed and frozen up, because people haven't been able to get their work done for nearly an hour now.",
+    "expected": "Infrastructure",
+    "original_title": "High CPU on server PRD-WEB-03",
+    "original_description": "[TCK-74569] Monitoring alerted us that sustained CPU utilization above 95% on PRD-WEB-03 for the last 40 minutes, causing request timeouts. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 455,
+    "text": "Hi team, I noticed that our main customer-facing website server seems to be completely unresponsive this morning, and none of the background processes are launching properly either. Could someone please look into why this machine dropped offline and help get everything running smoothly again?",
+    "expected": "Infrastructure",
+    "original_title": "Kubernetes node PRD-WEB-01 in NotReady state",
+    "original_description": "[TCK-94659] Flagged during routine checks: node PRD-WEB-01 shows NotReady in the cluster and pods scheduled on it are stuck in Pending. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2104,
+    "text": "Hi, I need some urgent help because our main customer-facing system keeps acting up today. The main computer that handles all the incoming traffic suddenly decides one of our working servers is broken and completely cuts it off, even though the server is up and running just fine. This is causing issues for us, so could someone take a look at this right away?",
+    "expected": "Infrastructure",
+    "original_title": "Load balancer dropping backends behind K8S-NODE-15",
+    "original_description": "[TCK-39188] We are observing that the load balancer keeps marking K8S-NODE-15 as unhealthy and pulling it out of rotation despite the service running. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 983,
+    "text": "Hi, I need help because the main system we use for our work keeps crashing out of nowhere today, and it looks like it's shutting down essential background tasks on its own. Could someone please take a look at it before it causes bigger issues for the team?",
+    "expected": "Infrastructure",
+    "original_title": "Memory exhaustion on PRD-APP-04",
+    "original_description": "[TCK-29025] Support desk logged the following: PRD-APP-04 is reporting out-of-memory kills and the OOM killer has terminated critical services. Awaiting assignment to the right team.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 555,
+    "text": "Hi team, I noticed that one of our main computers running the staging environment is completely offline and not responding, which is causing all the background tasks meant to run on it to just freeze and wait indefinitely. Can someone please take a look at this right away?",
+    "expected": "Infrastructure",
+    "original_title": "Kubernetes node STG-APP-07 in NotReady state",
+    "original_description": "[TCK-86153] Support desk logged the following: node STG-APP-07 shows NotReady in the cluster and pods scheduled on it are stuck in Pending. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2311,
+    "text": "Hey, I'm reaching out because the main background processing machine in our Chennai office has the wrong time on its clock. It's off by a few seconds, which is causing all sorts of weird issues with people getting logged out and our system error logs not matching up correctly. Could someone please take a look and fix the clock so everything lines up again?",
+    "expected": "Infrastructure",
+    "original_title": "NTP time drift on PRD-QUEUE-06",
+    "original_description": "[TCK-24208] Reported by the Chennai Support team: PRD-QUEUE-06 clock has drifted several seconds, breaking token validation and log correlation. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 407,
+    "text": "Hi, I'm really hoping you can help because our main background processing machine has completely ground to a halt since earlier this morning. Everything running on it is freezing up, and it looks like the hard drive is just completely maxed out and won't respond, so nothing is clearing out.",
+    "expected": "Infrastructure",
+    "original_title": "Disk I/O saturation on PRD-QUEUE-06",
+    "original_description": "[TCK-28465] Issue summary: PRD-QUEUE-06 shows near-100% disk utilization with high I/O wait, stalling every service on the host. It started earlier today and has not self-resolved.",
+    "flagged": true,
+    "gemini_guess": "Storage"
+  },
+  {
+    "id": 1957,
+    "text": "Hi, I need someone to check on the main company portal we use for daily operations. It has been running extremely slow for over an hour now, and it looks like the system isn't automatically adding extra server power to handle the heavy workload like it's supposed to. Can someone please look into this right away?",
+    "expected": "Infrastructure",
+    "original_title": "Automatic scaling not triggering for PRD-APP-04",
+    "original_description": "[TCK-61213] User m.iyer reports that the autoscaling group for PRD-APP-04 is not adding capacity even though CPU has been pinned high for over an hour. Kindly look into this at the earliest.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 2742,
+    "text": "Hi, I tried to restart that main computer system earlier today like we talked about, but now it's completely frozen and I can't connect to it or even reach it on the network at all, and it hasn't fixed itself yet.",
+    "expected": "Infrastructure",
+    "original_title": "Server PRD-APP-04 unresponsive after reboot",
+    "original_description": "[TCK-59572] Issue summary: PRD-APP-04 failed to come back online following a scheduled reboot and is not responding to SSH or ping. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1702,
+    "text": "Hi, I need help because the automated overnight process on the main authentication server has crashed three nights in a row now, starting earlier today, and it's not fixing itself.",
+    "expected": "Infrastructure",
+    "original_title": "Scheduled job failing on PRD-AUTH-05",
+    "original_description": "[TCK-96127] Issue summary: the nightly batch job on PRD-AUTH-05 has failed three consecutive runs with a non-zero exit code. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3891,
+    "text": "Hi, I really need some help because the main computer system we use to get our daily work done won't start up again after that planned restart we had. I tried connecting to it to check things out, but it's completely dead and won't answer any connection attempts at all.",
+    "expected": "Infrastructure",
+    "original_title": "Server PRD-APP-03 unresponsive after reboot",
+    "original_description": "[TCK-44400] Ticket raised because PRD-APP-03 failed to come back online following a scheduled reboot and is not responding to SSH or ping. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3550,
+    "text": "Hey, I'm reaching out because our human resources portal is acting terribly slow today. Whenever I try to open a page or check my details, it just hangs there for like half a minute just to load anything, whereas it usually pops up instantly. Could someone please take a look and fix whatever is holding it up?",
+    "expected": "Application",
+    "original_title": "HR Self-Service extremely slow to load",
+    "original_description": "[TCK-55330] Reported by the Noida Tech Park team: the HR Self-Service application takes over 30 seconds to load pages, up from the usual sub-second response. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 538,
+    "text": "Hi, I'm trying to use that website where we manage our outside suppliers, and nothing is working right this morning. Every time I click on a link or try to open a page, I have to stare at a loading screen for at least half a minute. It used to pop up instantly, so I'm not sure what's going on, but it's making it impossible for me to get through my tasks today.",
+    "expected": "Application",
+    "original_title": "Vendor Portal extremely slow to load",
+    "original_description": "[TCK-67373] Issue summary: the Vendor Portal application takes over 30 seconds to load pages, up from the usual sub-second response. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 920,
+    "text": "Hi team, I am trying to get into our stock tracking system this morning, but it is just not working. Whenever I type in my username and password and hit submit, the screen flashes and the exact same sign-in page just pops right back up again without letting me through to my dashboard.",
+    "expected": "Application",
+    "original_title": "Login broken on Inventory Manager",
+    "original_description": "[TCK-38014] Monitoring alerted us that no user can log in to Inventory Manager; the login page accepts credentials then redirects back to itself. Escalating for investigation.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 2830,
+    "text": "Hey, I was just looking at the purchasing website and noticed that the numbers are way behind. Even though the main system got updated hours ago, the page I'm staring at is still showing old info. Can someone look into why this is happening and fix it?",
+    "expected": "Application",
+    "original_title": "Stale data shown in Procurement Portal",
+    "original_description": "[TCK-75178] Flagged during routine checks: Procurement Portal is displaying data that is several hours out of date despite the source having been updated. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3805,
+    "text": "Hi, I'm having a really frustrating issue when I try to send documents to the mobile tool we use out in the field. Every time I pick a picture or a PDF that's anything more than tiny, the whole thing just freezes and errors out on me. Can someone look into why this keeps happening so I can get my paperwork submitted?",
+    "expected": "Application",
+    "original_title": "Field Service App crashes on file upload",
+    "original_description": "[TCK-24337] Flagged during routine checks: Field Service App crashes with a 502 whenever a user attempts to upload a file larger than a few megabytes. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2253,
+    "text": "Hi, I'm reaching out because people trying to use our payment website keep running into trouble when they hit submit. Instead of going through, the page just crashes and gives a generic server failure message every so often, and we really need someone to check it out soon.",
+    "expected": "Application",
+    "original_title": "Billing Portal returning HTTP 500 errors",
+    "original_description": "[TCK-17347] User p.menon reports that users of the Billing Portal application are intermittently getting HTTP 500 errors when submitting forms. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1312,
+    "text": "Hey, I've been trying to look up some stuff in the main reporting tool today, but every time I type something into the lookup bar, nothing pops up at all, even for names I know are definitely in there. It's totally stopping me from getting my routine tasks done, so I really need someone to take a look at why it's acting up.",
+    "expected": "Application",
+    "original_title": "Search returning no results in Analytics Dashboard",
+    "original_description": "[TCK-46487] Ticket raised because the search feature in Analytics Dashboard returns zero results for queries that clearly should match existing records. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 246,
+    "text": "Hey, ever since the new update went live this morning, the purchasing website keeps crashing on me and my coworkers. Pages that were totally fine yesterday are just throwing up error messages now, so we can't get any of our buying requests submitted. Could someone please take a look and fix this as soon as possible?",
+    "expected": "Application",
+    "original_title": "Procurement Portal throwing errors after latest deploy",
+    "original_description": "[TCK-60070] User r.desai reports that immediately after the most recent Procurement Portal release, users are seeing unexpected errors on pages that worked yesterday. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 618,
+    "text": "Hi, I am having trouble finding anything in our people-records portal this morning. Every time I type in a name or a file that I know is definitely in the system, it just tells me nothing was found, and it has been doing this all day.",
+    "expected": "Application",
+    "original_title": "Search returning no results in HR Self-Service",
+    "original_description": "[TCK-48477] Issue summary: the search feature in HR Self-Service returns zero results for queries that clearly should match existing records. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2213,
+    "text": "Hi, I am having trouble with the website we use to buy supplies for the office. It looks like it is not talking to our main computer system anymore, because none of the recent orders are updating, and it keeps popping up with login errors every time I try to use it. Could someone please take a look at this as soon as possible?",
+    "expected": "Application",
+    "original_title": "Procurement Portal integration with GCP failing",
+    "original_description": "[TCK-28769] We are observing that the Procurement Portal integration with GCP has stopped syncing and shows repeated authentication failures. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3305,
+    "text": "Hi, I'm hoping someone can help us out right away because the system we use for paying everyone keeps crashing. Whenever people try to send in their details, the page suddenly breaks and stops working, and it keeps happening on and off all day. Can someone please look into this as soon as possible?",
+    "expected": "Application",
+    "original_title": "Payroll returning HTTP 500 errors",
+    "original_description": "[TCK-59074] We are observing that users of the Payroll application are intermittently getting HTTP 500 errors when submitting forms. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1955,
+    "text": "Hey, something's wrong with the tool we use to track our supplies and cloud data—it hasn't been updating since this morning, and every time I check, it keeps giving me some kind of login error.",
+    "expected": "Application",
+    "original_title": "Inventory Manager integration with GCP failing",
+    "original_description": "[TCK-21701] Issue summary: the Inventory Manager integration with GCP has stopped syncing and shows repeated authentication failures. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3741,
+    "text": "Hi, I really need some help because the main help desk system we use for tracking customer requests has completely stopped working right. Every single time I try to open up pages that were totally fine yesterday, a weird error message pops up instead. This just started happening earlier today after some update went out, and it's really holding up my work since it refuses to fix itself.",
+    "expected": "Application",
+    "original_title": "Ticketing System throwing errors after latest deploy",
+    "original_description": "[TCK-20154] Issue summary: immediately after the most recent Ticketing System release, users are seeing unexpected errors on pages that worked yesterday. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3555,
+    "text": "Hi, I'm trying to look up some stuff on the reporting screen we use, but whenever I type anything in to find past records, nothing comes up at all even though I know the data is in there. Can someone please look into why it's acting like this?",
+    "expected": "Application",
+    "original_title": "Search returning no results in Analytics Dashboard",
+    "original_description": "[TCK-20282] Monitoring alerted us that the search feature in Analytics Dashboard returns zero results for queries that clearly should match existing records. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3707,
+    "text": "Hi, I'm reaching out because something seems broken with our automated update emails from the help desk system. Nobody on my team has gotten their usual morning recap messages for the last few days, and they just aren't showing up in anyone's inbox at all.",
+    "expected": "Application",
+    "original_title": "Ticketing System scheduled report emails not sending",
+    "original_description": "[TCK-20909] Support desk logged the following: the scheduled report emails from Ticketing System have silently stopped going out and users are not receiving their daily summaries. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 627,
+    "text": "Hey, I'm trying to use the customer tracking system and it's not talking to our sales database anymore. Every time I try to push client updates over, it just throws up an error saying it couldn't log in. Can someone look at why they aren't connecting properly?",
+    "expected": "Application",
+    "original_title": "CRM integration with Salesforce failing",
+    "original_description": "[TCK-66039] Support desk logged the following: the CRM integration with Salesforce has stopped syncing and shows repeated authentication failures. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2215,
+    "text": "Hi, I need some help because ever since the big update went live earlier, nothing on our customer tracking pages is working right. Everything was fine yesterday, but now people keep getting weird error messages every time we try to click around. Can someone please look into this?",
+    "expected": "Application",
+    "original_title": "CRM throwing errors after latest deploy",
+    "original_description": "[TCK-72503] Support desk logged the following: immediately after the most recent CRM release, users are seeing unexpected errors on pages that worked yesterday. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1160,
+    "text": "Hey, good morning. Some folks over at our Pune office just reached out to me because they aren't getting those automated morning emails with the financial summaries anymore. It looks like the system that's supposed to mail those out every day just stopped doing it completely out of nowhere, and nobody's seen them in their inboxes for a bit now. Could somebody please look into what's going on and get them working again?",
+    "expected": "Application",
+    "original_title": "Billing Portal scheduled report emails not sending",
+    "original_description": "[TCK-24422] Reported by the Pune Branch team: the scheduled report emails from Billing Portal have silently stopped going out and users are not receiving their daily summaries. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 712,
+    "text": "Hi team, nobody here at the office has been getting those daily summary emails from the people portal every morning lately, and it looks like they stopped sending out entirely without any warning. Could someone please look into why this is happening and get it working again?",
+    "expected": "Application",
+    "original_title": "HR Self-Service scheduled report emails not sending",
+    "original_description": "[TCK-41417] Reported by the Kolkata Branch team: the scheduled report emails from HR Self-Service have silently stopped going out and users are not receiving their daily summaries. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2359,
+    "text": "Hi, I am having trouble logging into my help desk account this morning. Every time I try to get in, it just rejects my password or fails to connect completely, which is really slowing me down since I cannot handle my daily requests.",
+    "expected": "Application",
+    "original_title": "Ticketing System integration with Okta failing",
+    "original_description": "[TCK-84949] Ticket raised because the Ticketing System integration with Okta has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 560,
+    "text": "Hey, I really need some help with that main stats page we use every day. For some reason, it's taking ages to open up—like, half a minute or more just to show anything, whereas it usually pops right up instantly. It's really slowing me down trying to get through my tasks.",
+    "expected": "Application",
+    "original_title": "Analytics Dashboard extremely slow to load",
+    "original_description": "[TCK-65797] Ticket raised because the Analytics Dashboard application takes over 30 seconds to load pages, up from the usual sub-second response. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2040,
+    "text": "Hey, I was just looking at the training portal and noticed that the stuff on my screen hasn't changed all day, even though I know the new files were uploaded hours ago. Could you guys look into why it's not showing the latest info?",
+    "expected": "Application",
+    "original_title": "Stale data shown in Learning Management System",
+    "original_description": "[TCK-47122] Flagged during routine checks: Learning Management System is displaying data that is several hours out of date despite the source having been updated. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2784,
+    "text": "Hi, I am really confused because since this morning, whenever I try to use our main customer management system, weird error messages pop up all over the place. Everything was totally fine yesterday, but right after the recent update went live, pages that I use every day just stopped working properly and nothing I do fixes it.",
+    "expected": "Application",
+    "original_title": "CRM throwing errors after latest deploy",
+    "original_description": "[TCK-73748] Issue summary: immediately after the most recent CRM release, users are seeing unexpected errors on pages that worked yesterday. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1831,
+    "text": "Hey, I tried logging into my money-tracking tool this morning and it keeps kicking me back to the login screen no matter what I do, even though I'm typing my usual password correctly, so I'm completely locked out and need help getting back in.",
+    "expected": "Application",
+    "original_title": "Expense Tracker integration with Okta failing",
+    "original_description": "[TCK-57443] Issue summary: the Expense Tracker integration with Okta has stopped syncing and shows repeated authentication failures. It started earlier today and has not self-resolved.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 3906,
+    "text": "Hi team, I keep running into this really annoying roadblock where every time I try to attach a document to my help request that is anything bigger than just a tiny picture, the whole page completely freezes up and gives me a weird error page. Can someone please look into why this keeps happening so I can get my stuff submitted?",
+    "expected": "Application",
+    "original_title": "Ticketing System crashes on file upload",
+    "original_description": "[TCK-24898] Flagged during routine checks: Ticketing System crashes with a 502 whenever a user attempts to upload a file larger than a few megabytes. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3635,
+    "text": "Hi, I'm calling because I got some kind of warning message on my screen a little while ago saying my computer was locked down or something because a dangerous virus was caught on it. I just want to make sure my machine is actually safe now and figure out what I need to do next so this doesn't happen again.",
+    "expected": "Security",
+    "original_title": "Malware detected on endpoint of k.verma",
+    "original_description": "[TCK-17053] Flagged during routine checks: the EDR agent flagged and quarantined a trojan on the workstation belonging to k.verma. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 431,
+    "text": "Hi, I am reaching out because nobody in our office can get into the wage and salary system right now, and it is really holding up our tasks for the day. It looks like someone is hammering the login page with a bunch of automated tries from all over the place, locking everyone out and making the site totally unresponsive.",
+    "expected": "Security",
+    "original_title": "Brute-force attack against Payroll login",
+    "original_description": "[TCK-23582] Ticket raised because monitoring shows a high-volume password-guessing attack hammering the Payroll login endpoint from many IP addresses. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 910,
+    "text": "Hi, I need some help because it looks like someone is trying to break into the system we use for tracking our work expenses. There are all these weird, automated login attempts hitting the sign-in page over and over again from different places, and I wanted to let someone know before anything bad happens.",
+    "expected": "Security",
+    "original_title": "Brute-force attack against Expense Tracker login",
+    "original_description": "[TCK-23575] Support desk logged the following: monitoring shows a high-volume password-guessing attack hammering the Expense Tracker login endpoint from many IP addresses. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2864,
+    "text": "Hi, I'm calling because a warning popped up on my computer screen saying some kind of dangerous virus was found and blocked. I just wanted to make sure everything is okay and let someone know.",
+    "expected": "Security",
+    "original_title": "Malware detected on endpoint of v.nair",
+    "original_description": "[TCK-32599] Support desk logged the following: the EDR agent flagged and quarantined a trojan on the workstation belonging to v.nair. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3797,
+    "text": "Hi team, something really weird is going on with my profile. Someone tried getting into my account multiple times and failed, but it looks like they actually managed to break in just now from somewhere overseas. Can you please check this out right away?",
+    "expected": "Security",
+    "original_title": "Suspicious login attempts on account a.kulkarni",
+    "original_description": "[TCK-27646] User a.kulkarni reports that multiple failed login attempts followed by a success on account a.kulkarni from an unfamiliar country. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2249,
+    "text": "Hi, I'm trying to open our customer management portal this morning, but every time I go to the web address, a giant red warning screen pops up telling me the site is unsafe and blocking me from getting in, and it's happening to everyone in the office.",
+    "expected": "Security",
+    "original_title": "Expired TLS certificate on CRM",
+    "original_description": "[TCK-91043] Issue summary: the TLS certificate for CRM has expired and browsers are showing security warnings to all users. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1332,
+    "text": "Hi team, I was just looking over things and noticed that my coworker Vinay's account suddenly has full control over everything, even though he never went through the usual paperwork or requests to get those extra powers. Can someone look into why this happened and tell us what we need to do next?",
+    "expected": "Security",
+    "original_title": "Unauthorized privilege escalation detected for v.nair",
+    "original_description": "[TCK-29949] Flagged during routine checks: audit logs show account v.nair was granted administrator rights outside the normal approval workflow. Please confirm root cause and next steps.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 194,
+    "text": "Hi team, I was just looking over some routine safety reports and noticed a really serious warning about one of our staging servers that hasn't been updated properly. It looks like bad actors are already taking advantage of this specific flaw out in the wild, so I wanted to flag it right away to figure out why this happened and what we need to do next to fix it.",
+    "expected": "Security",
+    "original_title": "Unpatched critical CVE on STG-APP-07",
+    "original_description": "[TCK-90112] Flagged during routine checks: vulnerability scanning found a critical, actively-exploited CVE unpatched on STG-APP-07. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 484,
+    "text": "Hi, I'm really worried because it looks like someone is trying to break into our customer service software by guessing passwords over and over again from a bunch of different computers, and we need somebody to look into this right away before something bad happens.",
+    "expected": "Security",
+    "original_title": "Brute-force attack against Ticketing System login",
+    "original_description": "[TCK-41632] We are observing that monitoring shows a high-volume password-guessing attack hammering the Ticketing System login endpoint from many IP addresses. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2161,
+    "text": "Hi, I need someone to look into a really sketchy message I got earlier. A bunch of folks on our team might have already opened the bad link inside it before we realized what was going on, so we're worried someone might have grabbed their login info.",
+    "expected": "Security",
+    "original_title": "Phishing email reported by j.singh",
+    "original_description": "[TCK-76688] User j.singh reports that user j.singh reported a phishing email with a credential-harvesting link that several staff may have clicked. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3256,
+    "text": "Hi, I am kind of worried because someone just hacked into my work profile or tried really hard to. I got a bunch of alerts earlier today saying people kept guessing my password wrong from someplace overseas, and then finally it looks like somebody actually managed to get inside. Can someone please check on this right away?",
+    "expected": "Security",
+    "original_title": "Suspicious login attempts on account v.nair",
+    "original_description": "[TCK-36546] Issue summary: multiple failed login attempts followed by a success on account v.nair from an unfamiliar country. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1910,
+    "text": "Hi, I just got a scary warning pop-up on my computer screen saying some kind of dangerous virus was found and blocked. I am really worried my machine is compromised, can someone please check it out right away?",
+    "expected": "Security",
+    "original_title": "Malware detected on endpoint of t.rao",
+    "original_description": "[TCK-20657] User t.rao reports that the EDR agent flagged and quarantined a trojan on the workstation belonging to t.rao. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3765,
+    "text": "Hi, I need someone to look into my account right away because I noticed I suddenly have top-level access to everything, and I definitely didn't go through the usual approval steps to get it. Could you please check what's going on?",
+    "expected": "Security",
+    "original_title": "Unauthorized privilege escalation detected for s.joshi",
+    "original_description": "[TCK-34684] We are observing that audit logs show account s.joshi was granted administrator rights outside the normal approval workflow. Requesting priority attention from the relevant team.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 3644,
+    "text": "Hi, I'm calling because I noticed my login suddenly has way more power than it's supposed to. I didn't go through any special request process, but I can now see and change manager-level settings on my account, which shouldn't be happening and feels like something that needs to be fixed right away.",
+    "expected": "Security",
+    "original_title": "Unauthorized privilege escalation detected for v.nair",
+    "original_description": "[TCK-59127] Support desk logged the following: audit logs show account v.nair was granted administrator rights outside the normal approval workflow. Awaiting assignment to the right team.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 3755,
+    "text": "Hi, I am calling from the office over in Noida because nobody here can open the payment website right now. Every time we try to go to the page, a big red warning pops up saying the connection isn't safe and blocking us from getting in. Can someone please look into this so we can get back to our invoices?",
+    "expected": "Security",
+    "original_title": "Expired TLS certificate on Billing Portal",
+    "original_description": "[TCK-96546] Reported by the Noida Tech Park team: the TLS certificate for Billing Portal has expired and browsers are showing security warnings to all users. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 502,
+    "text": "Hi, I am reaching out because nobody on my team can get into our main help system right now, and it is completely stopping us from getting our daily work done. It keeps acting like someone is trying to force their way in from a bunch of different places, so the whole thing has basically locked up and won't let us sign in.",
+    "expected": "Security",
+    "original_title": "Brute-force attack against Ticketing System login",
+    "original_description": "[TCK-53093] Ticket raised because monitoring shows a high-volume password-guessing attack hammering the Ticketing System login endpoint from many IP addresses. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2176,
+    "text": "Hi team, I really need some help urgently. Someone sent around a really dodgy email earlier today that tries to steal login details, and I'm pretty sure a bunch of us accidentally clicked the bad link inside it. It's totally disrupting our normal tasks right now, so could someone please look into this ASAP to make sure our accounts are safe?",
+    "expected": "Security",
+    "original_title": "Phishing email reported by p.reddy",
+    "original_description": "[TCK-82150] Ticket raised because user p.reddy reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1148,
+    "text": "Hi, someone just told me that one of our staging computers is flagged for a really serious security hole that hackers are currently taking advantage of, and it needs to be fixed right away since it popped up earlier today and is still showing up.",
+    "expected": "Security",
+    "original_title": "Unpatched critical CVE on STG-APP-08",
+    "original_description": "[TCK-76252] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on STG-APP-08. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 685,
+    "text": "Hi, I need someone to look at something urgent right away. One of our team members, Maya, got a suspicious message earlier that had a weird web address in it asking for passwords, and I'm worried a few other folks on the floor might have actually clicked on it before we realized what was going on.",
+    "expected": "Security",
+    "original_title": "Phishing email reported by m.iyer",
+    "original_description": "[TCK-77305] We are observing that user m.iyer reported a phishing email with a credential-harvesting link that several staff may have clicked. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2326,
+    "text": "Hi team, I need some urgent help because I think I messed up and clicked a really convincing fake email earlier today. It had a link asking for my login details, and since I know a few other folks on our remote crew got the exact same message, I'm worried some of them might have fallen for it too. Can someone please look into this right away to make sure our accounts are safe?",
+    "expected": "Security",
+    "original_title": "Phishing email reported by k.verma",
+    "original_description": "[TCK-56381] Reported by the Remote/WFH team: user k.verma reported a phishing email with a credential-harvesting link that several staff may have clicked. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 444,
+    "text": "Hi, I just got a frantic message from someone outside our company saying they can see the main computer we use to run our public website from the open internet, specifically pointing out that a certain administrative connection is wide open. Can someone please look into this right away to make sure we aren't at risk?",
+    "expected": "Security",
+    "original_title": "Open management port 6379 exposed on PRD-WEB-01",
+    "original_description": "[TCK-63406] We are observing that an external scan found management port 6379 on PRD-WEB-01 reachable from the public internet. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1975,
+    "text": "Hi, I just got a frantic message saying that some secret digital password I accidentally saved in my shared work files has been spotted by an automated checker. Can someone please help me figure out what went wrong and fix it right away before anyone gets into trouble?",
+    "expected": "Security",
+    "original_title": "Exposed secret found in repository",
+    "original_description": "[TCK-57603] Monitoring alerted us that an automated scan detected a live cloud access key committed to a source repository. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2841,
+    "text": "Hey, someone from our office in India just let me know that my work account had a bunch of wrong password tries and then finally someone got in from somewhere overseas. Can you guys look into this right away and figure out what's going on?",
+    "expected": "Security",
+    "original_title": "Suspicious login attempts on account p.reddy",
+    "original_description": "[TCK-19211] Reported by the Bangalore DC team: multiple failed login attempts followed by a success on account p.reddy from an unfamiliar country. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1847,
+    "text": "Hi, I just got an alert or something saying that someone tried to get into my work account multiple times from somewhere overseas and actually managed to break in on the last try. Can you guys look into what happened and tell me what I should do next?",
+    "expected": "Security",
+    "original_title": "Suspicious login attempts on account p.menon",
+    "original_description": "[TCK-33274] Flagged during routine checks: multiple failed login attempts followed by a success on account p.menon from an unfamiliar country. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3922,
+    "text": "Hi team, I really need someone to look into a sketchy email I got earlier today. It had a weird login link inside, and I'm worried a bunch of folks in the office might have actually clicked on it before realizing it was a trap. Can someone please help us figure out what to do next?",
+    "expected": "Security",
+    "original_title": "Phishing email reported by p.menon",
+    "original_description": "[TCK-98869] Support desk logged the following: user p.menon reported a phishing email with a credential-harvesting link that several staff may have clicked. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3575,
+    "text": "Hey, I wanted to report that whenever I try to use the reporting dashboard or pull up our data charts, everything just freezes up and takes forever to load. It is making it almost impossible to get my work done today because the whole program is dragging. Can someone please look into why it is running so sluggishly?",
+    "expected": "Database",
+    "original_title": "Slow queries on analytics_mongo",
+    "original_description": "[TCK-28446] Support desk logged the following: several queries against analytics_mongo have degraded to multi-second execution times, slowing the whole app. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 592,
+    "text": "Hey, I'm not sure what's going on, but our user login memory system is acting really sluggish today and taking forever to load things. It feels like the background cleanup isn't happening properly because everything is getting super backed up and slow.",
+    "expected": "Database",
+    "original_title": "Autovacuum not keeping up on sessions_redis",
+    "original_description": "[TCK-90190] Monitoring alerted us that sessions_redis is showing severe table bloat and rising query times because dead tuples are accumulating faster than they are cleaned up. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 986,
+    "text": "Hi team, I noticed that our automated nightly data archive for the compliance system hasn't been working for the past couple of days. Even worse, it looks like we don't have a recent safe copy to fall back on if something happens. Could someone please check on this right away?",
+    "expected": "Database",
+    "original_title": "audit_mysql backup job failing",
+    "original_description": "[TCK-60269] User n.gupta reports that the nightly backup for audit_mysql has failed for two days and no recent restore point exists. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3582,
+    "text": "Hi team, I tried checking my personnel records on our internal portal just now, but nothing comes up at all. Instead, a message pops up saying it can't link up to the storage area where everything is stored, so I'm completely locked out of viewing my information.",
+    "expected": "Database",
+    "original_title": "HR Self-Service says it can't find the data",
+    "original_description": "[TCK-80091] Support desk logged the following: HR Self-Service shows an error mentioning a broken connection to where the data is kept, and no records load at all. Awaiting assignment to the right team.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 3791,
+    "text": "Hi, I need some urgent help because the system we use to keep everyone logged into the portal just stopped working entirely. When the main computer running it went offline, the backup didn't kick in like it's supposed to, and now nobody can save their work or even get into the system. Can someone please look at this right away?",
+    "expected": "Database",
+    "original_title": "Failover did not promote replica for sessions_redis",
+    "original_description": "[TCK-36813] We are observing that the primary for sessions_redis went down but the standby replica never got promoted, leaving the application without a writable database. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2174,
+    "text": "Hi, I'm really noticing that one of our main information sheets is acting super sluggish today and searches are taking forever to load. It feels like the system is getting choked up with old clutter and it's just not clearing itself out like it usually does, making it almost impossible to get my work done efficiently.",
+    "expected": "Database",
+    "original_title": "Autovacuum not keeping up on catalog_pg",
+    "original_description": "[TCK-31991] Issue summary: catalog_pg is showing severe table bloat and rising query times because dead tuples are accumulating faster than they are cleaned up. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1347,
+    "text": "Hi, I am having trouble pulling my statements on the payment website. Whenever I click to download them, the page just spins and freezes up completely until it finally gives me an error message saying it cannot reach the information behind the scenes. Could someone please look into this for me?",
+    "expected": "Database",
+    "original_title": "Reports in Billing Portal won't generate",
+    "original_description": "[TCK-34792] Monitoring alerted us that users trying to run reports in Billing Portal get stuck loading forever and eventually see a timeout error about the underlying data source. Escalating for investigation.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 264,
+    "text": "Hi, I am calling from our Mumbai office because nobody can pull up any customer invoices right now. Whenever we try to open the financial records page, it just pops up with a failure message saying it cannot reach the filing system, so the whole screen stays blank. Could someone take a look at this?",
+    "expected": "Database",
+    "original_title": "Billing Portal says it can't find the data",
+    "original_description": "[TCK-36684] Reported by the Mumbai HQ team: Billing Portal shows an error mentioning a broken connection to where the data is kept, and no records load at all. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 661,
+    "text": "Hi, I'm reaching out because our online store checkout seems to be freezing up whenever multiple people try to buy things at the exact same time. The system keeps getting stuck, and customers are calling to say their purchases aren't going through properly. Can someone please look into why these transactions are clashing and locking up?",
+    "expected": "Database",
+    "original_title": "Deadlocks reported on orders_pg",
+    "original_description": "[TCK-60176] Monitoring alerted us that the application logs show frequent deadlock errors originating from transactions against orders_pg. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2152,
+    "text": "Hey, I'm reaching out because our main customer information system is dragging terribly today. Whenever we try to look up client details or run standard reports, it just spins for a few seconds before showing anything, which is making it super frustrating to get any work done for the people waiting on the line. Can someone please take a look at why everything is running so sluggishly?",
+    "expected": "Database",
+    "original_title": "Slow queries on customers_pg",
+    "original_description": "[TCK-68805] Support desk logged the following: several queries against customers_pg have degraded to multi-second execution times, slowing the whole app. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3482,
+    "text": "Hi team, I'm reaching out because whenever our busiest hours hit, I keep getting blocked from logging into our main data lookup system and it gives me an error about capacity limits being reached. Could someone please check on this as soon as possible so I can keep working?",
+    "expected": "Database",
+    "original_title": "audit_mysql running out of connections",
+    "original_description": "[TCK-31247] User p.reddy reports that audit_mysql is rejecting new connections with a 'too many connections' error during peak traffic. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3845,
+    "text": "Hey, I was just working with the system and noticed that the customer purchases page is showing really old information, like it's stuck several minutes behind what's actually happening. People are seeing outdated stuff, and I really need someone to check on why it's not updating in real time as soon as possible.",
+    "expected": "Database",
+    "original_title": "Replication lag on orders_pg",
+    "original_description": "[TCK-52661] User p.reddy reports that the read replica for orders_pg is lagging the primary by several minutes, serving stale reads to the application. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3720,
+    "text": "Hi team, I am having a really hard time trying to pull my daily work summaries on my mobile tool. Every time I hit the button to create them, the screen just freezes up and spins endlessly until it finally pops up with a failure message saying it took too long to connect. Could someone please look into this as soon as possible?",
+    "expected": "Database",
+    "original_title": "Reports in Field Service App won't generate",
+    "original_description": "[TCK-88492] We are observing that users trying to run reports in Field Service App get stuck loading forever and eventually see a timeout error about the underlying data source. Requesting priority attention from the relevant team.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 2724,
+    "text": "Hi, I need some help because the system we use to look up buyer details is showing old information. When I save updates, the screens people are using still display the outdated records for a few minutes before catching up, which is causing a lot of confusion for the team.",
+    "expected": "Database",
+    "original_title": "Replication lag on customers_pg",
+    "original_description": "[TCK-31365] User k.verma reports that the read replica for customers_pg is lagging the primary by several minutes, serving stale reads to the application. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3683,
+    "text": "Hi, I am really hoping someone can look at this right away because our checkout and purchasing system is completely frozen. The main computer that stores all our customer orders crashed a little while ago, and normally a backup copy takes over automatically, but this time it just didn't happen, so nobody can save or change any records right now.",
+    "expected": "Database",
+    "original_title": "Failover did not promote replica for orders_pg",
+    "original_description": "[TCK-19007] We are observing that the primary for orders_pg went down but the standby replica never got promoted, leaving the application without a writable database. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 667,
+    "text": "Hi team, I am trying to look up some customer files and order history in our pay system, but the screen just keeps loading endlessly before popping up an error message saying it cannot connect to the files right now. Could someone please help me figure out what is going on?",
+    "expected": "Database",
+    "original_title": "Can't pull up records in Payroll",
+    "original_description": "[TCK-46178] User j.singh reports that trying to view customer or order records in Payroll just spins and then shows an error saying it cannot reach the records system. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3870,
+    "text": "Hey, I'm trying to get my daily work done, but everything is moving at a crawl right now because the system is taking forever to load information. Every time I click on something to pull up records, I'm sitting here staring at a loading screen for several seconds, and it's really backing up my tasks for the day.",
+    "expected": "Database",
+    "original_title": "Slow queries on warehouse_pg",
+    "original_description": "[TCK-31823] Ticket raised because several queries against warehouse_pg have degraded to multi-second execution times, slowing the whole app. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1181,
+    "text": "Hi, I am having trouble looking up any of our customer details or past orders in our main management software. Whenever I try to open a file, it just loads forever and then pops up a message saying it cannot connect to the database. Can someone please help me figure out what is going on?",
+    "expected": "Database",
+    "original_title": "Can't pull up records in CRM",
+    "original_description": "[TCK-27765] Support desk logged the following: trying to view customer or order records in CRM just spins and then shows an error saying it cannot reach the records system. Awaiting assignment to the right team.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 763,
+    "text": "Hi, I'm calling from the Ahmedabad branch because we're trying to use our main reporting page and it's completely blank. Whenever we open it up, a warning pops up saying it lost its connection to the information source, meaning none of our numbers or charts are showing up at all. Could someone please look into this so we can get our reports working again?",
+    "expected": "Database",
+    "original_title": "Analytics Dashboard says it can't find the data",
+    "original_description": "[TCK-77036] Reported by the Ahmedabad Office team: Analytics Dashboard shows an error mentioning a broken connection to where the data is kept, and no records load at all. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1891,
+    "text": "Hi, I'm reaching out because our main product catalog system keeps locking people out right when things get really busy, saying it's completely out of room for new visitors.",
+    "expected": "Database",
+    "original_title": "catalog_pg running out of connections",
+    "original_description": "[TCK-48034] Support desk logged the following: catalog_pg is rejecting new connections with a 'too many connections' error during peak traffic. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 607,
+    "text": "Hi, I'm reaching out because our main system for tracking stock levels is acting really sluggish today. When people try to look up items, the searches are taking forever to load, and it seems like the system is getting slower by the hour. Could someone take a look at what's going on behind the scenes to speed it back up?",
+    "expected": "Database",
+    "original_title": "Autovacuum not keeping up on inventory_pg",
+    "original_description": "[TCK-31006] Support desk logged the following: inventory_pg is showing severe table bloat and rising query times because dead tuples are accumulating faster than they are cleaned up. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1969,
+    "text": "Hi, our main customer data system is acting up again right now while things are busy, and people can't seem to get in at all because it keeps saying the maximum number of users has been reached. Can someone please look into this right away so we stop losing access?",
+    "expected": "Database",
+    "original_title": "customers_pg running out of connections",
+    "original_description": "[TCK-40698] We are observing that customers_pg is rejecting new connections with a 'too many connections' error during peak traffic. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3986,
+    "text": "Hi team, I'm having a really frustrating morning trying to look up some client files and purchase histories. Whenever I click on them to open, the screen just freezes up with that loading circle for a long time and eventually pops up a message saying it's completely disconnected from the storage system. I really need to get this working so I can finish my daily tasks.",
+    "expected": "Database",
+    "original_title": "Can't pull up records in Procurement Portal",
+    "original_description": "[TCK-74463] Ticket raised because trying to view customer or order records in Procurement Portal just spins and then shows an error saying it cannot reach the records system. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1755,
+    "text": "Hi team, folks over at the Mumbai office are running into a really frustrating roadblock when they try to finish up purchases. Every time they get to the final step, the system freezes up and refuses to let their transactions go through. Could someone please take a look and fix this as soon as possible so they can get back to work?",
+    "expected": "Database",
+    "original_title": "Deadlocks reported on orders_pg",
+    "original_description": "[TCK-93519] Reported by the Mumbai HQ team: the application logs show frequent deadlock errors originating from transactions against orders_pg. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1773,
+    "text": "Hi, I am reaching out because nobody can save any new customer purchases right now. It seems our main business data system went offline a little while ago, and usually the backup system takes over automatically so we can keep working, but that didn't happen this time. Everything is stuck and we urgently need someone to get our saving capabilities working again.",
+    "expected": "Database",
+    "original_title": "Failover did not promote replica for orders_pg",
+    "original_description": "[TCK-64478] User a.kulkarni reports that the primary for orders_pg went down but the standby replica never got promoted, leaving the application without a writable database. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3547,
+    "text": "Hey, a bunch of us down here at the Noida facility are having trouble with the human resources shared drive. We can actually see the folder listed on the network, but whenever we try to open any of the documents inside, it pops up and blocks us saying we don't have permission. It's really holding up our daily tasks, so we need someone to take a look as soon as possible.",
+    "expected": "Storage",
+    "original_title": "Permissions incorrect on \\\\fs01\\hr",
+    "original_description": "[TCK-61796] Ticket raised because several Noida Tech Park users report they can see the folder \\\\fs01\\hr but get 'access denied' when opening files inside it. This is impacting daily work.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 525,
+    "text": "Hi, I'm trying to open up my team's shared folder where we keep all our current project files, but my computer keeps telling me it cannot find the web address for it. Can someone please look into why we are completely locked out of our workspace?",
+    "expected": "Storage",
+    "original_title": "File share \\\\nas03\\projects inaccessible",
+    "original_description": "[TCK-19344] User r.desai reports that users cannot access the network file share \\\\nas03\\projects; it returns 'network path not found'. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 891,
+    "text": "Hi team, I really need some urgent help because I accidentally wiped out an entire directory on our shared engineering drive earlier today. Is there any way you guys can pull yesterday's saved copy back for us so we don't lose all that work?",
+    "expected": "Storage",
+    "original_title": "Snapshot/backup restore request for \\\\nas05\\engineering",
+    "original_description": "[TCK-62603] We are observing that a user accidentally deleted a folder on \\\\nas05\\engineering and needs yesterday's version restored. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3571,
+    "text": "Hi team, I just got a brand-new computer set up for me today, but for some reason I cannot get to the shared folder where our department keeps all our engineering files. The folks who have been here longer aren't having any trouble reaching it, but it just won't show up or connect on mine at all.",
+    "expected": "Storage",
+    "original_title": "Cannot mount \\\\nas05\\engineering on new machines",
+    "original_description": "[TCK-70329] Support desk logged the following: recently provisioned machines fail to map the file share \\\\nas05\\engineering, though existing machines connect fine. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3822,
+    "text": "Hi, I keep getting a bunch of weird error messages today when I try to save my work or upload files, and I think my computer or the main shared drive is completely jammed because it won't let me finish anything. Can someone please take a look and clear out whatever is taking up all the space so I can get back to work?",
+    "expected": "Storage",
+    "original_title": "Storage volume nearly full",
+    "original_description": "[TCK-14480] Flagged during routine checks: the primary storage volume is at 96% capacity and writes are beginning to fail for several services. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2147,
+    "text": "Hi, I'm not totally sure what's going on, but one of the main company servers is flashing warning lights and acting up because a hard drive seems to have died this morning, and I'm really worried it's going to crash completely if we don't fix it right away.",
+    "expected": "Storage",
+    "original_title": "RAID array degraded on PRD-APP-04",
+    "original_description": "[TCK-99049] Issue summary: the storage array on PRD-APP-04 is reporting a degraded state after a single drive failed, running without redundancy. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1324,
+    "text": "Hi, I was just checking on our main public-facing server and noticed a warning light flashing on the hard drive unit. It looks like one of the internal disks broke earlier today, and now the system isn't backing itself up like it's supposed to, so we're kinda flying without a safety net right now.",
+    "expected": "Storage",
+    "original_title": "RAID array degraded on PRD-WEB-03",
+    "original_description": "[TCK-94641] Issue summary: the storage array on PRD-WEB-03 is reporting a degraded state after a single drive failed, running without redundancy. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 214,
+    "text": "Hi, I am reaching out because my computer is acting really strange today and wouldn't let me save my work. Every time I try to put a new file in my main folder, it pops up with an error saying it cannot be saved. I checked the drive properties and it looks completely packed, which is probably why nothing is going through. Can someone please help me clear out some room so I can get back to my tasks?",
+    "expected": "Storage",
+    "original_title": "Storage volume nearly full",
+    "original_description": "[TCK-99998] User k.verma reports that the primary storage volume is at 96% capacity and writes are beginning to fail for several services. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 572,
+    "text": "Hi, I made a huge mistake and wiped out a whole folder on our shared drive where we keep all the pictures and videos, and I really need yesterday's version brought back before anyone notices.",
+    "expected": "Storage",
+    "original_title": "Snapshot/backup restore request for \\\\nas03\\media",
+    "original_description": "[TCK-32902] Support desk logged the following: a user accidentally deleted a folder on \\\\nas03\\media and needs yesterday's version restored. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2139,
+    "text": "Hi, I need some help because my computer or our main system is acting really weird today. Whenever I try to save my work or finish uploading files, it keeps giving me errors and refusing to save. It looks like the main folder or drive where everything gets kept is completely packed, and nothing else can fit in there.",
+    "expected": "Storage",
+    "original_title": "Storage volume nearly full",
+    "original_description": "[TCK-75848] User t.rao reports that the primary storage volume is at 96% capacity and writes are beginning to fail for several services. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3481,
+    "text": "Hi, I'm really hoping someone can help me right away because our main computer drive is almost totally packed and now our programs keep crashing when they try to save new stuff. It looks like we're out of room completely, so we need somebody to take a look at this ASAP before things break worse.",
+    "expected": "Storage",
+    "original_title": "Storage volume nearly full",
+    "original_description": "[TCK-68053] We are observing that the primary storage volume is at 96% capacity and writes are beginning to fail for several services. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3859,
+    "text": "Hey, our whole office down in the Noida tech hub is completely stuck because we are told our folder is out of space and nobody can save their work anymore; can someone please look into this so we can get back to saving our files?",
+    "expected": "Storage",
+    "original_title": "Storage quota exceeded for Noida Tech Park",
+    "original_description": "[TCK-93399] Monitoring alerted us that the Noida Tech Park team has hit its storage quota and can no longer save new files to their share. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3782,
+    "text": "Hi, I am having a really hard time getting my work done today because the shared folder where our department keeps all our project files is crawling. Every time I try to open a document or save my changes, it just hangs forever and eventually gives me an error message saying it timed out. It began acting up this morning and hasn't gotten any better since.",
+    "expected": "Storage",
+    "original_title": "Slow read/write on \\\\nas05\\engineering",
+    "original_description": "[TCK-80521] Issue summary: read and write performance on \\\\nas05\\engineering has degraded severely, with file operations timing out. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2593,
+    "text": "Hi, I really messed up just a little while ago and accidentally wiped out a whole folder of important files on the shared engineering drive. Is there any way you guys could pull up yesterday's version of that shared folder and put my deleted stuff back? I'm kind of in a panic here.",
+    "expected": "Storage",
+    "original_title": "Snapshot/backup restore request for \\\\nas05\\engineering",
+    "original_description": "[TCK-95161] Issue summary: a user accidentally deleted a folder on \\\\nas05\\engineering and needs yesterday's version restored. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3718,
+    "text": "Hi, I'm really hoping you can help me out because someone on my team just went and accidentally wiped out an entire folder over on the shared legal network drive. We desperately need to get back the version we had saved as of yesterday. Is there any way you guys can pull that up and put it back for us?",
+    "expected": "Storage",
+    "original_title": "Snapshot/backup restore request for \\\\fs04\\legal",
+    "original_description": "[TCK-57718] User r.desai reports that a user accidentally deleted a folder on \\\\fs04\\legal and needs yesterday's version restored. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 587,
+    "text": "Hi, I'm having a really frustrating issue with the shared folder where our accounting team keeps all our work documents. Whenever I try to open anything or save my changes, it just freezes up for ages and eventually gives me an error message saying it took too long. Can someone please look into this right away so we can get back to our work?",
+    "expected": "Storage",
+    "original_title": "Slow read/write on \\\\fs01\\finance",
+    "original_description": "[TCK-99135] We are observing that read and write performance on \\\\fs01\\finance has degraded severely, with file operations timing out. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3900,
+    "text": "Hi, I'm kind of freaking out because my computer keeps telling me there is no room left to save anything, and now my files won't even save when I try. Can someone please help me clear some space before I lose my work?",
+    "expected": "Storage",
+    "original_title": "Storage volume nearly full",
+    "original_description": "[TCK-34319] Support desk logged the following: the primary storage volume is at 96% capacity and writes are beginning to fail for several services. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1139,
+    "text": "Hi team, I noticed a really weird issue today where the shared drive connected to our staging server keeps disconnecting out of nowhere. Because of this, the software running on it is losing track of important files on and off, which is causing a bunch of errors. Could you guys look into what's causing this and let me know how we can fix it?",
+    "expected": "Storage",
+    "original_title": "NFS mount dropping on STG-APP-07",
+    "original_description": "[TCK-13788] Flagged during routine checks: the NFS mount on STG-APP-07 keeps dropping, causing applications to see missing files intermittently. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 684,
+    "text": "Hi, I'm working from home today and trying to look at some documents in our team's shared drive. I can see the main folder just fine, but whenever I try to actually open any of the files inside, a message pops up saying I'm not allowed. Can someone please take a look at this quickly so I can finish my work?",
+    "expected": "Storage",
+    "original_title": "Permissions incorrect on \\\\nas03\\projects",
+    "original_description": "[TCK-22355] We are observing that several Remote/WFH users report they can see the folder \\\\nas03\\projects but get 'access denied' when opening files inside it. Requesting priority attention from the relevant team.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 1907,
+    "text": "Hi, I work at the Noida office, and a few of us are having trouble with one of our shared team folders. We can see the folder in our file list just fine, but whenever we try to actually open any of the documents inside, a message pops up saying we are not allowed. Could someone please take a look at this so we can get back to our files?",
+    "expected": "Storage",
+    "original_title": "Permissions incorrect on \\\\fs02\\shared",
+    "original_description": "[TCK-56988] Flagged during routine checks: several Noida Tech Park users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Please confirm root cause and next steps.",
+    "flagged": true,
+    "gemini_guess": "Access Management"
+  },
+  {
+    "id": 529,
+    "text": "Hi team, I'm having a really strange issue with my virtual processing computer today. The shared network drive where all my important work files live keeps randomly disappearing and reconnecting. Because of this, whenever I try to run my daily tasks, half the time the system says the documents aren't there. It's really holding up my work, so I'd appreciate it if someone could take a look at it soon.",
+    "expected": "Storage",
+    "original_title": "NFS mount dropping on VM-BATCH-10",
+    "original_description": "[TCK-29323] User t.rao reports that the NFS mount on VM-BATCH-10 keeps dropping, causing applications to see missing files intermittently. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1952,
+    "text": "Hi, I need some help because my computer setup keeps losing its connection to the shared drives, which means my work files keep disappearing and reappearing throughout the day. It's making it really hard to get my regular daily tasks finished.",
+    "expected": "Storage",
+    "original_title": "NFS mount dropping on K8S-NODE-15",
+    "original_description": "[TCK-82872] Ticket raised because the NFS mount on K8S-NODE-15 keeps dropping, causing applications to see missing files intermittently. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3974,
+    "text": "Hi, I am reaching out because our team's shared folder where we keep all our engineering documents just stopped working this morning. Whenever anyone tries to open it up, a pop-up appears saying it cannot locate the pathway, and nobody can get to their files.",
+    "expected": "Storage",
+    "original_title": "File share \\\\nas05\\engineering inaccessible",
+    "original_description": "[TCK-40166] Issue summary: users cannot access the network file share \\\\nas05\\engineering; it returns 'network path not found'. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1814,
+    "text": "Hi team, I'm reaching out because I just got a brand new computer setup, but I can't seem to open up the shared drive for human resources. My coworkers who have been here a while don't have this issue at all and can get into those folders no problem, but whenever I try to pull up that specific network folder on my end, it just won't connect.",
+    "expected": "Storage",
+    "original_title": "Cannot mount \\\\fs01\\hr on new machines",
+    "original_description": "[TCK-59295] Support desk logged the following: recently provisioned machines fail to map the file share \\\\fs01\\hr, though existing machines connect fine. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1835,
+    "text": "Hey, team here in Ahmedabad is having a really tough time getting anything done on our shared office folder today. Whenever we try to open a document or save our changes, it just freezes up completely and eventually gives up with an error. Can someone please take a look and get it working smoothly again?",
+    "expected": "Storage",
+    "original_title": "Slow read/write on \\\\fs01\\operations",
+    "original_description": "[TCK-93743] Reported by the Ahmedabad Office team: read and write performance on \\\\fs01\\operations has degraded severely, with file operations timing out. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3570,
+    "text": "Hi team, I am sitting over at the Mumbai office and our connection back to headquarters is acting really weird today. Whenever I try to talk to anyone on our video calls, the voice keeps breaking up, and half the time my programs just freeze up and disconnect completely. Can someone please look into why our internet line here keeps dropping pieces of data?",
+    "expected": "Network",
+    "original_title": "Packet loss on the link to Mumbai HQ",
+    "original_description": "[TCK-99181] Reported by the Mumbai HQ team: the WAN link to Mumbai HQ is showing steady packet loss, causing choppy calls and dropped sessions. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 566,
+    "text": "Hey, I'm trying to get my work done today, but the main system we use is acting super sluggish. Whenever I click on anything, it takes forever to load, and it's driving me crazy because I can barely get through my tasks. Can someone please look into why it's dragging like this and fix it?",
+    "expected": "Network",
+    "original_title": "High latency to STG-APP-07",
+    "original_description": "[TCK-66937] Flagged during routine checks: network latency to STG-APP-07 has spiked to hundreds of milliseconds, degrading application response. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 993,
+    "text": "Hi team, we just brought some new gear online over at the Noida office, but none of them are able to connect to the internet or get onto our local setup properly. They are all stuck on these weird temporary local profiles and won't sync up with the office web.",
+    "expected": "Network",
+    "original_title": "DHCP not assigning addresses at Noida Tech Park",
+    "original_description": "[TCK-89315] Support desk logged the following: new devices at Noida Tech Park are failing to get an IP address and fall back to self-assigned addresses. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3607,
+    "text": "Hi, I'm reaching out because our team over at the Delhi branch is having a really weird internet connection issue since this morning. Brand new computers people are trying to plug in just won't connect properly and keep switching to those weird backup numbers instead of getting online like they're supposed to.",
+    "expected": "Network",
+    "original_title": "DHCP not assigning addresses at Delhi Sales",
+    "original_description": "[TCK-99884] Issue summary: new devices at Delhi Sales are failing to get an IP address and fall back to self-assigned addresses. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3790,
+    "text": "Hi, I'm working from home today and my internet connection completely dropped out. None of my gadgets can connect to the wireless router anymore, so I can't get any of my work done. Could someone please check on this as soon as possible?",
+    "expected": "Network",
+    "original_title": "Wi-Fi outage at Remote/WFH",
+    "original_description": "[TCK-82334] User s.joshi reports that the wireless network at Remote/WFH is down and no devices can associate to any access point. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2390,
+    "text": "Hi team, I'm trying to connect to one of my daily programs, but it keeps failing to load anything at all. It seems like something in our security setup is stopping the connection from going through, and I'm waiting for someone to look into it so I can get back to work.",
+    "expected": "Network",
+    "original_title": "Firewall blocking port 9092",
+    "original_description": "[TCK-65193] Support desk logged the following: a required service is unreachable because traffic on port 9092 appears to be blocked by the firewall. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1456,
+    "text": "Hi team, I am having a really frustrating time right now because every time I try to use our staging program, it takes forever to load anything. It is lagging so badly that it feels like it is crawling in slow motion, which is making it almost impossible for me to get my work done today. Could someone please check why it is acting so sluggish?",
+    "expected": "Network",
+    "original_title": "High latency to STG-APP-07",
+    "original_description": "[TCK-56331] User v.nair reports that network latency to STG-APP-07 has spiked to hundreds of milliseconds, degrading application response. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 187,
+    "text": "Hi, I'm calling from the Chennai branch because our internet connection keeps cutting out every couple of minutes, making it really hard to get any work done today.",
+    "expected": "Network",
+    "original_title": "Intermittent connectivity at Chennai Support",
+    "original_description": "[TCK-26179] We are observing that users at Chennai Support are experiencing intermittent network drops every few minutes. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 672,
+    "text": "Hi, I am reaching out because nobody in our Bangalore office can get on the wireless internet right now. We have tried connecting our laptops and phones multiple times this morning, but none of the devices are able to pick up a signal or join the office connection at all. Could someone please look into why the connection has completely dropped and help us get online?",
+    "expected": "Network",
+    "original_title": "Wi-Fi outage at Bangalore DC",
+    "original_description": "[TCK-21587] Flagged during routine checks: the wireless network at Bangalore DC is down and no devices can associate to any access point. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2355,
+    "text": "Hi team, nobody in our Kolkata office can get online today because new computers aren't connecting properly, and instead of working, they are just getting stuck on those weird backup addresses that won't load anything.",
+    "expected": "Network",
+    "original_title": "DHCP not assigning addresses at Kolkata Branch",
+    "original_description": "[TCK-36997] Support desk logged the following: new devices at Kolkata Branch are failing to get an IP address and fall back to self-assigned addresses. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3518,
+    "text": "Hi, I am having trouble getting my daily work done today because a program I desperately need to use is not loading at all. It seems like something is stopping it from connecting in the background, and I really need help getting it to open up so I can get back to my tasks.",
+    "expected": "Network",
+    "original_title": "Firewall blocking port 9200",
+    "original_description": "[TCK-67350] Ticket raised because a required service is unreachable because traffic on port 9200 appears to be blocked by the firewall. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3843,
+    "text": "Hey, I'm trying to connect to one of our servers to do some work, but the connection keeps timing out and won't go through. It seems like something on our network security side is stopping the connection from happening, and I really need to get in there today.",
+    "expected": "Network",
+    "original_title": "Firewall blocking port 22",
+    "original_description": "[TCK-56485] Flagged during routine checks: a required service is unreachable because traffic on port 22 appears to be blocked by the firewall. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3704,
+    "text": "Hi, I am calling from our Pune office because nobody can get their laptops online today. Whenever anyone plugs in or tries the Wi-Fi, it just gets stuck and gives them a weird internal error instead of connecting to the internet, so we are completely cut off and cannot do our work.",
+    "expected": "Network",
+    "original_title": "DHCP not assigning addresses at Pune Branch",
+    "original_description": "[TCK-44990] We are observing that new devices at Pune Branch are failing to get an IP address and fall back to self-assigned addresses. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2809,
+    "text": "Hi team, nobody here in the Hyderabad building can get on the wireless internet today. All of our laptops and phones are failing to connect to the office Wi-Fi, and we really need help getting it back up and running.",
+    "expected": "Network",
+    "original_title": "Wi-Fi outage at Hyderabad Office",
+    "original_description": "[TCK-64856] Reported by the Hyderabad Office team: the wireless network at Hyderabad Office is down and no devices can associate to any access point. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3686,
+    "text": "Hi team, nobody over here in the Hyderabad branch can log into the remote work network today; it just keeps spinning and timing out before it lets us in, so we are completely stuck and cannot get our work done.",
+    "expected": "Network",
+    "original_title": "VPN failing for Hyderabad Office users",
+    "original_description": "[TCK-10059] We are observing that remote users from Hyderabad Office cannot establish a VPN connection and get a timeout during negotiation. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 682,
+    "text": "Hi, I'm trying to connect to our main customer records database for some urgent reports, but the system just keeps spinning and won't let me through. It feels like something is blocking my computer from reaching the server where that data lives, and I really need this fixed today so I can finish my work.",
+    "expected": "Network",
+    "original_title": "Firewall blocking port 3306",
+    "original_description": "[TCK-83872] User m.iyer reports that a required service is unreachable because traffic on port 3306 appears to be blocked by the firewall. Kindly look into this at the earliest.",
+    "flagged": true,
+    "gemini_guess": "Database"
+  },
+  {
+    "id": 3910,
+    "text": "Hi, nobody here in the Bangalore office can get online through the wireless internet right now, and all of our laptops and phones are completely disconnected. Could someone please look into why the local wi-fi is failing?",
+    "expected": "Network",
+    "original_title": "Wi-Fi outage at Bangalore DC",
+    "original_description": "[TCK-19739] Monitoring alerted us that the wireless network at Bangalore DC is down and no devices can associate to any access point. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1315,
+    "text": "Hi, I'm trying to work from home today and for some reason I can't log into the company network at all. Every time I try to connect, it just hangs for a bit and then gives me a connection timed out error, so I'm completely locked out of everything I need.",
+    "expected": "Network",
+    "original_title": "VPN failing for Remote/WFH users",
+    "original_description": "[TCK-41110] Flagged during routine checks: remote users from Remote/WFH cannot establish a VPN connection and get a timeout during negotiation. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 828,
+    "text": "Hi, I am having trouble connecting to one of our main systems today. It seems like a security barrier or some sort of gatekeeper on our network is completely stopping my computer from reaching it. Could someone take a look at the rules to let this traffic through so I can get back to work?",
+    "expected": "Network",
+    "original_title": "Firewall blocking port 22",
+    "original_description": "[TCK-58958] Flagged during routine checks: a required service is unreachable because traffic on port 22 appears to be blocked by the firewall. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2069,
+    "text": "Hi, I'm calling from the office in Mumbai because our internet keeps cutting out every few minutes, making it almost impossible to get any work done today.",
+    "expected": "Network",
+    "original_title": "Intermittent connectivity at Mumbai HQ",
+    "original_description": "[TCK-56693] Reported by the Mumbai HQ team: users at Mumbai HQ are experiencing intermittent network drops every few minutes. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 594,
+    "text": "Hi, I am calling from our Kolkata office because none of the newly plugged-in computers can get online today, and instead they are all stuck with those weird local numbers that do not connect to anything. It has been happening all morning and is still broken.",
+    "expected": "Network",
+    "original_title": "DHCP not assigning addresses at Kolkata Branch",
+    "original_description": "[TCK-16744] Issue summary: new devices at Kolkata Branch are failing to get an IP address and fall back to self-assigned addresses. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2140,
+    "text": "Hi, I need some help with our connection to the Chennai office because talking to them on the phone has been a real headache today. The audio keeps breaking up and calls keep cutting off completely every few minutes, making it almost impossible to get any work done with the team over there.",
+    "expected": "Network",
+    "original_title": "Packet loss on the link to Chennai Support",
+    "original_description": "[TCK-97003] Flagged during routine checks: the WAN link to Chennai Support is showing steady packet loss, causing choppy calls and dropped sessions. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3993,
+    "text": "Hi, I'm hoping someone can look into a major slowdown I've been dealing with since this morning. Whenever I try to use my main work software, everything takes forever to load because the connection is crawling at a snail's pace, and it hasn't gotten any better on its own.",
+    "expected": "Network",
+    "original_title": "High latency to K8S-NODE-14",
+    "original_description": "[TCK-19862] Issue summary: network latency to K8S-NODE-14 has spiked to hundreds of milliseconds, degrading application response. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1971,
+    "text": "Hey, I'm calling from the Hyderabad branch and we're having a really frustrating time getting our work done today because everything we try to do on the staging server is crawling. Clicks take forever to register and screens are freezing up for seconds at a time. Could someone please look into why it's lagging so badly and fix it?",
+    "expected": "Network",
+    "original_title": "High latency to STG-APP-08",
+    "original_description": "[TCK-85440] Reported by the Hyderabad Office team: network latency to STG-APP-08 has spiked to hundreds of milliseconds, degrading application response. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1994,
+    "text": "Hi, I am having trouble opening our scheduling program we use out in the field. Every time I try to load it up, it just gives me an error saying it cannot find the web address, so none of us can get our daily work done.",
+    "expected": "Network",
+    "original_title": "DNS resolution failing for Field Service App",
+    "original_description": "[TCK-66982] Ticket raised because clients cannot resolve the hostname for Field Service App, receiving NXDOMAIN responses. This is impacting daily work.",
+    "flagged": true,
+    "gemini_guess": "Application"
+  },
+  {
+    "id": 3616,
+    "text": "Hi, I just wanted to let you know that Rahul Desai is no longer with the company as of today, so we need someone to completely lock down and close out all of their system logins and permissions right away.",
+    "expected": "Access Management",
+    "original_title": "Offboarding access revocation for r.desai",
+    "original_description": "[TCK-49066] Issue summary: leaver r.desai has left the company and all their access needs to be revoked immediately. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 524,
+    "text": "Hi team, I really need some extra permissions on the company expense program for a little while so I can finish up a project assignment. Could someone please look into this for me as soon as possible?",
+    "expected": "Access Management",
+    "original_title": "Elevated access request for p.menon",
+    "original_description": "[TCK-67462] We are observing that user p.menon has requested temporary admin access to Expense Tracker to complete a project task. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 964,
+    "text": "Hi team, we just had someone new join our office over in Noida today, and they can't get into anything yet. Could you help set them up with their main login, the inventory system, and the shared folders for our location?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for k.verma",
+    "original_description": "[TCK-83286] Reported by the Noida Tech Park team: new employee k.verma needs standard access provisioned to email, Inventory Manager, and the Noida Tech Park file shares. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3648,
+    "text": "Hi team, we just had someone new start on the team today and they cannot log into anything yet, like their mailbox, the inventory system, or the office shared drives at the Noida branch, so they are kind of stuck and unable to get any work done.",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for a.kulkarni",
+    "original_description": "[TCK-45212] Ticket raised because new employee a.kulkarni needs standard access provisioned to email, Inventory Manager, and the Noida Tech Park file shares. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3810,
+    "text": "Hi, I seem to be completely locked out of my work profile because I typed my secret word in wrong too many times, and now I need someone to help me clear it and set up a fresh one so I can get back to my daily tasks.",
+    "expected": "Access Management",
+    "original_title": "Password reset for m.iyer",
+    "original_description": "[TCK-51736] We are observing that user m.iyer is locked out and has requested a password reset for their corporate account. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2286,
+    "text": "Hi, I really need some temporary higher-level permissions for the finance tracking tool so I can finish up a work assignment, but right now I can't get in and it is slowing down my whole day.",
+    "expected": "Access Management",
+    "original_title": "Elevated access request for j.singh",
+    "original_description": "[TCK-88680] Ticket raised because user j.singh has requested temporary admin access to Expense Tracker to complete a project task. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1340,
+    "text": "Hi there, I recently switched over to a different group here at the company, but I noticed I still have the ability to get into the old help desk system from my previous position. I need someone to clean up my permissions so I am fully set up with my new crew.",
+    "expected": "Access Management",
+    "original_title": "Role change access review for t.rao",
+    "original_description": "[TCK-57223] Support desk logged the following: user t.rao has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 193,
+    "text": "Hi, I recently switched over to a different department, but when I was looking around today, I noticed I still have the keys and special permissions from my old job in the purchasing system that I shouldn't have anymore. Can someone look into this and clean that up for me?",
+    "expected": "Access Management",
+    "original_title": "Role change access review for r.sharma",
+    "original_description": "[TCK-61685] Monitoring alerted us that user r.sharma has moved teams and still holds permissions from their previous Procurement Portal role that need to be reconciled. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 586,
+    "text": "Hi there, I seem to be completely blocked from getting into my work account because I tried my password too many times and it locked me out. Could someone help me clear this up and give me a fresh login as soon as possible?",
+    "expected": "Access Management",
+    "original_title": "Password reset for p.reddy",
+    "original_description": "[TCK-20685] We are observing that user p.reddy is locked out and has requested a password reset for their corporate account. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2280,
+    "text": "Hey team, I'm having trouble getting into our web security dashboard today. Every time I put in my credentials and try to sign in, it just loops me right back to the sign-in page instead of letting me through. Can someone please help me figure out what's going on?",
+    "expected": "Access Management",
+    "original_title": "SSO access failing for r.sharma to Cloudflare",
+    "original_description": "[TCK-54975] User r.sharma reports that user r.sharma cannot reach the Cloudflare application through single sign-on and is bounced back to the login screen. Kindly look into this at the earliest.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3580,
+    "text": "Hi there, I am a new employee starting today and my name is Priya Menon, but I am having trouble getting into my work accounts. I cannot check my emails, I am unable to log into the portal to see my HR details, and I can't open the shared folders for the Delhi sales team either. Could someone please help me get all of this set up so I can actually start doing my job?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for p.menon",
+    "original_description": "[TCK-34603] Monitoring alerted us that new employee p.menon needs standard access provisioned to email, HR Self-Service, and the Delhi Sales file shares. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3882,
+    "text": "Hi team, I really need some extra permissions on the purchasing website so I can finish up a work assignment today. Could someone look at this pretty quickly for me?",
+    "expected": "Access Management",
+    "original_title": "Elevated access request for n.gupta",
+    "original_description": "[TCK-83638] We are observing that user n.gupta has requested temporary admin access to Procurement Portal to complete a project task. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3746,
+    "text": "Hi, I recently switched over to a different group here at the company, but I noticed I can still see and do things on my screen that belong to my old department. I need someone to help clean up my account permissions so I only have the right clearances for my current work.",
+    "expected": "Access Management",
+    "original_title": "Role change access review for s.khan",
+    "original_description": "[TCK-50854] Support desk logged the following: user s.khan has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2765,
+    "text": "Hi, I am having trouble getting into our human resources portal this morning. Every time I try to log in using our usual single sign-on method, it just loops me right back to the sign-in page instead of letting me through to my dashboard.",
+    "expected": "Access Management",
+    "original_title": "SSO access failing for m.chatterjee to Workday",
+    "original_description": "[TCK-51599] Issue summary: user m.chatterjee cannot reach the Workday application through single sign-on and is bounced back to the login screen. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3735,
+    "text": "Hi team, I recently switched over to a different department, but when I try to do my daily tasks, I realize I am still able to see and use stuff from my old job that I shouldn't have access to anymore. Could someone help sort out my permissions so they match my current position?",
+    "expected": "Access Management",
+    "original_title": "Role change access review for m.chatterjee",
+    "original_description": "[TCK-70018] Support desk logged the following: user m.chatterjee has moved teams and still holds permissions from their previous Inventory Manager role that need to be reconciled. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 614,
+    "text": "Hi, my manager asked me to reach out because I need to be put into the finance team group for our local office here in Ahmedabad so I can see the shared files we use, and this has been going on since this morning without fixing itself.",
+    "expected": "Access Management",
+    "original_title": "Group membership change for t.rao",
+    "original_description": "[TCK-80832] Issue summary: manager requests that t.rao be added to the Ahmedabad Office finance security group. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3905,
+    "text": "Hi team, I am locked out of my account because I misplaced my mobile device this morning and can't get past the security check that sends a code to my phone, so I really need someone to help me log back in.",
+    "expected": "Access Management",
+    "original_title": "MFA reset request for v.nair",
+    "original_description": "[TCK-18770] Issue summary: user v.nair lost their phone and cannot complete multi-factor authentication to sign in. It started earlier today and has not self-resolved.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1186,
+    "text": "Hi team, my boss asked if you could please add me to the secure group for the local money and accounts department over at the Bangalore office building so I can see the right files.",
+    "expected": "Access Management",
+    "original_title": "Group membership change for v.nair",
+    "original_description": "[TCK-80013] Support desk logged the following: manager requests that v.nair be added to the Bangalore DC finance security group. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 756,
+    "text": "Hi, I am reaching out because I dropped my mobile device yesterday and it is completely broken, so I cannot get the security code text messages or push approvals required to log into my work account this morning.",
+    "expected": "Access Management",
+    "original_title": "MFA reset request for p.reddy",
+    "original_description": "[TCK-43324] Monitoring alerted us that user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1988,
+    "text": "Hi, I am reaching out because we have a brand new teammate starting over at the Noida facility, and they currently cannot log into their email, check the main metrics page, or open the shared folders we use around the office. Could someone please get their accounts and permissions set up so they can actually start working?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for j.singh",
+    "original_description": "[TCK-30043] Reported by the Noida Tech Park team: new employee j.singh needs standard access provisioned to email, Analytics Dashboard, and the Noida Tech Park file shares. Please investigate and resolve.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 537,
+    "text": "Hi, I just started working here today and I noticed I cannot get into my email, the billing website, or the shared folders for the Chennai office team. Could someone please help me get set up so I can do my job?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for m.chatterjee",
+    "original_description": "[TCK-15124] Monitoring alerted us that new employee m.chatterjee needs standard access provisioned to email, Billing Portal, and the Chennai Support file shares. Escalating for investigation.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 2077,
+    "text": "Hi, I just started today and my manager mentioned I should have reached out already, but I still can't get into my email, the customer support queue tracker, or the work folders we use when working from home. Could someone help me get set up with these so I can actually start my work?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for d.mehta",
+    "original_description": "[TCK-83880] Flagged during routine checks: new employee d.mehta needs standard access provisioned to email, Ticketing System, and the Remote/WFH file shares. Please confirm root cause and next steps.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 3994,
+    "text": "Hi team, I am working on a special project right now and really need temporary higher-level permissions to get into our customer management system to finish my tasks. Can someone help me set that up?",
+    "expected": "Access Management",
+    "original_title": "Elevated access request for a.kulkarni",
+    "original_description": "[TCK-29955] Support desk logged the following: user a.kulkarni has requested temporary admin access to CRM to complete a project task. Awaiting assignment to the right team.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1839,
+    "text": "Hi team, I really need some help getting added to the finance team folder for our Kolkata office. Right now I can't open the files I need to get my daily work done, and my boss said this needs to be updated as soon as possible so I can keep up with my tasks.",
+    "expected": "Access Management",
+    "original_title": "Group membership change for d.mehta",
+    "original_description": "[TCK-18003] Ticket raised because manager requests that d.mehta be added to the Kolkata Branch finance security group. This is impacting daily work.",
+    "flagged": false,
+    "gemini_guess": null
+  },
+  {
+    "id": 1875,
+    "text": "Hi, I just started working here today and I'm trying to get my accounts set up. Right now, I can't log into my email, I can't check my human resources portal, and I'm unable to open the shared folders we use for our Bangalore office. Could someone please help me get these working as soon as possible?",
+    "expected": "Access Management",
+    "original_title": "New joiner access request for r.desai",
+    "original_description": "[TCK-72992] We are observing that new employee r.desai needs standard access provisioned to email, HR Self-Service, and the Bangalore DC file shares. Requesting priority attention from the relevant team.",
+    "flagged": false,
+    "gemini_guess": null
+  }
+]

@@ -4,3 +4,7 @@ __pycache__/
 data/ticket_embeddings.npy
 models/
 .env
+data/skewed/synthetic_tickets_am*.csv
+data/skewed/embeddings_am*.npy
+data/batch_intake/incoming_tickets_batch.csv
+data/category_stores/

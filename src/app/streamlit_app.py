@@ -3,11 +3,15 @@ src/app/streamlit_app.py
 
 Streamlit demo UI for the IT-support-ticket routing project.
 
-This file is a thin presentation layer that ties together two already-working
+This file is a thin presentation layer that ties together three already-working
 layers of the project:
 
-    1. Classification  -> models/ticket_classifier.joblib (LogisticRegression
-                           on MiniLM embeddings, 7 categories)
+    1. Classification  -> CASCADE classifier (src/classification/train_cascade.py)
+                           Tier-1 = TF-IDF + LogisticRegression (fast path,
+                             trained at startup - this is fast even on 4000 rows)
+                           Tier-2 = MiniLM embeddings + LogisticRegression,
+                             loaded from models/ticket_classifier.joblib
+                             (escalation path, used when Tier-1 is unsure)
     2. RAG retrieval    -> src/rag/suggest_resolution.py
                            (retrieve_similar_tickets)
     3. Grounded answer  -> src/rag/suggest_resolution.py
@@ -15,7 +19,7 @@ layers of the project:
                            when the best match is below SIMILARITY_THRESHOLD.
 
 It does NOT reimplement any pipeline logic; it imports and reuses the existing
-functions/constants from suggest_resolution.py.
+functions/constants from suggest_resolution.py and train_cascade.py.
 
 Run from the project root with:
     streamlit run src/app/streamlit_app.py
@@ -48,10 +52,20 @@ if PROJECT_ROOT not in sys.path:
 FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_index.faiss")
 METADATA_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_metadata.json")
 CLASSIFIER_PATH = os.path.join(PROJECT_ROOT, "models", "ticket_classifier.joblib")
+DATA_CSV = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
 ENV_PATH = os.path.join(PROJECT_ROOT, ".env")
 
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 LLM_MODEL_NAME = "gemini"  # display label; actual model id lives in suggest_resolution.py
+
+# Applied cascade confidence threshold.
+#
+# NOT re-derived at app startup (calibration is slow and would make the demo
+# sluggish). This is the value derived by the calibration methodology in
+# src/classification/train_cascade.py (175-ticket paraphrased calibration set,
+# 70-80% Tier-1 target-accuracy band - see RESULTS.md for the full derivation
+# and the accuracy/efficiency tradeoff analysis behind this number).
+CASCADE_CONFIDENCE_THRESHOLD = 0.50
 
 # The 3 canonical demo examples (kept in sync with suggest_resolution.py's demo):
 #   1. VPN issue           -> should classify + retrieve + suggest
@@ -170,14 +184,26 @@ def load_resources():
             )
         }
 
-    # --- Classifier ------------------------------------------------------- #
+    # --- Tier-2 classifier (MiniLM + LogReg, saved artifact) --------------- #
     if not os.path.exists(CLASSIFIER_PATH):
         return {
             "error": (
-                "Trained classifier not found at:\n"
+                "Trained Tier-2 classifier not found at:\n"
                 f"    {CLASSIFIER_PATH}\n\n"
                 "Train it first by running:\n"
-                "    python src/train/train_classifier.py"
+                "    python src/classification/train_embeddings.py"
+            )
+        }
+
+    # --- Dataset CSV (needed to train Tier-1 at startup) ------------------- #
+    if not os.path.exists(DATA_CSV):
+        return {
+            "error": (
+                "Ticket dataset not found at:\n"
+                f"    {DATA_CSV}\n\n"
+                "This is needed to train the Tier-1 (TF-IDF) fast-path model "
+                "at startup. Generate it first by running:\n"
+                "    python data/generate_dataset.py"
             )
         }
 
@@ -202,15 +228,29 @@ def load_resources():
                 )
             }
 
+    # --- Reused cascade classifier layer ------------------------------------ #
+    # train_tier1 / get_tier1_confidence come from train_cascade.py and are
+    # reused as-is (same TF-IDF config, same confidence-extraction logic as
+    # every calibration/evaluation run already documented in RESULTS.md).
+    try:
+        from src.classification.train_cascade import train_tier1, get_tier1_confidence
+    except Exception as exc:
+        return {
+            "error": (
+                "Could not import src/classification/train_cascade.py "
+                f"({type(exc).__name__}: {exc}).\n\n"
+                "Make sure the file exists and that you are running "
+                "Streamlit from the project root:\n"
+                "    streamlit run src/app/streamlit_app.py"
+            )
+        }
+
     # --- Load the heavy artifacts ---------------------------------------- #
     try:
         model = SentenceTransformer(EMBEDDING_MODEL_NAME)
-        classifier = joblib.load(CLASSIFIER_PATH)
+        tier2_classifier = joblib.load(CLASSIFIER_PATH)
         with open(METADATA_PATH, "r", encoding="utf-8") as fh:
             metadata = json.load(fh)
-        # BUG FIX: the FAISS file's existence was checked earlier, but the
-        # index itself was never actually loaded - retrieve_similar_tickets()
-        # requires the loaded `index` object, not just a file path.
         index = faiss.read_index(FAISS_INDEX_PATH)
     except Exception as exc:
         return {
@@ -222,8 +262,37 @@ def load_resources():
             )
         }
 
-    # BUG FIX: the Gemini client was never created here, so suggestions could
-    # never actually be generated. call_gemini() requires a `client` object.
+    # --- Train Tier-1 (TF-IDF + LogReg) at startup ------------------------- #
+    # No saved artifact exists for Tier-1 - it trains in seconds even on 4000
+    # rows, so training here on every app start is fine (unlike Tier-2, which
+    # is loaded from disk to avoid the ~100s MiniLM embedding step).
+    try:
+        df = pd.read_csv(DATA_CSV)
+        required_cols = {"title", "description", "category"}
+        missing_cols = required_cols - set(df.columns)
+        if missing_cols:
+            return {
+                "error": (
+                    f"{os.path.basename(DATA_CSV)} is missing required "
+                    f"column(s): {sorted(missing_cols)}"
+                )
+            }
+        tier1_texts = (
+            df["title"].fillna("").astype(str)
+            + " "
+            + df["description"].fillna("").astype(str)
+        ).tolist()
+        tier1_labels = df["category"].astype(str).tolist()
+        tier1_vectorizer, tier1_classifier = train_tier1(tier1_texts, tier1_labels)
+    except Exception as exc:
+        return {
+            "error": (
+                "Failed to train the Tier-1 (TF-IDF) fast-path classifier "
+                f"({type(exc).__name__}: {exc})."
+            )
+        }
+
+    # --- Gemini client ------------------------------------------------------ #
     try:
         from google import genai
         client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -241,7 +310,10 @@ def load_resources():
 
     return {
         "model": model,
-        "classifier": classifier,
+        "tier1_vectorizer": tier1_vectorizer,
+        "tier1_classifier": tier1_classifier,
+        "tier2_classifier": tier2_classifier,
+        "get_tier1_confidence": get_tier1_confidence,
         "metadata": metadata,
         "index": index,
         "faiss": faiss,
@@ -259,28 +331,59 @@ def combined_text(title: str, description: str) -> str:
     return f"{title} {description}".strip()
 
 
-def classify_ticket(model, classifier, text: str):
+def classify_ticket_cascade(
+    text: str,
+    tier1_vectorizer,
+    tier1_classifier,
+    tier2_classifier,
+    embedding_model,
+    get_tier1_confidence_fn,
+):
     """
-    Embed the combined text with MiniLM and predict a category with the
-    loaded classifier. Returns (predicted_label, confidence_float_0_to_1).
+    Run the confidence-based cascade: Tier-1 (TF-IDF) resolves the ticket if
+    confident enough; otherwise escalate to Tier-2 (MiniLM embeddings).
+
+    Returns a dict: category, confidence (of whichever tier resolved it),
+    tier (1 or 2), tier1_pred, tier1_conf (always reported, even on escalation,
+    for the "why did this escalate" explanation in the UI).
     """
-    embedding = model.encode([text])
+    tier1_preds, tier1_confs = get_tier1_confidence_fn(
+        tier1_vectorizer, tier1_classifier, [text]
+    )
+    tier1_pred = str(np.asarray(tier1_preds).ravel()[0])
+    tier1_conf = float(np.asarray(tier1_confs).ravel()[0])
+
+    if tier1_conf >= CASCADE_CONFIDENCE_THRESHOLD:
+        return {
+            "category": tier1_pred,
+            "confidence": tier1_conf,
+            "tier": 1,
+            "tier1_pred": tier1_pred,
+            "tier1_conf": tier1_conf,
+        }
+
+    # Escalate to Tier-2.
+    embedding = embedding_model.encode([text])
     embedding = np.asarray(embedding, dtype=np.float32)
+    tier2_pred = tier2_classifier.predict(embedding)[0]
 
-    predicted = classifier.predict(embedding)[0]
-
-    confidence = None
-    if hasattr(classifier, "predict_proba"):
-        proba = classifier.predict_proba(embedding)[0]
-        # Map the predicted label back to its column in classes_.
-        classes = list(classifier.classes_)
+    tier2_conf = None
+    if hasattr(tier2_classifier, "predict_proba"):
+        proba = tier2_classifier.predict_proba(embedding)[0]
+        classes = list(tier2_classifier.classes_)
         try:
-            idx = classes.index(predicted)
-            confidence = float(proba[idx])
+            idx = classes.index(tier2_pred)
+            tier2_conf = float(proba[idx])
         except ValueError:
-            confidence = float(np.max(proba))
+            tier2_conf = float(np.max(proba))
 
-    return predicted, confidence
+    return {
+        "category": tier2_pred,
+        "confidence": tier2_conf,
+        "tier": 2,
+        "tier1_pred": tier1_pred,
+        "tier1_conf": tier1_conf,
+    }
 
 
 def truncate(text, length: int = 120) -> str:
@@ -291,9 +394,9 @@ def truncate(text, length: int = 120) -> str:
     return text if len(text) <= length else text[: length - 1].rstrip() + "…"
 
 
-def category_badge(category: str, confidence) -> None:
-    """Render the predicted category prominently with a confidence metric."""
-    col_a, col_b = st.columns([2, 1])
+def category_badge(category: str, confidence, tier: int) -> None:
+    """Render the predicted category prominently, with confidence + which tier."""
+    col_a, col_b, col_c = st.columns([2, 1, 1])
     with col_a:
         st.markdown(
             f"""
@@ -315,6 +418,9 @@ def category_badge(category: str, confidence) -> None:
             st.metric(label="Confidence", value=f"{confidence * 100:.1f}%")
         else:
             st.metric(label="Confidence", value="n/a")
+    with col_c:
+        tier_label = "Tier-1 (fast)" if tier == 1 else "Tier-2 (escalated)"
+        st.metric(label="Resolved by", value=tier_label)
 
 
 # --------------------------------------------------------------------------- #
@@ -334,7 +440,10 @@ if "error" in resources:
     st.stop()
 
 MODEL = resources["model"]
-CLASSIFIER = resources["classifier"]
+TIER1_VECTORIZER = resources["tier1_vectorizer"]
+TIER1_CLASSIFIER = resources["tier1_classifier"]
+TIER2_CLASSIFIER = resources["tier2_classifier"]
+GET_TIER1_CONFIDENCE = resources["get_tier1_confidence"]
 METADATA = resources["metadata"]
 INDEX = resources["index"]
 FAISS = resources["faiss"]
@@ -376,15 +485,18 @@ with st.sidebar:
     st.markdown(
         f"""
         - **Tickets indexed:** `{n_tickets}`
-        - **Embedding model:** `{EMBEDDING_MODEL_NAME}`
+        - **Tier-1 (fast path):** `TF-IDF + LogisticRegression`
+        - **Tier-2 (escalation):** `{EMBEDDING_MODEL_NAME}` embeddings + LogisticRegression
         - **LLM:** `Google Gemini`
-        - **Similarity threshold:** `{SIMILARITY_THRESHOLD:.2f}`
+        - **Cascade confidence threshold:** `{CASCADE_CONFIDENCE_THRESHOLD:.2f}`
+        - **RAG similarity threshold:** `{SIMILARITY_THRESHOLD:.2f}`
         - **Categories:** 7
         """
     )
     st.caption(
-        "Below the threshold, the agent escalates to a human instead of "
-        "calling the LLM."
+        "Cascade threshold derived via calibration on a 175-ticket paraphrased "
+        "set (see RESULTS.md). Below the RAG similarity threshold, the agent "
+        "escalates to a human instead of calling the LLM."
     )
 
 
@@ -394,7 +506,7 @@ with st.sidebar:
 st.title("🎫 IT Ticket Routing & Resolution Agent")
 st.markdown(
     "Enter a new IT support ticket to see the full pipeline run: "
-    "**classification → similar-ticket retrieval → grounded resolution "
+    "**cascade classification → similar-ticket retrieval → grounded resolution "
     "(or human escalation).**"
 )
 
@@ -403,10 +515,11 @@ with st.expander("ℹ️ How this works"):
         """
         This demo runs a **three-layer** support-triage pipeline:
 
-        1. **Classification** — a Logistic Regression model on MiniLM
-           sentence embeddings predicts one of 7 categories
-           (Infrastructure, Application, Security, Database, Storage,
-           Network, Access Management).
+        1. **Cascade classification** — a fast TF-IDF model (Tier-1) handles
+           the ticket if it's confident enough; otherwise the ticket is
+           **escalated** to a stronger MiniLM-embeddings model (Tier-2). This
+           mirrors the same "don't guess when unsure" philosophy used one
+           layer down in Step 3.
         2. **RAG retrieval** — the ticket text is embedded and matched
            against a FAISS index of past tickets to surface the most
            similar resolved cases.
@@ -460,8 +573,15 @@ def run_pipeline(title: str, description: str) -> dict:
     """
     text = combined_text(title, description)
 
-    # (a) Classification
-    category, confidence = classify_ticket(MODEL, CLASSIFIER, text)
+    # (a) Cascade classification
+    classification = classify_ticket_cascade(
+        text,
+        TIER1_VECTORIZER,
+        TIER1_CLASSIFIER,
+        TIER2_CLASSIFIER,
+        MODEL,
+        GET_TIER1_CONFIDENCE,
+    )
 
     # (b) Retrieval — reuse the existing function; be defensive about sorting.
     retrieved = SR.retrieve_similar_tickets(text, MODEL, INDEX, METADATA, FAISS, top_k=5) or []
@@ -472,8 +592,11 @@ def run_pipeline(title: str, description: str) -> dict:
     top_similarity = retrieved[0]["similarity"] if retrieved else 0.0
 
     result = {
-        "category": category,
-        "confidence": confidence,
+        "category": classification["category"],
+        "confidence": classification["confidence"],
+        "tier": classification["tier"],
+        "tier1_pred": classification["tier1_pred"],
+        "tier1_conf": classification["tier1_conf"],
         "retrieved": retrieved,
         "top_similarity": top_similarity,
         "escalated": False,
@@ -561,8 +684,24 @@ if results is not None:
     st.divider()
 
     # ---- (a) Classification ------------------------------------------- #
-    st.subheader("1️⃣ Classification")
-    category_badge(results["category"], results["confidence"])
+    st.subheader("1️⃣ Classification (Cascade)")
+    category_badge(results["category"], results["confidence"], results["tier"])
+
+    if results["tier"] == 2:
+        st.info(
+            f"Tier-1's confidence (**{results['tier1_conf']:.2f}**) was below the "
+            f"calibrated threshold (**{CASCADE_CONFIDENCE_THRESHOLD:.2f}**), so "
+            "this ticket was **escalated** to the more accurate MiniLM "
+            f"embeddings model. Tier-1 would have guessed "
+            f"**{results['tier1_pred']}**; Tier-2 predicted "
+            f"**{results['category']}**."
+        )
+    else:
+        st.success(
+            f"Tier-1's confidence (**{results['tier1_conf']:.2f}**) met the "
+            f"calibrated threshold (**{CASCADE_CONFIDENCE_THRESHOLD:.2f}**), so "
+            "the cheap fast-path model handled this ticket — no escalation needed."
+        )
 
     # ---- (b) Retrieval ------------------------------------------------ #
     st.subheader("2️⃣ Similar Past Tickets (RAG retrieval)")

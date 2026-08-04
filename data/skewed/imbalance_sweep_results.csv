@@ -1,0 +1,6 @@
+skew_level,am_train_count,tfidf_heldout_acc,minilm_heldout_acc,tfidf_bench_14,minilm_bench_14,tfidf_am_bench,minilm_am_bench,tfidf_am_to_sec,minilm_am_to_sec,cascade_safety_net_failures
+571,571,1.0,1.0,7/14,11/14,"2/2 [correct, correct]","2/2 [correct, correct]",0,0,0
+500,500,1.0,1.0,7/14,11/14,"2/2 [correct, correct]","2/2 [correct, correct]",0,0,0
+200,200,1.0,1.0,5/14,10/14,"0/2 [WRONG->Database, WRONG->Storage]","1/2 [correct, WRONG->Storage]",0,0,0
+100,100,1.0,0.9986,5/14,9/14,"0/2 [WRONG->Database, WRONG->Storage]","0/2 [WRONG->Security, WRONG->Storage]",0,1,0
+50,50,0.9986,0.9957,5/14,9/14,"0/2 [WRONG->Database, WRONG->Storage]","0/2 [WRONG->Security, WRONG->Storage]",0,3,0
