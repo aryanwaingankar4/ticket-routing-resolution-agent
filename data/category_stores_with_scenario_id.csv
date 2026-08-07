@@ -1,0 +1,2009 @@
+batch_ticket_id,original_id,category,scenario_id,resolution_status,resolution_text
+2,455,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node `PRD-WEB-01` and clear any stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure stuck pending pods are successfully rescheduled.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the kubelet restart and taint removal complete successfully.*"
+5,1314,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node PRD-DB-11 and clear the stale disk-pressure taint. Once completed, verify that the node rejoins the cluster and the pending pods successfully reschedule.
+
+*Note: The retrieved examples closely match this new ticket.*"
+9,416,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Access the console for server PRD-APP-04 to investigate the boot process, as this is typically caused by a failed `fstab` mount blocking the boot. Correct the problematic mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the console logs to confirm the specific mount entry failing.*"
+11,3299,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Access the console for PRD-CACHE-02 to investigate the boot process, as past tickets show a failed `fstab` mount blocking the boot. Correct the problematic mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should still verify the specific mount failure on the console.*"
+14,3491,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-DB-11, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket.*"
+18,1331,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-WEB-03 to check for a failed `fstab` mount blocking the boot process. Correct the faulty mount entry, then reboot the host to ensure it boots cleanly and responds to SSH and ping.
+
+*Note: The retrieved examples closely match this ticket and its historical fixes.*"
+25,1291,Infrastructure,2,auto_resolved,"Based on the retrieved past tickets, increase the memory limit for the affected container on PRD-DB-11 and add a memory-usage alert at 80% to catch future issues earlier. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+29,487,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to server PRD-APP-03 to investigate the boot process, as it is likely stuck due to a failed `fstab` mount blocking the boot. Correct the problematic mount entry, and the host should boot cleanly.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check and verify the specific `fstab` entry during console access.*"
+35,2989,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-WEB-01 to resolve the out-of-memory kills, and add a memory-usage alert set at 80% to catch future issues earlier.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the container settings and alert thresholds are applied correctly.*"
+38,1258,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check if the cron job on PRD-AUTH-05 is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume. 
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the server state.*"
+40,3100,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-AUTH-05 to use the internal NTP pool and force an immediate sync to correct the clock drift and restore sub-millisecond accuracy. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the resolution.*"
+42,441,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-WEB-01 to determine if it is caused by verbose debug logging writing synchronously. Disable debug logging and move the logs to a dedicated volume to resolve the disk utilization and high I/O wait.
+
+*Note: The retrieved examples closely match this ticket.*"
+45,106,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-WEB-01 to use the internal NTP pool and force an immediate sync to bring the drift back to sub-millisecond.
+
+*Note: The retrieved examples closely match this ticket (exact same title and issue), so no further human verification is strictly required.*"
+46,2712,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Investigate the autoscaling policy for PRD-APP-04 to check for a stale metric. Correct the scaling metric and cooldown period to ensure new instances launch on demand.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the configuration changes before applying them.*"
+47,635,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check if the cron job on K8S-NODE-15 is hitting a full `/tmp` directory. If so, clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the execution.*"
+48,918,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on K8S-NODE-14, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples are an exact match for this ticket, so a human agent can apply this standard resolution directly.*"
+50,983,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-APP-04 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier.
+
+*Note: The retrieved past tickets closely match this issue and provide an exact resolution.*"
+51,49,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Investigate the cron job on PRD-DB-12, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume to resolve the non-zero exit code failures.
+
+*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the server environment to ensure no other factors are contributing to the failure."
+56,2320,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Inspect the autoscaling policy for PRD-DB-12 to check for a stale metric. Correct the scaling metric and cooldown period to ensure new instances can launch on demand.
+
+*Note: The retrieved past tickets closely match this new ticket (exact duplicate title and description), so this resolution is fully supported by historical data.*"
+58,1458,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-CACHE-03 to use the internal NTP pool and force an immediate sync to correct the time drift. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+60,172,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on STG-APP-08 is timing out under load. Raise the probe timeout and interval for STG-APP-08 on the load balancer so it stays reliably in rotation.
+
+*Note: The retrieved examples are an exact match for this ticket.*"
+65,3930,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-CACHE-03 to use the internal NTP pool and force an immediate sync to bring the drift back to sub-millisecond.
+
+*Note: The retrieved examples closely match this ticket.*"
+66,3821,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on PRD-APP-03 to see if it is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+68,960,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+Investigate the health-check endpoint on PRD-CACHE-02, as it is timing out under load. Raise the probe timeout and interval to keep PRD-CACHE-02 reliably in rotation.
+
+*Note: The retrieved examples closely match the new ticket.*"
+78,3531,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+
+1. Check the cron job on VM-BATCH-09 to see if it is failing due to a full `/tmp` directory.
+2. Clean the `/tmp` directory.
+3. Move the job's scratch space to a larger volume to prevent future failures.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the steps during execution.*"
+82,1780,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on K8S-NODE-14 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier. 
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the configuration changes before applying them.*"
+86,3090,Infrastructure,6,auto_resolved,"Based on the retrieved past tickets, the health-check endpoint on VM-BATCH-10 is likely timing out under load. To resolve this, raise the load balancer's probe timeout and interval settings to keep VM-BATCH-10 reliably in rotation.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the settings before applying them.*"
+97,2378,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node `PRD-WEB-01` and clear any stale disk-pressure taints. Verify that the node successfully rejoins the cluster and that the pending pods resume rescheduling.
+
+*Note: The retrieved past tickets are an exact match for this issue, but a human agent should still verify the node status after applying the steps.*"
+98,165,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process causing high CPU utilization on server PRD-DB-11, cap its cgroup CPU quota, and scale the service horizontally to shed load and resolve request timeouts.
+
+*Note: The retrieved past tickets closely match this issue and share the exact same symptom and resolution.*"
+100,877,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-AUTH-05, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket.*"
+103,1234,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-WEB-03 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved examples closely match this new ticket and directly apply to the issue.*"
+106,3990,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on VM-BATCH-09 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier. 
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+114,1060,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Investigate the autoscaling policy for PRD-CACHE-03, as it is likely referencing a stale metric. Correct the scaling metric and the cooldown period to allow new instances to launch on demand.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the configuration changes upon application.*"
+120,2856,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
+131,1380,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Check the autoscaling policy for PRD-APP-03 to see if it references a stale metric. Correct the scaling metric and cooldown settings so that new instances launch on demand.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify that the metric and cooldown updates are successfully applied.*"
+132,3404,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node STG-APP-07 and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the stuck pending pods are successfully rescheduled.
+
+*Note: The retrieved examples closely match this ticket.*"
+136,1851,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket.*"
+138,1283,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on PRD-WEB-03, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples are an exact/close match for this ticket; however, a human agent should double-check to confirm the root cause.*"
+139,901,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on VM-BATCH-10 to verbose debug logging writing synchronously. Resolve the issue by disabling debug logging and moving the logs to a dedicated volume.
+
+*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check the configuration changes.*"
+141,2585,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-QUEUE-06 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+144,1251,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-WEB-03 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, which will allow the host to boot cleanly.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount details during console access.*"
+147,2905,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on VM-BATCH-09 to verbose debug logging writing synchronously. Disable debug logging and move the logs to a dedicated volume to resolve the disk utilization and high I/O wait. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check post-resolution to ensure disk performance has fully normalized.*"
+151,3221,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-AUTH-05 to use the internal NTP pool and force an immediate sync to bring the drift back to sub-millisecond. 
+
+*Note: The retrieved past tickets match the new ticket perfectly; however, a human agent should double-check the configuration.*"
+153,2633,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-WEB-02 to use the internal NTP pool and force an immediate sync to correct the time drift. 
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the server's status after synchronization.*"
+154,3058,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to VM-BATCH-09 to check for a failed fstab mount blocking the boot process, then correct the mount entry so the host can boot cleanly.
+
+*Note: The retrieved past tickets closely match this issue and support this exact resolution.*"
+157,3856,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-WEB-01, and add a memory-usage alert set at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+160,3331,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to VM-BATCH-10 to check for a failed `fstab` mount blocking the boot process. Once located, correct the mount entry and restart the host so it boots cleanly.
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should still double-check the configuration changes.*"
+161,3897,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on PRD-AUTH-05, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume to resolve the non-zero exit code failure.
+
+*Note: The retrieved examples are an exact match for this ticket, so the standard resolution steps can be safely applied.*"
+164,337,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-AUTH-05 to verbose debug logging writing synchronously. Disable debug logging and move the logs to a dedicated volume to resolve the disk utilization and I/O wait.
+
+*Note: The retrieved examples closely match this new ticket; however, a human agent should double-check the configuration changes before execution.*"
+167,2742,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to server PRD-APP-04 to investigate the boot process, as it is likely blocked by a failed fstab mount. Once accessed, correct the faulty fstab mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the mount configuration during the process.*"
+168,2906,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node PRD-APP-03 and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the pending pods are successfully rescheduled.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the node's disk status after executing the steps.*"
+170,2704,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-DB-11, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket.*"
+171,543,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Check the autoscaling policy for PRD-APP-04, as it is likely referencing a stale metric. Correct the scaling metric and cooldown settings to ensure new instances launch on demand.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check to confirm the specific metric and cooldown values applied.*"
+175,20,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on PRD-APP-03, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved past tickets closely match this issue and provide the exact required resolution steps.*"
+188,423,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on VM-BATCH-10 is likely timing out under load. To resolve the issue, raise the probe timeout and interval settings on the load balancer to prevent it from marking the backend as unhealthy and pulling it out of rotation.
+
+*Note: The retrieved examples closely match this ticket and its resolution.*"
+195,1367,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check if the cron job on K8S-NODE-15 is failing due to a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check to ensure the issue is resolved.*"
+198,2395,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-CACHE-02 to verbose debug logging writing synchronously, disable debug logging, and move the logs to a dedicated volume.
+
+*Note: The retrieved examples closely match this new ticket.*"
+202,2575,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on K8S-NODE-15, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples are an exact match for this ticket, so the resolution is directly applicable.*"
+208,3205,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process causing the high CPU usage on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed the excess load. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the specific process and scaling parameters.*"
+223,1807,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-APP-03 to verbose debug logging writing synchronously, disable debug logging, and move the logs to a dedicated volume.
+
+*Note: The retrieved examples closely match the new ticket.*"
+230,1660,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on K8S-NODE-14, cap its cgroup CPU quota, and scale the service horizontally to shed load. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the execution and results.*"
+231,1892,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-CACHE-03 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved examples closely match the new ticket.*"
+232,2410,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-CACHE-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. 
+
+*Note: The retrieved examples closely match the new ticket (including an exact historical match for PRD-CACHE-03).*"
+234,438,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-DB-11 to verify if verbose debug logging is writing synchronously. Disable the debug logging and move the logs to a dedicated volume.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the host environment after applying the fix.*"
+244,953,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on VM-BATCH-09 is timing out under load. Raise the probe timeout and interval settings to keep VM-BATCH-09 reliably in rotation.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the configuration changes before applying them.*"
+246,3702,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-WEB-02 to use the internal NTP pool and force an immediate sync to bring the drift back to sub-millisecond.
+
+*Note:* The retrieved examples closely and directly match the new ticket."
+247,2486,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node `PRD-WEB-02` and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure pending pods are rescheduled successfully.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the execution.*"
+248,3325,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+264,1431,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on VM-BATCH-09 and clear any stale disk-pressure taint so that the node rejoins the cluster and the pending pods are able to reschedule. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+268,473,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier. 
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify the appropriate container and memory allocation values.*"
+295,520,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on PRD-QUEUE-06 is timing out under load. Resolve this by raising the probe timeout and interval for the load balancer configuration, which will keep PRD-QUEUE-06 reliably in rotation.
+
+*Note: The retrieved examples closely match this ticket.*"
+318,391,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node `PRD-WEB-01` and clear any stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the pending pods are successfully rescheduled.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the node status post-restart.*"
+323,252,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-AUTH-05 to verbose debug logging writing synchronously, disable debug logging, and move the logs to a dedicated volume.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the steps successfully resolve the disk utilization on the host.*"
+325,107,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-APP-04 to check for a failed `fstab` mount blocking the boot process. Correct the faulty mount entry so the host can boot cleanly. 
+
+*Note: The retrieved examples closely match the new ticket and successfully resolved identical issues on this server.*"
+327,2101,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on K8S-NODE-14 and add a memory-usage alert set at 80% to catch future issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+332,3443,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-WEB-02 to identify verbose debug logging writing synchronously. Disable debug logging and move the logs to a dedicated volume to resolve the high disk utilization and I/O wait.
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check to confirm that verbose debug logging is indeed the active cause.*"
+333,929,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on STG-APP-08 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved past tickets closely match the new ticket.*"
+334,3696,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on K8S-NODE-15 and add a memory-usage alert set at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+340,427,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket.*"
+341,1246,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on K8S-NODE-15 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+346,354,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on STG-APP-08 to see if it is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples closely match this ticket (an exact match), so these steps can be applied directly.*"
+353,2682,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-DB-12 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved past tickets closely and directly match the new ticket.*"
+356,3505,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on PRD-CACHE-02 and clear any stale disk-pressure taint. Once completed, the node will rejoin the cluster and the pods will reschedule.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the steps.*"
+361,3088,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on VM-BATCH-10 is timing out under load. Raise the probe timeout and interval on the load balancer to keep VM-BATCH-10 reliably in rotation.
+
+*Note: The retrieved examples closely match this ticket.*"
+364,555,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node STG-APP-07 and clear the stale disk-pressure taint so that the node rejoins the cluster and the pending pods can reschedule.
+
+*Note: The retrieved examples closely match this ticket and directly support this resolution.*"
+365,2837,Infrastructure,8,auto_resolved,"**Suggested Resolution:**
+Check the autoscaling policy for PRD-WEB-02, as it likely references a stale metric. Correct the scaling metric and cooldown period to allow new instances to launch on demand.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the configuration changes.*"
+366,286,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on PRD-WEB-03 to verbose debug logging writing synchronously, then disable debug logging and move the logs to a dedicated volume.
+
+*Note:* The retrieved examples closely match the new ticket."
+371,2591,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-WEB-02 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the server state before applying changes.*"
+379,3560,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check if the cron job on K8S-NODE-14 is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the execution environment to ensure no new variables are causing the failure."
+383,638,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-AUTH-05 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, then reboot the host to ensure it boots cleanly and responds to SSH and ping.
+
+*Note: The retrieved examples closely match this new ticket and directly apply.*"
+386,2099,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on K8S-NODE-15 to verbose debug logging writing synchronously. Disable the debug logging and move the logs to a dedicated volume to resolve the disk utilization and I/O wait issues.
+
+*Note: The retrieved examples closely match the new ticket.*"
+388,3700,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the `/tmp` directory on PRD-WEB-02, as the cron job is likely hitting a full `/tmp` space resulting in a non-zero exit code. Clean the directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved past tickets closely match this issue and provide the exact resolution steps used previously.*"
+390,1525,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on K8S-NODE-15 to use the internal NTP pool and force an immediate sync to correct the time drift and restore normal operation.
+
+*Note: The retrieved examples closely match this new ticket and provide a direct resolution.*"
+412,248,Infrastructure,2,auto_resolved,"**Suggested Resolution:**
+Increase the memory limit for the affected container on PRD-AUTH-05 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.
+
+*Note: The retrieved examples closely match the new ticket.*"
+418,2164,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on VM-BATCH-09 to verbose debug logging writing synchronously. Disable debug logging and move the logs to a dedicated volume to resolve the disk utilization and I/O wait.
+
+*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should still verify the environment after applying the fix."
+419,3587,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on `PRD-CACHE-02` and clear the stale disk-pressure taint so that the node can rejoin the cluster and the pending pods can reschedule.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check the node status and pod rescheduling after performing the steps.*"
+421,504,Infrastructure,2,auto_resolved,"Based on past resolved tickets for this exact issue, the recommended resolution is to increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion earlier. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+424,3341,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-QUEUE-06, cap its cgroup CPU quota, and scale the service horizontally to shed load.
+
+*Note: The retrieved examples closely match the new ticket and provide a direct resolution.*"
+426,755,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-APP-03 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved examples closely match this new ticket and directly apply to the issue.*"
+428,958,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on PRD-WEB-01 is likely timing out under load. Resolve this by raising the probe timeout and interval on the load balancer, which will keep PRD-WEB-01 reliably in rotation.
+
+*Note:* The retrieved examples match this new ticket exactly; however, a human agent should double-check that adjusting the probe timeout resolves the specific load conditions on PRD-WEB-01."
+432,2941,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to server PRD-APP-04 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry so the host can boot cleanly.
+
+*Note: The retrieved examples closely match this ticket.*"
+435,951,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process on server PRD-APP-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. 
+
+*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the server state and scaling actions before applying."
+439,2568,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on PRD-WEB-01 to confirm if it is hitting a full `/tmp` directory. Clean out the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the server state.*"
+441,1848,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node PRD-QUEUE-06 and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the pending pods are successfully rescheduled.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check to confirm the node rejoins the cluster correctly.*"
+452,2623,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-QUEUE-06 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, after which the host should boot cleanly.
+
+*Note: The retrieved examples closely match this ticket.*"
+454,3087,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on VM-BATCH-10 to verbose debug logging writing synchronously, then disable debug logging and move the logs to a dedicated volume.
+
+*Note: The retrieved examples closely match the new ticket.*"
+462,1941,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to PRD-APP-04 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, after which the host should boot cleanly.
+
+*Note:* The retrieved examples closely match the new ticket and confirm this resolution."
+463,200,Infrastructure,7,auto_resolved,"**Suggested Resolution:**
+Trace the I/O saturation on VM-BATCH-09 to verbose debug logging writing synchronously, disable the debug logging, and move the logs to a dedicated volume.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration changes before applying them.*"
+467,2055,Infrastructure,3,auto_resolved,"**Suggested Resolution:**
+Restart the kubelet on node PRD-APP-03 and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the pending pods are successfully rescheduled.
+
+*Note: The retrieved examples closely match this new ticket.*"
+484,2859,Infrastructure,1,auto_resolved,"**Suggested Resolution:**
+Gain console access to K8S-NODE-15 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.
+
+*Note: The retrieved examples closely match the new ticket.*"
+486,3,Infrastructure,0,auto_resolved,"**Suggested Resolution:**
+Identify the runaway process causing the high CPU usage on server PRD-APP-04, cap its cgroup CPU quota, and scale the service horizontally to shed load. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+493,1972,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on PRD-CACHE-03 to see if it is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples closely match the new ticket.*"
+495,3052,Infrastructure,6,auto_resolved,"**Suggested Resolution:**
+The health-check endpoint on PRD-CACHE-02 is likely timing out under load. Raise the probe timeout and interval on the load balancer to keep PRD-CACHE-02 reliably in rotation.
+
+*Note: The retrieved examples closely match the new ticket.*"
+496,199,Infrastructure,4,auto_resolved,"**Suggested Resolution:**
+Reconfigure chrony on PRD-APP-04 to use the internal NTP pool and force an immediate sync to correct the clock drift. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+500,2075,Infrastructure,5,auto_resolved,"**Suggested Resolution:**
+Check the cron job on `PRD-WEB-01`, as it is likely hitting a full `/tmp` directory. Clean out the `/tmp` directory and move the job's scratch space to a larger volume.
+
+*Note: The retrieved examples closely match the new ticket and provide a direct, proven fix.*"
+4,3154,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Ticketing System to prevent full table scans, and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples closely match this ticket, but a human agent should double-check the database changes before applying them in production.*"
+8,560,Application,1,auto_resolved,"**Suggested Resolution:**
+Check the database behind the Analytics Dashboard for missing indexes causing full table scans. Add the missing database index and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should double-check the implementation.*"
+12,2709,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Field Service App session cookie domain settings, which were misconfigured after a deploy, and clear the CDN cache to restore normal login functionality.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check the implementation.*"
+28,1281,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, deploy a hotfix, and add input validation along with a regression test.
+
+*Note: The retrieved examples closely match this ticket.*"
+34,357,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors in the Inventory Manager application to an unhandled null in the request handler. Deploy a hotfix along with input validation and a corresponding regression test.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the deployment.*"
+39,2804,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the CRM cache by addressing the issue where the cache was not being invalidated on write. Update the cache-busting key and reduce the TTL to ensure users see current data.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+44,3971,Application,1,auto_resolved,"**Suggested Resolution:**
+The root cause is a missing database index behind the Billing Portal, which has been causing full table scans. To resolve this, add the missing database index and enable query caching to restore fast page loads.
+
+*Note:* The retrieved examples closely match this ticket, but a human agent should double-check the implementation steps."
+52,1249,Application,1,auto_resolved,"**Suggested Resolution:**
+Investigate the database backend for the Payroll application to check for full table scans caused by missing indexes. Add the missing database index and enable query caching to restore normal page load speeds.
+
+*Note: The retrieved examples closely match the new ticket.*"
+53,3701,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Vendor Portal search index, as it has likely drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the indexing logs to confirm successful completion.*"
+55,1662,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the Payroll cache, as it is not being invalidated on write. Update the cache-busting key and reduce the TTL to ensure users see current data.
+
+*Note: The retrieved examples closely match this ticket.*"
+57,2852,Application,8,auto_resolved,"**Suggested Resolution:**
+The unexpected errors are likely caused by a missed database migration accompanying the HR Self-Service deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples closely match the new ticket.*"
+59,144,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Billing Portal HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes added input validation and a regression test.
+
+*Note: The retrieved examples closely match the new ticket.*"
+81,3754,Application,1,auto_resolved,"**Suggested Resolution:**
+Investigate the database behind the Vendor Portal to check for full table scans caused by a missing index. Add the missing database index and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the implementation steps during application maintenance.*"
+84,3453,Application,8,auto_resolved,"**Suggested Resolution:**
+Run the pending database migration that was missed during the recent Field Service App deploy, then redeploy the application to clear the post-release errors. 
+
+*Note: The retrieved examples closely match this ticket.*"
+87,3392,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Payroll HTTP 500 errors to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. 
+
+*Note: The retrieved examples closely match this ticket.*"
+110,2307,Application,8,auto_resolved,"**Suggested Resolution:**
+Run the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment logs and migration status.*"
+111,86,Application,5,auto_resolved,"**Suggested Resolution:**
+The Okta API credentials used by the Billing Portal have likely expired causing the authentication failures. Rotate the token, store the new token in the secrets manager, and re-enable the sync job. 
+
+*Note: The retrieved examples closely match this ticket, but a human agent should double-check to ensure the sync job successfully completes after rotating the credentials.*"
+119,3259,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Procurement Portal reverse proxy and worker config, then verify that large file uploads complete successfully without returning a 502 error.
+
+*Note:* The retrieved examples closely match the new ticket."
+122,10,Application,5,auto_resolved,"**Suggested Resolution:**
+The Cloudflare API credentials used by the Analytics Dashboard have likely expired. Rotate the Cloudflare API token, store the new token in the secrets manager, and re-enable the sync job. 
+
+*Note: The retrieved examples closely match this ticket.*"
+124,3246,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for a missed database migration accompanying the recent CRM deploy. Run the pending migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+128,3964,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Procurement Portal reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved examples closely match this ticket.*"
+129,1524,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Procurement Portal search index, as it has likely drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check that the reindexing completes successfully and restores expected search functionality.*"
+135,3502,Application,1,auto_resolved,"**Suggested Resolution:**
+Investigate the database backend for the Inventory Manager application to check for full table scans caused by a missing database index. Add the missing index and enable query caching to restore fast page loads.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the database environment before applying changes.*"
+137,888,Application,1,auto_resolved,"**Suggested Resolution:**
+To resolve the slow load times in the Inventory Manager application caused by full table scans, add the missing database index behind the application and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the implementation steps.*"
+142,1427,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Field Service App session cookie domain settings, which were misconfigured after a deploy, and clear the CDN cache to resolve the login loop issue.
+
+*Note: The retrieved examples closely match the new ticket, but a human agent should still double-check the configuration changes before applying them.*"
+152,1896,Application,5,auto_resolved,"**Suggested Resolution:**
+The Salesforce API credentials used by the Procurement Portal have expired. Rotate the token, store the new token securely in the secrets manager, and then re-enable the sync job. 
+
+*Note: The retrieved examples closely match this ticket (exact duplicate found).*"
+172,439,Application,4,auto_resolved,"**Suggested Resolution:**
+The Procurement Portal cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+174,2519,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Expense Tracker application to resolve the full table scans, and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples closely match the new ticket.*"
+176,1058,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for any missed database migrations from the latest Payroll release. Run the pending migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the migration status and redeployment.*"
+178,328,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the cache-busting key and reduce the TTL for the Procurement Portal, as the application cache is currently not being invalidated on write.
+
+*Note: The retrieved examples closely match the new ticket.*"
+179,2579,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Expense Tracker application to prevent full table scans, and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should verify the database changes before implementation.*"
+182,651,Application,5,auto_resolved,"**Suggested Resolution:**
+The Salesforce API credentials used by the Procurement Portal have expired. Rotate the token, store the new token in the secrets manager, and re-enabled the sync job.
+
+*Note: The retrieved examples closely match this ticket (exact duplicate descriptions), so standard credential rotation steps apply directly.*"
+186,1047,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the cache-busting key to ensure the Vendor Portal cache is properly invalidated on write, and reduce the Time To Live (TTL) so users are served current data.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should verify the fix in the environment.*"
+189,411,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Procurement Portal reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the configuration changes before applying them.*"
+190,3365,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Billing Portal 500 errors to an unhandled null in the request handler, then deploy a hotfix and add input validation along with a regression test.
+
+*Note: The retrieved past tickets closely match this issue and outline the exact steps taken to resolve it.*"
+197,3479,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the CRM reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+199,2165,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Billing Portal HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. 
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the deployment.*"
+204,1016,Application,6,auto_resolved,"**Suggested Resolution:**
+Based on past tickets for this exact issue, the outbound mail worker for Payroll has likely developed a stuck queue following an SMTP change. To resolve this, update the mailer settings, drain the queue, and verify that the scheduled report emails have resumed.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the mailer configuration and confirm report delivery.*"
+205,1573,Application,5,auto_resolved,"**Suggested Resolution:**
+The Salesforce API credentials used by Expense Tracker have expired. Rotate the token, store the new token in the secrets manager, and re-enabled the sync job.
+
+*Note: The retrieved examples closely match the new ticket.*"
+206,2544,Application,8,auto_resolved,"**Suggested Resolution:**
+Based on past ticket resolutions, the post-release errors are caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending database migration and redeploy the application to clear the errors.
+
+*Note: The retrieved past tickets match the new ticket's symptoms and title exactly; however, a human agent should still verify the deployment logs to confirm the missing migration.*"
+212,3572,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the HR Self-Service cache, as it is not being invalidated on write. Update the cache-busting key and reduce the TTL to ensure users see current data.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the fix in the environment.*"
+224,3585,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Procurement Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.
+
+*Note: The retrieved examples closely match this ticket.*"
+225,1008,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for a missed database migration from the recent Procurement Portal deploy. Run the pending migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+238,1358,Application,6,auto_resolved,"**Suggested Resolution:**
+Update the mailer settings for the Field Service App (following a recent SMTP change), drain the stuck outbound mail queue, and verify that the scheduled report emails and daily summaries have resumed sending. 
+
+*Note: The retrieved examples closely match this ticket, so these steps are fully supported by past resolutions.*"
+239,1550,Application,8,auto_resolved,"**Suggested Resolution:**
+Run the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples closely match the new ticket.*"
+240,1326,Application,5,auto_resolved,"**Suggested Resolution:**
+The Azure API credentials used by the Vendor Portal have expired. Rotate the token, store the new token in the secrets manager, and re-enabled the sync job to resolve the authentication failures.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check that the sync job successfully resumes after updating the credentials.*"
+242,3137,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. 
+
+*Note: The retrieved past tickets closely match this issue and recommend the exact resolution steps above.*"
+250,1791,Application,5,auto_resolved,"**Suggested Resolution:**
+The Workday API credentials used by Inventory Manager have likely expired. Rotate the authentication token, store the new token securely in the secrets manager, and re-enable the sync job. 
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the steps.*"
+254,3610,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for a missed database migration accompanying the recent Ticketing System deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved past tickets closely match this new ticket, but a human agent should double-check to confirm that a pending migration is indeed the root cause for this specific deployment.*"
+257,3569,Application,8,auto_resolved,"**Suggested Resolution:**
+Investigate the recent Expense Tracker deployment for a missed database migration. Run the pending migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples closely match the new ticket; a human agent should verify the migration status.*"
+259,2607,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the Payroll cache, as it is not being invalidated on write. Update the cache-busting key and reduce the Time To Live (TTL) so that users can view current data.
+
+*Note:* The retrieved examples are an exact match for this issue; however, a human agent should still verify the environment after applying the fix."
+262,1313,Application,4,auto_resolved,"**Suggested Resolution:**
+Fix the cache-busting key and reduce the Time To Live (TTL) for the Expense Tracker, as the cache is currently not being invalidated on write. 
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should double-check the deployment.*"
+265,1779,Application,5,auto_resolved,"**Suggested Resolution:**
+The Workday API credentials used by the Learning Management System have expired. Rotate the authentication token, store the new token in the secrets manager, and re-enable the sync job.
+
+*Note: The retrieved past ticket matches this issue exactly; however, a human agent should double-check the configuration after completion.*"
+270,1178,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Payroll search index, as it has drifted out of sync with the database, and schedule incremental reindexing to maintain accurate search results.
+
+*Note: The retrieved examples closely match this new ticket.*"
+271,2401,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for a missed database migration from the recent Payroll deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still verify the migration status in the deployment logs.*"
+272,1203,Application,7,auto_resolved,"**Suggested Resolution:**
+The search feature is returning zero results because the Ticketing System search index has drifted out of sync with the database. To resolve this, trigger a full reindex of the system and schedule incremental reindexing to maintain search accuracy.
+
+*Note: The retrieved examples closely match the new ticket; no human verification of alternative solutions is required.*"
+280,2759,Application,6,auto_resolved,"**Suggested Resolution:**
+Update the mailer settings for Inventory Manager to resolve the stuck outbound mail queue caused by the SMTP change. Drain the queue and confirm that the scheduled report emails have resumed sending to users.
+
+*Note: The retrieved past tickets closely match this new ticket, but a human agent should still double-check the configuration steps during execution.*"
+285,1588,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Billing Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results.
+
+*Note: The retrieved examples are an exact match for this ticket.*"
+296,68,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors in the Learning Management System to an unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test.
+
+*Note: The retrieved examples closely match the new ticket.*"
+304,839,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Billing Portal to resolve full table scans, and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples closely match this ticket and its historical fixes.*"
+305,230,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Vendor Portal reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved examples closely match this ticket.*"
+306,2219,Application,5,auto_resolved,"**Suggested Resolution:**
+The Workday API credentials used by the Field Service App have likely expired. Rotate the authentication token, store the new token in the secrets manager, and re-enabled the sync job.
+
+*Note: The retrieved past ticket is an exact match for this issue; however, a human agent should still double-check the steps during execution.*"
+309,3592,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Expense Tracker session cookie domain configuration that was misconfigured after the recent deployment, and then clear the CDN cache to restore normal login functionality.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check that the cookie settings and CDN cache are properly cleared.*"
+310,920,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Inventory Manager session cookie domain settings that were misconfigured after the recent deploy, then clear the CDN cache to restore normal login functionality. 
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should double-check the deployment settings and CDN cache clearance.*"
+315,2944,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation along with a regression test.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment.*"
+321,3194,Application,4,auto_resolved,"**Suggested Resolution:**
+The HR Self-Service cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.
+
+*Note: The retrieved examples closely match this ticket.*"
+329,3270,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Payroll reverse proxy and worker config, then verify that large file uploads complete successfully without returning a 502 error.
+
+*Note: The retrieved examples closely match this ticket, but a human agent should still double-check the configuration changes before applying them.*"
+331,3996,Application,6,auto_resolved,"**Suggested Resolution:**
+The outbound mail worker for the Ticketing System has a stuck queue following an SMTP change. Update the mailer settings, drain the queue, and verify that the scheduled report emails resume sending to users.
+
+*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration changes during execution."
+335,3452,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Learning Management System search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.
+
+*Note: The retrieved examples closely match this ticket, so these steps can be applied directly.*"
+336,3466,Application,1,auto_resolved,"**Suggested Resolution:**
+Investigate the CRM database for missing indexes causing full table scans. Add the missing database index and enable query caching to restore fast page loads. 
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should still double-check the database environment before applying changes.*"
+345,2144,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Expense Tracker application to prevent full table scans, and enable query caching to restore fast page loads.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the database changes before applying them.*"
+349,2857,Application,8,auto_resolved,"**Suggested Resolution:**
+Run the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment logs to confirm.*"
+359,3321,Application,6,auto_resolved,"**Suggested Resolution:**
+Update the mailer settings for the Billing Portal outbound mail worker (which has a stuck queue following an SMTP change), drain the queue, and verify that the scheduled report emails have successfully resumed.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the current SMTP configuration before making updates.*"
+360,3419,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Field Service App session cookie domain settings, which were misconfigured after a deploy, and clear the CDN cache to restore login functionality.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment settings and CDN cache.*"
+369,928,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add input validation, and include a regression test.
+
+*Note: The retrieved examples closely match this ticket, so the same resolution steps apply.*"
+376,523,Application,8,auto_resolved,"**Suggested Resolution:**
+The errors are likely caused by a missed database migration accompanying the recent CRM deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+378,3588,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Analytics Dashboard reverse proxy and worker config, then verify that large file uploads complete successfully without causing a 502 crash.
+
+*Note: The retrieved past examples are an exact match for this issue.*"
+380,1825,Application,6,auto_resolved,"**Suggested Resolution:**
+Update the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.
+
+*Note: The retrieved past tickets are an exact match for this issue.*"
+381,1517,Application,2,auto_resolved,"**Suggested Resolution:**
+Correct the Billing Portal session cookie domain settings (which were misconfigured after a deploy) and clear the CDN cache to restore proper login functionality.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the configuration changes before applying them in production.*"
+389,1095,Application,8,auto_resolved,"**Suggested Resolution:**
+Based on past tickets for this exact issue, the error is likely caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the deployment logs to confirm.*"
+400,2933,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Payroll reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved examples closely match the new ticket.*"
+401,1162,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add proper input validation, and include a regression test to prevent future occurrences.
+
+*Note: The retrieved past tickets match the new ticket precisely; however, a human agent should still verify the hotfix deployment.*"
+410,1140,Application,5,auto_resolved,"**Suggested Resolution:**
+Rotate the expired AWS API credentials used by HR Self-Service, store the new token in the secrets manager, and re-enable the sync job. 
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+411,2664,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the Learning Management System HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. 
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+415,1497,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Vendor Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to ensure search results remain accurate going forward.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the reindexing process completes successfully.*"
+427,2236,Application,4,auto_resolved,"**Suggested Resolution:**
+The HR Self-Service cache was not being invalidated on write; fix the cache-busting key and reduce the TTL so users see current data.
+
+*Note: The retrieved examples closely match the new ticket.*"
+444,377,Application,5,auto_resolved,"**Suggested Resolution:**
+Rotate the expired GCP API credentials used by the CRM, store the new token in the secrets manager, and re-enable the sync job.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the configuration.*"
+447,3537,Application,8,auto_resolved,"**Suggested Resolution:**
+Run the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples closely match this new ticket.*"
+456,1629,Application,1,auto_resolved,"**Suggested Resolution:**
+Add the missing database index behind the Vendor Portal to prevent full table scans, and enable query caching to restore fast page load times.
+
+*Note: The retrieved examples are an exact/close match to this ticket, but a human agent should still double-check the implementation.*"
+458,931,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Learning Management System reverse proxy and worker config, then verify that large file uploads complete successfully.
+
+*Note: The retrieved past tickets closely match this issue.*"
+460,3954,Application,3,auto_resolved,"**Suggested Resolution:**
+Raise the upload body-size limit in the Ticketing System reverse proxy and worker config, then verify that large file uploads complete successfully without causing a 502 crash.
+
+*Note: The retrieved examples closely match this new ticket.*"
+461,792,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors in the Field Service App to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. 
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+470,1637,Application,4,auto_resolved,"**Suggested Resolution:**
+The HR Self-Service cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.
+
+*Note: The retrieved examples closely match the new ticket.*"
+473,604,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Billing Portal search index, as it has likely drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.
+
+*Note: The retrieved examples closely match this ticket and its historical resolution.*"
+480,1038,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors in the Field Service App to an unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. 
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the deployment.*"
+481,2606,Application,0,auto_resolved,"**Suggested Resolution:**
+Trace the HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. 
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the deployment process.*"
+482,1115,Application,8,auto_resolved,"**Suggested Resolution:**
+Check for a missed database migration from the recent Payroll deploy. Run the pending database migration and redeploy the application to clear the post-release errors.
+
+*Note: The retrieved examples closely match the new ticket issue and resolution.*"
+489,343,Application,4,auto_resolved,"**Suggested Resolution:**
+The Payroll cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL to ensure users see current data.
+
+*Note: The retrieved examples closely match the new ticket.*"
+491,1579,Application,5,auto_resolved,"**Suggested Resolution:**
+Rotate the expired GCP API credentials used by the CRM, store the new token in the secrets manager, and re-enable the sync job.
+
+*Note: The retrieved examples closely match this ticket.*"
+494,2330,Application,7,auto_resolved,"**Suggested Resolution:**
+Trigger a full reindex of the Procurement Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results.
+
+*Note: The retrieved examples closely match this ticket.*"
+62,3583,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-CACHE-03 during an emergency change window, and then rescan the system to confirm that the CVE has been successfully remediated.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the execution.*"
+69,694,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for any affected users who may have clicked the credential-harvesting link.
+
+*Note: The retrieved examples closely match the new ticket, but a human agent should still double-check the list of affected users and verify mail-flow rule execution.*"
+77,182,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account a.kulkarni, force a credential reset and MFA re-enrolment, and confirm from session logs whether any data exfiltration occurred during the session.
+
+*Note: The retrieved past tickets match the new ticket perfectly; however, a human agent should double-check the session logs to ensure no unauthorized data access occurred.*"
+101,1437,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account a.kulkarni, force a credential reset and MFA re-enrolment, and confirm from the session logs that no data exfiltration occurred.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the steps upon completion.*"
+108,3172,Security,6,auto_resolved,"**Suggested Resolution:**
+Enable rate limiting and account lockout on the Analytics Dashboard login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.
+
+*Note: The retrieved examples closely match the new ticket.*"
+117,3475,Security,6,auto_resolved,"**Suggested Resolution:**
+Enable rate limiting and account lockout on the Analytics Dashboard login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific IP ranges applied to the block list.*"
+118,2850,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for affected users.
+
+*Note: The retrieved examples closely match the new ticket and confirm this standard resolution.*"
+121,444,Security,8,auto_resolved,"**Suggested Resolution:**
+Restrict port 6379 on PRD-WEB-01 to the internal management network using firewall and security-group rules, then verify that the port is no longer reachable from the public internet.
+
+*Note: The retrieved examples closely match the new ticket.*"
+125,3099,Security,6,auto_resolved,"**Suggested Resolution:**
+Enable rate limiting and account lockout on the HR Self-Service login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific IP ranges and configurations before applying.*"
+126,2092,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for affected users.
+
+*Note: The retrieved past tickets closely match the new ticket, providing a direct resolution.*"
+134,2584,Security,7,auto_resolved,"**Suggested Resolution:**
+Revoke the unauthorized administrator rights from a.kulkarni, trace the origin of the change to identify and fix the misconfigured group policy, and tighten the privileged-access approval controls to prevent recurrence.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+140,130,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to VM-BATCH-10 during an emergency change window, then rescan the virtual machine to confirm that the CVE has been successfully remediated.
+
+*Note:* The retrieved examples closely match this ticket; however, a human agent should still double-check the specific CVE details and change window procedures before proceeding."
+145,3675,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Vendor Portal, then configure auto-renewal via ACME to prevent future recurrence.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the installation and verification.*"
+146,3863,Security,8,auto_resolved,"**Suggested Resolution:**
+Restrict port 443 on VM-BATCH-10 to the internal management network using firewall and security-group rules, then verify that the port is no longer reachable from the public internet.
+
+*Note: The retrieved past tickets closely match this issue and provide an exact resolution.*"
+148,3026,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for affected users.
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check to ensure all affected users and mailboxes have been accounted for.*"
+149,2326,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for the affected users.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check that all affected users have been identified and that their passwords have been successfully reset.*"
+158,1401,Security,8,auto_resolved,"**Suggested Resolution:**
+Restrict port 6379 on VM-BATCH-09 to the internal management network using firewall and security-group rules, then verify that the port is no longer reachable from the public internet.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+184,123,Security,5,auto_resolved,"**Suggested Resolution:**
+Revoke the leaked cloud access key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check to ensure all affected repositories and credentials are fully addressed.*"
+194,32,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for HR Self-Service, then configure auto-renewal via ACME to prevent recurrence.
+
+*Note: The retrieved examples closely match this ticket.*"
+196,967,Security,7,auto_resolved,"**Suggested Resolution:**
+Revoke the unauthorized administrator rights from account `m.iyer`, trace the change to the misconfigured group policy, and tighten the privileged-access approval controls.
+
+*Note: The retrieved past tickets are an exact/close match for this issue.*"
+203,2539,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Field Service App, then configure auto-renewal via ACME to prevent future recurrence. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment.*"
+207,428,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account r.desai, force a credential reset and MFA re-enrolment, and confirm no data exfiltration occurred in the session logs.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the session logs and account status to ensure proper remediation.*"
+211,2762,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account t.rao, force a credential reset and MFA re-enrolment, and review the session logs to confirm that no data exfiltration occurred during the session.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the session logs and actions taken.*"
+215,505,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Learning Management System, and configure auto-renewal via ACME to prevent recurrence.
+
+*Note: The retrieved examples closely match this ticket, but a human agent should still double-check the deployment.*"
+218,1877,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-WEB-01 during an emergency change window, and then rescan the server to confirm that the critical CVE has been successfully remediated.
+
+*Note:* The retrieved examples closely match the new ticket and directly apply to PRD-WEB-01."
+220,1254,Security,5,auto_resolved,"**Suggested Resolution:**
+Revoke the leaked cloud key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+222,3287,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Procurement Portal, and then configure auto-renewal via ACME to prevent future occurrences.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment to ensure the certificate is active and properly trusted.*"
+227,2528,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for Expense Tracker, then configure auto-renewal via ACME to prevent recurrence.
+
+*Note: The retrieved past examples closely match this ticket.*"
+266,1931,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-AUTH-05 during an emergency change window, then rescan the system to confirm that the critical CVE has been successfully remediated.
+
+*Note: The retrieved past tickets closely match this issue and share the exact same asset and problem description.*"
+273,240,Security,5,auto_resolved,"**Suggested Resolution:**
+Revoke the leaked cloud key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved examples closely match this ticket and directly support the resolution steps.*"
+282,2699,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Analytics Dashboard, then configure auto-renewal via ACME to prevent recurrence.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the deployment.*"
+284,2209,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-DB-11 during an emergency change window, and then rescan the system to confirm that the CVE has been successfully remediated.
+
+*Note:* The retrieved examples closely match the new ticket; no additional human verification is strictly necessary, though standard change management protocols should be followed."
+302,908,Security,5,auto_resolved,"**Suggested Resolution:**
+1. Revoke the leaked cloud key immediately.
+2. Rotate all affected credentials.
+3. Enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+307,3123,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account s.khan, force a credential reset and MFA re-enrolment, and confirm from the session logs that no data exfiltration occurred.
+
+*Note: The retrieved past tickets closely match this issue and support these exact steps.*"
+308,1067,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account r.desai, force a credential reset and MFA re-enrolment, and confirm from session logs whether any data exfiltration occurred. 
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+312,2890,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account p.menon, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the steps before closing the ticket.*"
+328,1134,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account p.menon, force a credential reset and MFA re-enrolment, and confirm from the session logs that no data exfiltration occurred during the session.
+
+*Note: The retrieved examples closely match the new ticket issue.*"
+339,342,Security,1,auto_resolved,"**Suggested Resolution:**
+Remove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for the affected users.
+
+*Note: The retrieved examples closely match the new ticket; no additional verification is necessary.*"
+342,367,Security,6,auto_resolved,"**Suggested Resolution:**
+Enable rate limiting and account lockout on the Vendor Portal login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.
+
+*Note: The retrieved past tickets are an exact match for this issue, but a human agent should double-check the configuration changes before applying them.*"
+351,171,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of r.desai from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still verify the steps upon completion.*"
+354,503,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account r.desai, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the session logs to ensure complete security.*"
+357,1722,Security,5,auto_resolved,"**Suggested Resolution:**
+Revoke the leaked cloud key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check to ensure all affected credentials specific to this repository have been fully rotated.*"
+363,1002,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for Expense Tracker, then configure auto-renewal via ACME to prevent recurrence.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment.*"
+367,3644,Security,7,auto_resolved,"**Suggested Resolution:**
+Revoke the unauthorized administrator rights from the account `v.nair`, trace the change to identify the misconfigured group policy, and tighten the privileged-access approval controls.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the execution.*"
+373,2125,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-CACHE-02 during an emergency change window, then rescan the system to confirm that the CVE has been successfully remediated.
+
+*Note: The retrieved examples closely match this ticket.*"
+374,3623,Security,3,auto_resolved,"**Suggested Resolution:**
+Reissue and install a valid TLS certificate for the Vendor Portal, and configure auto-renewal via ACME to prevent future recurrence.
+
+*Note: The retrieved examples are an exact match to the new ticket issue.*"
+394,1689,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to PRD-CACHE-03 during an emergency change window, then rescan the server to confirm that the CVE has been successfully remediated.
+
+*Note: The retrieved examples closely match this ticket (exact match for PRD-CACHE-03 in Past Ticket #1), so a human agent can safely proceed with these steps.*"
+399,1493,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of a.patel from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.
+
+*Note:* The retrieved examples closely match the new ticket."
+404,1761,Security,7,auto_resolved,"**Suggested Resolution:**
+Revoke the unauthorized administrator rights from account `s.khan`, trace the change to identify and fix the misconfigured group policy, and tighten the privileged-access approval controls.
+
+*Note: The retrieved past tickets closely match this issue (exact match for the user and ticket details).*"
+409,1130,Security,5,auto_resolved,"**Suggested Resolution:**
+Revoke the leaked cloud key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.
+
+*Note: The retrieved past tickets closely match this new ticket, so no additional verification is strictly required.*"
+413,2201,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of n.gupta from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.
+
+*Note: The retrieved examples closely match the new ticket.*"
+417,1153,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account r.sharma, force a credential reset and MFA re-enrolment, and confirm in the session logs that no data exfiltration occurred.
+
+*Note: The retrieved examples closely match this new ticket.*"
+429,2655,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of k.verma from the network, run a full offline scan to remove the trojan, and re-imaged the machine as a precaution.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the steps before applying them.*"
+437,1847,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account p.menon, force a credential reset and MFA re-enrolment, and confirm from the session logs that no data exfiltration occurred during the session.
+
+*Note: The retrieved examples closely match the new ticket.*"
+438,1878,Security,6,auto_resolved,"**Suggested Resolution:**
+Enable rate limiting and account lockout on the Analytics Dashboard login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the specific block list ranges and settings applied.*"
+443,287,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account p.reddy, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred.
+
+*Note: The retrieved past tickets are an exact/close match for this issue; however, a human agent should double-check the session logs and actions taken.*"
+451,3224,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of j.singh from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.
+
+*Note: The retrieved examples closely match the new ticket.*"
+465,251,Security,4,auto_resolved,"**Suggested Resolution:**
+Apply the vendor security patch to STG-APP-07 during an emergency change window, and then rescan the system to confirm that the CVE has been successfully remediated.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+466,2748,Security,0,auto_resolved,"**Suggested Resolution:**
+Lock account r.desai, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred.
+
+*Note: The retrieved past tickets are an exact match for this issue, but a human agent should double-check to ensure all steps are applied correctly.*"
+478,3062,Security,8,auto_resolved,"**Suggested Resolution:**
+Restrict port 22 on STG-APP-07 to the internal management network using firewall and security-group rules, then verify that the port is no longer reachable from the public internet.
+
+*Note: The retrieved examples closely match this ticket.*"
+497,3507,Security,2,auto_resolved,"**Suggested Resolution:**
+Isolate the endpoint of m.chatterjee from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.
+
+*Note: The retrieved past tickets closely match this issue and recommend the exact steps above.*"
+19,2532,Database,8,auto_resolved,"**Suggested Resolution:**
+Investigate the report queries timing out against the underlying data source due to a missing index, and add the required index to allow reports to generate successfully. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+23,279,Database,7,auto_resolved,"**Suggested Resolution:**
+Diagnose the dropped connection between the Billing Portal and the database (such as `billing_mysql`) caused by a recent credentials rotation. Update the stored connection string and confirm that the Billing Portal can successfully load data again.
+
+*Note: The retrieved past examples closely match the new ticket, but a human agent should still verify the specific database instance name before applying the fix.*"
+63,2260,Database,7,auto_resolved,"**Suggested Resolution:**
+Diagnose the dropped connection between the CRM and the database caused by a credentials rotation, update the stored connection string, and confirm that the CRM can load data again.
+
+*Note: The retrieved examples closely match the new ticket (including an exact duplicate), so no additional human verification is strictly necessary beyond following the standard procedure.*"
+73,2814,Database,5,auto_resolved,"**Suggested Resolution:**
+Archive the old WAL/transaction logs and expand the inventory_pg data volume. Afterward, bring the database back into read-write mode.
+
+*Note: The retrieved examples closely match this ticket.*"
+74,2533,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the catalog_pg slow-query log, add two missing indexes, and rewrite any correlated subqueries to improve execution times.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the specific query plans before applying changes.*"
+75,168,Database,5,auto_resolved,"**Suggested Resolution:**
+Archive the old WAL/transaction logs and expand the `sessions_redis` data volume. Once completed, bring the database back into read-write mode.
+
+*Note: The retrieved examples closely match this new ticket.*"
+76,3223,Database,3,auto_resolved,"**Suggested Resolution:**
+Reorder the conflicting write operations to acquire locks in a consistent order on `customers_pg` and shorten the transaction scope to eliminate the deadlocks.
+
+*Note: The retrieved examples closely match the new ticket.*"
+85,1643,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the `catalog_pg` slow-query log, add the two missing indexes, and rewrite the correlated subquery to reduce execution times.
+
+*Note: The retrieved past tickets match this issue exactly; however, a human agent should double-check the specific queries and index definitions before applying them.*"
+89,1276,Database,0,auto_resolved,"**Suggested Resolution:**
+Check for any long-running analytics queries blocking replication on `sessions_redis`. Kill the blocking query, then tune the replica I/O to reduce replication lag back to under a second.
+
+*Note: The retrieved past tickets are an exact match for this issue, so standard resolution steps apply.*"
+90,3676,Database,5,auto_resolved,"**Suggested Resolution:**
+Archive old WAL/transaction logs and expand the audit_mysql data volume, then bring the database back into read-write mode.
+
+*Note: The retrieved examples closely match the new ticket and provide a direct resolution.*"
+94,1964,Database,5,auto_resolved,"**Suggested Resolution:**
+Archive the old WAL/transaction logs, expand the orders_pg data volume, and then bring the database back into read-write mode.
+
+*Note: The retrieved past tickets are an exact match for this issue.*"
+104,3613,Database,7,auto_resolved,"**Suggested Resolution:**
+
+1. Diagnose whether the dropped connection between the Learning Management System and the database (`warehouse_pg`) was caused by a credentials rotation.
+2. Update the stored connection string accordingly.
+3. Confirm that the Learning Management System is able to successfully load data and records again.
+
+*Note: The retrieved past ticket is an exact match for this issue; however, a human agent should double-check that the credentials and database name (`warehouse_pg`) align with the current environment.*"
+107,2861,Database,1,auto_resolved,"**Suggested Resolution:**
+Introduce a connection pooler in front of `analytics_mongo` and lower the per-service pool sizes to prevent connection exhaustion during peak traffic.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+116,1623,Database,3,auto_resolved,"**Suggested Resolution:**
+Reorder the conflicting write operations to acquire locks in a consistent order on `warehouse_pg` and shorten the transaction scope to eliminate the deadlocks.
+
+*Note: The retrieved past tickets closely match this issue and recommend the exact same resolution steps.*"
+123,69,Database,0,auto_resolved,"**Suggested Resolution:**
+Investigate `warehouse_pg` for any long-running analytics queries blocking replication, and terminate them. Afterward, tune the replica I/O to bring the replication lag back down to under a second.
+
+*Note: The retrieved past examples closely match the new ticket; however, a human agent should double-check the steps during execution.*"
+162,2653,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the `warehouse_pg` slow-query log, add the two missing indexes, and rewrite the correlated subquery to restore query performance. 
+
+*Note: The retrieved past tickets match the new ticket's issue exactly, but a human agent should still double-check the specific indexes and subquery being modified.*"
+213,2132,Database,11,auto_resolved,"**Suggested Resolution:**
+Tune the autovacuum thresholds and cost limits on `catalog_pg`, and run a manual vacuum on the worst tables to recover query performance and disk usage.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific values used for the tuning adjustments.*"
+214,3215,Database,0,auto_resolved,"**Suggested Resolution:**
+Investigate `audit_mysql` for any long-running analytics queries blocking replication, kill the offending query, and tune the replica I/O to bring the replication lag back down to under a second.
+
+*Note: The retrieved past tickets match the new ticket's issue exactly, but a human agent should still verify the specific query and replica settings before applying the fix.*"
+229,1057,Database,3,auto_resolved,"**Suggested Resolution:**
+Reorder the conflicting write operations to acquire locks in a consistent order on `analytics_mongo` and shorten the transaction scope to eliminate deadlocks.
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the implementation.*"
+249,1515,Database,4,auto_resolved,"**Suggested Resolution:**
+The backup job for `orders_pg` is failing due to insufficient target disk space. To resolve this, expand the backup volume, rerun the backup job, and then verify a successful test restore. 
+
+*Note: The retrieved examples closely match this ticket.*"
+252,225,Database,0,auto_resolved,"**Suggested Resolution:**
+Investigate `reporting_mongo` to identify any long-running analytics queries blocking replication, terminate the blocking query, and tune the replica I/O to reduce the lag. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify system status after applying the steps.*"
+255,1760,Database,5,auto_resolved,"**Suggested Resolution:**
+Archive the old WAL/transaction logs and expand the `sessions_redis` data volume. Once the disk space is freed and expanded, bring the database back into read-write mode.
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the steps during execution.*"
+261,2972,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the `catalog_pg` slow-query log, add the two missing indexes, and rewrite the correlated subquery to restore optimal query performance.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the implementation steps.*"
+274,2603,Database,6,auto_resolved,"**Suggested Resolution:**
+Check for an exhausted connection pool on the application server (such as `orders_pg`, `sessions_redis`, `billing_mysql`, or `analytics_mongo`), restart the pooler, and verify that the Vendor Portal can successfully reach the records system again to restore record lookups.
+
+*Note: The retrieved examples closely match the symptoms and past resolutions of this ticket.*"
+275,1108,Database,4,auto_resolved,"**Suggested Resolution:**
+Expand the backup volume to resolve the insufficient target disk space, reran the backup job for `billing_mysql`, and verify a test restore.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the current disk capacity and verify the test restore.*"
+279,2798,Database,11,auto_resolved,"**Suggested Resolution:**
+Tune the autovacuum thresholds and cost limits on `billing_mysql`, then run a manual vacuum on the worst tables to recover query performance and disk usage.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific table bloat metrics before executing.*"
+281,516,Database,6,auto_resolved,"**Suggested Resolution:**
+
+The application server's connection pool to the database (such as `billing_mysql`) has likely exhausted. Restart the connection pooler and verify that Payroll can reach the database again to restore record lookups.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the specific database connection pool involved.*"
+287,2194,Database,9,auto_resolved,"**Suggested Resolution:**
+Run consistency checks on `billing_mysql` to identify any corrupted indexes caused by an unclean shutdown. Rebuild the affected indexes, and validate their integrity against the last good backup.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still double-check the database status during execution.*"
+290,3291,Database,4,auto_resolved,"**Suggested Resolution:**
+Expand the backup volume to resolve the insufficient target disk space causing the failure. Then, rerun the backup job and verify a successful test restore. 
+
+*Note: The retrieved past examples are an exact match for this ticket.*"
+292,2516,Database,9,auto_resolved,"**Suggested Resolution:**
+Run consistency checks on `audit_mysql` to identify any corrupted indexes resulting from an unclean shutdown. Rebuild the affected indexes, and then validate data integrity against the last good backup.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the steps during execution.*"
+297,2208,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the `customers_pg` slow-query log, add the two missing indexes, and rewrite the correlated subquery to improve execution times.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the specific indexes and subqueries involved.*"
+303,1277,Database,7,auto_resolved,"**Suggested Resolution:**
+Diagnose the dropped connection between the Procurement Portal and the database (such as `catalog_pg` or `analytics_mongo`) caused by a credentials rotation, update the stored connection string, and confirm that the Procurement Portal successfully loads data again.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check which specific database (`catalog_pg` vs. `analytics_mongo`) is currently affected.*"
+316,1970,Database,1,auto_resolved,"**Suggested Resolution:**
+Introduce a connection pooler in front of `warehouse_pg` and lower the per-service pool sizes to prevent connection exhaustion during peak traffic.
+
+*Note:* The retrieved examples closely match the new ticket."
+326,432,Database,6,auto_resolved,"**Suggested Resolution:**
+Check the application server's connection pool to the database (such as `billing_mysql`), as the pool has likely exhausted. Restart the connection pooler and verify that HR Self-Service can successfully reach the database again to restore record lookups.
+
+*Note: The retrieved past ticket is an exact historical match for this issue; however, a human agent should still double-check the specific database connection pool involved.*"
+350,3747,Database,2,auto_resolved,"**Suggested Resolution:**
+Analyze the `audit_mysql` slow-query log, add the two missing indexes, and rewrite the correlated subquery to restore optimal execution times.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check the specific indexes and subquery being modified before applying changes in production.*"
+362,2963,Database,6,auto_resolved,"Based on the retrieved past tickets, the issue is caused by an exhausted application server connection pool to the records database/backend. 
+
+**Suggested Resolution:**
+1. Check the application server's connection pool status to identify which database or backend pool has exhausted (e.g., audit_mysql, billing_mysql, reporting_mongo, or warehouse_pg).
+2. Restart the connection pooler.
+3. Verify that the Analytics Dashboard can successfully reach the records system again and that record lookups are restored.
+
+*Note: The retrieved examples closely match the symptoms and issue described in the new ticket.*"
+375,3853,Database,3,auto_resolved,"**Suggested Resolution:**
+Reorder the conflicting write operations to acquire locks in a consistent order on `inventory_pg` and shorten the transaction scope to eliminate the deadlocks.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the implementation in the codebase.*"
+387,1730,Database,11,auto_resolved,"**Suggested Resolution:**
+Tune the autovacuum thresholds and cost limits on `billing_mysql`, then run a manual vacuum on the worst tables to recover query performance and disk usage.
+
+*Note: The retrieved examples closely match this new ticket.*"
+395,1256,Database,4,auto_resolved,"**Suggested Resolution:**
+The `analytics_mongo` backup is likely failing due to insufficient target disk space. To resolve this, expand the backup volume, rerun the backup job, and verify a test restore.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the current disk metrics before applying the fix.*"
+402,1273,Database,10,auto_resolved,"**Suggested Resolution:**
+Manually promote the audit_mysql replica to primary, repoint the application connection string, and fix the failover automation that has a stale health-check. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration and automation scripts during execution.*"
+407,1147,Database,1,auto_resolved,"**Suggested Resolution:**
+To resolve the connection exhaustion on `audit_mysql` during peak traffic, introduce a connection pooler in front of `audit_mysql` and lower the per-service pool sizes to prevent new connection rejections.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the configuration changes.*"
+416,667,Database,6,auto_resolved,"**Suggested Resolution:**
+The application server's connection pool to the database (such as `customers_pg`) has likely exhausted. Restart the pooler and verify that Payroll can successfully reach the database again to restore record lookups.
+
+*Note: The retrieved examples closely match the new ticket.*"
+440,2174,Database,11,auto_resolved,"**Suggested Resolution:**
+Tune the autovacuum thresholds and cost limits on `catalog_pg`, and run a manual vacuum on the worst tables to recover query performance and disk usage.
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should still double-check the execution.*"
+448,864,Database,9,auto_resolved,"**Suggested Resolution:**
+Run consistency checks on `orders_pg`, identify any corrupted indexes resulting from an unclean shutdown, rebuild the affected indexes, and validate their integrity against the last good backup.
+
+*Note: The retrieved examples closely match this ticket.*"
+450,2827,Database,9,auto_resolved,"**Suggested Resolution:**
+Run consistency checks on `reporting_mongo` to identify any corrupted indexes resulting from an unclean shutdown. Rebuild the affected indexes, and validate data integrity against the last good backup.
+
+*Note: The retrieved past tickets closely match this issue and provide a direct resolution for these exact symptoms.*"
+468,2398,Database,8,auto_resolved,"**Suggested Resolution:**
+Investigate the underlying data source for the Billing Portal report queries (such as `audit_mysql`, `catalog_pg`, `analytics_mongo`, or `inventory_pg`), as the queries are likely timing out due to a missing index. Add the missing index to the database to allow reports to generate successfully within seconds.
+
+*Note: The retrieved examples closely match the new ticket's symptoms and historical resolution steps.*"
+471,3008,Database,10,auto_resolved,"**Suggested Resolution:**
+Manually promote the customers_pg replica to primary, repoint the application connection string, and fix the failover automation that had a stale health-check.
+
+*Note:* The retrieved examples closely match the new ticket; however, a human agent should double-check the steps during execution."
+475,1181,Database,6,auto_resolved,"**Suggested Resolution:**
+The application server's connection pool to the database (such as `billing_mysql`) has likely exhausted. Restart the pooler, then verify that the CRM can successfully reach the database again to restore record lookups.
+
+*Note:* The retrieved examples closely match this ticket, but a human agent should double-check the specific database connection associated with this instance."
+479,2909,Database,11,auto_resolved,"**Suggested Resolution:**
+Tune the autovacuum thresholds and cost limits on `warehouse_pg`, and then run a manual vacuum on the worst tables to recover query performance and disk usage.
+
+*Note: The retrieved examples closely match this ticket, so the same resolution steps apply directly.*"
+1,3314,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review the current storage usage for the Kolkata Branch, archive stale data to cold storage, and raise their storage quota following manager approval.
+
+*Note: The retrieved examples closely match this ticket, so a human agent can safely proceed with these steps.*"
+3,1137,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review usage for the Kolkata Branch, archive stale data to cold storage, and raise their quota after obtaining manager approval.
+
+*Note: The retrieved past tickets closely match this new ticket, but a human agent should still verify manager approval before raising the quota.*"
+7,3974,Storage,0,auto_resolved,"**Suggested Resolution:**
+Restart the share service backing `\\nas05\engineering`, verify permissions, and remap the share for affected users.
+
+*Note: The retrieved examples are an exact match for this ticket.*"
+15,2050,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by `\\fs02\marketing`. Resolve this by pushing the correct client configuration via policy, which will allow the share to map successfully.
+
+*Note: The retrieved past tickets closely match this issue; a human agent should verify that the policy applies correctly to the new machines.*"
+24,2518,Storage,2,auto_resolved,"**Suggested Resolution:**
+Check the storage array behind `\\fs01\operations` for a failing disk causing rebuild-related slowness. Replace the failing disk to restore normal read and write performance.
+
+*Note:* The retrieved examples match the new ticket's issue exactly."
+30,2842,Storage,6,auto_resolved,"**Suggested Resolution:**
+Correct the inherited NTFS permissions on `\\nas03\media` for the relevant Kolkata Branch group and re-propagated the ACLs so that users can open files without receiving 'access denied' errors.
+
+*Note:* The retrieved examples closely match the new ticket."
+32,3347,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review the current storage usage for the Hyderabad Office, archive stale data to cold storage, and raise their storage quota after obtaining manager approval. 
+
+*Note: The retrieved examples closely match the new ticket.*"
+36,3651,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by `\\fs04\legal`. Push the correct client configuration via policy to allow the share to map successfully.
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the configuration policy deployment.*"
+71,2470,Storage,7,auto_resolved,"**Suggested Resolution:**
+Replace the failed drive in the PRD-WEB-03 storage array, allow the array to rebuild, and confirm that full redundancy has been restored with no data loss.
+
+*Note:* The retrieved examples closely match this ticket."
+72,2238,Storage,2,auto_resolved,"**Suggested Resolution:**
+Check the disk array behind `\\nas05\engineering` for a failing disk causing rebuild-related slowness, and replace the failing disk to restore normal performance.
+
+*Note: The retrieved examples closely match this ticket.*"
+93,3358,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by `\\fs01\hr`. To resolve this, push the correct client configuration via policy to the affected machines so the share can map successfully.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment.*"
+96,1936,Storage,0,auto_resolved,"**Suggested Resolution:**
+Restart the share service backing `\\fs01\hr`, verify the permissions, and remap the share for the affected users.
+
+*Note: The retrieved past examples are an exact match for this ticket; however, a human agent should still double-check the results.*"
+105,1364,Storage,2,auto_resolved,"**Suggested Resolution:**
+Check the disk array behind `\\fs01\hr` for a failing disk causing rebuild-related slowness. Replace the failing disk to restore normal read and write performance.
+
+*Note: The retrieved examples closely match the new ticket.*"
+109,3241,Storage,2,auto_resolved,"**Suggested Resolution:**
+Check the disk array behind `\\fs01\operations` for any failing drives causing rebuild-related slowness, and replace the failing disk to restore normal performance.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check hardware diagnostics to confirm.*"
+113,1136,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are missing the updated SMB protocol setting required by `\\fs01\hr`. To resolve this, push the correct client configuration via policy to the affected machines so the share can map successfully.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check to confirm the policy applies correctly.*"
+130,2308,Storage,6,auto_resolved,"**Suggested Resolution:**
+Correct the inherited NTFS permissions on `\\fs02\marketing` for the relevant Ahmedabad Office group and re-propagated ACLs so the files open as expected.
+
+*Note: The retrieved past tickets closely match this issue; no additional verification is necessary.*"
+156,3375,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review the usage for the Remote/WFH team, archive stale data to cold storage, and raise their storage quota following manager approval.
+
+*Note: The retrieved past tickets closely match this new request.*"
+177,2159,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\fs02\shared from the previous night's snapshot, and then confirm file integrity with the requesting user (p.menon).
+
+*Note: The retrieved examples closely match the new ticket.*"
+180,3763,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on STG-APP-08 to use hard mounts with proper timeouts and pin the client to a stable server address.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the configuration after applying the fix.*"
+187,3894,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review usage for the Chennai Support share, archive stale data to cold storage, and raise their storage quota after obtaining manager approval.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should verify that manager approval has been secured before applying the quota increase.*"
+192,2955,Storage,7,auto_resolved,"**Suggested Resolution:**
+Replace the failed drive in the VM-BATCH-10 array, allow the array to rebuild, and confirm that full redundancy is restored with no data loss. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the hardware status before proceeding.*"
+200,122,Storage,7,auto_resolved,"**Suggested Resolution:**
+Replace the failed drive in the PRD-QUEUE-06 array, allow the array to rebuild, and confirm that full redundancy is restored with no data loss.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the hardware status before proceeding.*"
+210,655,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review the current storage usage for the Kolkata Branch, archive stale data to cold storage, and raise their quota after receiving manager approval.
+
+*Note: The retrieved examples closely match this ticket, but a human agent should still verify the details.*"
+216,1023,Storage,7,auto_resolved,"**Suggested Resolution:**
+Replace the failed drive in the PRD-APP-04 array, allow the array to rebuild, and confirm that full redundancy is restored with no data loss.
+
+*Note: The retrieved examples closely match this ticket (exact same server and issue).*"
+219,3501,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\nas03\media from the previous night's snapshot, then confirm file integrity with the requesting user.
+
+*Note: The retrieved examples are an exact match for this ticket.*"
+226,2192,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\nas03\media from the previous night's snapshot, and then confirm file integrity with the requesting user.
+
+*Note: The retrieved past tickets closely match this new ticket.*"
+235,3699,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by \\nas05\engineering. Push the correct client configuration via policy to allow the share to map successfully. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify that the policy successfully applies to the affected machines.*"
+236,2672,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\nas03\projects using the previous night's snapshot, and then confirm file integrity with the requesting user.
+
+*Note: The retrieved examples closely match this new ticket.*"
+237,459,Storage,6,auto_resolved,"**Suggested Resolution:**
+Correct the inherited NTFS permissions on `\\nas03\projects` for the relevant Remote/WFH group and re-propagated ACLs so the files open as expected.
+
+*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check the specific group membership before applying ACL re-propagation.*"
+263,3678,Storage,0,auto_resolved,"**Suggested Resolution:**
+Restart the share service backing `\\fs02\marketing` (as it has crashed), verify the permissions, and remap the share for the affected users.
+
+*Note: The retrieved examples closely match the new ticket.*"
+276,837,Storage,2,auto_resolved,"**Suggested Resolution:**
+Check the array behind `\\nas05\engineering` for a failing disk causing rebuild-related slowness, and replace the failing disk to restore normal performance.
+
+*Note: The retrieved examples closely match this new ticket.*"
+289,2180,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\fs04\legal from the previous night's snapshot and confirm file integrity with the requesting user (t.rao).
+
+*Note: The retrieved examples closely match this ticket, but a human agent should double-check the restoration.*"
+291,3602,Storage,0,auto_resolved,"**Suggested Resolution:**
+Restart the share service backing `\\nas05\engineering`, verify the permissions, and remap the share for the affected users.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the steps during execution.*"
+294,2368,Storage,1,auto_resolved,"**Suggested Resolution:**
+Reclaim space on the primary storage volume by purging expired snapshots and old logs, and then extend the volume to restore normal service writes. 
+
+*Note: The retrieved examples closely match this ticket.*"
+311,3885,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on PRD-QUEUE-06 to use hard mounts with proper timeouts, and pin the client to a stable server address.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration changes after applying them.*"
+319,767,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by `\\fs01\operations`. Push the correct client configuration via policy to the affected machines, after which the share should map successfully.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check that the policy applies correctly to the newly provisioned machines.*"
+320,2421,Storage,7,auto_resolved,"**Suggested Resolution:**
+Replace the failed drive in the PRD-WEB-03 array, allow the array to rebuild, and confirm that full redundancy is restored with no data loss.
+
+*Note: The retrieved examples closely match this ticket and its specific host (PRD-WEB-03).*"
+338,1584,Storage,0,auto_resolved,"**Suggested Resolution:**
+Restart the share service backing `\\nas05\engineering`, verify permissions, and remap the share for the affected users.
+
+*Note:* The retrieved examples closely match the new ticket issue."
+368,1050,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on PRD-CACHE-03 to use hard mounts with proper timeouts and pin the client to a stable server address.
+
+*Note: The retrieved examples are an exact match for this ticket, so the resolution is directly grounded in historical fixes.*"
+384,954,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review the current storage usage for the Mumbai HQ team, archive stale data to cold storage, and raise their storage quota following manager approval. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify manager approval before raising the quota.*"
+398,1555,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are missing the updated SMB protocol setting required by `\\nas05\engineering`. Push the correct client configuration via policy to allow the share to map successfully.
+
+*Note: The retrieved examples closely match this ticket.*"
+408,750,Storage,6,auto_resolved,"**Suggested Resolution:**
+Correct the inherited NTFS permissions on `\\nas05\engineering` for the relevant Bangalore DC group and re-propagated the ACLs so that the files open as expected. 
+
+*Note: The retrieved past tickets closely match the new ticket.*"
+431,1987,Storage,8,auto_resolved,"**Suggested Resolution:**
+The newly provisioned machines are likely missing the updated SMB protocol setting required to map `\\nas03\projects`. Push the correct client configuration via policy to the affected machines so the share can map successfully.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the policy applies correctly.*"
+433,2017,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on PRD-APP-04 to use hard mounts with proper timeouts, and pin the client to a stable server address.
+
+*Note:* The retrieved examples closely match the new ticket."
+436,1890,Storage,5,auto_resolved,"**Suggested Resolution:**
+Review usage for Noida Tech Park, archive stale data to cold storage, and raise their quota after obtaining manager approval.
+
+*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check manager approval before raising the quota.*"
+445,745,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested folder on \\fs01\hr from the previous night's snapshot and confirm file integrity with the requesting user.
+
+*Note: The retrieved examples closely match the new ticket.*"
+453,1694,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on PRD-APP-03 to use hard mounts with proper timeouts, and pin the client to a stable server address.
+
+*Note:* The retrieved examples closely match this ticket."
+464,2044,Storage,6,auto_resolved,"**Suggested Resolution:**
+Correct the inherited NTFS permissions on \\nas03\media for the relevant Remote/WFH group and re-propagated the ACLs so that users can open the files as expected.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the group membership and permissions.*"
+477,2172,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by \\fs02\marketing. Push the correct client configuration via policy to allow the share to map successfully.
+
+*Note: The retrieved examples closely match this ticket.*"
+483,249,Storage,8,auto_resolved,"**Suggested Resolution:**
+The new machines are likely missing the updated SMB protocol setting required by `\\nas05\engineering`. To resolve this, push the correct client configuration via policy to the affected machines so the share can map successfully.
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the deployment.*"
+485,2339,Storage,2,auto_resolved,"Based on the retrieved past tickets, check the storage array behind `\\fs01\operations` for a failing disk causing rebuild-related slowness. Replace the failing disk to restore normal read and write performance.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the storage array status.*"
+488,3553,Storage,3,auto_resolved,"**Suggested Resolution:**
+Restore the requested deleted folder on \\fs04\legal using the previous night's snapshot, then confirm file integrity and accessibility with the requesting user from the Pune Branch team.
+
+*Note: The retrieved past tickets closely match this request; however, a human agent should double-check the exact folder path and user confirmation.*"
+498,1952,Storage,4,auto_resolved,"**Suggested Resolution:**
+Tune the NFS mount options on K8S-NODE-15 to use hard mounts with proper timeouts, and pin the client to a stable server address.
+
+*Note: The retrieved examples closely match the new ticket.*"
+6,2012,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at the Pune Branch to check if it is flapping due to a hardware failure. Replace the faulty switch and reconfigure link redundancy to prevent single-point network drops.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify hardware availability before proceeding with the replacement.*"
+10,3284,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to PRD-AUTH-05, reroute traffic over a secondary path, and open a capacity request.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the execution.*"
+13,2628,Network,8,auto_resolved,"**Suggested Resolution:**
+Check for a routing change that may have removed the path from the Ahmedabad Office to the service subnet on port 6379, and restore the missing route. Additionally, verify if an explicit firewall allow rule for port 6379 is needed if the path is clear. Once addressed, confirm connectivity from the Ahmedabad Office.
+
+*Note: The retrieved past tickets provide a direct match for this exact issue and resolution.*"
+16,2904,Network,7,auto_resolved,"**Suggested Resolution:**
+Expand the DHCP scope range for Chennai Support and shorten the lease time to resolve the exhausted available leases, allowing new devices to successfully receive IP addresses again.
+
+*Note: The retrieved examples closely match the issue described in this new ticket.*"
+20,1894,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for Payroll on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the resolution steps have successfully restored connectivity.*"
+33,3244,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at Chennai Support for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should verify the hardware status before proceeding with replacement.*"
+37,3315,Network,8,auto_resolved,"**Suggested Resolution:**
+Restore the missing route from Pune Branch to the service subnet on port 3306, as a routing change had removed the path. Once applied, confirm that connectivity from Pune Branch to the service is working.
+
+*Note: The retrieved examples closely match this ticket.*"
+41,1416,Network,1,auto_resolved,"**Suggested Resolution:**
+Enlarge the IP pool on the VPN concentrator serving the Ahmedabad Office and clear any stale sessions to restore VPN access.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the configuration changes before applying them.*"
+49,3559,Network,8,auto_resolved,"**Suggested Resolution:**
+A routing change has likely removed the path from the Ahmedabad Office to the service subnet on port 9092. Restore the missing route in the network configuration and confirm connectivity from the Ahmedabad Office.
+
+*Note: The retrieved examples closely match this ticket.*"
+54,3233,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for the Ticketing System on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still verify the resolution steps.*"
+67,2616,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to determine if it is stemming from a faulty circuit segment on the Ahmedabad Office link, and have the carrier replace the segment until packet loss drops back to zero.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify that the circuit segment replacement resolves the issue.*"
+70,3570,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to a faulty circuit segment on the Mumbai HQ link, and have the carrier replace the segment so that packet loss drops back to zero.
+
+*Note: The retrieved examples closely match the new ticket.*"
+88,2911,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to a faulty circuit segment on the Ahmedabad Office link, and have the carrier replace the segment to drop packet loss back to zero.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the carrier status.*"
+91,59,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at the Ahmedabad Office for configuration loss following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the steps during execution.*"
+95,85,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for CRM on the authoritative server and flush the resolver caches to restore hostname resolution.
+
+*Note: The retrieved examples closely match the new ticket.*"
+99,1994,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for the Field Service App on the authoritative server, and then flush the resolver caches to restore hostname resolution. 
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check to ensure the DNS configurations are applied correctly.*"
+102,1815,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for Inventory Manager on the authoritative server, and then flush the resolver caches to restore hostname resolution. 
+
+*Note: The retrieved examples closely match this ticket.*"
+112,1252,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to PRD-WEB-02. Reroute the traffic over a secondary path and open a capacity request.
+
+*Note: The retrieved examples are an exact match for this ticket, so the standard resolution steps apply directly.*"
+127,1265,Network,5,auto_resolved,"**Suggested Resolution:**
+Investigate the wireless controller at the Hyderabad Office, as it likely lost its configuration following a power event. Restore the configuration on the controller to bring the access points back online.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the controller status and configuration integrity.*"
+150,2959,Network,8,auto_resolved,"**Suggested Resolution:**
+Investigate whether a recent routing change has removed the path from Pune Branch to the service subnet on port 8080. If so, restore the missing route and confirm connectivity from the Pune Branch.
+
+*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the routing configuration and verify connectivity.*"
+159,1561,Network,1,auto_resolved,"**Suggested Resolution:**
+Enlarge the IP pool on the VPN concentrator serving the Pune Branch and clear any stale sessions to restore VPN access.
+
+*Note: The retrieved examples closely match this ticket.*"
+163,3612,Network,4,auto_resolved,"**Suggested Resolution:**
+Add an explicit firewall allow rule for port 6379 scoped to the required source ranges, and then verify that the service becomes reachable.
+
+*Note: The retrieved examples closely match the issue described in the new ticket.*"
+165,902,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to determine if it stems from a faulty circuit segment on the Bangalore DC link. Coordinate with the carrier to have the faulty segment replaced so that the packet loss drops back to zero.
+
+*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check to confirm the carrier replacement resolves the issue.*"
+181,3841,Network,1,auto_resolved,"**Suggested Resolution:**
+The root cause is that the VPN concentrator serving Noida Tech Park has exhausted its IP pool, resulting in negotiation timeouts. To resolve this, enlarge the VPN IP pool and clear any stale sessions to restore remote access for users.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that enlarging the pool and clearing sessions fully resolves the current instance.*"
+183,76,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for Expense Tracker on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the changes after implementation.*"
+193,890,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to STG-APP-08, reroute the traffic over a secondary path, and open a capacity request.
+
+*Note: The retrieved examples closely match the new ticket.*"
+217,3332,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for the Ticketing System on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved examples closely match the new ticket.*"
+221,672,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Bangalore DC, as it likely lost its configuration following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the controller status to confirm.*"
+228,1177,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at Remote/WFH for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the hardware status.*"
+233,3211,Network,5,auto_resolved,"**Suggested Resolution:**
+Investigate the wireless controller at the Pune Branch, as it likely lost its configuration following a power event. Restore the wireless controller configuration to bring the access points back online.
+
+*Note: The retrieved past tickets closely match this issue and successfully resolved it using this exact step.*"
+241,2530,Network,8,auto_resolved,"**Suggested Resolution:**
+A routing change has removed the path from Hyderabad Office to the service subnet on port 27017. Restore the missing route and confirm connectivity from Hyderabad Office.
+
+*Note:* The retrieved past tickets closely match the new ticket issue."
+243,3790,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Remote/WFH, as it may have lost its configuration following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples closely match this ticket.*"
+245,3769,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to PRD-AUTH-05, reroute traffic over a secondary path, and open a capacity request.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check to ensure network conditions remain consistent with past occurrences.*"
+256,987,Network,5,auto_resolved,"**Suggested Resolution:**
+Check if the wireless controller at Noida Tech Park lost its configuration following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the steps.*"
+258,510,Network,7,auto_resolved,"**Suggested Resolution:**
+Expand the DHCP scope range for Delhi Sales and shorten the lease time, as the scope has likely exhausted its available leases preventing devices from obtaining IP addresses. 
+
+*Note: The retrieved past tickets closely match this issue and confirm this resolution.*"
+260,583,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at the Kolkata Branch to see if it lost its configuration due to a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the configuration restoration steps.*"
+267,3191,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Remote/WFH for config loss resulting from a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved past tickets closely match this issue and recommend the same resolution.*"
+269,2090,Network,8,auto_resolved,"**Suggested Resolution:**
+Investigate for a routing change that may have removed the path from Mumbai HQ to the service subnet on port 9092. Restore the missing route and confirm connectivity from Mumbai HQ.
+
+*Note: The retrieved examples closely match this ticket.*"
+277,2534,Network,8,auto_resolved,"**Suggested Resolution:**
+A routing change has likely removed the path from Delhi Sales to the service subnet on port 3306. Restore the missing route to the service subnet and confirm connectivity from Delhi Sales.
+
+*Note: The retrieved examples closely match the new ticket.*"
+278,559,Network,1,auto_resolved,"**Suggested Resolution:**
+Enlarge the IP pool on the VPN concentrator serving Mumbai HQ and clear any stale sessions to restore VPN access.
+
+*Note: The retrieved examples closely match the new ticket.*"
+283,682,Network,4,auto_resolved,"**Suggested Resolution:**
+Add an explicit firewall allow rule for port 3306 scoped to the required source ranges, then verify that the service becomes reachable.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific source ranges required.*"
+286,2175,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at the Hyderabad Office for flapping. Replace the faulty switch and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved past tickets match the new ticket's issue exactly.*"
+288,3460,Network,8,auto_resolved,"**Suggested Resolution:**
+Investigate whether a recent routing change has removed the path from Pune Branch to the service subnet on port 3306. Restore any missing route and confirm successful connectivity from Pune Branch.
+
+*Note: The retrieved examples closely match this ticket (exact title/description match), so no additional human verification is strictly necessary beyond following the documented steps.*"
+293,1505,Network,4,auto_resolved,"**Suggested Resolution:**
+Add an explicit firewall allow rule for port 9092 scoped to the required source ranges, and then verify that the service becomes reachable.
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the specific source ranges required for this environment.*"
+298,2337,Network,5,auto_resolved,"Based on past resolutions for this issue, check the wireless controller at Remote/WFH, as it likely lost its configuration following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still verify the controller status.*"
+301,3566,Network,1,auto_resolved,"**Suggested Resolution:**
+Enlarge the IP pool on the VPN concentrator serving Mumbai HQ and clear any stale sessions to resolve the negotiation timeouts and restore VPN access. 
+
+*Note: The retrieved past tickets match the new ticket exactly; however, a human agent should still verify the concentrator status after applying the fix.*"
+313,1804,Network,8,auto_resolved,"**Suggested Resolution:**
+Check for a recent routing change that may have removed the path from the Pune Branch to the service subnet on port 8080. Restore the missing route, and then confirm that connectivity from the Pune Branch to the service has been successfully re-established.
+
+*Note: The retrieved past tickets closely match this issue and outline the exact resolution steps taken previously.*"
+314,3668,Network,0,auto_resolved,"**Suggested Resolution:**
+Based on past tickets for this exact issue, the intermittent network drops are caused by a flapping uplink switch at the Ahmedabad Office. To resolve this, replace the faulty switch and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the hardware status before replacement.*"
+317,3337,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify if there is a saturated link on the path to PRD-CACHE-03. Reroute traffic over a secondary path and open a capacity request.
+
+*Note: The retrieved examples closely match the new ticket.*"
+330,2559,Network,1,auto_resolved,"**Suggested Resolution:**
+The root cause is that the VPN concentrator serving the Kolkata Branch has exhausted its IP pool. To resolve this issue, enlarge the VPN IP pool and clear stale sessions to restore VPN access for the users.
+
+*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the IP pool expansion and session clearance complete successfully.*"
+337,2131,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at Mumbai HQ for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point network drops.
+
+*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the switch diagnostics before proceeding with hardware replacement.*"
+344,1315,Network,1,auto_resolved,"**Suggested Resolution:**
+The VPN concentrator serving Remote/WFH has likely exhausted its IP pool, causing the timeout during negotiation. To resolve this, enlarge the VPN IP pool and clear any stale sessions to restore VPN access.
+
+*Note: The retrieved examples closely match this new ticket and confirm the root cause and fix.*"
+348,1295,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Mumbai HQ, as it likely lost its configuration following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should still verify the controller status and configuration integrity.*"
+352,3097,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved examples closely match the new ticket.*"
+355,2491,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to K8S-NODE-15. Reroute traffic over a secondary path and open a capacity request.
+
+*Note: The retrieved past tickets closely match the new ticket, but a human agent should still double-check the execution.*"
+358,3264,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to a faulty circuit segment on the Remote/WFH link, and coordinate with the carrier to replace the segment so that packet loss drops back to zero.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the carrier's progress during the replacement.*"
+370,3092,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Chennai Support for configuration loss following a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the controller status.*"
+372,3043,Network,6,auto_resolved,"**Suggested Resolution:**
+Isolate the packet loss to a faulty circuit segment on the Mumbai HQ link, then have the carrier replace the segment so packet loss drops back to zero.
+
+*Note: The retrieved past tickets closely match this issue and confirm the exact resolution steps.*"
+377,3979,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify if there is a saturated link on the path to PRD-DB-12. Once confirmed, reroute the traffic over a secondary path and open a capacity request.
+
+*Note:* The retrieved examples closely match the new ticket."
+391,3619,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the hardware status before proceeding.*"
+393,2777,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify a saturated link on the path to K8S-NODE-14. Reroute traffic over a secondary path and open a capacity request.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the execution and results.*"
+396,833,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for CRM on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved examples closely match the new ticket.*"
+397,155,Network,8,auto_resolved,"**Suggested Resolution:**
+Check for a routing change that may have removed the path from Mumbai HQ to the service subnet on port 22. Restore the missing route and confirm connectivity from Mumbai HQ.
+
+*Note: The retrieved past tickets include an exact match for this issue, so the resolution is directly supported by historical data.*"
+414,454,Network,4,auto_resolved,"**Suggested Resolution:**
+Add an explicit firewall allow rule for port 8443 scoped to the required source ranges, and then verify that the service becomes reachable.
+
+*Note: The retrieved examples closely match the new ticket.*"
+420,2560,Network,1,auto_resolved,"**Suggested Resolution:**
+Based on past tickets with the exact same issue, the VPN concentrator serving the Hyderabad Office has likely exhausted its IP pool. To resolve this, enlarge the VPN IP pool and clear any stale sessions to restore VPN access. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the concentrator status.*"
+422,3944,Network,4,auto_resolved,"**Suggested Resolution:**
+Add an explicit firewall allow rule for port 443 scoped to the required source ranges, then verify that the service becomes reachable.
+
+*Note: The retrieved examples closely match this ticket.*"
+425,3510,Network,3,auto_resolved,"**Suggested Resolution:**
+Correct the stale DNS record for Analytics Dashboard on the authoritative server and flush the resolver caches to restore resolution.
+
+*Note: The retrieved past tickets closely match this new ticket and provide the exact required resolution.*"
+430,1840,Network,8,auto_resolved,"**Suggested Resolution:**
+Investigate whether a recent routing change has removed the path from Kolkata Branch to the service subnet on port 443. Restore the missing route and confirm that connectivity from the Kolkata Branch to the internal service is successfully re-established.
+
+*Note: The retrieved past tickets include an exact match for this issue (TCK-49220), so the resolution is directly applicable.*"
+442,2242,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to PRD-WEB-01, reroute traffic over a secondary path, and open a capacity request.
+
+*Note: The retrieved examples closely match this new ticket.*"
+457,2666,Network,2,auto_resolved,"**Suggested Resolution:**
+Trace the latency to identify the saturated link on the path to PRD-DB-12. Reroute traffic over a secondary path and open a capacity request to resolve the issue.
+
+*Note: The retrieved past tickets closely match this issue and provide an exact historical fix.*"
+472,769,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Chennai Support for configuration loss resulting from a power event. Restore the configuration to bring the access points back online.
+
+*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the controller status.*"
+474,1582,Network,0,auto_resolved,"**Suggested Resolution:**
+Inspect the uplink switch at the Bangalore DC for flapping, as this is likely causing the intermittent network drops. Replace the faulty switch and reconfigure link redundancy to prevent single-point drops.
+
+*Note: The retrieved examples are an exact match for this issue; however, a human agent should still verify hardware status and post-replacement stability.*"
+476,2284,Network,5,auto_resolved,"**Suggested Resolution:**
+Check the wireless controller at Remote/WFH for configuration loss resulting from a power event, and restore the configuration to bring the access points back online.
+
+*Note:* The retrieved examples closely match the new ticket issue."
+499,1282,Network,1,auto_resolved,"**Suggested Resolution:**
+Based on past tickets for this exact issue, the VPN concentrator serving the Pune Branch has likely exhausted its IP pool. To resolve the timeout during negotiation, enlarge the IP pool on the VPN concentrator and clear stale sessions to restore VPN access.
+
+*Note: The retrieved past tickets are an exact match for this issue, but a human agent should still verify that the IP pool expansion resolves the connections successfully.*"
+17,1171,Access Management,8,auto_resolved,"**Suggested Resolution:**
+Verify if user `m.iyer` is missing from the Workday SSO assignment group. If so, add them to the group and confirm that federated login to Workday succeeds.
+
+*Note: The retrieved examples closely match this ticket's exact user and issue, so standard resolution steps apply.*"
+21,3423,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user r.desai, reset their password, and configure the account to require a password change and MFA re-registration upon their next login. 
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the user's identity before proceeding.*"
+22,2082,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user j.singh time-boxed elevated access to Payroll via the privileged-access workflow with an automatic expiry set after 7 days.
+
+*Note: The retrieved examples closely match this ticket, so a human agent can apply this standard resolution directly.*"
+26,2974,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user a.patel, reset their password, and configure the account to require a password change along with MFA re-registration at their next login.
+
+*Note: The retrieved past examples are an exact match for this ticket.*"
+27,2779,Access Management,4,auto_resolved,"**Suggested Resolution:**
+Disable the t.rao account, revoke all group memberships and tokens, and transfer any owned resources to their manager.
+
+*Note: The retrieved examples closely match the new ticket (including an identical past ticket for the same user), so no human double-check is strictly necessary, though standard offboarding verification applies.*"
+31,3737,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user m.chatterjee, reset their corporate account password, and configure the account to require a password change and MFA re-registration upon their next login.
+
+*Note: The retrieved past tickets closely match this new ticket request.*"
+43,3236,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant user v.nair delegate permissions on the Delhi Sales shared mailbox, confirm that the mailbox appears in their email client, and configure the access to expire when the colleague returns.
+
+*Note: The retrieved examples closely match this new ticket and provide a direct resolution.*"
+61,2121,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for r.desai, remove the obsolete CRM permissions from the prior role, and assign the correct role for their new team.
+
+*Note: The retrieved examples closely match the new ticket.*"
+64,3333,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user s.khan, reset their password, and configure the account to require a password change and MFA re-registration at the next login.
+
+*Note:* The retrieved examples are an exact match for this ticket, so the resolution is fully grounded in past actions."
+79,3276,Access Management,0,auto_resolved,"**Suggested Resolution:**
+Provision n.gupta with the standard role granting email, Ticketing System, and Kolkata Branch share access, and confirm successful first login.
+
+*Note: The retrieved examples closely match this ticket (Past Ticket #1 is an exact match for n.gupta's Kolkata Branch request).*"
+80,2423,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user `k.verma`, remove the obsolete Learning Management System permissions from their prior role, and assign the correct role for their new team.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check to confirm the correct role is assigned.*"
+83,3300,Access Management,0,auto_resolved,"**Suggested Resolution:**
+Provision j.singh with the standard role granting email, CRM, and Kolkata Branch share access, and confirm successful first login.
+
+*Note: The retrieved examples closely match the details of this new ticket.*"
+92,1989,Access Management,5,auto_resolved,"**Suggested Resolution:**
+Verify the user n.gupta out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.
+
+*Note: The retrieved examples closely match this ticket, so a human agent can proceed with the standard resolution steps.*"
+115,1974,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user p.menon, remove the obsolete Inventory Manager permissions from their prior role, and assign the correct role for their new team.
+
+*Note: The retrieved past tickets closely match this request, but a human agent should still double-check the final role assignment.*"
+133,1697,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user d.mehta, remove the obsolete Billing Portal permissions from their prior role, and assign the correct role for their new team.
+
+*Note:* The retrieved examples closely match this ticket; however, a human agent should double-check to ensure the correct entitlements and new role are assigned."
+143,2652,Access Management,5,auto_resolved,"**Suggested Resolution:**
+Verify the user (j.singh) out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.
+
+*Note:* The retrieved examples closely match the new ticket."
+155,3549,Access Management,3,auto_resolved,"**Suggested Resolution:**
+Verify manager approval for the request, then add v.nair to the requested Hyderabad Office security group and confirm that the new permissions have taken effect.
+
+*Note: The retrieved past tickets closely match this request, but a human agent should double-check manager approval before applying permissions.*"
+166,3508,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user a.kulkarni, reset their password, and configure the account to require a password change along with MFA re-registration at their next login. 
+
+*Note: The retrieved examples closely match this new ticket.*"
+169,3734,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user d.mehta time-boxed elevated access to CRM via the privileged-access workflow with an automatic expiry after 7 days.
+
+*Note: The retrieved examples closely match this ticket.*"
+173,937,Access Management,5,auto_resolved,"**Suggested Resolution:**
+Verify the user s.khan out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.
+
+*Note: The retrieved examples closely match the new ticket and provide a direct resolution.*"
+185,2351,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user r.desai time-boxed elevated admin access to the Vendor Portal via the privileged-access workflow, configured with an automatic expiry after 7 days.
+
+*Note:* The retrieved examples closely match the new ticket, as Past Ticket #1 is an exact duplicate of this request."
+191,1914,Access Management,8,auto_resolved,"**Suggested Resolution:**
+Verify if user p.menon is missing from the AWS SSO assignment group. If so, add them to the group and confirm that federated login to AWS succeeds.
+
+*Note: The retrieved examples closely match this ticket.*"
+201,1021,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user t.rao, reset their corporate account password, and configure the account to require a password change along with MFA re-registration upon their next login.
+
+*Note: The retrieved past tickets closely match this issue and support the proposed resolution steps.*"
+209,995,Access Management,4,auto_resolved,"**Suggested Resolution:**
+Disable the j.singh account, revoke all group memberships and tokens, and transfer any owned resources to their manager.
+
+*Note: The retrieved examples closely match this new ticket.*"
+251,1951,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user p.menon time-boxed elevated admin access to the Analytics Dashboard via the privileged-access workflow with an automatic expiry set after 7 days.
+
+*Note: The retrieved past tickets closely match this request, so the standard workflow can be applied directly.*"
+253,2711,Access Management,0,auto_resolved,"**Suggested Resolution:**
+Provision n.gupta with the standard role granting email, Vendor Portal, and Pune Branch share access, and confirm successful first login.
+
+*Note: The retrieved examples closely match the details of this new ticket.*"
+299,1620,Access Management,3,auto_resolved,"**Suggested Resolution:**
+Verify manager approval, add user r.sharma to the requested Chennai Support finance security group, and verify that the new permissions took effect. 
+
+*Note: The retrieved examples closely match this ticket.*"
+300,2160,Access Management,0,auto_resolved,"**Suggested Resolution:**
+Provision n.gupta with the standard role granting email, Expense Tracker, and Delhi Sales share access, and confirm successful first login.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the access provisioning upon completion.*"
+322,3956,Access Management,4,auto_resolved,"**Suggested Resolution:**
+Disable the s.khan account, revoke all group memberships and tokens, and transfer owned resources to their manager.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check to ensure all resources are successfully transferred.*"
+324,1805,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant user v.nair delegate permissions on the Delhi Sales shared mailbox, confirm that the mailbox appears in their email client, and set the access to expire when the colleague returns.
+
+*Note: The retrieved examples closely match the new ticket details.*"
+343,1473,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user r.sharma time-boxed elevated access to Payroll via the privileged-access workflow with automatic expiry after 7 days.
+
+*Note: The retrieved examples closely match this ticket (an exact match was found in Past Ticket #1), so a human agent can proceed with confidence.*"
+347,2614,Access Management,4,auto_resolved,"**Suggested Resolution:**
+Disable the s.joshi account, revoke all group memberships and tokens, and transfer any owned resources to their manager. 
+
+*Note: The retrieved examples closely match this ticket and its specific user/requirements.*"
+382,1407,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant user a.kulkarni delegate permissions on the Bangalore DC shared mailbox. Confirm that the mailbox appears in their client, and set the access to expire when the colleague returns.
+
+*Note: The retrieved past tickets closely match this new ticket request.*"
+385,150,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user p.menon, reset their password, and require a password change along with MFA re-registration at their next login.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the user's identity before performing the reset.*"
+392,3663,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant n.gupta delegate permissions on the Ahmedabad Office shared mailbox, confirm that the mailbox appears in their email client, and set the access to expire when the colleague returns.
+
+*Note: The retrieved examples closely match this ticket.*"
+403,256,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user p.reddy, remove the obsolete Vendor Portal permissions from their prior role, and assign the correct role for their new team. 
+
+*Note: The retrieved past tickets closely match the new ticket (including identical user and issue details), but a human agent should double-check to ensure the correct new role is assigned.*"
+405,463,Access Management,5,auto_resolved,"**Suggested Resolution:**
+Verify user s.joshi out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.
+
+*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the identity verification before proceeding.*"
+406,2258,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user r.sharma, remove the obsolete Field Service App permissions from their prior role, and assign the correct role corresponding to their new team.
+
+*Note: The retrieved examples closely match this new ticket.*"
+423,784,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant user p.menon delegate permissions on the Bangalore DC shared mailbox, confirm that the mailbox appears in their email client, and set an expiration date for the access corresponding to the return of their colleague.
+
+*Note: The retrieved past tickets closely match this request, so standard resolution steps apply directly.*"
+434,2413,Access Management,8,auto_resolved,"**Suggested Resolution:**
+Verify if user `n.gupta` is missing from the AWS SSO assignment group. If so, add them to the group and confirm that federated login to AWS succeeds.
+
+*Note: The retrieved examples closely match the new ticket.*"
+446,657,Access Management,6,auto_resolved,"**Suggested Resolution:**
+Grant user d.mehta delegate permissions on the Chennai Support shared mailbox, confirm that the mailbox appears in their email client, and set the access to expire when the colleague returns.
+
+*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the expiration date corresponding to the colleague's return.*"
+449,1410,Access Management,7,auto_resolved,"**Suggested Resolution:**
+Review the entitlements for user a.kulkarni, remove the obsolete Analytics Dashboard permissions from their prior role, and assign the correct role for their new team.
+
+*Note: The retrieved examples closely match this ticket (an exact match was found in Past Ticket #1), so this resolution can be applied directly.*"
+455,204,Access Management,5,auto_resolved,"**Suggested Resolution:**
+Verify user n.gupta out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.
+
+*Note: The retrieved examples closely match the new ticket.*"
+459,2456,Access Management,3,auto_resolved,"**Suggested Resolution:**
+Confirm manager approval, add s.joshi to the Ahmedabad Office finance security group, and verify that the new permissions have taken effect.
+
+*Note:* The retrieved examples closely match this ticket."
+469,3548,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user r.desai time-boxed elevated admin access to the Learning Management System via the privileged-access workflow, configured with an automatic expiry after 7 days.
+
+*Note: The retrieved examples closely match this ticket (exact title and description match in Past Ticket #1), so no additional verification is required.*"
+487,358,Access Management,2,auto_resolved,"**Suggested Resolution:**
+Grant user v.nair time-boxed elevated access to the Billing Portal via the privileged-access workflow with an automatic expiry set after 7 days.
+
+*Note: The retrieved examples closely match the details of this new ticket.*"
+490,40,Access Management,1,auto_resolved,"**Suggested Resolution:**
+Verify the identity of user d.mehta, reset their password, and configure the account to require a password change and MFA re-registration upon their next login.
+
+*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify user identity before performing the reset.*"
+492,2563,Access Management,3,auto_resolved,"**Suggested Resolution:**
+Verify manager approval for user a.patel, then add a.patel to the requested Pune Branch finance security group. Finally, verify that the new permissions have taken effect.
+
+*Note: The retrieved past tickets closely match the new ticket; standard verification by a human agent is recommended.*"

@@ -627,6 +627,13 @@ def generate_tickets() -> pd.DataFrame:
 
             # (2) Pick a single linked scenario tuple.
             title_tpl, symptom_tpl, resolution_tpl = random.choice(scenarios)
+            # Recover WHICH scenario tuple was chosen, as its 0-based index
+            # within SCENARIOS[category]. This does NOT consume any randomness:
+            # random.choice() above already made the draw; we only look up where
+            # the returned tuple sits in the list. (Every tuple within a
+            # category is distinct, so .index() is exact.) scenario_id is only
+            # meaningful paired with `category`.
+            scenario_id = scenarios.index((title_tpl, symptom_tpl, resolution_tpl))
 
             # (3) Format everything from the SAME context so nothing can drift.
             title = title_tpl.format(**context)
@@ -651,13 +658,14 @@ def generate_tickets() -> pd.DataFrame:
                     "category": category,
                     "resolution": resolution,
                     "priority": priority,
+                    "scenario_id": scenario_id,
                 }
             )
             ticket_id += 1
 
     df = pd.DataFrame(
         rows,
-        columns=["id", "title", "description", "category", "resolution", "priority"],
+        columns=["id", "title", "description", "category", "resolution", "priority", "scenario_id"],
     )
     # Shuffle so categories are not stored in contiguous blocks (avoids any
     # ordering artifact leaking into a naive train/test split).

@@ -1,0 +1,17 @@
+[
+  {
+    "text": "Whenever I try to save changes to the main price sheet, the screen freezes up completely and then wipes out everything I just typed. I'm afraid I'm going to lose all today's updates if I keep trying.",
+    "intended_category": "Database",
+    "gemini_guess": "Application"
+  },
+  {
+    "text": "I spent an hour updating all the employee phone numbers in the staff directory, but now whenever I search for anyone, it pulls up the old outdated list from last year. It looks like none of my edits actually stuck anywhere.",
+    "intended_category": "Database",
+    "gemini_guess": "Application"
+  },
+  {
+    "text": "My badge isn't working at the back entrance anymore and security guard said it looks like someone tried to duplicate it or tamper with it, which is freaking me out. Can you guys check my access logs or whatever is going on with my ID card?",
+    "intended_category": "Security",
+    "gemini_guess": "Access Management"
+  }
+]

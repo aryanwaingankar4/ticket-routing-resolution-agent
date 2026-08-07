@@ -8,3 +8,5 @@ data/skewed/synthetic_tickets_am*.csv
 data/skewed/embeddings_am*.npy
 data/batch_intake/incoming_tickets_batch.csv
 data/category_stores/
+data/.expanded_benchmark_checkpoint.json
+data/embedding_comparison/*.npy

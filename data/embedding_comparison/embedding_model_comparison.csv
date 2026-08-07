@@ -1,0 +1,4 @@
+model_name,embedding_dim,in_distribution_accuracy,benchmark_correct_count,benchmark_accuracy_pct,bench46_correct_count,bench46_accuracy_pct
+all-MiniLM-L6-v2,384,1.0,10,71.4,29,63.0
+BAAI/bge-base-en-v1.5,768,1.0,10,71.4,31,67.4
+intfloat/e5-base-v2,768,1.0,10,71.4,27,58.7
