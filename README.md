@@ -442,21 +442,45 @@ That remains a scoped future extension, not something built yet.
 - Production automation-flagging feature built and run against the full
   500-ticket dataset, with a citable category-level automation-rate
   finding
+- Cascade confidence-calibration reliability diagrams (both tiers),
+  evaluated against the real 500-ticket production batch — found both
+  tiers to be genuinely underconfident rather than overconfident, a
+  safer failure mode for an escalation-gated system
 - Literature review identifying a genuine research gap
 
 ### ⏳ Pending
-1. **Genuine multi-agent restructure**: independent Classification,
-   Retrieval, and Resolution agents coordinated by a real Orchestrator
-   agent with conditional routing — directly closing the gap with Paper
-   1's design, which was never implemented or tested there either.
-2. **Accuracy-improvement experiments** (ranked by cost/plausibility):
-   (a) swap the frozen embedding model to BGE in production, now that
-   it's validated as the stronger option at n=45; (b) paraphrase-augment
-   the *training* set using the same Gemini pipeline already proven for
-   calibration data, without touching either benchmark; (c) ensemble with
-   an orthogonal method (Gemini zero-shot classification) only after
-   checking error-overlap with existing models.
-3. **Formal IEEE-style paper draft**, once the above are complete.
+1. **Permanent adversarial escalation test set** — save the vague/noisy
+   tickets used to manually stress-test the Streamlit demo's escalation
+   paths (an off-topic ticket, a vague multi-category ticket, a maximally
+   uninformative ticket) as a small, versioned benchmark file, similar in
+   spirit to the 14-ticket and 45-ticket benchmarks. This is the only
+   planned artifact that directly tests the "doesn't confidently guess
+   wrong" claim.
+2. **Ablation study** — disable each safety net one at a time (cascade
+   escalation threshold, RAG similarity threshold) and measure the actual
+   accuracy/precision drop, to quantify what the calibration work is
+   worth.
+3. **Category-specific clustering threshold check** — test whether the
+   single 0.80 resolution-clustering threshold is optimal per category,
+   or whether e.g. Database (bespoke fixes) needs a different cutoff than
+   Infrastructure (highly standardized). Extend
+   `calibrate_resolution_clustering.py` to run per-category rather than
+   pooled.
+4. **BGE swap to production** — now validated as the stronger embedding
+   model at n=45 (73.3% vs MiniLM's 71.1%); swap it into
+   `train_embeddings.py` / the production classifier and re-verify every
+   downstream dependency (RAG layer, resolution clustering, Streamlit
+   demo).
+5. **Genuine multi-agent restructure** — independent Classification,
+   Retrieval, and Resolution agents coordinated by a real Orchestrator,
+   likely via n8n (wrapping the existing Python pieces as small local API
+   endpoints, then building a real n8n workflow with visual conditional
+   routing, e.g. IF confidence < threshold → escalate). Directly closes
+   the gap with Paper 1's design, which was proposed but never
+   implemented there either. Deliberately done **last**, once everything
+   above is measured and stable — it's an architecture/presentation step,
+   not a new experiment.
+6. **Formal IEEE-style paper draft**, once all of the above is complete.
 
 ---
 
