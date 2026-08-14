@@ -154,6 +154,22 @@ Tier-2. At a relaxed 70–80% bar, a real threshold (0.50) emerges, routing
 The contribution isn't a big accuracy jump — it's a validated calibration
 methodology that catches what naive calibration would silently miss.
 
+### Cascade Confidence Calibration
+
+Reliability diagrams (predicted confidence vs. observed accuracy) for both
+cascade tiers, evaluated against the real 500-ticket production batch.
+Both tiers score 100% accuracy in-distribution but never reach full
+confidence (Tier-1 tops out ~0.92, Tier-2 ~0.94) — the models are
+**underconfident** rather than overconfident, a safer failure mode for a
+system designed around escalation thresholds.
+
+| Tier-1 (TF-IDF) — ECE = 0.1122 | Tier-2 (MiniLM) — ECE = 0.0992 |
+|---|---|
+| ![Tier-1 Calibration](data/calibration_tier1_reliability_diagram.png) | ![Tier-2 Calibration](data/calibration_tier2_reliability_diagram.png) |
+
+Bin-level data: [`calibration_reliability_data.csv`](data/calibration_reliability_data.csv)
+
+
 ### Streamlit demo
 
 `src/app/streamlit_app.py` ties the cascade classifier and RAG layer into
