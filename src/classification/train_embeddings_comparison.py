@@ -119,7 +119,7 @@ RESULTS_CSV = os.path.join(OUTPUT_DIR, "embedding_model_comparison.csv")
 EXPANDED_BENCH_PATH = os.path.join(
     PROJECT_ROOT, "data", "novel_tickets_expanded.json"
 )
-EXPANDED_BENCH_EXPECTED_N = 46
+EXPANDED_BENCH_EXPECTED_N = 45
 
 # Make src/classification/ importable so we can pull NOVEL_TICKETS read-only.
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -1,0 +1,34 @@
+{
+  "clean": [
+    {
+      "id": 1,
+      "text": "Every single time our system tries to handle a big rush of users, it just completely freezes up instead of automatically getting more power like it's supposed to.",
+      "expected": "Infrastructure"
+    },
+    {
+      "id": 2,
+      "text": "Our main server won't boot back up at all after we had to restart it this morning, and now nobody can log into the system.",
+      "expected": "Infrastructure"
+    }
+  ],
+  "flagged": [
+    {
+      "id": 3,
+      "text": "Half of our core customer portal has been completely unreachable for the last hour even though the main status page looks green, and nobody can get any work done.",
+      "intended_category": "Infrastructure",
+      "gemini_guess": "Application"
+    },
+    {
+      "id": 4,
+      "text": "All the clocks across our internal applications are completely out of whack compared to the actual time, which is messing up our timeline views and making it impossible to tell when anything actually happened.",
+      "intended_category": "Infrastructure",
+      "gemini_guess": "Application"
+    },
+    {
+      "id": 5,
+      "text": "All our applications are grinding to an absolute crawl because the storage drives are totally maxed out and running out of space.",
+      "intended_category": "Infrastructure",
+      "gemini_guess": "Storage"
+    }
+  ]
+}

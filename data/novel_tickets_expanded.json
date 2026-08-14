@@ -144,26 +144,6 @@
     "expected": "Access Management"
   },
   {
-    "text": "Half the lights in our hallway just flickered and died, and now the whole row of desks over by the windows has completely lost power to the outlets.",
-    "expected": "Infrastructure"
-  },
-  {
-    "text": "The main entrance doors are completely stuck shut again and the keycard reader isn't lighting up at all for anyone trying to get into the building this morning.",
-    "expected": "Infrastructure"
-  },
-  {
-    "text": "The bathroom on the second floor is totally flooded because a pipe burst under the sink, and water is starting to leak right down through the ceiling into the breakroom below.",
-    "expected": "Infrastructure"
-  },
-  {
-    "text": "The elevator in our building is making a really loud grinding noise and got stuck between floors for a few minutes with my coworker inside, so nobody should use it until someone takes a look.",
-    "expected": "Infrastructure"
-  },
-  {
-    "text": "The room is freezing because the heater started blowing ice-cold air instead of warmth, and the thermostat on the wall won't let me change the temperature at all.",
-    "expected": "Infrastructure"
-  },
-  {
     "text": "I can't seem to access any internal websites or shared folders from my desk today, even though my Ethernet cable is plugged in securely. The little network icon on my taskbar has a yellow triangle over it.",
     "expected": "Network"
   },
@@ -182,5 +162,21 @@
   {
     "text": "My computer keeps dropping off the internet every time I step away from my desk for lunch, and the only way to get back online is to restart the whole machine. It's getting really annoying since I have to log back into everything all over again.",
     "expected": "Network"
+  },
+  {
+    "text": "Every single time our system tries to handle a big rush of users, it just completely freezes up instead of automatically getting more power like it's supposed to.",
+    "expected": "Infrastructure"
+  },
+  {
+    "text": "Our main server won't boot back up at all after we had to restart it this morning, and now nobody can log into the system.",
+    "expected": "Infrastructure"
+  },
+  {
+    "text": "Half of our core customer portal has been completely unreachable for the last hour even though the main status page looks green, and nobody can get any work done.",
+    "expected": "Infrastructure"
+  },
+  {
+    "text": "All the clocks across our internal applications are completely out of whack compared to the actual time, which is messing up our timeline views and making it impossible to tell when anything actually happened.",
+    "expected": "Infrastructure"
   }
 ]

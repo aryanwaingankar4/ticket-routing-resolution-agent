@@ -223,6 +223,8 @@ CSV_PATH = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
 EMBED_CACHE_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_embeddings.npy")
 CALIBRATION_JSON_PATH = os.path.join(PROJECT_ROOT, "data",
                                      "calibration_tickets_paraphrased.json")
+EXPANDED_JSON_PATH = os.path.join(PROJECT_ROOT, "data",
+                                  "novel_tickets_expanded.json")
 
 
 # --------------------------------------------------------------------------- #
@@ -323,6 +325,96 @@ def load_calibration_set(path: str = CALIBRATION_JSON_PATH):
 
     # Return records preserving at least "text"/"expected" (drop-in shape). We
     # keep the full record so an optional "flagged" flag survives if present.
+    return list(data)
+
+
+# --------------------------------------------------------------------------- #
+# Expanded benchmark set loading (data/novel_tickets_expanded.json).           #
+# This is the SECOND, larger final-evaluation benchmark: 45 tickets (14        #
+# original + 31 new, Gemini-generated, self-consistency-verified, and          #
+# manually-reviewed), in the exact same shape as NOVEL_TICKETS. It is used     #
+# ONLY for final benchmark evaluation (mirroring NOVEL_TICKETS) - never for    #
+# threshold derivation. Its loader mirrors load_calibration_set()'s validation #
+# style but uses "[expanded]"-flavored messages AND enforces an exact count    #
+# of 45 entries (the calibration loader has no count check; this one does).    #
+# --------------------------------------------------------------------------- #
+def load_expanded_set(path: str = EXPANDED_JSON_PATH):
+    """Load and validate the 45-ticket expanded benchmark set from JSON.
+
+    - Requires the file to exist; if it does not, prints a clear message and
+      exits.
+    - Loads the JSON list and validates: it is a non-empty list, contains
+      EXACTLY 45 records, every record has non-empty "text"/"expected" keys.
+    - Prints a short load summary: total loaded and per-category counts.
+    - Returns a list of dicts with at least "text" and "expected" (same shape
+      as NOVEL_TICKETS).
+    """
+    if not os.path.exists(path):
+        print(f"[ERROR] Expanded benchmark set not found at:\n        {path}")
+        print("        This 45-ticket benchmark file is required for the expanded "
+              "evaluation.")
+        print("        Expected data/novel_tickets_expanded.json relative to "
+              "project root.")
+        sys.exit(1)
+
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[ERROR] Failed to read/parse expanded JSON at {path}: {exc}")
+        sys.exit(1)
+
+    # Must be a non-empty list.
+    if not isinstance(data, list) or len(data) == 0:
+        print(f"[ERROR] Expanded JSON at {path} must be a non-empty list of "
+              f"records, got: {type(data).__name__} "
+              f"(len={len(data) if hasattr(data, '__len__') else 'n/a'}).")
+        sys.exit(1)
+
+    # Exact-count check: this benchmark must contain exactly 45 entries.
+    if len(data) != 45:
+        print(f"[ERROR] Expanded JSON at {path} must contain EXACTLY 45 records "
+              f"(14 original + 31 new), but found {len(data)}.")
+        print("        Verify data/novel_tickets_expanded.json before running.")
+        sys.exit(1)
+
+    # Every record must have "text" and "expected" keys. Do NOT silently drop
+    # bad records - report all offenders clearly and exit.
+    bad_records = []
+    for i, rec in enumerate(data):
+        if not isinstance(rec, dict):
+            bad_records.append((i, f"record is {type(rec).__name__}, not an object"))
+            continue
+        missing_keys = [k for k in ("text", "expected") if k not in rec]
+        if missing_keys:
+            bad_records.append((i, f"missing key(s): {missing_keys}"))
+            continue
+        if not isinstance(rec["text"], str) or not rec["text"].strip():
+            bad_records.append((i, "'text' is empty or not a string"))
+            continue
+        if not isinstance(rec["expected"], str) or not rec["expected"].strip():
+            bad_records.append((i, "'expected' is empty or not a string"))
+
+    if bad_records:
+        print(f"[ERROR] Expanded JSON at {path} contains {len(bad_records)} "
+              f"malformed record(s) (every record needs non-empty 'text' and "
+              f"'expected' keys):")
+        for i, why in bad_records:
+            print(f"        record #{i}: {why}")
+        print("        Verify data/novel_tickets_expanded.json before running.")
+        sys.exit(1)
+
+    # ---- Load summary --------------------------------------------------- #
+    per_cat = {}
+    for rec in data:
+        per_cat[rec["expected"]] = per_cat.get(rec["expected"], 0) + 1
+
+    print(f"[expanded] Loaded {len(data)} tickets")
+    print("[expanded] Per-category counts: " + "  ".join(
+        f"{cat}={per_cat[cat]}" for cat in sorted(per_cat)
+    ))
+
+    # Return records preserving at least "text"/"expected" (drop-in shape).
     return list(data)
 
 
@@ -522,10 +614,6 @@ def train_tier2_from_embeddings(train_emb, y_train):
     clf.fit(train_emb, y_train)
     return clf
 
-
-# --------------------------------------------------------------------------- #
-# Reusable threshold derivation                                                 #
-# --------------------------------------------------------------------------- #
 def derive_threshold_for_target(tier1_conf, correct, target_accuracy):
     """Derive a cascade confidence threshold for an EXPLICIT target accuracy.
 
@@ -563,7 +651,6 @@ def derive_threshold_for_target(tier1_conf, correct, target_accuracy):
     edges = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
     labels = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]
 
-    # Build per-bin stats (lo, hi, label, count, acc) exactly as before.
     bin_stats = []
     for i in range(len(labels)):
         lo, hi = edges[i], edges[i + 1]
@@ -575,24 +662,21 @@ def derive_threshold_for_target(tier1_conf, correct, target_accuracy):
         acc = float(correct[mask].mean())
         bin_stats.append((lo, min(hi, 1.0), labels[i], cnt, acc))
 
-    derived = 1.0001  # fallback: escalate everything if nothing qualifies
+    derived = 1.0001
     ordered = sorted([b for b in bin_stats if b[3] > 0], key=lambda b: -b[0])
     chosen_edge = None
     for lo, hi, lab, cnt, acc in ordered:
         mask = tier1_conf >= lo
         cum_acc = float(correct[mask].mean()) if mask.sum() > 0 else 0.0
         if cum_acc >= target_accuracy:
-            chosen_edge = lo  # keep lowering while target still met
-            
+            chosen_edge = lo
+
     if chosen_edge is not None:
         derived = chosen_edge
 
     return float(derived), chosen_edge
 
 
-# --------------------------------------------------------------------------- #
-# Calibration analysis                                                          #
-# --------------------------------------------------------------------------- #
 def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
     """Bucket Tier-1 predictions by confidence and report ACTUAL accuracy.
 
@@ -610,8 +694,6 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
     tier1_conf = np.asarray(tier1_conf)
     correct = (tier1_preds == y_true).astype(int)
 
-    # Bins from 0.0 to 1.0 in 0.10 steps; we report populated bins from 0.5 up
-    # (below 0.5 is rare for a 7-class max-proba but still bucketed).
     edges = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
     labels = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]
 
@@ -622,7 +704,7 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
           f"{'over/under?':>18}")
     print("-" * 66)
 
-    bin_stats = []  # (lo, hi, label, count, acc)
+    bin_stats = []
     for i in range(len(labels)):
         lo, hi = edges[i], edges[i + 1]
         mask = (tier1_conf >= lo) & (tier1_conf < hi)
@@ -632,8 +714,6 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
             bin_stats.append((lo, min(hi, 1.0), labels[i], 0, None))
             continue
         acc = float(correct[mask].mean())
-        # Compare actual accuracy to the MIDPOINT of the bucket's confidence
-        # range to flag systematic over/under-confidence.
         mid = (lo + min(hi, 1.0)) / 2.0
         if acc < mid - 0.05:
             tag = "OVERCONFIDENT"
@@ -646,7 +726,6 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
 
     print("-" * 66)
 
-    # Interpretation note.
     over = [b for b in bin_stats if b[4] is not None
             and b[4] < ((b[0] + b[1]) / 2.0) - 0.05]
     if over:
@@ -660,11 +739,6 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
         print("                 populated buckets; higher confidence does track")
         print("                 higher actual accuracy.")
 
-    # ---- Derive threshold ------------------------------------------------- #
-    # Rule (stated): choose the LOWEST confidence value at/above which Tier-1's
-    # actual accuracy stays >= TIER1_ACCEPT_ACCURACY_TARGET. This is now done by
-    # the reusable derive_threshold_for_target() helper, called with the primary
-    # 0.90 target so the printed output and behavior are UNCHANGED.
     derived, chosen_edge = derive_threshold_for_target(
         tier1_conf, correct, TIER1_ACCEPT_ACCURACY_TARGET
     )
@@ -729,8 +803,8 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
           f"{'over/under?':>18}")
     print("-" * 66)
 
-    small_buckets = []  # (label, count) for populated buckets with < 5 tickets
-    bin_stats = []      # (lo, hi, label, count, acc)
+    small_buckets = []
+    bin_stats = []
     for i in range(len(labels)):
         lo, hi = edges[i], edges[i + 1]
         mask = (tier1_conf >= lo) & (tier1_conf < hi)
@@ -754,13 +828,11 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
 
     print("-" * 66)
 
-    # Prominent raw-count summary (small-sample transparency).
     print("[raw bucket counts] " + "  ".join(
         f"{lab}={b[3]}" for lab, b in zip(labels, bin_stats)
     ))
     print(f"[raw bucket counts] total populated tickets: {int((tier1_conf >= 0).sum())}")
 
-    # Explicit small-sample cautions.
     if small_buckets:
         for lab, cnt in small_buckets:
             print(f"[caution] bucket {lab} has only {cnt} tickets - treat this "
@@ -768,7 +840,6 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
     else:
         print("[note] All populated buckets have >= 5 tickets.")
 
-    # Interpretation note.
     over = [b for b in bin_stats if b[4] is not None
             and b[4] < ((b[0] + b[1]) / 2.0) - 0.05]
     if over:
@@ -782,9 +853,6 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
         print("                 reasonably on this out-of-distribution set across")
         print("                 populated buckets.")
 
-    # ---- Derive threshold (SAME rule as run_calibration_analysis) --------- #
-    # Uses the reusable derive_threshold_for_target() helper with the primary
-    # 0.90 target so this call site's printed output and behavior are UNCHANGED.
     derived, chosen_edge = derive_threshold_for_target(
         tier1_conf, correct, TIER1_ACCEPT_ACCURACY_TARGET
     )
@@ -808,13 +876,9 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
     return float(min(derived, 1.0)) if derived <= 1.0 else float(derived)
 
 
-# --------------------------------------------------------------------------- #
-# Confusion matrix printing (same style as train_embeddings.py)                #
-# --------------------------------------------------------------------------- #
 def print_labeled_confusion_matrix(y_true, y_pred, labels):
     """Print a labeled confusion matrix: rows=true, cols=predicted, names shown."""
     cm = confusion_matrix(y_true, y_pred, labels=labels)
-    # Short codes keep columns narrow but names are printed in a legend.
     codes = [f"C{i}" for i in range(len(labels))]
     colw = max(6, max(len(c) for c in codes) + 1)
 
@@ -830,9 +894,6 @@ def print_labeled_confusion_matrix(y_true, y_pred, labels):
         print(row)
 
 
-# --------------------------------------------------------------------------- #
-# Cascade execution                                                            #
-# --------------------------------------------------------------------------- #
 def run_cascade(texts, tier1_vec, tier1_clf, tier2_clf, embedder_or_emb,
                 threshold, tier2_emb=None):
     """Run the cascade over `texts`.
@@ -925,14 +986,123 @@ def validate_loaded_calibration_labels(calibration_tickets, training_categories)
           f"match real training categories.")
 
 
-# --------------------------------------------------------------------------- #
-# Accuracy / efficiency tradeoff analysis across target accuracy bars          #
-# --------------------------------------------------------------------------- #
+def validate_expanded_labels(expanded_tickets, training_categories):
+    """Ensure every loaded expanded-set expected label matches a real training
+    class. Mirrors validate_novel_labels exactly.
+
+    Exits with a clear mismatch report if any expected label is unknown - bad
+    records are reported, not silently dropped.
+    """
+    known = set(training_categories)
+    mismatches = []
+    for i, t in enumerate(expanded_tickets):
+        if t["expected"] not in known:
+            mismatches.append((i, t["expected"]))
+    if mismatches:
+        print("[ERROR] The loaded expanded set contains expected labels that do "
+              "NOT match any training category:")
+        for i, lab in mismatches:
+            print(f"        expanded ticket #{i}: expected='{lab}' "
+                  f"(not in training set)")
+        print(f"        Known training categories: {sorted(known)}")
+        print("        Verify data/novel_tickets_expanded.json before running.")
+        sys.exit(1)
+    print(f"[check] All {len(expanded_tickets)} expanded-ticket labels match "
+          f"real training categories.")
+
+
+def evaluate_cascade_on_benchmark(benchmark_name, texts, expected,
+                                  tier1_vec_full, tier1_clf_full,
+                                  tier2_clf_full, embedder, threshold):
+    """Run and report the FULL-data cascade over one hand-written benchmark set.
+
+    This is the reusable extraction of the former inline "CASCADE ON 14 NOVEL
+    TICKETS" section. Its printed output is byte-for-byte identical in style to
+    that section (same header rule, same per-ticket "[CORRECT]"/"[WRONG] ..."
+    lines with the same "(resolved by: Tier X, ...)" phrasing, and the same
+    three summary lines), just parameterized by `benchmark_name`.
+
+    All tickets are embedded on demand through the SAME embedder instance passed
+    in (no reload); run_cascade() encodes only the escalated subset.
+
+    Parameters
+    ----------
+    benchmark_name : str
+        Full header line printed under the "=" rule (e.g.
+        "CASCADE ON 14 NOVEL TICKETS (models trained on FULL dataset)").
+    texts : list[str]
+        Ticket texts for this benchmark.
+    expected : list[str]
+        Ground-truth labels, aligned with `texts`.
+    tier1_vec_full, tier1_clf_full, tier2_clf_full :
+        The FULL-data-trained tiers (same objects used everywhere else for
+        novel-ticket generalization).
+    embedder :
+        A loaded sentence-transformers model, reused for every benchmark.
+    threshold : float
+        The applied CASCADE_CONFIDENCE_THRESHOLD.
+
+    Returns
+    -------
+    dict with keys: "correct_count", "n", "tier1", "tier2", "tier1_pct",
+    "tier2_pct", "preds".
+    """
+    texts = list(texts)
+    expected = list(expected)
+    n = len(texts)
+
+    cas = run_cascade(
+        texts, tier1_vec_full, tier1_clf_full, tier2_clf_full,
+        embedder_or_emb=embedder, threshold=threshold,
+        tier2_emb=None,
+    )
+    preds = cas["preds"]
+    tiers = cas["tiers"]
+    conf = cas["tier1_conf"]
+
+    print("\n" + "=" * 66)
+    print(benchmark_name)
+    print("=" * 66)
+    correct_count = 0
+    for i in range(n):
+        exp = expected[i]
+        pred = preds[i]
+        ok = (pred == exp)
+        correct_count += int(ok)
+        tag = "CORRECT" if ok else "WRONG"
+        if tiers[i] == 1:
+            resolver = f"resolved by: Tier 1, confidence={conf[i]:.2f}"
+        else:
+            resolver = f"resolved by: Tier 2, Tier 1 confidence was {conf[i]:.2f}"
+        print(f"[{tag}] expected={exp} predicted={pred} ({resolver})")
+
+    acc = correct_count / n if n else 0.0
+    tier1 = tiers.count(1)
+    tier2 = tiers.count(2)
+    print(f"\nNovel-ticket cascade score: {correct_count}/{n} "
+          f"({acc:.1%})")
+    print(f"Resolved at Tier-1 : {tier1}/{n} "
+          f"({tier1 / n:.1%})")
+    print(f"Escalated to Tier-2: {tier2}/{n} "
+          f"({tier2 / n:.1%})")
+
+    return {
+        "correct_count": correct_count,
+        "n": n,
+        "tier1": tier1,
+        "tier2": tier2,
+        "tier1_pct": float(tier1 / n) if n else 0.0,
+        "tier2_pct": float(tier2 / n) if n else 0.0,
+        "preds": preds,
+    }
+
+
 def run_tradeoff_analysis(calib_conf, calib_correct,
                           X_test_text, y_test, test_emb,
                           tier1_vec, tier1_clf, tier2_clf,
                           novel_texts, novel_expected, novel_emb,
-                          tier1_vec_full, tier1_clf_full, tier2_clf_full):
+                          tier1_vec_full, tier1_clf_full, tier2_clf_full,
+                          expanded45_texts, expanded45_expected, expanded45_emb):
     """Sweep several target accuracy bars and report the resulting tradeoff.
 
     For EACH target in ACCURACY_TARGETS_TO_TEST this:
@@ -941,17 +1111,19 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
           the main calibration table already computed (passed in as calib_conf /
           calib_correct - nothing is recomputed here);
       (b) runs the EXISTING run_cascade() once on the held-out split (reusing
-          test_emb as tier2_emb) and once on the 14 novel tickets (reusing
-          novel_emb as tier2_emb) - the same pattern used elsewhere in main();
-      (c) computes % resolved at Tier-1 and cascade accuracy for BOTH sets;
+          test_emb as tier2_emb), once on the 14 novel tickets (reusing
+          novel_emb as tier2_emb), and once on the 45 expanded tickets (reusing
+          expanded45_emb as tier2_emb) - all with the SAME derived threshold for
+          that row (no extra derivation) and the same pattern used in main();
+      (c) computes % resolved at Tier-1 and cascade accuracy for ALL THREE sets;
       (d) stores a row dict for the comparison table.
 
     IMPORTANT: this function does NOT recompute embeddings, does NOT re-fit any
     model, and does NOT call Gemini. It only reuses objects already built in
     main(). The held-out split is evaluated with the SPLIT-trained tiers
-    (tier1_vec/tier1_clf/tier2_clf) and the novel tickets with the FULL-data
-    tiers (tier1_vec_full/tier1_clf_full/tier2_clf_full), exactly matching the
-    single-threshold evaluation sections earlier in main().
+    (tier1_vec/tier1_clf/tier2_clf) and both the novel and expanded tickets with
+    the FULL-data tiers (tier1_vec_full/tier1_clf_full/tier2_clf_full), exactly
+    matching the single-threshold evaluation sections earlier in main().
 
     Returns the list of row dicts (also surfaced under main()'s results dict).
     """
@@ -960,18 +1132,17 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
     y_test = np.asarray(y_test)
     n_test = len(X_test_text)
     n_novel = len(novel_texts)
+    n_expanded = len(expanded45_texts)
     novel_expected = list(novel_expected)
+    expanded45_expected = list(expanded45_expected)
 
     rows = []
     for target in ACCURACY_TARGETS_TO_TEST:
-        # (a) Derive threshold for THIS target from the calibration set data.
         derived, _chosen_edge = derive_threshold_for_target(
             calib_conf, calib_correct, target
         )
-        # Applied threshold clamps to <= 1.0 exactly like the main call sites.
         applied_threshold = min(derived, 1.0) if derived <= 1.0 else derived
 
-        # (b1) Cascade on the held-out split (split-trained tiers, test_emb).
         cas_test = run_cascade(
             X_test_text, tier1_vec, tier1_clf, tier2_clf,
             embedder_or_emb=None, threshold=applied_threshold,
@@ -980,7 +1151,6 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
         held_tier1_pct = cas_test["n_tier1"] / n_test if n_test else 0.0
         held_acc = accuracy_score(y_test, cas_test["preds"])
 
-        # (b2) Cascade on the 14 novel tickets (full-data tiers, novel_emb).
         cas_novel = run_cascade(
             novel_texts, tier1_vec_full, tier1_clf_full, tier2_clf_full,
             embedder_or_emb=None, threshold=applied_threshold,
@@ -993,6 +1163,20 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
         )
         novel_acc = novel_correct / n_novel if n_novel else 0.0
 
+        cas_expanded = run_cascade(
+            expanded45_texts, tier1_vec_full, tier1_clf_full, tier2_clf_full,
+            embedder_or_emb=None, threshold=applied_threshold,
+            tier2_emb=expanded45_emb,
+        )
+        expanded45_tier1_pct = (
+            cas_expanded["n_tier1"] / n_expanded if n_expanded else 0.0
+        )
+        expanded45_correct = sum(
+            1 for i in range(n_expanded)
+            if cas_expanded["preds"][i] == expanded45_expected[i]
+        )
+        expanded45_acc = expanded45_correct / n_expanded if n_expanded else 0.0
+
         rows.append({
             "target_accuracy": float(target),
             "derived_threshold": float(applied_threshold),
@@ -1000,60 +1184,55 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
             "held_out_cascade_accuracy": float(held_acc),
             "novel_tier1_pct": float(novel_tier1_pct),
             "novel_cascade_accuracy": float(novel_acc),
+            "expanded45_tier1_pct": float(expanded45_tier1_pct),
+            "expanded45_cascade_accuracy": float(expanded45_acc),
         })
 
-    # ---- Print the tradeoff table --------------------------------------- #
-    print("\n" + "=" * 84)
+    print("\n" + "=" * 114)
     print("ACCURACY/EFFICIENCY TRADEOFF ACROSS TARGET BARS")
-    print("=" * 84)
+    print("=" * 114)
     print(f"{'Target Acc':<12}{'Threshold':<12}{'Held-out Tier1%':<18}"
-          f"{'Held-out Acc':<15}{'Novel Tier1%':<15}{'Novel Acc':<12}")
-    print("-" * 84)
+          f"{'Held-out Acc':<15}{'Novel Tier1%':<15}{'Novel Acc':<12}"
+          f"{'Expanded45 Tier1%':<20}{'Expanded45 Acc':<16}")
+    print("-" * 114)
     for r in rows:
         print(f"{r['target_accuracy']:<12.0%}"
               f"{r['derived_threshold']:<12.2f}"
               f"{r['held_out_tier1_pct']:<18.1%}"
               f"{r['held_out_cascade_accuracy']:<15.1%}"
               f"{r['novel_tier1_pct']:<15.1%}"
-              f"{r['novel_cascade_accuracy']:<12.1%}")
-    print("-" * 84)
+              f"{r['novel_cascade_accuracy']:<12.1%}"
+              f"{r['expanded45_tier1_pct']:<20.1%}"
+              f"{r['expanded45_cascade_accuracy']:<16.1%}")
+    print("-" * 114)
 
-    # ---- Plain-language interpretation ---------------------------------- #
-    # Identify the 90%-target novel accuracy as the reference point (the primary
-    # single-threshold result), plus any bar producing meaningful Tier-1 usage.
     ref_row = next((r for r in rows
                     if abs(r["target_accuracy"] - TIER1_ACCEPT_ACCURACY_TARGET) < 1e-9),
                    None)
     ref_novel_acc = ref_row["novel_cascade_accuracy"] if ref_row else None
+    ref_expanded45_acc = ref_row["expanded45_cascade_accuracy"] if ref_row else None
 
     meaningful = [
         r for r in rows
         if r["held_out_tier1_pct"] > 0.0 or r["novel_tier1_pct"] > 0.0
+        or r["expanded45_tier1_pct"] > 0.0
     ]
 
     print("\n[tradeoff interpretation]")
     if not meaningful:
-        # Genuine negative finding across ALL tested bars.
         print("  No target accuracy in ACCURACY_TARGETS_TO_TEST "
               f"({', '.join(f'{t:.0%}' for t in ACCURACY_TARGETS_TO_TEST)}) "
               "produced")
-        print("  any Tier-1 usage on EITHER the held-out split or the novel")
-        print("  tickets: every derived threshold routed 100% of tickets to")
-        print("  Tier-2. This is a genuine negative finding - the calibration")
-        print("  set's confidence distribution simply does not support cascading")
-        print("  at any of these accuracy bars. In other words, TF-IDF Tier-1 is")
-        print("  never trustworthy enough on out-of-distribution phrasing to skip")
-        print("  the expensive tier while still holding even a 70% accept bar.")
-        # NOTE: Even lower targets (e.g. 0.50) could be added to
-        # ACCURACY_TARGETS_TO_TEST to force some Tier-1 usage, but they would
-        # likely sacrifice unacceptable accuracy: TF-IDF's known standalone
-        # novel-ticket accuracy in this project is only ~50% (BASELINE_TFIDF_NOVEL
-        # = 7/14), so accepting Tier-1 at a 50% bar would drag cascade accuracy
-        # toward that floor rather than preserving the MiniLM-level ~71.4%.
-        print("  (A ~50% bar could be tested but would likely drag accuracy toward")
-        print("  TF-IDF's ~50% standalone novel-ticket floor - not worth it.)")
+        print("  any Tier-1 usage on the held-out split, the 14 novel tickets, OR")
+        print("  the 45 expanded tickets: every derived threshold routed 100% of")
+        print("  tickets to Tier-2. This is a genuine negative finding - the")
+        print("  calibration set's confidence distribution simply does not support")
+        print("  cascading at any of these accuracy bars. In other words, TF-IDF")
+        print("  Tier-1 is never trustworthy enough on out-of-distribution phrasing")
+        print("  to skip the expensive tier while still holding even a 70% accept")
+        print("  bar. (A ~50% bar could be tested but would likely drag accuracy")
+        print("  toward TF-IDF's ~50% standalone novel-ticket floor - not worth it.)")
     else:
-        # At least one bar yields real cheap-tier usage - state the tradeoff.
         print("  The following target accuracy bar(s) produced non-zero Tier-1")
         print("  usage (i.e. real cheap-tier routing) on at least one set:")
         for r in meaningful:
@@ -1062,27 +1241,29 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
                 where.append(f"held-out {r['held_out_tier1_pct']:.1%}")
             if r["novel_tier1_pct"] > 0.0:
                 where.append(f"novel {r['novel_tier1_pct']:.1%}")
+            if r["expanded45_tier1_pct"] > 0.0:
+                where.append(f"expanded45 {r['expanded45_tier1_pct']:.1%}")
             print(f"    - target {r['target_accuracy']:.0%}: "
                   f"threshold {r['derived_threshold']:.2f}, "
                   f"Tier-1 usage [{', '.join(where)}]")
-        # Spell out the tradeoff for the LOWEST meaningful bar on the novel set.
         best = sorted(meaningful, key=lambda r: r["target_accuracy"])[0]
-        if ref_novel_acc is not None:
+        if ref_novel_acc is not None and ref_expanded45_acc is not None:
             print()
             print(f"  Lowering the target to {best['target_accuracy']:.0%} derives a "
                   f"threshold of {best['derived_threshold']:.2f}, routing "
                   f"{best['novel_tier1_pct']:.1%} of novel")
-            print(f"  tickets through the cheap tier, at a cost of "
-                  f"{best['novel_cascade_accuracy']:.1%} novel accuracy vs "
-                  f"{ref_novel_acc:.1%} at the")
-            print(f"  {TIER1_ACCEPT_ACCURACY_TARGET:.0%} target on the novel benchmark.")
+            print(f"  tickets (and {best['expanded45_tier1_pct']:.1%} of the 45 "
+                  f"expanded tickets) through the cheap tier, at a cost of "
+                  f"{best['novel_cascade_accuracy']:.1%} novel")
+            print(f"  accuracy vs {ref_novel_acc:.1%} at the "
+                  f"{TIER1_ACCEPT_ACCURACY_TARGET:.0%} target (and "
+                  f"{best['expanded45_cascade_accuracy']:.1%} expanded45 accuracy vs "
+                  f"{ref_expanded45_acc:.1%}")
+            print(f"  at that target) on the respective benchmarks.")
 
     return rows
 
 
-# --------------------------------------------------------------------------- #
-# Main pipeline                                                                #
-# --------------------------------------------------------------------------- #
 def main():
     print("=" * 66)
     print("CONFIDENCE-BASED CASCADE CLASSIFIER  (Tier1 TF-IDF -> Tier2 MiniLM)")
@@ -1090,23 +1271,18 @@ def main():
     print("Philosophy: same 'escalate when unsure' guard as the RAG layer's")
     print("SIMILARITY_THRESHOLD=0.35 - applied here at model-selection time.")
 
-    # ---------------- Load + validate ------------------------------------- #
     df = load_and_validate_csv(CSV_PATH)
     df = df.reset_index(drop=True)
     text_all = build_text_series(df)
     y_all = df["category"].astype(str).to_numpy()
     training_categories = sorted(df["category"].unique())
 
-    # Validate novel labels up front, before any prediction work.
     validate_novel_labels(training_categories)
-    # Load + validate the paraphrased calibration set up front too (mirrors the
-    # novel-label check). This fully replaces the old CALIBRATION_TICKETS list.
     calibration_tickets = load_calibration_set()
     validate_loaded_calibration_labels(calibration_tickets, training_categories)
+    expanded_tickets = load_expanded_set()
+    validate_expanded_labels(expanded_tickets, training_categories)
 
-    # ---------------- Standard split -------------------------------------- #
-    # Split on the ROW INDEX so we can reuse the same 800 rows for both the
-    # TF-IDF text path and the cached-embedding path (aligned indexing).
     idx_all = np.arange(len(df))
     idx_train, idx_test, y_train, y_test = standard_split(idx_all, y_all)
     print(f"\n[split] train={len(idx_train)} rows, test={len(idx_test)} rows "
@@ -1116,21 +1292,17 @@ def main():
     X_train_text = text_all.iloc[idx_train].tolist()
     X_test_text = text_all.iloc[idx_test].tolist()
 
-    # ---------------- Full-dataset embeddings (cached) -------------------- #
-    # Compute/reuse embeddings for the FULL dataset once; slice for train/test.
     full_emb = compute_or_load_embeddings(text_all.tolist(), expected_rows=len(df),
                                           use_cache=True)
     train_emb = full_emb[idx_train]
     test_emb = full_emb[idx_test]
 
-    # ---------------- Train both tiers on the 80% split ------------------- #
     print("\n[train] Fitting Tier-1 (TF-IDF + LogReg) on the training split...")
     tier1_vec, tier1_clf = train_tier1(X_train_text, y_train)
 
     print("[train] Fitting Tier-2 (MiniLM emb + LogReg) on the training split...")
     tier2_clf = train_tier2_from_embeddings(train_emb, y_train)
 
-    # Sanity: report standalone tier accuracies on the held-out split.
     t1_preds_test, t1_conf_test = get_tier1_confidence(tier1_vec, tier1_clf, X_test_text)
     t2_preds_test = tier2_clf.predict(test_emb)
     print(f"[baseline] Tier-1 alone test accuracy : "
@@ -1138,12 +1310,6 @@ def main():
     print(f"[baseline] Tier-2 alone test accuracy : "
           f"{accuracy_score(y_test, t2_preds_test):.4f}")
 
-    # ---------------- Retrain on FULL data for novel-ticket test ---------- #
-    # The novel-ticket generalization test ALWAYS uses models trained on ALL
-    # data (matching generalization_test_embeddings.py), not just the 80%.
-    # We train the FULL-data models here (earlier than before) because the
-    # calibration-set analysis also uses the full-data Tier-1 model, matching
-    # the convention that novel-ticket-style evaluation uses the full-data model.
     print("\n" + "=" * 66)
     print("RETRAIN ON FULL 4000-ROW DATASET FOR NOVEL-TICKET GENERALIZATION")
     print("=" * 66)
@@ -1151,20 +1317,12 @@ def main():
     tier2_clf_full = train_tier2_from_embeddings(full_emb, y_all)
     print("[train] Both tiers retrained on all 4000 rows.")
 
-    # ---------------- Calibration + threshold derivation ------------------ #
-    # We print TWO calibration analyses side by side for comparison:
-    #   (1) the ORIGINAL held-out-split calibration (in-distribution),
-    #   (2) the NEW separate paraphrased calibration-set calibration (OOD).
-    # The threshold ACTUALLY APPLIED to the cascade is the one derived from (2),
-    # because the in-distribution split hides Tier-1 overconfidence.
     global CASCADE_CONFIDENCE_THRESHOLD
 
-    # (1) Original held-out-split calibration (kept, printed first).
     heldout_threshold = run_calibration_analysis(y_test, t1_preds_test, t1_conf_test)
     print(f"\n[threshold] Held-out-split-derived threshold (for reference only): "
           f"{heldout_threshold:.2f}")
 
-    # (2) NEW calibration-set calibration, using the FULL-data Tier-1 model.
     calib_texts = [t["text"] for t in calibration_tickets]
     calib_expected = np.array([t["expected"] for t in calibration_tickets])
     calib_preds, calib_conf = get_tier1_confidence(
@@ -1174,17 +1332,13 @@ def main():
         calib_expected, calib_preds, calib_conf
     )
 
-    # Precompute per-ticket correctness for the calibration set once, so the
-    # tradeoff analysis can reuse EXACTLY this data (no recompute).
     calib_correct = (np.asarray(calib_preds) == calib_expected).astype(int)
 
-    # APPLY the calibration-set-derived threshold to the cascade.
     CASCADE_CONFIDENCE_THRESHOLD = calib_threshold
     print(f"\n[threshold] Using CASCADE_CONFIDENCE_THRESHOLD = "
           f"{CASCADE_CONFIDENCE_THRESHOLD:.2f}  (derived from the separate "
           f"calibration set, not the held-out split).")
 
-    # ---------------- Run cascade on held-out 800-row test ---------------- #
     print("\n" + "=" * 66)
     print("CASCADE ON HELD-OUT TEST SPLIT")
     print("=" * 66)
@@ -1215,51 +1369,39 @@ def main():
     test_tier1_pct = cas["n_tier1"] / n
     test_tier2_pct = cas["n_tier2"] / n
 
-    # ---------------- Novel-ticket generalization ------------------------- #
-    # Embed the 14 novel tickets on the fly (not part of the cache).
     novel_texts = [t["text"] for t in NOVEL_TICKETS]
     novel_expected = [t["expected"] for t in NOVEL_TICKETS]
+    expanded45_texts = [t["text"] for t in expanded_tickets]
+    expanded45_expected = [t["expected"] for t in expanded_tickets]
     embedder = _load_embedder()
     novel_emb = np.asarray(
         embedder.encode(novel_texts, convert_to_numpy=True), dtype=np.float32
     )
-
-    cas_novel = run_cascade(
-        novel_texts, tier1_vec_full, tier1_clf_full, tier2_clf_full,
-        embedder_or_emb=embedder, threshold=CASCADE_CONFIDENCE_THRESHOLD,
-        tier2_emb=novel_emb,
+    expanded45_emb = np.asarray(
+        embedder.encode(expanded45_texts, convert_to_numpy=True), dtype=np.float32
     )
-    novel_preds = cas_novel["preds"]
-    novel_tiers = cas_novel["tiers"]
-    novel_conf = cas_novel["tier1_conf"]
 
-    print("\n" + "=" * 66)
-    print("CASCADE ON 14 NOVEL TICKETS (models trained on FULL dataset)")
-    print("=" * 66)
-    correct_count = 0
-    for i in range(len(NOVEL_TICKETS)):
-        exp = novel_expected[i]
-        pred = novel_preds[i]
-        ok = (pred == exp)
-        correct_count += int(ok)
-        tag = "CORRECT" if ok else "WRONG"
-        if novel_tiers[i] == 1:
-            resolver = f"resolved by: Tier 1, confidence={novel_conf[i]:.2f}"
-        else:
-            resolver = f"resolved by: Tier 2, Tier 1 confidence was {novel_conf[i]:.2f}"
-        print(f"[{tag}] expected={exp} predicted={pred} ({resolver})")
+    novel_result = evaluate_cascade_on_benchmark(
+        "CASCADE ON 14 NOVEL TICKETS (models trained on FULL dataset)",
+        novel_texts, novel_expected,
+        tier1_vec_full, tier1_clf_full, tier2_clf_full,
+        embedder, CASCADE_CONFIDENCE_THRESHOLD,
+    )
+    correct_count = novel_result["correct_count"]
+    novel_tier1 = novel_result["tier1"]
+    novel_tier2 = novel_result["tier2"]
 
-    novel_acc = correct_count / len(NOVEL_TICKETS)
-    novel_tier1 = novel_tiers.count(1)
-    novel_tier2 = novel_tiers.count(2)
-    print(f"\nNovel-ticket cascade score: {correct_count}/{len(NOVEL_TICKETS)} "
-          f"({novel_acc:.1%})")
-    print(f"Resolved at Tier-1 : {novel_tier1}/{len(NOVEL_TICKETS)} "
-          f"({novel_tier1 / len(NOVEL_TICKETS):.1%})")
-    print(f"Escalated to Tier-2: {novel_tier2}/{len(NOVEL_TICKETS)} "
-          f"({novel_tier2 / len(NOVEL_TICKETS):.1%})")
+    expanded45_result = evaluate_cascade_on_benchmark(
+        "CASCADE ON 45 EXPANDED TICKETS (models trained on FULL dataset)",
+        expanded45_texts, expanded45_expected,
+        tier1_vec_full, tier1_clf_full, tier2_clf_full,
+        embedder, CASCADE_CONFIDENCE_THRESHOLD,
+    )
+    expanded45_correct = expanded45_result["correct_count"]
+    expanded45_total = expanded45_result["n"]
+    expanded45_tier1 = expanded45_result["tier1"]
+    expanded45_tier2 = expanded45_result["tier2"]
 
-    # ---------------- Final comparison table ------------------------------ #
     tfidf_c, tfidf_n = BASELINE_TFIDF_NOVEL
     minilm_c, minilm_n = BASELINE_MINILM_NOVEL
     print("\n" + "-" * 66)
@@ -1291,11 +1433,6 @@ def main():
         print("  when end accuracy is only comparable to MiniLM-alone. Reported")
         print("  honestly either way - accuracy AND cost both matter.")
 
-    # ---------------- Accuracy/efficiency tradeoff sweep ------------------ #
-    # ADDITIONAL section: reuse everything already built above (no recompute of
-    # embeddings, no re-fit, no Gemini call) to sweep multiple target accuracy
-    # bars and report the tradeoff table. The single-threshold output above is
-    # fully preserved and unchanged; this appears after it as a new section.
     tradeoff_rows = run_tradeoff_analysis(
         calib_conf=calib_conf,
         calib_correct=calib_correct,
@@ -1311,12 +1448,13 @@ def main():
         tier1_vec_full=tier1_vec_full,
         tier1_clf_full=tier1_clf_full,
         tier2_clf_full=tier2_clf_full,
+        expanded45_texts=expanded45_texts,
+        expanded45_expected=expanded45_expected,
+        expanded45_emb=expanded45_emb,
     )
 
     print("\n[done] Cascade pipeline complete.")
 
-    # Return a results dict so this can be imported by a future evaluation
-    # script (e.g. the class-imbalance experiment) rather than only run stand-alone.
     return {
         "threshold": CASCADE_CONFIDENCE_THRESHOLD,
         "heldout_threshold": heldout_threshold,
@@ -1330,9 +1468,14 @@ def main():
         "novel_total": len(NOVEL_TICKETS),
         "novel_tier1": novel_tier1,
         "novel_tier2": novel_tier2,
+        "expanded45_correct": expanded45_correct,
+        "expanded45_total": expanded45_total,
+        "expanded45_tier1": expanded45_tier1,
+        "expanded45_tier2": expanded45_tier2,
         "tradeoff_analysis": tradeoff_rows,
     }
 
 
 if __name__ == "__main__":
     main()
+

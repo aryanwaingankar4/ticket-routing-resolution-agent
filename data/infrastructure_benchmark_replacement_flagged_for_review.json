@@ -1,0 +1,17 @@
+[
+  {
+    "text": "Half of our core customer portal has been completely unreachable for the last hour even though the main status page looks green, and nobody can get any work done.",
+    "intended_category": "Infrastructure",
+    "gemini_guess": "Application"
+  },
+  {
+    "text": "All the clocks across our internal applications are completely out of whack compared to the actual time, which is messing up our timeline views and making it impossible to tell when anything actually happened.",
+    "intended_category": "Infrastructure",
+    "gemini_guess": "Application"
+  },
+  {
+    "text": "All our applications are grinding to an absolute crawl because the storage drives are totally maxed out and running out of space.",
+    "intended_category": "Infrastructure",
+    "gemini_guess": "Storage"
+  }
+]

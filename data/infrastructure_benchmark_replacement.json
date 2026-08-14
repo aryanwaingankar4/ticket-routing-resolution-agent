@@ -1,0 +1,10 @@
+[
+  {
+    "text": "Every single time our system tries to handle a big rush of users, it just completely freezes up instead of automatically getting more power like it's supposed to.",
+    "expected": "Infrastructure"
+  },
+  {
+    "text": "Our main server won't boot back up at all after we had to restart it this morning, and now nobody can log into the system.",
+    "expected": "Infrastructure"
+  }
+]

@@ -12,6 +12,8 @@ Evaluates each on:
     - the held-out in-distribution test split (accuracy + AM-specific
       precision/recall/f1 + AM<->Security confusion cells),
     - a fixed 14-ticket generalization benchmark (used VERBATIM),
+    - a fixed 45-ticket expanded generalization benchmark (loaded from
+      data/novel_tickets_expanded.json),
     - cascade escalation behaviour (MiniLM only, fixed threshold 0.50).
 
 Produces one consolidated comparison table across all 5 levels, saved to
@@ -31,6 +33,7 @@ Run:
     python src/experiments/run_imbalance_sweep.py
 """
 
+import json
 import os
 import sys
 
@@ -61,6 +64,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, os.pardir, os.pardir))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 SKEWED_DIR = os.path.join(DATA_DIR, "skewed")
 RESULTS_CSV = os.path.join(SKEWED_DIR, "imbalance_sweep_results.csv")
+EXPANDED_JSON_PATH = os.path.join(PROJECT_ROOT, "data", "novel_tickets_expanded.json")
 
 # --------------------------------------------------------------------------- #
 # Experiment constants — kept consistent with train_embeddings.py
@@ -95,6 +99,9 @@ CATEGORY_COLUMN_CANDIDATES = ["category", "label", "Category"]
 TFIDF_MAX_FEATURES = 5000
 TFIDF_NGRAM_RANGE = (1, 2)
 TFIDF_STOP_WORDS = "english"
+
+# Expanded benchmark expected size (14 original + 31 new).
+EXPANDED_BENCHMARK_SIZE = 45
 
 
 # --------------------------------------------------------------------------- #
@@ -207,6 +214,80 @@ def _resolve_column(df: pd.DataFrame, candidates, purpose: str, path: str) -> st
         f"Looked for any of: {candidates}\n"
         f"Actual columns present: {list(df.columns)}"
     )
+
+
+def load_expanded_benchmark(path=EXPANDED_JSON_PATH):
+    """
+    Load and validate the 45-ticket expanded generalization benchmark.
+
+    The file must be a JSON list of EXACTLY 45 entries, each a dict with
+    non-empty string keys "text" and "expected" (same shape as
+    NOVEL_TICKETS). Fails loudly via _fail() with an actionable message on
+    any problem (missing file, invalid JSON, wrong type, wrong count, or
+    malformed entries) — never raises a raw traceback.
+
+    Returns the list of dicts (same shape as NOVEL_TICKETS).
+    """
+    if not os.path.isfile(path):
+        _fail(
+            f"Required expanded benchmark file is missing:\n    {path}\n\n"
+            f"This sweep now evaluates against the 45-ticket expanded "
+            f"benchmark in addition to the inline 14-ticket set.\n"
+            f"Make sure data/novel_tickets_expanded.json exists (a flat JSON "
+            f"list of exactly {EXPANDED_BENCHMARK_SIZE} entries, each with "
+            f'non-empty "text" and "expected" string fields).'
+        )
+
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except json.JSONDecodeError as exc:
+        _fail(
+            f"Expanded benchmark file is not valid JSON:\n    {path}\n\n"
+            f"    {exc}"
+        )
+    except Exception as exc:  # noqa: BLE001
+        _fail(f"Failed to read expanded benchmark file {path}:\n    {exc}")
+
+    if not isinstance(data, list):
+        _fail(
+            f"Expanded benchmark file must contain a JSON list, but the "
+            f"top-level value is of type '{type(data).__name__}':\n    {path}"
+        )
+
+    if len(data) != EXPANDED_BENCHMARK_SIZE:
+        _fail(
+            f"Expanded benchmark must contain EXACTLY "
+            f"{EXPANDED_BENCHMARK_SIZE} entries, but found {len(data)}:\n"
+            f"    {path}\n\n"
+            f"Expected 14 original + 31 new = {EXPANDED_BENCHMARK_SIZE} "
+            f"tickets."
+        )
+
+    malformed = []
+    for i, entry in enumerate(data):
+        if not isinstance(entry, dict):
+            malformed.append(f"  [{i}] not a dict (type={type(entry).__name__})")
+            continue
+        text = entry.get("text")
+        expected = entry.get("expected")
+        problems = []
+        if not isinstance(text, str) or not text.strip():
+            problems.append('missing/empty "text"')
+        if not isinstance(expected, str) or not expected.strip():
+            problems.append('missing/empty "expected"')
+        if problems:
+            malformed.append(f"  [{i}] " + "; ".join(problems))
+
+    if malformed:
+        _fail(
+            f"Expanded benchmark file has malformed entries:\n    {path}\n\n"
+            f"Every entry must be a dict with non-empty string \"text\" and "
+            f"\"expected\" keys.\nOffending entries:\n"
+            + "\n".join(malformed)
+        )
+
+    return data
 
 
 def load_minilm():
@@ -399,7 +480,8 @@ def load_level_csv(level_n):
 # --------------------------------------------------------------------------- #
 # Per-level processing
 # --------------------------------------------------------------------------- #
-def process_level(level_n, minilm_model, bench_texts, bench_expecteds):
+def process_level(level_n, minilm_model, bench_texts, bench_expecteds,
+                  expanded_bench_texts, expanded_bench_expecteds):
     print("\n" + "#" * 75)
     print(f"#  SKEW LEVEL  am{level_n}")
     print("#" * 75)
@@ -524,6 +606,29 @@ def process_level(level_n, minilm_model, bench_texts, bench_expecteds):
           f"AM tickets: {minilm_am_detail}")
 
     # ------------------------------------------------------------------ #
+    # (5b) 45-ticket expanded generalization benchmark
+    # ------------------------------------------------------------------ #
+    print("  [5b] 45-ticket expanded benchmark")
+    X_bench45_tfidf = tfidf.transform(expanded_bench_texts)
+    X_bench45_minilm = minilm_model.encode(
+        expanded_bench_texts, batch_size=64, show_progress_bar=False,
+        convert_to_numpy=True,
+    ).astype(np.float32)
+
+    tfidf_bench45_score, tfidf_bench45_res = eval_benchmark(
+        clf_tfidf, X_bench45_tfidf, expanded_bench_expecteds)
+    minilm_bench45_score, minilm_bench45_res = eval_benchmark(
+        clf_minilm, X_bench45_minilm, expanded_bench_expecteds)
+
+    tfidf_am45_correct, tfidf_am45_detail = am_benchmark_detail(tfidf_bench45_res)
+    minilm_am45_correct, minilm_am45_detail = am_benchmark_detail(minilm_bench45_res)
+
+    print(f"      TF-IDF  expanded45 : {tfidf_bench45_score}/45   "
+          f"AM tickets: {tfidf_am45_detail}")
+    print(f"      MiniLM  expanded45 : {minilm_bench45_score}/45   "
+          f"AM tickets: {minilm_am45_detail}")
+
+    # ------------------------------------------------------------------ #
     # (6) Cascade escalation analysis (MiniLM, threshold 0.50)
     # ------------------------------------------------------------------ #
     print(f"  [6] Cascade analysis (MiniLM, fixed threshold "
@@ -553,8 +658,12 @@ def process_level(level_n, minilm_model, bench_texts, bench_expecteds):
         "minilm_heldout_acc": round(acc_minilm, 4),
         "tfidf_bench_14": f"{tfidf_bench_score}/14",
         "minilm_bench_14": f"{minilm_bench_score}/14",
+        "tfidf_bench_45": f"{tfidf_bench45_score}/45",
+        "minilm_bench_45": f"{minilm_bench45_score}/45",
         "tfidf_am_bench": tfidf_am_detail,
         "minilm_am_bench": minilm_am_detail,
+        "tfidf_am_bench_45": tfidf_am45_detail,
+        "minilm_am_bench_45": minilm_am45_detail,
         "tfidf_am_to_sec": tfidf_am_as_sec,
         "minilm_am_to_sec": minilm_am_as_sec,
         "cascade_safety_net_failures": casc["wrong_above"],
@@ -605,9 +714,18 @@ def main() -> None:
     bench_texts = [t["text"] for t in NOVEL_TICKETS]
     bench_expecteds = [t["expected"] for t in NOVEL_TICKETS]
 
+    # Load + validate the 45-ticket expanded benchmark once, reused across
+    # all levels (mirrors how bench_texts/bench_expecteds are built above).
+    expanded_tickets = load_expanded_benchmark()
+    expanded_bench_texts = [t["text"] for t in expanded_tickets]
+    expanded_bench_expecteds = [t["expected"] for t in expanded_tickets]
+
     consolidated = []
     for n in SKEW_LEVELS:
-        row = process_level(n, minilm_model, bench_texts, bench_expecteds)
+        row = process_level(
+            n, minilm_model, bench_texts, bench_expecteds,
+            expanded_bench_texts, expanded_bench_expecteds,
+        )
         consolidated.append(row)
 
     # ------------------------------------------------------------------ #
@@ -621,8 +739,12 @@ def main() -> None:
         "minilm_heldout_acc",
         "tfidf_bench_14",
         "minilm_bench_14",
+        "tfidf_bench_45",
+        "minilm_bench_45",
         "tfidf_am_bench",
         "minilm_am_bench",
+        "tfidf_am_bench_45",
+        "minilm_am_bench_45",
         "tfidf_am_to_sec",
         "minilm_am_to_sec",
         "cascade_safety_net_failures",
