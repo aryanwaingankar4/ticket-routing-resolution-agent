@@ -1,0 +1,2204 @@
+{
+  "_meta": {
+    "note": "PRODUCTION automation-flagging output. threshold=0.80 is FIXED and calibrated (see calibrate_resolution_clustering.py); this is not a sweep.",
+    "per_category_key_policy": "Only categories with at least one flagged cluster (size >= 2) appear as top-level keys. Categories with zero flagged clusters are omitted.",
+    "human_review_caution": "The calibration's 1.0000 precision was measured against known scenario_id ground truth on the 500-ticket development set. Production tickets have no such ground truth at run time -- treat this flagging as a suggestion for human review, not an autonomous action, consistent with the calibration's precision-over-recall design choice.",
+    "model": "all-MiniLM-L6-v2",
+    "threshold": 0.8,
+    "min_cluster_size": 2,
+    "calibration_source": "data/resolution_clustering_calibration_results.csv",
+    "generated_from": "data/category_stores/*.csv",
+    "categories_processed": [
+      "Infrastructure",
+      "Application",
+      "Security",
+      "Database",
+      "Storage",
+      "Network",
+      "Access Management"
+    ],
+    "total_tickets_processed": 500,
+    "total_flagged_clusters": 83,
+    "total_flagged_tickets": 396,
+    "total_singleton_tickets": 104
+  },
+  "Infrastructure": [
+    {
+      "cluster_id": 0,
+      "size": 14,
+      "members": [
+        {
+          "batch_ticket_id": "9",
+          "original_id": "416"
+        },
+        {
+          "batch_ticket_id": "11",
+          "original_id": "3299"
+        },
+        {
+          "batch_ticket_id": "18",
+          "original_id": "1331"
+        },
+        {
+          "batch_ticket_id": "29",
+          "original_id": "487"
+        },
+        {
+          "batch_ticket_id": "103",
+          "original_id": "1234"
+        },
+        {
+          "batch_ticket_id": "144",
+          "original_id": "1251"
+        },
+        {
+          "batch_ticket_id": "167",
+          "original_id": "2742"
+        },
+        {
+          "batch_ticket_id": "231",
+          "original_id": "1892"
+        },
+        {
+          "batch_ticket_id": "325",
+          "original_id": "107"
+        },
+        {
+          "batch_ticket_id": "383",
+          "original_id": "638"
+        },
+        {
+          "batch_ticket_id": "426",
+          "original_id": "755"
+        },
+        {
+          "batch_ticket_id": "432",
+          "original_id": "2941"
+        },
+        {
+          "batch_ticket_id": "452",
+          "original_id": "2623"
+        },
+        {
+          "batch_ticket_id": "462",
+          "original_id": "1941"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nGain console access to PRD-APP-03 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match this new ticket and directly apply to the issue.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 13,
+      "members": [
+        {
+          "batch_ticket_id": "2",
+          "original_id": "455"
+        },
+        {
+          "batch_ticket_id": "5",
+          "original_id": "1314"
+        },
+        {
+          "batch_ticket_id": "97",
+          "original_id": "2378"
+        },
+        {
+          "batch_ticket_id": "132",
+          "original_id": "3404"
+        },
+        {
+          "batch_ticket_id": "168",
+          "original_id": "2906"
+        },
+        {
+          "batch_ticket_id": "247",
+          "original_id": "2486"
+        },
+        {
+          "batch_ticket_id": "264",
+          "original_id": "1431"
+        },
+        {
+          "batch_ticket_id": "318",
+          "original_id": "391"
+        },
+        {
+          "batch_ticket_id": "356",
+          "original_id": "3505"
+        },
+        {
+          "batch_ticket_id": "364",
+          "original_id": "555"
+        },
+        {
+          "batch_ticket_id": "419",
+          "original_id": "3587"
+        },
+        {
+          "batch_ticket_id": "441",
+          "original_id": "1848"
+        },
+        {
+          "batch_ticket_id": "467",
+          "original_id": "2055"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestart the kubelet on node PRD-QUEUE-06 and clear the stale disk-pressure taint. This will allow the node to rejoin the cluster and ensure the pending pods are successfully rescheduled.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check to confirm the node rejoins the cluster correctly.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 12,
+      "members": [
+        {
+          "batch_ticket_id": "25",
+          "original_id": "1291"
+        },
+        {
+          "batch_ticket_id": "35",
+          "original_id": "2989"
+        },
+        {
+          "batch_ticket_id": "50",
+          "original_id": "983"
+        },
+        {
+          "batch_ticket_id": "141",
+          "original_id": "2585"
+        },
+        {
+          "batch_ticket_id": "157",
+          "original_id": "3856"
+        },
+        {
+          "batch_ticket_id": "248",
+          "original_id": "3325"
+        },
+        {
+          "batch_ticket_id": "268",
+          "original_id": "473"
+        },
+        {
+          "batch_ticket_id": "333",
+          "original_id": "929"
+        },
+        {
+          "batch_ticket_id": "353",
+          "original_id": "2682"
+        },
+        {
+          "batch_ticket_id": "371",
+          "original_id": "2591"
+        },
+        {
+          "batch_ticket_id": "412",
+          "original_id": "248"
+        },
+        {
+          "batch_ticket_id": "421",
+          "original_id": "504"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-APP-04 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier.\n\n*Note: The retrieved past tickets closely match this issue and provide an exact resolution.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 9,
+      "members": [
+        {
+          "batch_ticket_id": "14",
+          "original_id": "3491"
+        },
+        {
+          "batch_ticket_id": "98",
+          "original_id": "165"
+        },
+        {
+          "batch_ticket_id": "100",
+          "original_id": "877"
+        },
+        {
+          "batch_ticket_id": "170",
+          "original_id": "2704"
+        },
+        {
+          "batch_ticket_id": "175",
+          "original_id": "20"
+        },
+        {
+          "batch_ticket_id": "232",
+          "original_id": "2410"
+        },
+        {
+          "batch_ticket_id": "424",
+          "original_id": "3341"
+        },
+        {
+          "batch_ticket_id": "435",
+          "original_id": "951"
+        },
+        {
+          "batch_ticket_id": "486",
+          "original_id": "3"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on server PRD-CACHE-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. \n\n*Note: The retrieved examples closely match the new ticket (including an exact historical match for PRD-CACHE-03).*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 8,
+      "members": [
+        {
+          "batch_ticket_id": "38",
+          "original_id": "1258"
+        },
+        {
+          "batch_ticket_id": "66",
+          "original_id": "3821"
+        },
+        {
+          "batch_ticket_id": "138",
+          "original_id": "1283"
+        },
+        {
+          "batch_ticket_id": "346",
+          "original_id": "354"
+        },
+        {
+          "batch_ticket_id": "388",
+          "original_id": "3700"
+        },
+        {
+          "batch_ticket_id": "439",
+          "original_id": "2568"
+        },
+        {
+          "batch_ticket_id": "493",
+          "original_id": "1972"
+        },
+        {
+          "batch_ticket_id": "500",
+          "original_id": "2075"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck the cron job on PRD-WEB-03, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.\n\n*Note: The retrieved examples are an exact/close match for this ticket; however, a human agent should double-check to confirm the root cause.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 8,
+      "members": [
+        {
+          "batch_ticket_id": "42",
+          "original_id": "441"
+        },
+        {
+          "batch_ticket_id": "164",
+          "original_id": "337"
+        },
+        {
+          "batch_ticket_id": "198",
+          "original_id": "2395"
+        },
+        {
+          "batch_ticket_id": "223",
+          "original_id": "1807"
+        },
+        {
+          "batch_ticket_id": "234",
+          "original_id": "438"
+        },
+        {
+          "batch_ticket_id": "323",
+          "original_id": "252"
+        },
+        {
+          "batch_ticket_id": "332",
+          "original_id": "3443"
+        },
+        {
+          "batch_ticket_id": "366",
+          "original_id": "286"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the I/O saturation on PRD-CACHE-02 to verbose debug logging writing synchronously, disable debug logging, and move the logs to a dedicated volume.\n\n*Note: The retrieved examples closely match this new ticket.*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 7,
+      "members": [
+        {
+          "batch_ticket_id": "40",
+          "original_id": "3100"
+        },
+        {
+          "batch_ticket_id": "45",
+          "original_id": "106"
+        },
+        {
+          "batch_ticket_id": "58",
+          "original_id": "1458"
+        },
+        {
+          "batch_ticket_id": "65",
+          "original_id": "3930"
+        },
+        {
+          "batch_ticket_id": "153",
+          "original_id": "2633"
+        },
+        {
+          "batch_ticket_id": "246",
+          "original_id": "3702"
+        },
+        {
+          "batch_ticket_id": "496",
+          "original_id": "199"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nReconfigure chrony on PRD-CACHE-03 to use the internal NTP pool and force an immediate sync to correct the time drift. \n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "46",
+          "original_id": "2712"
+        },
+        {
+          "batch_ticket_id": "56",
+          "original_id": "2320"
+        },
+        {
+          "batch_ticket_id": "114",
+          "original_id": "1060"
+        },
+        {
+          "batch_ticket_id": "131",
+          "original_id": "1380"
+        },
+        {
+          "batch_ticket_id": "171",
+          "original_id": "543"
+        },
+        {
+          "batch_ticket_id": "365",
+          "original_id": "2837"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck the autoscaling policy for PRD-APP-03 to see if it references a stale metric. Correct the scaling metric and cooldown settings so that new instances launch on demand.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify that the metric and cooldown updates are successfully applied.*"
+    },
+    {
+      "cluster_id": 8,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "139",
+          "original_id": "901"
+        },
+        {
+          "batch_ticket_id": "147",
+          "original_id": "2905"
+        },
+        {
+          "batch_ticket_id": "418",
+          "original_id": "2164"
+        },
+        {
+          "batch_ticket_id": "454",
+          "original_id": "3087"
+        },
+        {
+          "batch_ticket_id": "463",
+          "original_id": "200"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the I/O saturation on VM-BATCH-10 to verbose debug logging writing synchronously, then disable debug logging and move the logs to a dedicated volume.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 9,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "68",
+          "original_id": "960"
+        },
+        {
+          "batch_ticket_id": "295",
+          "original_id": "520"
+        },
+        {
+          "batch_ticket_id": "428",
+          "original_id": "958"
+        },
+        {
+          "batch_ticket_id": "495",
+          "original_id": "3052"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe health-check endpoint on PRD-CACHE-02 is likely timing out under load. Raise the probe timeout and interval on the load balancer to keep PRD-CACHE-02 reliably in rotation.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 10,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "82",
+          "original_id": "1780"
+        },
+        {
+          "batch_ticket_id": "327",
+          "original_id": "2101"
+        },
+        {
+          "batch_ticket_id": "334",
+          "original_id": "3696"
+        },
+        {
+          "batch_ticket_id": "341",
+          "original_id": "1246"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on K8S-NODE-15 and add a memory-usage alert set at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 11,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "86",
+          "original_id": "3090"
+        },
+        {
+          "batch_ticket_id": "188",
+          "original_id": "423"
+        },
+        {
+          "batch_ticket_id": "244",
+          "original_id": "953"
+        },
+        {
+          "batch_ticket_id": "361",
+          "original_id": "3088"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe health-check endpoint on VM-BATCH-10 is likely timing out under load. To resolve the issue, raise the probe timeout and interval settings on the load balancer to prevent it from marking the backend as unhealthy and pulling it out of rotation.\n\n*Note: The retrieved examples closely match this ticket and its resolution.*"
+    },
+    {
+      "cluster_id": 12,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "47",
+          "original_id": "635"
+        },
+        {
+          "batch_ticket_id": "195",
+          "original_id": "1367"
+        },
+        {
+          "batch_ticket_id": "379",
+          "original_id": "3560"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck if the cron job on K8S-NODE-15 is failing due to a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume.\n\n*Note: The retrieved examples closely match this ticket; however, a human agent should double-check to ensure the issue is resolved.*"
+    },
+    {
+      "cluster_id": 13,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "48",
+          "original_id": "918"
+        },
+        {
+          "batch_ticket_id": "202",
+          "original_id": "2575"
+        },
+        {
+          "batch_ticket_id": "230",
+          "original_id": "1660"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on K8S-NODE-14, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples are an exact match for this ticket, so a human agent can apply this standard resolution directly.*"
+    },
+    {
+      "cluster_id": 14,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "136",
+          "original_id": "1851"
+        },
+        {
+          "batch_ticket_id": "208",
+          "original_id": "3205"
+        },
+        {
+          "batch_ticket_id": "340",
+          "original_id": "427"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 15,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "120",
+          "original_id": "2856"
+        },
+        {
+          "batch_ticket_id": "484",
+          "original_id": "2859"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nGain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
+    },
+    {
+      "cluster_id": 16,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "154",
+          "original_id": "3058"
+        },
+        {
+          "batch_ticket_id": "160",
+          "original_id": "3331"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nGain console access to VM-BATCH-09 to check for a failed fstab mount blocking the boot process, then correct the mount entry so the host can boot cleanly.\n\n*Note: The retrieved past tickets closely match this issue and support this exact resolution.*"
+    }
+  ],
+  "Application": [
+    {
+      "cluster_id": 0,
+      "size": 13,
+      "members": [
+        {
+          "batch_ticket_id": "4",
+          "original_id": "3154"
+        },
+        {
+          "batch_ticket_id": "8",
+          "original_id": "560"
+        },
+        {
+          "batch_ticket_id": "44",
+          "original_id": "3971"
+        },
+        {
+          "batch_ticket_id": "52",
+          "original_id": "1249"
+        },
+        {
+          "batch_ticket_id": "81",
+          "original_id": "3754"
+        },
+        {
+          "batch_ticket_id": "135",
+          "original_id": "3502"
+        },
+        {
+          "batch_ticket_id": "137",
+          "original_id": "888"
+        },
+        {
+          "batch_ticket_id": "174",
+          "original_id": "2519"
+        },
+        {
+          "batch_ticket_id": "179",
+          "original_id": "2579"
+        },
+        {
+          "batch_ticket_id": "304",
+          "original_id": "839"
+        },
+        {
+          "batch_ticket_id": "336",
+          "original_id": "3466"
+        },
+        {
+          "batch_ticket_id": "345",
+          "original_id": "2144"
+        },
+        {
+          "batch_ticket_id": "456",
+          "original_id": "1629"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nInvestigate the database behind the Vendor Portal to check for full table scans caused by a missing index. Add the missing database index and enable query caching to restore fast page loads.\n\n*Note: The retrieved examples are an exact match for this issue, but a human agent should double-check the implementation steps during application maintenance.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 13,
+      "members": [
+        {
+          "batch_ticket_id": "110",
+          "original_id": "2307"
+        },
+        {
+          "batch_ticket_id": "124",
+          "original_id": "3246"
+        },
+        {
+          "batch_ticket_id": "176",
+          "original_id": "1058"
+        },
+        {
+          "batch_ticket_id": "206",
+          "original_id": "2544"
+        },
+        {
+          "batch_ticket_id": "225",
+          "original_id": "1008"
+        },
+        {
+          "batch_ticket_id": "254",
+          "original_id": "3610"
+        },
+        {
+          "batch_ticket_id": "257",
+          "original_id": "3569"
+        },
+        {
+          "batch_ticket_id": "271",
+          "original_id": "2401"
+        },
+        {
+          "batch_ticket_id": "349",
+          "original_id": "2857"
+        },
+        {
+          "batch_ticket_id": "376",
+          "original_id": "523"
+        },
+        {
+          "batch_ticket_id": "389",
+          "original_id": "1095"
+        },
+        {
+          "batch_ticket_id": "447",
+          "original_id": "3537"
+        },
+        {
+          "batch_ticket_id": "482",
+          "original_id": "1115"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nInvestigate the recent Expense Tracker deployment for a missed database migration. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket; a human agent should verify the migration status.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 10,
+      "members": [
+        {
+          "batch_ticket_id": "119",
+          "original_id": "3259"
+        },
+        {
+          "batch_ticket_id": "128",
+          "original_id": "3964"
+        },
+        {
+          "batch_ticket_id": "189",
+          "original_id": "411"
+        },
+        {
+          "batch_ticket_id": "197",
+          "original_id": "3479"
+        },
+        {
+          "batch_ticket_id": "305",
+          "original_id": "230"
+        },
+        {
+          "batch_ticket_id": "329",
+          "original_id": "3270"
+        },
+        {
+          "batch_ticket_id": "378",
+          "original_id": "3588"
+        },
+        {
+          "batch_ticket_id": "400",
+          "original_id": "2933"
+        },
+        {
+          "batch_ticket_id": "458",
+          "original_id": "931"
+        },
+        {
+          "batch_ticket_id": "460",
+          "original_id": "3954"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRaise the upload body-size limit in the Vendor Portal reverse proxy and worker config, then verify that large file uploads complete successfully.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 7,
+      "members": [
+        {
+          "batch_ticket_id": "34",
+          "original_id": "357"
+        },
+        {
+          "batch_ticket_id": "59",
+          "original_id": "144"
+        },
+        {
+          "batch_ticket_id": "190",
+          "original_id": "3365"
+        },
+        {
+          "batch_ticket_id": "199",
+          "original_id": "2165"
+        },
+        {
+          "batch_ticket_id": "296",
+          "original_id": "68"
+        },
+        {
+          "batch_ticket_id": "401",
+          "original_id": "1162"
+        },
+        {
+          "batch_ticket_id": "411",
+          "original_id": "2664"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the Billing Portal HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the deployment.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "28",
+          "original_id": "1281"
+        },
+        {
+          "batch_ticket_id": "242",
+          "original_id": "3137"
+        },
+        {
+          "batch_ticket_id": "315",
+          "original_id": "2944"
+        },
+        {
+          "batch_ticket_id": "369",
+          "original_id": "928"
+        },
+        {
+          "batch_ticket_id": "481",
+          "original_id": "2606"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, deploy a hotfix, and add input validation along with a regression test.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "39",
+          "original_id": "2804"
+        },
+        {
+          "batch_ticket_id": "212",
+          "original_id": "3572"
+        },
+        {
+          "batch_ticket_id": "321",
+          "original_id": "3194"
+        },
+        {
+          "batch_ticket_id": "427",
+          "original_id": "2236"
+        },
+        {
+          "batch_ticket_id": "470",
+          "original_id": "1637"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe HR Self-Service cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "53",
+          "original_id": "3701"
+        },
+        {
+          "batch_ticket_id": "129",
+          "original_id": "1524"
+        },
+        {
+          "batch_ticket_id": "224",
+          "original_id": "3585"
+        },
+        {
+          "batch_ticket_id": "415",
+          "original_id": "1497"
+        },
+        {
+          "batch_ticket_id": "494",
+          "original_id": "2330"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Procurement Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "204",
+          "original_id": "1016"
+        },
+        {
+          "batch_ticket_id": "280",
+          "original_id": "2759"
+        },
+        {
+          "batch_ticket_id": "331",
+          "original_id": "3996"
+        },
+        {
+          "batch_ticket_id": "359",
+          "original_id": "3321"
+        },
+        {
+          "batch_ticket_id": "380",
+          "original_id": "1825"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe outbound mail worker for the Ticketing System has a stuck queue following an SMTP change. Update the mailer settings, drain the queue, and verify that the scheduled report emails resume sending to users.\n\n*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration changes during execution."
+    },
+    {
+      "cluster_id": 8,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "12",
+          "original_id": "2709"
+        },
+        {
+          "batch_ticket_id": "142",
+          "original_id": "1427"
+        },
+        {
+          "batch_ticket_id": "360",
+          "original_id": "3419"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCorrect the Field Service App session cookie domain settings, which were misconfigured after a deploy, and clear the CDN cache to restore login functionality.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment settings and CDN cache.*"
+    },
+    {
+      "cluster_id": 9,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "55",
+          "original_id": "1662"
+        },
+        {
+          "batch_ticket_id": "259",
+          "original_id": "2607"
+        },
+        {
+          "batch_ticket_id": "489",
+          "original_id": "343"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nFix the Payroll cache, as it is not being invalidated on write. Update the cache-busting key and reduce the TTL to ensure users see current data.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 10,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "152",
+          "original_id": "1896"
+        },
+        {
+          "batch_ticket_id": "182",
+          "original_id": "651"
+        },
+        {
+          "batch_ticket_id": "205",
+          "original_id": "1573"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe Salesforce API credentials used by the Procurement Portal have expired. Rotate the token, store the new token securely in the secrets manager, and then re-enable the sync job. \n\n*Note: The retrieved examples closely match this ticket (exact duplicate found).*"
+    },
+    {
+      "cluster_id": 11,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "84",
+          "original_id": "3453"
+        },
+        {
+          "batch_ticket_id": "239",
+          "original_id": "1550"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the recent Field Service App deploy, then redeploy the application to clear the post-release errors. \n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 12,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "172",
+          "original_id": "439"
+        },
+        {
+          "batch_ticket_id": "178",
+          "original_id": "328"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe Procurement Portal cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.\n\n*Note: The retrieved examples closely match the new ticket issue.*"
+    },
+    {
+      "cluster_id": 13,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "250",
+          "original_id": "1791"
+        },
+        {
+          "batch_ticket_id": "265",
+          "original_id": "1779"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe Workday API credentials used by Inventory Manager have likely expired. Rotate the authentication token, store the new token securely in the secrets manager, and re-enable the sync job. \n\n*Note: The retrieved past tickets closely match this issue; however, a human agent should still double-check the steps.*"
+    },
+    {
+      "cluster_id": 14,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "285",
+          "original_id": "1588"
+        },
+        {
+          "batch_ticket_id": "473",
+          "original_id": "604"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Billing Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results.\n\n*Note: The retrieved examples are an exact match for this ticket.*"
+    },
+    {
+      "cluster_id": 15,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "444",
+          "original_id": "377"
+        },
+        {
+          "batch_ticket_id": "491",
+          "original_id": "1579"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRotate the expired GCP API credentials used by the CRM, store the new token in the secrets manager, and re-enable the sync job.\n\n*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the configuration.*"
+    },
+    {
+      "cluster_id": 16,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "461",
+          "original_id": "792"
+        },
+        {
+          "batch_ticket_id": "480",
+          "original_id": "1038"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Field Service App to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match the new ticket issue.*"
+    }
+  ],
+  "Security": [
+    {
+      "cluster_id": 0,
+      "size": 13,
+      "members": [
+        {
+          "batch_ticket_id": "77",
+          "original_id": "182"
+        },
+        {
+          "batch_ticket_id": "101",
+          "original_id": "1437"
+        },
+        {
+          "batch_ticket_id": "207",
+          "original_id": "428"
+        },
+        {
+          "batch_ticket_id": "211",
+          "original_id": "2762"
+        },
+        {
+          "batch_ticket_id": "307",
+          "original_id": "3123"
+        },
+        {
+          "batch_ticket_id": "308",
+          "original_id": "1067"
+        },
+        {
+          "batch_ticket_id": "312",
+          "original_id": "2890"
+        },
+        {
+          "batch_ticket_id": "328",
+          "original_id": "1134"
+        },
+        {
+          "batch_ticket_id": "354",
+          "original_id": "503"
+        },
+        {
+          "batch_ticket_id": "417",
+          "original_id": "1153"
+        },
+        {
+          "batch_ticket_id": "437",
+          "original_id": "1847"
+        },
+        {
+          "batch_ticket_id": "443",
+          "original_id": "287"
+        },
+        {
+          "batch_ticket_id": "466",
+          "original_id": "2748"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nLock account r.desai, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred.\n\n*Note: The retrieved past tickets are an exact match for this issue, but a human agent should double-check to ensure all steps are applied correctly.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 7,
+      "members": [
+        {
+          "batch_ticket_id": "62",
+          "original_id": "3583"
+        },
+        {
+          "batch_ticket_id": "218",
+          "original_id": "1877"
+        },
+        {
+          "batch_ticket_id": "266",
+          "original_id": "1931"
+        },
+        {
+          "batch_ticket_id": "284",
+          "original_id": "2209"
+        },
+        {
+          "batch_ticket_id": "373",
+          "original_id": "2125"
+        },
+        {
+          "batch_ticket_id": "394",
+          "original_id": "1689"
+        },
+        {
+          "batch_ticket_id": "465",
+          "original_id": "251"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nApply the vendor security patch to PRD-CACHE-02 during an emergency change window, then rescan the system to confirm that the CVE has been successfully remediated.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 7,
+      "members": [
+        {
+          "batch_ticket_id": "145",
+          "original_id": "3675"
+        },
+        {
+          "batch_ticket_id": "194",
+          "original_id": "32"
+        },
+        {
+          "batch_ticket_id": "215",
+          "original_id": "505"
+        },
+        {
+          "batch_ticket_id": "222",
+          "original_id": "3287"
+        },
+        {
+          "batch_ticket_id": "227",
+          "original_id": "2528"
+        },
+        {
+          "batch_ticket_id": "363",
+          "original_id": "1002"
+        },
+        {
+          "batch_ticket_id": "374",
+          "original_id": "3623"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for the Vendor Portal, then configure auto-renewal via ACME to prevent future recurrence.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the installation and verification.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "69",
+          "original_id": "694"
+        },
+        {
+          "batch_ticket_id": "118",
+          "original_id": "2850"
+        },
+        {
+          "batch_ticket_id": "126",
+          "original_id": "2092"
+        },
+        {
+          "batch_ticket_id": "148",
+          "original_id": "3026"
+        },
+        {
+          "batch_ticket_id": "149",
+          "original_id": "2326"
+        },
+        {
+          "batch_ticket_id": "339",
+          "original_id": "342"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRemove the phishing message from all mailboxes via mail-flow rules, block the sender domain, and reset passwords for the affected users.\n\n*Note: The retrieved examples closely match the new ticket; no additional verification is necessary.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "184",
+          "original_id": "123"
+        },
+        {
+          "batch_ticket_id": "220",
+          "original_id": "1254"
+        },
+        {
+          "batch_ticket_id": "273",
+          "original_id": "240"
+        },
+        {
+          "batch_ticket_id": "302",
+          "original_id": "908"
+        },
+        {
+          "batch_ticket_id": "357",
+          "original_id": "1722"
+        },
+        {
+          "batch_ticket_id": "409",
+          "original_id": "1130"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRevoke the leaked cloud key immediately, rotate all affected credentials, and enable pre-commit secret scanning to block future leaks.\n\n*Note: The retrieved past tickets closely match this new ticket.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "351",
+          "original_id": "171"
+        },
+        {
+          "batch_ticket_id": "399",
+          "original_id": "1493"
+        },
+        {
+          "batch_ticket_id": "413",
+          "original_id": "2201"
+        },
+        {
+          "batch_ticket_id": "429",
+          "original_id": "2655"
+        },
+        {
+          "batch_ticket_id": "451",
+          "original_id": "3224"
+        },
+        {
+          "batch_ticket_id": "497",
+          "original_id": "3507"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIsolate the endpoint of j.singh from the network, run a full offline scan to remove the trojan, and re-image the machine as a precaution.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "108",
+          "original_id": "3172"
+        },
+        {
+          "batch_ticket_id": "117",
+          "original_id": "3475"
+        },
+        {
+          "batch_ticket_id": "125",
+          "original_id": "3099"
+        },
+        {
+          "batch_ticket_id": "342",
+          "original_id": "367"
+        },
+        {
+          "batch_ticket_id": "438",
+          "original_id": "1878"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nEnable rate limiting and account lockout on the Analytics Dashboard login endpoint, add the attacking IP ranges to a block list, and turn on CAPTCHA after repeated login failures.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "134",
+          "original_id": "2584"
+        },
+        {
+          "batch_ticket_id": "196",
+          "original_id": "967"
+        },
+        {
+          "batch_ticket_id": "367",
+          "original_id": "3644"
+        },
+        {
+          "batch_ticket_id": "404",
+          "original_id": "1761"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRevoke the unauthorized administrator rights from account `s.khan`, trace the change to identify and fix the misconfigured group policy, and tighten the privileged-access approval controls.\n\n*Note: The retrieved past tickets closely match this issue (exact match for the user and ticket details).*"
+    },
+    {
+      "cluster_id": 8,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "146",
+          "original_id": "3863"
+        },
+        {
+          "batch_ticket_id": "158",
+          "original_id": "1401"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestrict port 443 on VM-BATCH-10 to the internal management network using firewall and security-group rules, then verify that the port is no longer reachable from the public internet.\n\n*Note: The retrieved past tickets closely match this issue and provide an exact resolution.*"
+    }
+  ],
+  "Database": [
+    {
+      "cluster_id": 0,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "74",
+          "original_id": "2533"
+        },
+        {
+          "batch_ticket_id": "85",
+          "original_id": "1643"
+        },
+        {
+          "batch_ticket_id": "162",
+          "original_id": "2653"
+        },
+        {
+          "batch_ticket_id": "261",
+          "original_id": "2972"
+        },
+        {
+          "batch_ticket_id": "297",
+          "original_id": "2208"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nAnalyze the `catalog_pg` slow-query log, add the two missing indexes, and rewrite the correlated subquery to reduce execution times.\n\n*Note: The retrieved past tickets match this issue exactly; however, a human agent should double-check the specific queries and index definitions before applying them.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "274",
+          "original_id": "2603"
+        },
+        {
+          "batch_ticket_id": "281",
+          "original_id": "516"
+        },
+        {
+          "batch_ticket_id": "326",
+          "original_id": "432"
+        },
+        {
+          "batch_ticket_id": "416",
+          "original_id": "667"
+        },
+        {
+          "batch_ticket_id": "475",
+          "original_id": "1181"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\n\nThe application server's connection pool to the database (such as `billing_mysql`) has likely exhausted. Restart the connection pooler and verify that Payroll can reach the database again to restore record lookups.\n\n*Note: The retrieved examples are an exact match for this ticket, but a human agent should double-check the specific database connection pool involved.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "73",
+          "original_id": "2814"
+        },
+        {
+          "batch_ticket_id": "75",
+          "original_id": "168"
+        },
+        {
+          "batch_ticket_id": "94",
+          "original_id": "1964"
+        },
+        {
+          "batch_ticket_id": "255",
+          "original_id": "1760"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nArchive the old WAL/transaction logs and expand the `sessions_redis` data volume. Once the disk space is freed and expanded, bring the database back into read-write mode.\n\n*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the steps during execution.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "76",
+          "original_id": "3223"
+        },
+        {
+          "batch_ticket_id": "116",
+          "original_id": "1623"
+        },
+        {
+          "batch_ticket_id": "375",
+          "original_id": "3853"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nReorder the conflicting write operations to acquire locks in a consistent order on `customers_pg` and shorten the transaction scope to eliminate the deadlocks.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "213",
+          "original_id": "2132"
+        },
+        {
+          "batch_ticket_id": "440",
+          "original_id": "2174"
+        },
+        {
+          "batch_ticket_id": "479",
+          "original_id": "2909"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTune the autovacuum thresholds and cost limits on `catalog_pg`, and run a manual vacuum on the worst tables to recover query performance and disk usage.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific values used for the tuning adjustments.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "279",
+          "original_id": "2798"
+        },
+        {
+          "batch_ticket_id": "387",
+          "original_id": "1730"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTune the autovacuum thresholds and cost limits on `billing_mysql`, then run a manual vacuum on the worst tables to recover query performance and disk usage.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific table bloat metrics before executing.*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "287",
+          "original_id": "2194"
+        },
+        {
+          "batch_ticket_id": "292",
+          "original_id": "2516"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRun consistency checks on `billing_mysql` to identify any corrupted indexes caused by an unclean shutdown. Rebuild the affected indexes, and validate their integrity against the last good backup.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still double-check the database status during execution.*"
+    }
+  ],
+  "Storage": [
+    {
+      "cluster_id": 0,
+      "size": 10,
+      "members": [
+        {
+          "batch_ticket_id": "15",
+          "original_id": "2050"
+        },
+        {
+          "batch_ticket_id": "36",
+          "original_id": "3651"
+        },
+        {
+          "batch_ticket_id": "93",
+          "original_id": "3358"
+        },
+        {
+          "batch_ticket_id": "113",
+          "original_id": "1136"
+        },
+        {
+          "batch_ticket_id": "235",
+          "original_id": "3699"
+        },
+        {
+          "batch_ticket_id": "319",
+          "original_id": "767"
+        },
+        {
+          "batch_ticket_id": "398",
+          "original_id": "1555"
+        },
+        {
+          "batch_ticket_id": "431",
+          "original_id": "1987"
+        },
+        {
+          "batch_ticket_id": "477",
+          "original_id": "2172"
+        },
+        {
+          "batch_ticket_id": "483",
+          "original_id": "249"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nThe new machines are likely missing the updated SMB protocol setting required by `\\\\fs02\\marketing`. Resolve this by pushing the correct client configuration via policy, which will allow the share to map successfully.\n\n*Note: The retrieved past tickets closely match this issue; a human agent should verify that the policy applies correctly to the new machines.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "180",
+          "original_id": "3763"
+        },
+        {
+          "batch_ticket_id": "311",
+          "original_id": "3885"
+        },
+        {
+          "batch_ticket_id": "368",
+          "original_id": "1050"
+        },
+        {
+          "batch_ticket_id": "433",
+          "original_id": "2017"
+        },
+        {
+          "batch_ticket_id": "453",
+          "original_id": "1694"
+        },
+        {
+          "batch_ticket_id": "498",
+          "original_id": "1952"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTune the NFS mount options on PRD-APP-03 to use hard mounts with proper timeouts, and pin the client to a stable server address.\n\n*Note:* The retrieved examples closely match this ticket."
+    },
+    {
+      "cluster_id": 2,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "1",
+          "original_id": "3314"
+        },
+        {
+          "batch_ticket_id": "3",
+          "original_id": "1137"
+        },
+        {
+          "batch_ticket_id": "32",
+          "original_id": "3347"
+        },
+        {
+          "batch_ticket_id": "210",
+          "original_id": "655"
+        },
+        {
+          "batch_ticket_id": "384",
+          "original_id": "954"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nReview the current storage usage for the Kolkata Branch, archive stale data to cold storage, and raise their quota after receiving manager approval.\n\n*Note: The retrieved examples closely match this ticket, but a human agent should still verify the details.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "7",
+          "original_id": "3974"
+        },
+        {
+          "batch_ticket_id": "96",
+          "original_id": "1936"
+        },
+        {
+          "batch_ticket_id": "291",
+          "original_id": "3602"
+        },
+        {
+          "batch_ticket_id": "338",
+          "original_id": "1584"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestart the share service backing `\\\\nas05\\engineering`, verify the permissions, and remap the share for the affected users.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the steps during execution.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "24",
+          "original_id": "2518"
+        },
+        {
+          "batch_ticket_id": "105",
+          "original_id": "1364"
+        },
+        {
+          "batch_ticket_id": "109",
+          "original_id": "3241"
+        },
+        {
+          "batch_ticket_id": "485",
+          "original_id": "2339"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck the storage array behind `\\\\fs01\\operations` for a failing disk causing rebuild-related slowness. Replace the failing disk to restore normal read and write performance.\n\n*Note:* The retrieved examples match the new ticket's issue exactly."
+    },
+    {
+      "cluster_id": 5,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "71",
+          "original_id": "2470"
+        },
+        {
+          "batch_ticket_id": "200",
+          "original_id": "122"
+        },
+        {
+          "batch_ticket_id": "216",
+          "original_id": "1023"
+        },
+        {
+          "batch_ticket_id": "320",
+          "original_id": "2421"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nReplace the failed drive in the PRD-WEB-03 array, allow the array to rebuild, and confirm that full redundancy is restored with no data loss.\n\n*Note: The retrieved examples closely match this ticket and its specific host (PRD-WEB-03).*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "130",
+          "original_id": "2308"
+        },
+        {
+          "batch_ticket_id": "237",
+          "original_id": "459"
+        },
+        {
+          "batch_ticket_id": "408",
+          "original_id": "750"
+        },
+        {
+          "batch_ticket_id": "464",
+          "original_id": "2044"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCorrect the inherited NTFS permissions on `\\\\nas03\\projects` for the relevant Remote/WFH group and re-propagated ACLs so the files open as expected.\n\n*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check the specific group membership before applying ACL re-propagation.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "177",
+          "original_id": "2159"
+        },
+        {
+          "batch_ticket_id": "289",
+          "original_id": "2180"
+        },
+        {
+          "batch_ticket_id": "445",
+          "original_id": "745"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestore the requested folder on \\\\fs01\\hr from the previous night's snapshot and confirm file integrity with the requesting user.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 8,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "219",
+          "original_id": "3501"
+        },
+        {
+          "batch_ticket_id": "226",
+          "original_id": "2192"
+        },
+        {
+          "batch_ticket_id": "236",
+          "original_id": "2672"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestore the requested folder on \\\\nas03\\media from the previous night's snapshot, then confirm file integrity with the requesting user.\n\n*Note: The retrieved examples are an exact match for this ticket.*"
+    },
+    {
+      "cluster_id": 9,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "72",
+          "original_id": "2238"
+        },
+        {
+          "batch_ticket_id": "276",
+          "original_id": "837"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck the disk array behind `\\\\nas05\\engineering` for a failing disk causing rebuild-related slowness, and replace the failing disk to restore normal performance.\n\n*Note: The retrieved examples closely match this ticket.*"
+    }
+  ],
+  "Network": [
+    {
+      "cluster_id": 0,
+      "size": 13,
+      "members": [
+        {
+          "batch_ticket_id": "91",
+          "original_id": "59"
+        },
+        {
+          "batch_ticket_id": "127",
+          "original_id": "1265"
+        },
+        {
+          "batch_ticket_id": "221",
+          "original_id": "672"
+        },
+        {
+          "batch_ticket_id": "233",
+          "original_id": "3211"
+        },
+        {
+          "batch_ticket_id": "243",
+          "original_id": "3790"
+        },
+        {
+          "batch_ticket_id": "256",
+          "original_id": "987"
+        },
+        {
+          "batch_ticket_id": "260",
+          "original_id": "583"
+        },
+        {
+          "batch_ticket_id": "267",
+          "original_id": "3191"
+        },
+        {
+          "batch_ticket_id": "298",
+          "original_id": "2337"
+        },
+        {
+          "batch_ticket_id": "348",
+          "original_id": "1295"
+        },
+        {
+          "batch_ticket_id": "370",
+          "original_id": "3092"
+        },
+        {
+          "batch_ticket_id": "472",
+          "original_id": "769"
+        },
+        {
+          "batch_ticket_id": "476",
+          "original_id": "2284"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck the wireless controller at Remote/WFH for config loss resulting from a power event. Restore the configuration to bring the access points back online.\n\n*Note: The retrieved past tickets closely match this issue and recommend the same resolution.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "20",
+          "original_id": "1894"
+        },
+        {
+          "batch_ticket_id": "54",
+          "original_id": "3233"
+        },
+        {
+          "batch_ticket_id": "95",
+          "original_id": "85"
+        },
+        {
+          "batch_ticket_id": "217",
+          "original_id": "3332"
+        },
+        {
+          "batch_ticket_id": "396",
+          "original_id": "833"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCorrect the stale DNS record for the Ticketing System on the authoritative server and flush the resolver caches to restore resolution.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "67",
+          "original_id": "2616"
+        },
+        {
+          "batch_ticket_id": "70",
+          "original_id": "3570"
+        },
+        {
+          "batch_ticket_id": "88",
+          "original_id": "2911"
+        },
+        {
+          "batch_ticket_id": "165",
+          "original_id": "902"
+        },
+        {
+          "batch_ticket_id": "372",
+          "original_id": "3043"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nIsolate the packet loss to determine if it is stemming from a faulty circuit segment on the Ahmedabad Office link, and have the carrier replace the segment until packet loss drops back to zero.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify that the circuit segment replacement resolves the issue.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "112",
+          "original_id": "1252"
+        },
+        {
+          "batch_ticket_id": "317",
+          "original_id": "3337"
+        },
+        {
+          "batch_ticket_id": "377",
+          "original_id": "3979"
+        },
+        {
+          "batch_ticket_id": "442",
+          "original_id": "2242"
+        },
+        {
+          "batch_ticket_id": "457",
+          "original_id": "2666"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the latency to identify if there is a saturated link on the path to PRD-CACHE-03. Reroute traffic over a secondary path and open a capacity request.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 4,
+      "members": [
+        {
+          "batch_ticket_id": "228",
+          "original_id": "1177"
+        },
+        {
+          "batch_ticket_id": "337",
+          "original_id": "2131"
+        },
+        {
+          "batch_ticket_id": "352",
+          "original_id": "3097"
+        },
+        {
+          "batch_ticket_id": "391",
+          "original_id": "3619"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the hardware status before proceeding.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 3,
+      "members": [
+        {
+          "batch_ticket_id": "163",
+          "original_id": "3612"
+        },
+        {
+          "batch_ticket_id": "293",
+          "original_id": "1505"
+        },
+        {
+          "batch_ticket_id": "414",
+          "original_id": "454"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nAdd an explicit firewall allow rule for port 6379 scoped to the required source ranges, and then verify that the service becomes reachable.\n\n*Note: The retrieved examples closely match the issue described in the new ticket.*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "10",
+          "original_id": "3284"
+        },
+        {
+          "batch_ticket_id": "245",
+          "original_id": "3769"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the latency to identify the saturated link on the path to PRD-AUTH-05, reroute traffic over a secondary path, and open a capacity request.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the execution.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "13",
+          "original_id": "2628"
+        },
+        {
+          "batch_ticket_id": "49",
+          "original_id": "3559"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nCheck for a routing change that may have removed the path from the Ahmedabad Office to the service subnet on port 6379, and restore the missing route. Additionally, verify if an explicit firewall allow rule for port 6379 is needed if the path is clear. Once addressed, confirm connectivity from the Ahmedabad Office.\n\n*Note: The retrieved past tickets provide a direct match for this exact issue and resolution.*"
+    },
+    {
+      "cluster_id": 8,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "37",
+          "original_id": "3315"
+        },
+        {
+          "batch_ticket_id": "288",
+          "original_id": "3460"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nRestore the missing route from Pune Branch to the service subnet on port 3306, as a routing change had removed the path. Once applied, confirm that connectivity from Pune Branch to the service is working.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 9,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "150",
+          "original_id": "2959"
+        },
+        {
+          "batch_ticket_id": "313",
+          "original_id": "1804"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nInvestigate whether a recent routing change has removed the path from Pune Branch to the service subnet on port 8080. If so, restore the missing route and confirm connectivity from the Pune Branch.\n\n*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the routing configuration and verify connectivity.*"
+    },
+    {
+      "cluster_id": 10,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "159",
+          "original_id": "1561"
+        },
+        {
+          "batch_ticket_id": "499",
+          "original_id": "1282"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nEnlarge the IP pool on the VPN concentrator serving the Pune Branch and clear any stale sessions to restore VPN access.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 11,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "278",
+          "original_id": "559"
+        },
+        {
+          "batch_ticket_id": "301",
+          "original_id": "3566"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nEnlarge the IP pool on the VPN concentrator serving Mumbai HQ and clear any stale sessions to restore VPN access.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 12,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "314",
+          "original_id": "3668"
+        },
+        {
+          "batch_ticket_id": "474",
+          "original_id": "1582"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the intermittent network drops are caused by a flapping uplink switch at the Ahmedabad Office. To resolve this, replace the faulty switch and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the hardware status before replacement.*"
+    },
+    {
+      "cluster_id": 13,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "355",
+          "original_id": "2491"
+        },
+        {
+          "batch_ticket_id": "393",
+          "original_id": "2777"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nTrace the latency to identify the saturated link on the path to K8S-NODE-15. Reroute traffic over a secondary path and open a capacity request.\n\n*Note: The retrieved past tickets closely match the new ticket, but a human agent should still double-check the execution.*"
+    }
+  ],
+  "Access Management": [
+    {
+      "cluster_id": 0,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "21",
+          "original_id": "3423"
+        },
+        {
+          "batch_ticket_id": "26",
+          "original_id": "2974"
+        },
+        {
+          "batch_ticket_id": "64",
+          "original_id": "3333"
+        },
+        {
+          "batch_ticket_id": "166",
+          "original_id": "3508"
+        },
+        {
+          "batch_ticket_id": "385",
+          "original_id": "150"
+        },
+        {
+          "batch_ticket_id": "490",
+          "original_id": "40"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nVerify the identity of user p.menon, reset their password, and require a password change along with MFA re-registration at their next login.\n\n*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the user's identity before performing the reset.*"
+    },
+    {
+      "cluster_id": 1,
+      "size": 6,
+      "members": [
+        {
+          "batch_ticket_id": "43",
+          "original_id": "3236"
+        },
+        {
+          "batch_ticket_id": "324",
+          "original_id": "1805"
+        },
+        {
+          "batch_ticket_id": "382",
+          "original_id": "1407"
+        },
+        {
+          "batch_ticket_id": "392",
+          "original_id": "3663"
+        },
+        {
+          "batch_ticket_id": "423",
+          "original_id": "784"
+        },
+        {
+          "batch_ticket_id": "446",
+          "original_id": "657"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nGrant user v.nair delegate permissions on the Delhi Sales shared mailbox, confirm that the mailbox appears in their email client, and set the access to expire when the colleague returns.\n\n*Note: The retrieved examples closely match the new ticket details.*"
+    },
+    {
+      "cluster_id": 2,
+      "size": 5,
+      "members": [
+        {
+          "batch_ticket_id": "92",
+          "original_id": "1989"
+        },
+        {
+          "batch_ticket_id": "143",
+          "original_id": "2652"
+        },
+        {
+          "batch_ticket_id": "173",
+          "original_id": "937"
+        },
+        {
+          "batch_ticket_id": "405",
+          "original_id": "463"
+        },
+        {
+          "batch_ticket_id": "455",
+          "original_id": "204"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nVerify user n.gupta out of band, reset their MFA enrolment, and guide them through registering a new authenticator device.\n\n*Note: The retrieved examples closely match the new ticket.*"
+    },
+    {
+      "cluster_id": 3,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "22",
+          "original_id": "2082"
+        },
+        {
+          "batch_ticket_id": "343",
+          "original_id": "1473"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nGrant user j.singh time-boxed elevated access to Payroll via the privileged-access workflow with an automatic expiry set after 7 days.\n\n*Note: The retrieved examples closely match this ticket, so a human agent can apply this standard resolution directly.*"
+    },
+    {
+      "cluster_id": 4,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "31",
+          "original_id": "3737"
+        },
+        {
+          "batch_ticket_id": "201",
+          "original_id": "1021"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nVerify the identity of user m.chatterjee, reset their corporate account password, and configure the account to require a password change and MFA re-registration upon their next login.\n\n*Note: The retrieved past tickets closely match this new ticket request.*"
+    },
+    {
+      "cluster_id": 5,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "79",
+          "original_id": "3276"
+        },
+        {
+          "batch_ticket_id": "83",
+          "original_id": "3300"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nProvision n.gupta with the standard role granting email, Ticketing System, and Kolkata Branch share access, and confirm successful first login.\n\n*Note: The retrieved examples closely match this ticket (Past Ticket #1 is an exact match for n.gupta's Kolkata Branch request).*"
+    },
+    {
+      "cluster_id": 6,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "191",
+          "original_id": "1914"
+        },
+        {
+          "batch_ticket_id": "434",
+          "original_id": "2413"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nVerify if user p.menon is missing from the AWS SSO assignment group. If so, add them to the group and confirm that federated login to AWS succeeds.\n\n*Note: The retrieved examples closely match this ticket.*"
+    },
+    {
+      "cluster_id": 7,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "209",
+          "original_id": "995"
+        },
+        {
+          "batch_ticket_id": "322",
+          "original_id": "3956"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nDisable the j.singh account, revoke all group memberships and tokens, and transfer any owned resources to their manager.\n\n*Note: The retrieved examples closely match this new ticket.*"
+    },
+    {
+      "cluster_id": 8,
+      "size": 2,
+      "members": [
+        {
+          "batch_ticket_id": "299",
+          "original_id": "1620"
+        },
+        {
+          "batch_ticket_id": "459",
+          "original_id": "2456"
+        }
+      ],
+      "representative_resolution_text": "**Suggested Resolution:**\nVerify manager approval, add user r.sharma to the requested Chennai Support finance security group, and verify that the new permissions took effect. \n\n*Note: The retrieved examples closely match this ticket.*"
+    }
+  ]
+}
