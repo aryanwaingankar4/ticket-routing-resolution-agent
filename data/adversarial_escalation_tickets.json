@@ -1,0 +1,74 @@
+[
+  {
+    "id": "adv_01",
+    "category_type": "off_topic",
+    "text": "What's the weather like today?",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Completely unrelated to IT support; no meaningful similarity to any past ticket."
+  },
+  {
+    "id": "adv_02",
+    "category_type": "off_topic",
+    "text": "Can you recommend a good pizza place near the office?",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Second off-topic example, different phrasing/domain than adv_01."
+  },
+  {
+    "id": "adv_03",
+    "category_type": "vague_multi_category",
+    "text": "I can't access anything today, nothing is working.",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Blends Access Management / Network / Application / Security signals with no distinctive vocabulary; classifier forced to guess, retrieval should still be weak."
+  },
+  {
+    "id": "adv_04",
+    "category_type": "vague_multi_category",
+    "text": "Things have been acting strange since this morning, not sure what's going on.",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Second vague/ambiguous example, deliberately avoids any category-specific keywords."
+  },
+  {
+    "id": "adv_05",
+    "category_type": "uninformative",
+    "text": "Something is wrong. It's not working properly and I need this fixed today.",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Maximally generic complaint; zero technical content to retrieve against."
+  },
+  {
+    "id": "adv_06",
+    "category_type": "extremely_short",
+    "text": "Help",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Single-word ticket; tests behavior when there's almost no text to embed at all."
+  },
+  {
+    "id": "adv_07",
+    "category_type": "extremely_short",
+    "text": "Broken again.",
+    "expected_escalate": true,
+    "expected_trigger": "rag_similarity",
+    "note": "Two-word ticket; no subject, no system named."
+  },
+  {
+    "id": "adv_08",
+    "category_type": "unusual_register",
+    "text": "YO MY LAPTOP IS DEAD AF PLS SOMEONE FIX ASAP THX",
+    "expected_escalate": true,
+    "expected_trigger": "cascade_confidence_or_rag_similarity",
+    "note": "Real, plausibly answerable issue but written in a register/slang your training templates never use; tests whether escalation is triggered by distribution shift, not just vagueness. Expected trigger is uncertain — worth observing which threshold actually fires, if either."
+  },
+  {
+    "id": "adv_09",
+    "category_type": "unusual_register",
+    "text": "requesting immediate remediation of persistent authentication failure across all provisioned endpoints",
+    "expected_escalate": false,
+    "expected_trigger": "none",
+    "note": "Deliberately overly formal/jargon-heavy but genuinely maps to Access Management; included as a CONTROL case to check the system doesn't over-escalate on unusual phrasing alone when the content is actually clear."
+  }
+]
