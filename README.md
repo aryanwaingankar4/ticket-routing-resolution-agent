@@ -483,7 +483,7 @@ That remains a scoped future extension, not something built yet.
   phrasing can still retrieve strongly if it overlaps a dominant
   category's vocabulary, a real dataset-templating limitation worth
   noting rather than a pipeline flaw
-  - Ablation study quantifying the real measured value of both safety-net
+- Ablation study quantifying the real measured value of both safety-net
   thresholds: the cascade threshold contributes a 33.3-point accuracy
   gain over Tier-1-only; the RAG gate prevents 6/9 adversarial tickets
   from receiving a fabricated resolution instead of correctly escalating
