@@ -85,7 +85,7 @@ Results against it:
 |---|---|---|
 | TF-IDF + Logistic Regression | 100.0% | 7/14 (50.0%) |
 | **Frozen MiniLM embeddings + Logistic Regression** | 100.0% | **10/14 (71.4%) — production choice** |
-| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) at 1,000 tickets; 7/14 improved to a tie (50.0%, epoch-1 best) after re-testing at 4,000 tickets |
+| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) at 1,000 tickets; 7/14 (tie, epoch-1 best) after re-testing at 4,000 tickets |
 
 DistilBERT showed a classic overfitting signature at every dataset size
 tested — 100% in-distribution accuracy within 1–2 epochs while
@@ -169,7 +169,6 @@ system designed around escalation thresholds.
 
 Bin-level data: [`calibration_reliability_data.csv`](data/calibration_reliability_data.csv)
 
-
 ### Ablation Study — What the Safety Nets Are Actually Worth
 
 Both cascade and RAG escalation thresholds were disabled independently
@@ -198,7 +197,6 @@ Scripts: `src/experiments/run_ablation_study.py`. Results:
 [`ablation_baseline_results.csv`](data/ablation_baseline_results.csv),
 [`ablation_no-cascade_results.csv`](data/ablation_no-cascade_results.csv),
 [`ablation_no-rag_results.csv`](data/ablation_no-rag_results.csv).
-
 
 ### Streamlit demo
 
@@ -361,6 +359,56 @@ fix) is costlier than a false negative (a missed automation opportunity,
 which just means the status quo continues). This result was independently
 confirmed stable on the complete 500-ticket dataset.
 
+### Category-specific resolution-clustering calibration
+
+The pooled 0.80 threshold above was derived by combining all 7 categories
+into one calibration run. Given the category-level differences later
+found in the automation-flagging feature (Infrastructure highly
+standardized, Database more bespoke), the same clustering and pairwise
+evaluation methodology was re-run independently per category, to check
+whether each category's own precision cliff-edge lands at or near 0.80,
+or whether some categories would need a different cutoff on their own
+data.
+
+The clustering method (connected components via union-find on the cosine
+similarity matrix) and the pairwise evaluation logic (precision/recall/F1
+against `scenario_id` ground truth) were reused unchanged from the pooled
+calibration script — only the population was filtered to one category at
+a time before running the same threshold sweep (0.99 down to 0.60).
+
+| Category | n | Cliff-Edge | Precision at Cliff | Recall at Cliff | vs. Pooled 0.80 |
+|---|---:|---:|---:|---:|---|
+| Infrastructure | 115 | 0.80 | 1.0000 | 0.5425 | Matches |
+| Application | 100 | 0.80 | 1.0000 | 0.4991 | Matches |
+| Security | 61 | 0.80 | 1.0000 | 0.8708 | Matches |
+| Access Management | 48 | 0.80 | 1.0000 | 0.3966 | Matches (low-N) |
+| Storage | 53 | 0.75 | 1.0000 | 0.8312 | Differs, -0.05 (low-N) |
+| Database | 49 | 0.70 | 1.0000 | 0.7882 | Differs, -0.10 (low-N) |
+| Network | 74 | 0.75 | 1.0000 | 0.5737 | Differs, -0.05 |
+
+Four of seven categories match the pooled threshold exactly, which
+supports the pooled 0.80 choice as a reasonable default. The most notable
+individual result is **Network**: at n=74 it is above the low-confidence
+sample-size bar (60) used elsewhere in this analysis, yet it still needs a
+threshold 0.05 looser than pooled before precision holds — a genuine,
+statistically credible divergence rather than small-sample noise.
+Database shows the largest deviation (-0.10) but carries a low-N caveat,
+so it is read as indicative rather than conclusive on its own.
+
+This is a measurement-only diagnostic: it does not change the production
+threshold. It establishes that the pooled 0.80 threshold is well-supported
+overall, while identifying Network (and, with lower confidence, Database
+and Storage) as categories where a category-specific threshold could
+recover additional recall without sacrificing precision — a candidate for
+a future, explicit production decision rather than an automatic change.
+
+Scripts: `src/experiments/calibrate_resolution_clustering_percategory.py`.
+Results:
+[`resolution_clustering_calibration_percategory.csv`](data/resolution_clustering_calibration_percategory.csv)
+(full per-threshold detail),
+[`resolution_clustering_calibration_percategory_summary.csv`](data/resolution_clustering_calibration_percategory_summary.csv)
+(one row per category).
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
@@ -448,7 +496,8 @@ That remains a scoped future extension, not something built yet.
 
 ## What's Done vs. What's Pending
 
-### ✅ Done
+### Done
+
 - 4,000-ticket dataset with a fixed 14-ticket generalization benchmark
 - 3-way classifier comparison (TF-IDF / MiniLM / DistilBERT), re-verified
   at both 1,000 and 4,000 tickets
@@ -487,20 +536,25 @@ That remains a scoped future extension, not something built yet.
   thresholds: the cascade threshold contributes a 33.3-point accuracy
   gain over Tier-1-only; the RAG gate prevents 6/9 adversarial tickets
   from receiving a fabricated resolution instead of correctly escalating
+- Category-specific resolution-clustering threshold check: re-ran the
+  pooled calibration independently per category. Four of seven categories
+  (Infrastructure, Application, Security, Access Management) match the
+  pooled 0.80 cliff-edge exactly. Storage and Database diverge, though
+  both are low-N categories where the deviation is indicative rather than
+  conclusive. Network (n=74, above the low-N bar) also diverges to 0.75 —
+  a statistically credible deviation from the pooled threshold, not
+  sample-size noise. Measurement-only; production still uses the pooled
+  0.80 threshold pending a future decision on category-specific
+  thresholds.
 
-### ⏳ Pending
-3. **Category-specific clustering threshold check** — test whether the
-   single 0.80 resolution-clustering threshold is optimal per category,
-   or whether e.g. Database (bespoke fixes) needs a different cutoff than
-   Infrastructure (highly standardized). Extend
-   `calibrate_resolution_clustering.py` to run per-category rather than
-   pooled.
-4. **BGE swap to production** — now validated as the stronger embedding
+### Pending
+
+1. **BGE swap to production** — now validated as the stronger embedding
    model at n=45 (73.3% vs MiniLM's 71.1%); swap it into
    `train_embeddings.py` / the production classifier and re-verify every
    downstream dependency (RAG layer, resolution clustering, Streamlit
    demo).
-5. **Genuine multi-agent restructure** — independent Classification,
+2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
    endpoints, then building a real n8n workflow with visual conditional
@@ -509,7 +563,7 @@ That remains a scoped future extension, not something built yet.
    implemented there either. Deliberately done **last**, once everything
    above is measured and stable — it's an architecture/presentation step,
    not a new experiment.
-6. **Formal IEEE-style paper draft**, once all of the above is complete.
+3. **Formal IEEE-style paper draft**, once all of the above is complete.
 
 ---
 
@@ -526,10 +580,20 @@ ticket-routing-agent/
 │   ├── calibration_tickets_paraphrased.json
 │   ├── novel_tickets_expanded.json        (final 45-ticket benchmark)
 │   ├── resolution_clustering_calibration_results.csv
+│   ├── resolution_clustering_calibration_percategory.csv
+│   ├── resolution_clustering_calibration_percategory_summary.csv
 │   ├── exploratory_clustering_results.json
 │   ├── automation_candidates.json
 │   ├── automation_candidates_summary.csv
 │   ├── category_stores_with_scenario_id.csv
+│   ├── calibration_tier1_reliability_diagram.png
+│   ├── calibration_tier2_reliability_diagram.png
+│   ├── calibration_reliability_data.csv
+│   ├── adversarial_escalation_tickets.json
+│   ├── adversarial_escalation_results.csv
+│   ├── ablation_baseline_results.csv
+│   ├── ablation_no-cascade_results.csv
+│   ├── ablation_no-rag_results.csv
 │   ├── batch_intake/
 │   │   ├── incoming_tickets_batch.csv
 │   │   └── batch_summary.csv
@@ -565,7 +629,11 @@ ticket-routing-agent/
 │       ├── join_scenario_ground_truth.py
 │       ├── explore_resolution_clustering.py
 │       ├── calibrate_resolution_clustering.py
-│       └── flag_automation_candidates.py
+│       ├── calibrate_resolution_clustering_percategory.py
+│       ├── flag_automation_candidates.py
+│       ├── plot_calibration_curves.py
+│       ├── test_adversarial_escalation.py
+│       └── run_ablation_study.py
 ├── models/                                 (gitignored, except joblib artifact)
 │   ├── ticket_classifier.joblib
 │   └── distilbert_ticket_classifier/
@@ -614,6 +682,10 @@ python src/experiments/run_imbalance_sweep.py
 python src/experiments/join_scenario_ground_truth.py
 python src/experiments/explore_resolution_clustering.py
 python src/experiments/calibrate_resolution_clustering.py
+
+# Category-specific calibration check (diagnostic only, does not change
+# the production threshold):
+python src/experiments/calibrate_resolution_clustering_percategory.py
 
 # The production feature itself (fixed, calibrated threshold=0.80):
 python src/experiments/flag_automation_candidates.py
