@@ -447,15 +447,14 @@ That remains a scoped future extension, not something built yet.
   tiers to be genuinely underconfident rather than overconfident, a
   safer failure mode for an escalation-gated system
 - Literature review identifying a genuine research gap
+- Permanent 9-ticket adversarial escalation test set with a live-pipeline
+  regression script, finding that escalation is driven solely by RAG
+  similarity (not cascade confidence directly) — and that short/generic
+  phrasing can still retrieve strongly if it overlaps a dominant
+  category's vocabulary, a real dataset-templating limitation worth
+  noting rather than a pipeline flaw
 
 ### ⏳ Pending
-1. **Permanent adversarial escalation test set** — save the vague/noisy
-   tickets used to manually stress-test the Streamlit demo's escalation
-   paths (an off-topic ticket, a vague multi-category ticket, a maximally
-   uninformative ticket) as a small, versioned benchmark file, similar in
-   spirit to the 14-ticket and 45-ticket benchmarks. This is the only
-   planned artifact that directly tests the "doesn't confidently guess
-   wrong" claim.
 2. **Ablation study** — disable each safety net one at a time (cascade
    escalation threshold, RAG similarity threshold) and measure the actual
    accuracy/precision drop, to quantify what the calibration work is
