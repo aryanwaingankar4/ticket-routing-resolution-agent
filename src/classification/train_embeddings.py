@@ -4,7 +4,7 @@ train_embeddings.py
 Embeddings-based counterpart to train_baseline_tfidf.py.
 
 Replaces the TF-IDF representation with sentence-transformer embeddings
-("all-MiniLM-L6-v2") while keeping everything else identical:
+("BAAI/bge-base-en-v1.5") while keeping everything else identical:
     - input text = title + " " + description
     - LogisticRegression(max_iter=1000) on top
     - train_test_split(test_size=0.2, random_state=42, stratify=y)
@@ -42,7 +42,7 @@ np.random.seed(42)
 # are GUARANTEED to use the identical model. A mismatch here would silently
 # invalidate the comparison.
 # ---------------------------------------------------------------------------
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 REQUIRED_COLUMNS = ["id", "title", "description", "category", "resolution", "priority"]
 MIN_CATEGORIES = 7
@@ -60,7 +60,11 @@ def get_project_root():
 
 PROJECT_ROOT = get_project_root()
 CSV_PATH = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
-CACHE_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_embeddings.npy")
+# Model-aware cache filename: encodes the model identity so a MiniLM cache and
+# a BGE cache can never collide or be silently mistaken for one another.
+CACHE_PATH = os.path.join(
+    PROJECT_ROOT, "data", "ticket_embeddings_bge-base-en-v1-5.npy"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +190,7 @@ def load_and_validate_data():
 
 
 # ---------------------------------------------------------------------------
-# Embedding cache: reuse data/ticket_embeddings.npy only if it exists AND has
+# Embedding cache: reuse the model-aware cache only if it exists AND has
 # the same number of rows as the current CSV. Otherwise recompute + overwrite.
 # ---------------------------------------------------------------------------
 def get_full_embeddings(model, texts):
@@ -237,7 +241,7 @@ def get_full_embeddings(model, texts):
 # ---------------------------------------------------------------------------
 def main():
     print("=" * 70)
-    print("EMBEDDINGS BASELINE  -  all-MiniLM-L6-v2 + LogisticRegression")
+    print("EMBEDDINGS BASELINE  -  BAAI/bge-base-en-v1.5 + LogisticRegression")
     print("=" * 70)
 
     SentenceTransformer = import_sentence_transformers()
@@ -268,7 +272,11 @@ def main():
     y_pred = clf.predict(X_test)
     
     import joblib
-    CLASSIFIER_PATH = os.path.join(PROJECT_ROOT, "models", "ticket_classifier.joblib")
+    # Model-aware classifier filename: a MiniLM-trained classifier can never be
+    # silently loaded by BGE-expecting code downstream (e.g. streamlit_app.py).
+    CLASSIFIER_PATH = os.path.join(
+        PROJECT_ROOT, "models", "ticket_classifier_bge-base-en-v1-5.joblib"
+    )
     os.makedirs(os.path.dirname(CLASSIFIER_PATH), exist_ok=True)
     joblib.dump(clf, CLASSIFIER_PATH)
     print(f"[save] Classifier saved to: {CLASSIFIER_PATH}")

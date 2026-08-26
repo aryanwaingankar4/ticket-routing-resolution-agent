@@ -1,7 +1,7 @@
 venv/
 __pycache__/
 *.pyc
-data/ticket_embeddings.npy
+data/ticket_embeddings*.npy
 models/
 .env
 data/skewed/synthetic_tickets_am*.csv

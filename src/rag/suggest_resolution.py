@@ -3,7 +3,7 @@
 RAG query / suggestion layer for the IT-support-ticket routing project.
 
 Given a NEW, unseen ticket (title + description) this script:
-  1. Embeds the new ticket with the same MiniLM model used to build the index.
+  1. Embeds the new ticket with the same BGE model used to build the index.
   2. Searches the FAISS index for the top-K most similar past tickets.
   3. Retrieves their resolutions from the index-aligned metadata.
   4. Sends the new ticket + retrieved resolutions to Gemini, asking it to
@@ -55,7 +55,7 @@ np.random.seed(42)
 # Configuration constants (near the top so they are easy to change).
 # ---------------------------------------------------------------------------
 MODEL_NAME = "gemini-flash-lite-latest"         # current free-tier flash model
-EMBED_MODEL_NAME = "all-MiniLM-L6-v2"    # MUST match the model used to build index
+EMBED_MODEL_NAME = "BAAI/bge-base-en-v1.5"    # MUST match the model used to build index
 TOP_K = 5
 
 # Cosine-similarity floor for "is any past ticket actually relevant?".
@@ -84,8 +84,11 @@ _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(_THIS_DIR))
 
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-INDEX_PATH = os.path.join(DATA_DIR, "ticket_index.faiss")
-METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata.json")
+# Model-aware artifact filenames - MUST match what build_vector_index.py
+# produces for BGE, or this script would load a mismatched (or nonexistent)
+# index.
+INDEX_PATH = os.path.join(DATA_DIR, "ticket_index_bge-base-en-v1-5.faiss")
+METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata_bge-base-en-v1-5.json")
 DOTENV_PATH = os.path.join(PROJECT_ROOT, ".env")
 
 
@@ -208,7 +211,7 @@ def load_index_and_metadata(faiss):
 
 def load_embedding_model():
     """
-    Load SentenceTransformer(all-MiniLM-L6-v2), reusing the project's
+    Load SentenceTransformer(BAAI/bge-base-en-v1.5), reusing the project's
     network-error handling pattern. Returns the model.
     """
     try:

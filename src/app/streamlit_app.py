@@ -9,7 +9,7 @@ layers of the project:
     1. Classification  -> CASCADE classifier (src/classification/train_cascade.py)
                            Tier-1 = TF-IDF + LogisticRegression (fast path,
                              trained at startup - this is fast even on 4000 rows)
-                           Tier-2 = MiniLM embeddings + LogisticRegression,
+                           Tier-2 = BGE embeddings + LogisticRegression,
                              loaded from models/ticket_classifier.joblib
                              (escalation path, used when Tier-1 is unsure)
     2. RAG retrieval    -> src/rag/suggest_resolution.py
@@ -49,13 +49,15 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 # Key file locations (single source of truth for the loader + error messages).
-FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_index.faiss")
-METADATA_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_metadata.json")
-CLASSIFIER_PATH = os.path.join(PROJECT_ROOT, "models", "ticket_classifier.joblib")
+# Model-aware filenames MUST match those produced by build_vector_index.py and
+# train_embeddings.py for BGE, or the app would load mismatched artifacts.
+FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_index_bge-base-en-v1-5.faiss")
+METADATA_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_metadata_bge-base-en-v1-5.json")
+CLASSIFIER_PATH = os.path.join(PROJECT_ROOT, "models", "ticket_classifier_bge-base-en-v1-5.joblib")
 DATA_CSV = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
 ENV_PATH = os.path.join(PROJECT_ROOT, ".env")
 
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 LLM_MODEL_NAME = "gemini"  # display label; actual model id lives in suggest_resolution.py
 
 # Applied cascade confidence threshold.
@@ -184,7 +186,7 @@ def load_resources():
             )
         }
 
-    # --- Tier-2 classifier (MiniLM + LogReg, saved artifact) --------------- #
+    # --- Tier-2 classifier (BGE + LogReg, saved artifact) ----------------- #
     if not os.path.exists(CLASSIFIER_PATH):
         return {
             "error": (
@@ -265,7 +267,7 @@ def load_resources():
     # --- Train Tier-1 (TF-IDF + LogReg) at startup ------------------------- #
     # No saved artifact exists for Tier-1 - it trains in seconds even on 4000
     # rows, so training here on every app start is fine (unlike Tier-2, which
-    # is loaded from disk to avoid the ~100s MiniLM embedding step).
+    # is loaded from disk to avoid the ~100s embedding step).
     try:
         df = pd.read_csv(DATA_CSV)
         required_cols = {"title", "description", "category"}
@@ -341,7 +343,7 @@ def classify_ticket_cascade(
 ):
     """
     Run the confidence-based cascade: Tier-1 (TF-IDF) resolves the ticket if
-    confident enough; otherwise escalate to Tier-2 (MiniLM embeddings).
+    confident enough; otherwise escalate to Tier-2 (BGE embeddings).
 
     Returns a dict: category, confidence (of whichever tier resolved it),
     tier (1 or 2), tier1_pred, tier1_conf (always reported, even on escalation,
@@ -517,7 +519,7 @@ with st.expander("ℹ️ How this works"):
 
         1. **Cascade classification** — a fast TF-IDF model (Tier-1) handles
            the ticket if it's confident enough; otherwise the ticket is
-           **escalated** to a stronger MiniLM-embeddings model (Tier-2). This
+           **escalated** to a stronger BGE-embeddings model (Tier-2). This
            mirrors the same "don't guess when unsure" philosophy used one
            layer down in Step 3.
         2. **RAG retrieval** — the ticket text is embedded and matched
@@ -691,7 +693,7 @@ if results is not None:
         st.info(
             f"Tier-1's confidence (**{results['tier1_conf']:.2f}**) was below the "
             f"calibrated threshold (**{CASCADE_CONFIDENCE_THRESHOLD:.2f}**), so "
-            "this ticket was **escalated** to the more accurate MiniLM "
+            "this ticket was **escalated** to the more accurate BGE "
             f"embeddings model. Tier-1 would have guessed "
             f"**{results['tier1_pred']}**; Tier-2 predicted "
             f"**{results['category']}**."

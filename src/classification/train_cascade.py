@@ -11,9 +11,10 @@ Implements and evaluates a two-tier confidence-based cascade classifier:
     Decision rule:      if Tier 1's predicted-class probability (predict_proba
                         max) >= CASCADE_CONFIDENCE_THRESHOLD -> ACCEPT Tier 1's
                         prediction. Done. No Tier 2 call needed.
-    Tier 2 (expensive): sentence-transformers "all-MiniLM-L6-v2" embeddings +
-                        LogisticRegression. Only invoked when Tier 1 is NOT
-                        confident enough; its prediction then overrides Tier 1's.
+    Tier 2 (expensive): sentence-transformers "BAAI/bge-base-en-v1.5"
+                        embeddings + LogisticRegression. Only invoked when Tier 1
+                        is NOT confident enough; its prediction then overrides
+                        Tier 1's.
 
 WHY THIS DESIGN (the "don't guess when uncertain, escalate instead" principle)
 ------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ TIER1_ACCEPT_ACCURACY_TARGET = 0.90  # accept-tier accuracy we want to hold at
 # accuracy/efficiency tradeoff of relaxing the accept-tier accuracy requirement.
 ACCURACY_TARGETS_TO_TEST = [0.90, 0.80, 0.70]
 
-EMBED_MODEL_NAME = "all-MiniLM-L6-v2"
+EMBED_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 REQUIRED_COLUMNS = ["id", "title", "description", "category", "resolution", "priority"]
 MIN_CATEGORIES = 7
@@ -220,7 +221,12 @@ def get_project_root() -> str:
 
 PROJECT_ROOT = get_project_root()
 CSV_PATH = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
-EMBED_CACHE_PATH = os.path.join(PROJECT_ROOT, "data", "ticket_embeddings.npy")
+# Model-aware embedding cache filename: encodes the model identity so a MiniLM
+# cache and a BGE cache can never collide. IDENTICAL string to the one used in
+# train_embeddings.py and build_vector_index.py so all three share ONE BGE
+# cache over the same dataset/text convention.
+EMBED_CACHE_PATH = os.path.join(PROJECT_ROOT, "data",
+                                "ticket_embeddings_bge-base-en-v1-5.npy")
 CALIBRATION_JSON_PATH = os.path.join(PROJECT_ROOT, "data",
                                      "calibration_tickets_paraphrased.json")
 EXPANDED_JSON_PATH = os.path.join(PROJECT_ROOT, "data",
@@ -561,7 +567,7 @@ def _load_embedder():
 
 
 def compute_or_load_embeddings(texts, expected_rows, use_cache=True):
-    """Return embeddings for `texts`, reusing data/ticket_embeddings.npy if valid.
+    """Return embeddings for `texts`, reusing data/ticket_embeddings_bge-base-en-v1-5.npy if valid.
 
     Cache policy (identical to train_embeddings.py):
       - cache HIT  : file exists AND its row count matches expected_rows -> load.
@@ -1266,7 +1272,7 @@ def run_tradeoff_analysis(calib_conf, calib_correct,
 
 def main():
     print("=" * 66)
-    print("CONFIDENCE-BASED CASCADE CLASSIFIER  (Tier1 TF-IDF -> Tier2 MiniLM)")
+    print("CONFIDENCE-BASED CASCADE CLASSIFIER  (Tier1 TF-IDF -> Tier2 BGE)")
     print("=" * 66)
     print("Philosophy: same 'escalate when unsure' guard as the RAG layer's")
     print("SIMILARITY_THRESHOLD=0.35 - applied here at model-selection time.")
@@ -1300,7 +1306,7 @@ def main():
     print("\n[train] Fitting Tier-1 (TF-IDF + LogReg) on the training split...")
     tier1_vec, tier1_clf = train_tier1(X_train_text, y_train)
 
-    print("[train] Fitting Tier-2 (MiniLM emb + LogReg) on the training split...")
+    print("[train] Fitting Tier-2 (BGE emb + LogReg) on the training split...")
     tier2_clf = train_tier2_from_embeddings(train_emb, y_train)
 
     t1_preds_test, t1_conf_test = get_tier1_confidence(tier1_vec, tier1_clf, X_test_text)
@@ -1478,4 +1484,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

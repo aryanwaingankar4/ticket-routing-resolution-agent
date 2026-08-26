@@ -6,7 +6,7 @@ This script runs ONCE (or whenever data/synthetic_tickets.csv changes). It:
   1. Loads and validates the ticket CSV.
   2. Builds embedding input text as (title + " " + description), consistent
      with the rest of the project.
-  3. Embeds all tickets with sentence-transformers "all-MiniLM-L6-v2"
+  3. Embeds all tickets with sentence-transformers "BAAI/bge-base-en-v1.5"
      (reusing the project's embedding cache when the row count matches).
   4. Builds a FAISS IndexFlatIP over L2-normalized embeddings (== cosine
      similarity search).
@@ -51,11 +51,18 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(_THIS_DIR))
 
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 CSV_PATH = os.path.join(DATA_DIR, "synthetic_tickets.csv")
-EMBEDDINGS_CACHE_PATH = os.path.join(DATA_DIR, "ticket_embeddings.npy")
-INDEX_PATH = os.path.join(DATA_DIR, "ticket_index.faiss")
-METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata.json")
+# Model-aware artifact filenames. The embedding cache uses the IDENTICAL
+# sanitized string as train_embeddings.py / train_cascade.py so all three
+# scripts share ONE BGE cache. The FAISS index and metadata are also made
+# model-aware because a 384-dim MiniLM index and a 768-dim BGE index are NOT
+# interchangeable.
+EMBEDDINGS_CACHE_PATH = os.path.join(
+    DATA_DIR, "ticket_embeddings_bge-base-en-v1-5.npy"
+)
+INDEX_PATH = os.path.join(DATA_DIR, "ticket_index_bge-base-en-v1-5.faiss")
+METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata_bge-base-en-v1-5.json")
 
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 REQUIRED_COLUMNS = ["id", "title", "description", "category", "resolution", "priority"]
 NO_NAN_COLUMNS = ["title", "description", "category", "resolution"]
@@ -177,12 +184,13 @@ def build_embedding_texts(df):
 
 
 # ---------------------------------------------------------------------------
-# Step 3: Embed with all-MiniLM-L6-v2, reusing the project's embedding cache.
+# Step 3: Embed with BAAI/bge-base-en-v1.5, reusing the project's embedding
+# cache.
 #
-# Cache policy (same as train_embeddings.py): if data/ticket_embeddings.npy
-# exists AND its row count matches the current CSV, reuse it (cache HIT).
-# Otherwise recompute (cache MISS) and save. A corrupted/unreadable cache is
-# treated as a MISS rather than a crash.
+# Cache policy (same as train_embeddings.py): if the model-aware cache exists
+# AND its row count matches the current CSV, reuse it (cache HIT). Otherwise
+# recompute (cache MISS) and save. A corrupted/unreadable cache is treated as
+# a MISS rather than a crash.
 # ---------------------------------------------------------------------------
 def _try_load_cached_embeddings(expected_rows):
     """Return cached embeddings if valid and row-count-matching, else None."""
