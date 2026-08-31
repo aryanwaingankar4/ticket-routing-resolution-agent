@@ -59,12 +59,20 @@ EMBED_MODEL_NAME = "BAAI/bge-base-en-v1.5"    # MUST match the model used to bui
 TOP_K = 5
 
 # Cosine-similarity floor for "is any past ticket actually relevant?".
-# 0.35 is a reasonable starting point for MiniLM embeddings of short ticket
-# text. This is NOT a tuned value - it should be revisited against real usage
-# data (e.g. by inspecting score distributions of true matches vs. novel
-# tickets). It doubles as a preview of the upcoming confidence-based Agentic
-# escalation layer.
-SIMILARITY_THRESHOLD = 0.65
+# Derived empirically: constrained to the range (0.6196, 0.6704] required
+# by the 9-ticket adversarial escalation set (src/experiments/
+# test_adversarial_escalation.py), then selected as the value in that
+# range minimizing OOD leakage rate (13.3% vs 37.8% at the prior
+# provisional 0.65) against a 45-ticket Gemini-paraphrased out-of-domain
+# calibration set (data/ood_calibration_tickets.json, generated via
+# src/classification/generate_ood_calibration_set.py). Confirmed 9/9 on
+# the adversarial set. See data/rag_similarity_calibration_combined.csv
+# for the full threshold sweep. NOTE: the in-domain half of that sweep
+# carries a documented 5.7% self-retrieval contamination rate (some
+# calibration tickets' top-1 match is their own source ticket in the
+# index) -- this threshold's derivation did not rely on the contaminated
+# in-domain precision curve, only the adversarial set + OOD leakage.
+SIMILARITY_THRESHOLD = 0.67
 
 # If True, print the full constructed LLM prompt before sending it to Gemini.
 DEBUG = False

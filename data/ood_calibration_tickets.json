@@ -1,0 +1,182 @@
+[
+  {
+    "id": "ood_A1_v1",
+    "text": "Hi team, I am heading up to the mountains this Saturday and Sunday for a little getaway, and I completely forgot to check the weather forecast. Could you let me know if rain is expected so I can figure out whether I need to bring my rain gear?"
+  },
+  {
+    "id": "ood_A1_v2",
+    "text": "Hi team, quick question that is probably totally outside your usual wheelhouse, but I am heading up to the mountains this Saturday and Sunday and cannot figure out if I need to drag along rain gear. Could anyone check the forecast or let me know if it is supposed to pour up there?"
+  },
+  {
+    "id": "ood_A1_v3",
+    "text": "Hey team, quick question that's probably totally unrelated to computers, but does anyone in the office happen to know if the weather's supposed to be rainy in the mountains this Saturday and Sunday? I'm heading out for a little getaway and am trying to figure out if I need to throw rain gear into my bag."
+  },
+  {
+    "id": "ood_A2_v1",
+    "text": "Hey team, sorry if this is weird to reach out about here, but do any of you happen to know a decent spot to grab some food around the building? I am starving today and completely drawing a blank on where to go."
+  },
+  {
+    "id": "ood_A2_v2",
+    "text": "Hey there, quick question before I head out soon. Do you happen to know of any decent spots to grab a bite to eat around the building? I am completely drawing a blank today and figured I would check if you have any favorites nearby."
+  },
+  {
+    "id": "ood_A2_v3",
+    "text": "Hey team, sorry if this is weird to reach out about here, but I just started today and am starving. Do you guys know any decent spots to grab a bite to eat around the building?"
+  },
+  {
+    "id": "ood_A3_v1",
+    "text": "Hi team, I am trying to figure out how to schedule a checkup with my dentist using our corporate medical coverage, but I am totally lost on where to look. Could someone point me in the right direction so I can get this sorted out today?"
+  },
+  {
+    "id": "ood_A3_v2",
+    "text": "Hi team, I'm trying to figure out how to schedule a visit with my dentist using our corporate health benefits. Could someone point me in the right direction or let me know where to look?"
+  },
+  {
+    "id": "ood_A3_v3",
+    "text": "Hi team, I am trying to figure out how to schedule a checkup with my dentist using the corporate health coverage we get, can someone point me in the right direction?"
+  },
+  {
+    "id": "ood_A4_v1",
+    "text": "Hey team, could someone check the live map and tell me which way I should drive back tonight so I do not get stuck in the heavy evening rush hour?"
+  },
+  {
+    "id": "ood_A4_v2",
+    "text": "Hey team, I need to head out soon and was wondering if anyone has a good trick for bypassing the evening highway jam. What is the quickest way to get home without sitting in bumper-to-bumper traffic?"
+  },
+  {
+    "id": "ood_A4_v3",
+    "text": "Hey team, could someone check the live map or whatever system you use to see which way I should drive home so I don't get stuck in that awful rush hour congestion?"
+  },
+  {
+    "id": "ood_B1_v1",
+    "text": "Hey, I know this isn't strictly computer stuff, but who do I talk to about the cafeteria? They are completely out of meatless meals again and it is getting really frustrating trying to find something to eat for lunch every single day."
+  },
+  {
+    "id": "ood_B1_v2",
+    "text": "Hi team, I know this might sound strange for an IT ticket, but I really didn't know who else to tell. The cafeteria is totally out of meatless meals again today, which is super frustrating for those of us who don't eat meat. Is there someone who handles facilities complaints that I can talk to about this?"
+  },
+  {
+    "id": "ood_B1_v3",
+    "text": "Hi team, I know this might sound strange to message IT about, but the cafeteria is completely out of meatless meals again today, and since I can't eat meat, I'm kind of stuck without lunch. Is there someone who handles facilities or food services that I should talk to about this recurring issue?"
+  },
+  {
+    "id": "ood_B2_v1",
+    "text": "Hi team, I know this isn't technically a computer issue, but I was wondering who to talk to about getting some more of those spicy chips put into the snack machine on the third floor since they've been sold out all week."
+  },
+  {
+    "id": "ood_B2_v2",
+    "text": "Hey team, I was just wondering if there is any way to get our floor's breakroom snack machine filled up with some of those spicy chips I really like? They have been out all week and I keep craving them during my afternoon slump."
+  },
+  {
+    "id": "ood_B2_v3",
+    "text": "Hey team, I was wondering who I should talk to about getting some different treats put into the breakroom snack machine? It would be awesome if we could get those spicy chips in there since they always run out so fast."
+  },
+  {
+    "id": "ood_B3_v1",
+    "text": "Hi team, I am trying to figure out what food we are ordering for our group get-together next week and wanted to check if you folks handle that or point me to who does."
+  },
+  {
+    "id": "ood_B3_v2",
+    "text": "Hi team, I know this might not be a computer issue, but could someone point me in the right direction regarding the food choices for our group lunch next week? I was asked to look into what we can order and wanted to check if there is a preferred list or who I should talk to about the menu."
+  },
+  {
+    "id": "ood_B3_v3",
+    "text": "Hi team, I know this is probably the wrong place to ask, but could someone point me toward the food choices or menus we have available for our group lunch coming up next week?"
+  },
+  {
+    "id": "ood_C1_v1",
+    "text": "Hi there, I am trying to figure out how many weeks off I can take when the new baby arrives and what paperwork I need to fill out for that, so could someone point me toward the right guidelines?"
+  },
+  {
+    "id": "ood_C1_v2",
+    "text": "Hi team, I am expecting a new baby soon and I need to figure out how our parental leave works. Could someone point me to the paperwork or let me know who I should talk to about taking time off for the new arrival?"
+  },
+  {
+    "id": "ood_C1_v3",
+    "text": "Hi team, I am trying to figure out how time off works for when we have a new baby at home, and I was wondering where I can find the paperwork or guidelines explaining the parental leave benefits."
+  },
+  {
+    "id": "ood_C2_v1",
+    "text": "Hi team, I am heading out of town next week for a client visit and I am trying to figure out what the rules are for getting my hotel and meal costs paid back. Is there a specific form I need to fill out or a spending limit I should know about before I submit my receipts?"
+  },
+  {
+    "id": "ood_C2_v2",
+    "text": "Hi team, I am heading out of state for a business trip next week and I wanted to double-check the rules for getting my money back for meals and hotel stays, so could someone point me to the right guidelines?"
+  },
+  {
+    "id": "ood_C2_v3",
+    "text": "Hi team, I am heading to a conference next month and wanted to check on the rules for claiming back my flight and hotel costs. Could you point me to where I can read up on the guidelines for getting my money back?"
+  },
+  {
+    "id": "ood_C3_v1",
+    "text": "Hey team, could someone swing by my desk sometime soon? One of the wheels on my chair snapped off yesterday and now it tilts dangerously every time I try to sit down to work."
+  },
+  {
+    "id": "ood_C3_v2",
+    "text": "Hey team, could someone please come take a look at my desk chair? One of the wheels completely popped off and now the seat won't stay up, making it really tough to work here. Also, if you get a chance, it is freezing in our corner today, so any help with the thermostat would be great."
+  },
+  {
+    "id": "ood_C3_v3",
+    "text": "Hey team, could someone please come take a look at my desk chair? One of the wheels completely popped off and the height lever stopped working, so it is pretty uncomfortable to sit in. Also, if possible, can someone check the AC in this corner? It has been freezing all morning."
+  },
+  {
+    "id": "ood_C4_v1",
+    "text": "Hi team, I know this is probably the wrong place to ask, but could someone point me in the direction of when we are supposed to do our yearly employee evaluations? I checked my emails and couldnt find the dates for the upcoming feedback round."
+  },
+  {
+    "id": "ood_C4_v2",
+    "text": "Hi team, I know this is probably the wrong place to ask, but do you happen to know when our managers are supposed to start doing those yearly performance chats? I tried looking on the intranet portal earlier and couldn't find the dates anywhere."
+  },
+  {
+    "id": "ood_C4_v3",
+    "text": "Hi team, I know this is probably the wrong place to ask, but could someone point me toward when we are supposed to do our annual evaluations this year? I tried looking on the intranet portal earlier but couldn't find the timeline for feedback meetings anywhere, so I figured I would just drop a quick note here to see if you happen to know who handles that schedule."
+  },
+  {
+    "id": "ood_D1_v1",
+    "text": "Hi team, I really need someone to reach out to me as soon as possible because nothing is working right now and I am completely stuck."
+  },
+  {
+    "id": "ood_D1_v2",
+    "text": "Hi team, I really need someone to reach out to me as soon as possible because everything just stopped working right and I cannot get any of my daily tasks done."
+  },
+  {
+    "id": "ood_D1_v3",
+    "text": "Hey there, something isn't working right on my end and I really need some assistance getting it sorted out as soon as possible, thanks."
+  },
+  {
+    "id": "ood_D2_v1",
+    "text": "Hey team, whatever just went wrong is acting up on me once more, literally identical to how it happened a while back, so whenever someone gets a chance can you please come take a look?"
+  },
+  {
+    "id": "ood_D2_v2",
+    "text": "Hey team, that weird issue is happening with my device once more, just like before. Can someone please take a look?"
+  },
+  {
+    "id": "ood_D2_v3",
+    "text": "Hey team, whatever was acting up for me previously is totally broken again right now. It is doing that exact same weird thing out of nowhere, so if someone could look at whatever is causing it, I would really appreciate it."
+  },
+  {
+    "id": "ood_D3_v1",
+    "text": "I am just beyond fed up at this point because literally nothing in this office functions properly and nobody ever fixes it."
+  },
+  {
+    "id": "ood_D3_v2",
+    "text": "Honestly, I am just so fed up because it seems like every single thing I try to do on my computer today is completely broken and nothing is functioning the way it's supposed to."
+  },
+  {
+    "id": "ood_D3_v3",
+    "text": "Honestly, I am at my wits' end today because not a single thing I touch is cooperating, and I just needed to let someone know how frustrating it is trying to get anything done."
+  },
+  {
+    "id": "ood_D4_v1",
+    "text": "Look, my computer is acting up again and I am totally swamped today with meetings, so I honestly do not have a single second to walk you through what is going wrong. Can you just log in remotely and sort the whole mess out for me right now?"
+  },
+  {
+    "id": "ood_D4_v2",
+    "text": "Hey team, my setup is completely acting up right now and I honestly have zero minutes to get into the details with you, can somebody just log in and sort it all out on my end please?"
+  },
+  {
+    "id": "ood_D4_v3",
+    "text": "Hey team, my computer is acting crazy again and I am way too swamped to go into details right now. Can someone please just log in and sort it all out for me ASAP? Thanks!"
+  }
+]
