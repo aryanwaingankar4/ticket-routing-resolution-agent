@@ -64,7 +64,7 @@ TOP_K = 5
 # data (e.g. by inspecting score distributions of true matches vs. novel
 # tickets). It doubles as a preview of the upcoming confidence-based Agentic
 # escalation layer.
-SIMILARITY_THRESHOLD = 0.35
+SIMILARITY_THRESHOLD = 0.65
 
 # If True, print the full constructed LLM prompt before sending it to Gemini.
 DEBUG = False

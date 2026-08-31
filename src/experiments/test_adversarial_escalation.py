@@ -111,11 +111,11 @@ ADVERSARIAL_JSON_PATH = os.path.join(DATA_DIR, "adversarial_escalation_tickets.j
 RESULTS_CSV_PATH = os.path.join(DATA_DIR, "adversarial_escalation_results.csv")
 
 SYNTHETIC_TICKETS_CSV = os.path.join(DATA_DIR, "synthetic_tickets.csv")
-FAISS_INDEX_PATH = os.path.join(DATA_DIR, "ticket_index.faiss")
-METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata.json")
-CLASSIFIER_PATH = os.path.join(MODELS_DIR, "ticket_classifier.joblib")
+FAISS_INDEX_PATH = os.path.join(DATA_DIR, "ticket_index_bge-base-en-v1-5.faiss")
+METADATA_PATH = os.path.join(DATA_DIR, "ticket_metadata_bge-base-en-v1-5.json")
+CLASSIFIER_PATH = os.path.join(MODELS_DIR, "ticket_classifier_bge-base-en-v1-5.joblib")
 
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 # The APPLIED live thresholds. Mirrors streamlit_app.py exactly:
 #   - CASCADE_CONFIDENCE_THRESHOLD = 0.50 (the value streamlit_app.py applies;
