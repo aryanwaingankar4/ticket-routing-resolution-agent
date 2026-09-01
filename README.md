@@ -39,18 +39,30 @@ decision is governed by a calibrated confidence signal, measured against
 real data — never assumed.** This shows up independently in three separate
 places:
 
-- The RAG layer's similarity threshold (**0.35**) — below this, the LLM
-  call is skipped and the ticket goes to a human instead.
+- The RAG layer's similarity threshold (**0.67**, BGE embeddings) — below
+  this, the LLM call is skipped and the ticket goes to a human instead.
+  Derived by intersecting the safe range required by the 9-ticket
+  adversarial escalation set with the value in that range that minimizes
+  leakage against a dedicated 45-ticket out-of-domain calibration set (see
+  "RAG Similarity Threshold Recalibration" below for the full story).
 - The cascade classifier's confidence threshold (**0.50** at a realistic
   70–80% target-accuracy bar) — below this, classification escalates from
-  the cheap TF-IDF model to the stronger MiniLM-embeddings model.
+  the cheap TF-IDF model to the stronger embeddings-based model.
 - The resolution-clustering automation-flagging threshold (**0.80**) — a
   calibrated cliff-edge finding, chosen because a false "these two tickets
   share a fix" claim is costlier than a missed automation opportunity.
 
 That consistency — three independent calibration exercises converging on
 the same design philosophy — is the actual research contribution, more so
-than any single accuracy number.
+than any single accuracy number. A recurring pattern across all three is
+just as important as a finding in its own right: **naive calibration
+methods have repeatedly needed a second, harder look** — an in-distribution
+split that hid a real error, a 35-ticket calibration set too sparse to
+trust, and (most recently) a 175-ticket in-domain-only calibration set
+whose cliff-edge turned out to be a low-N artifact that even survived the
+initial addition of negative-class data. Every one of these failures was
+caught by insisting on evidence over assumption, not by getting it right
+the first time.
 
 ---
 
@@ -84,7 +96,7 @@ Results against it:
 | Method | In-Distribution Accuracy | 14-Ticket Generalization |
 |---|---|---|
 | TF-IDF + Logistic Regression | 100.0% | 7/14 (50.0%) |
-| **Frozen MiniLM embeddings + Logistic Regression** | 100.0% | **10/14 (71.4%) — production choice** |
+| Frozen MiniLM embeddings + Logistic Regression | 100.0% | 10/14 (71.4%) |
 | Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) at 1,000 tickets; 7/14 (tie, epoch-1 best) after re-testing at 4,000 tickets |
 
 DistilBERT showed a classic overfitting signature at every dataset size
@@ -93,18 +105,26 @@ generalization plateaued or declined. Re-running the MiniLM benchmark after
 scaling the dataset 1,000 → 4,000 tickets produced the *exact same* score
 (10/14, same 4 tickets wrong) — proof the ceiling was representation-limited
 (the frozen embedding model's own resolution), not data-volume-limited.
-**Frozen MiniLM embeddings were selected for production** on measured
-generalization performance, not in-distribution accuracy.
+MiniLM was selected for production ahead of the later BGE swap (see
+"Embedding Model: MiniLM → BGE" below) on measured generalization
+performance, not in-distribution accuracy — the same standard later applied
+to the BGE decision.
 
 ### RAG layer (retrieval + Gemini-grounded resolutions)
 
 `build_vector_index.py` builds a FAISS `IndexFlatIP` index over
-L2-normalized MiniLM embeddings (cosine similarity via inner product), with
-an aligned metadata JSON and a built-in sanity check (querying the index
-with a ticket's own embedding must retrieve itself at similarity ~1.0).
+L2-normalized embeddings (cosine similarity via inner product), with an
+aligned metadata JSON and a built-in sanity check (querying the index with
+a ticket's own embedding must retrieve itself at similarity ~1.0).
+Production artifacts are model-aware and filename-suffixed
+(`ticket_index_bge-base-en-v1-5.faiss`,
+`ticket_metadata_bge-base-en-v1-5.json`) after a silent-stale-cache risk
+was caught during the BGE swap — every loading function in this project
+now checks `index.ntotal == len(metadata)` and fails loudly if they're out
+of sync, rather than silently returning misaligned results.
 
 `suggest_resolution.py` retrieves the top-5 similar past tickets and, if
-the best match clears `SIMILARITY_THRESHOLD = 0.35`, asks Gemini to draft a
+the best match clears `SIMILARITY_THRESHOLD`, asks Gemini to draft a
 resolution grounded in those retrieved tickets. Below that threshold, the
 LLM call is skipped entirely and the ticket is escalated to a human. Gemini
 never decides the ticket's category — classification is handled entirely
@@ -115,12 +135,40 @@ generation.
 deprecated `google-generativeai` package, and `gemini-flash-lite-latest`
 after the originally-used model was retired for new users.)
 
+### Embedding Model: MiniLM → BGE
+
+Production classification, RAG retrieval, and cascade Tier-2 were swapped
+from `all-MiniLM-L6-v2` (384-dim) to `BAAI/bge-base-en-v1.5` (768-dim), on
+the strength of the validated 45-ticket benchmark result (33/45 = 73.3% vs
+MiniLM's 32/45 = 71.1% — see "Final Classification Comparison" below).
+Verified correct via two independently-trained BGE classifiers matching
+exactly on the 45-ticket benchmark.
+
+**Real bug caught during the swap, and its consequence:** BGE's cosine
+similarity scores run systematically higher than MiniLM's for the same
+ticket pairs. The RAG similarity threshold, originally tuned for MiniLM at
+0.35, did not transfer — a maximally-unrelated "weather" test ticket in the
+live Streamlit demo scored 57% top similarity under BGE, well above the old
+0.35 cutoff, meaning the human-escalation gate would have silently failed
+to fire. `test_adversarial_escalation.py` initially still passed (3/9 at
+the stale threshold, later diagnosed) because it turned out to be loading
+its own hardcoded, un-migrated MiniLM constants (embedding model name,
+FAISS index path, metadata path, classifier path) independent of the
+rest of the BGE-updated pipeline — the same class of bug as the
+silent-stale-cache risk above. Both were fixed together; see "RAG
+Similarity Threshold Recalibration" below for the full threshold story
+that followed.
+
 ### Cascade classifier — confidence-based tier routing
 
 `train_cascade.py` implements a two-tier cascade: Tier-1 (cheap TF-IDF)
 resolves a ticket directly if confident enough; otherwise it escalates to
-Tier-2 (MiniLM embeddings). This mirrors the RAG layer's "escalate when
-unsure" philosophy, applied one layer down at model-selection time.
+Tier-2 (embedding-based). This mirrors the RAG layer's "escalate when
+unsure" philosophy, applied one layer down at model-selection time. The
+cascade confidence threshold (0.50) was verified, via code review, to
+depend only on Tier-1/TF-IDF confidence — not on which embedding model
+Tier-2 uses — so it did not need re-calibration when the embedding model
+was swapped from MiniLM to BGE.
 
 Calibrating the confidence threshold took three attempts, and the failures
 were as informative as the eventual success:
@@ -154,6 +202,101 @@ Tier-2. At a relaxed 70–80% bar, a real threshold (0.50) emerges, routing
 The contribution isn't a big accuracy jump — it's a validated calibration
 methodology that catches what naive calibration would silently miss.
 
+### RAG Similarity Threshold Recalibration
+
+After the MiniLM → BGE swap, the RAG similarity threshold was set to a
+**provisional 0.65** (re-verified 9/9 on the adversarial escalation set
+once the stale-constants bug above was fixed), explicitly documented
+in-code as provisional pending full recalibration. Recalibrating it
+properly turned into its own multi-stage investigation.
+
+**Attempt 1 — reuse the existing 175-ticket in-domain calibration set.**
+The same set used to calibrate the cascade confidence threshold was fed
+through a per-ticket (not pairwise) precision/recall sweep, adapting the
+corrected `find_cliff_edge()` logic already validated in the category-
+specific resolution-clustering script. This *ran* cleanly, but the result
+exposed a methodology problem, not a code problem: every threshold from
+0.35 through 0.65 produced identical results (all 175 tickets "proceed"),
+because the 175-ticket set was built entirely from legitimate, in-domain
+support tickets — it contains no out-of-domain examples analogous to the
+weather/pizza tickets in the 9-ticket adversarial set. The set can measure
+"does the top-1 retrieval have the right category" but not "does the gate
+correctly reject a genuinely irrelevant ticket," which is the actual job
+this threshold exists to do. The mechanical cliff-edge it *did* find, T =
+0.85, was a low-N artifact (only 2/175 tickets proceed there — precision
+= 1.0 is trivially easy to hit when almost nothing is being tested) and
+was explicitly **not** adopted. This is a citable finding in its own
+right: an in-domain-only calibration set can produce an unrepresentative
+threshold cliff-edge when the underlying gate's actual job is detecting
+out-of-domain inputs.
+
+**Attempt 2 — build a genuine 45-ticket out-of-domain (OOD) calibration
+set.** `src/classification/generate_ood_calibration_set.py` hand-writes 15
+seed scenarios across 4 buckets (weather/personal errands, food, non-IT
+departmental questions like HR/Finance/Facilities, and vague non-actionable
+"it's broken" messages — deliberately broader than the original 9
+adversarial tickets, to avoid near-duplicate clustering that would
+overstate how cleanly separated the resulting threshold looks), then
+Gemini-paraphrases each into 3 independent variants (temperature 0.9, JSON
+schema pinned where the installed SDK supports it) for 45 total tickets,
+written to `data/ood_calibration_tickets.json`. `calibrate_rag_similarity_
+threshold.py` was extended to fold these in as real negative-class signal:
+an OOD ticket proceeding past the gate counts as a false positive; an OOD
+ticket correctly escalating counts as a true negative — combined with the
+existing in-domain confusion matrix to drive one combined precision/
+recall/F1 sweep, while reporting the OOD-only "leakage rate" separately at
+every threshold as its own diagnostic.
+
+**A second citable finding: adding OOD data did not, by itself, fix the
+low-N artifact.** The mechanical cliff-edge on the *combined* sweep still
+landed at T = 0.85 — because the 45 OOD tickets' top-1 similarities range
+only 0.5051–0.7249, never reaching 0.80 or 0.85. At those thresholds the
+OOD set contributes zero information; the artifact from Attempt 1 survived
+untouched. A negative class only helps a cliff-edge search where its own
+similarity distribution actually overlaps the range being swept.
+
+**Two hardening checks added alongside this extension, given the
+project's history of stale-constant and silent-mismatch bugs:**
+- **Self-retrieval contamination check** — since the 175 in-domain
+  calibration tickets are paraphrases of tickets that are themselves in
+  the FAISS index, each one's top-1 retrieval could simply be its own
+  source ticket, inflating the in-domain precision curve. Measured
+  directly: **5.7% (10/175)** of in-domain calibration tickets retrieve
+  their own source ticket as the top-1 match. Not dominant, but real —
+  the in-domain precision numbers are somewhat inflated, and this
+  threshold's final derivation deliberately did not rely on that curve.
+- **Exact-source-match diagnostic** — a strictly stronger relevance
+  signal (`retrieved.id == calibration_ticket.id`) computed and reported
+  side by side with the original category-agreement proxy, for
+  comparison only; the category-agreement proxy remains the metric
+  actually feeding the cliff-edge, per the original script's documented
+  approach, since switching the primary metric is a methodology decision
+  that shouldn't happen silently inside a script.
+
+**The final threshold was derived by intersecting two independent, real
+constraints rather than trusting either mechanical sweep alone:**
+
+1. The 9-ticket adversarial set fixes a hard safe range. Real similarity
+   values from a live pipeline run: tickets that must escalate top out at
+   0.6196; tickets that must proceed bottom out at 0.6704. Any threshold
+   in **(0.6196, 0.6704]** passes all 9 adversarial tickets by
+   construction.
+2. Within that range, a finer-grained sweep (0.61–0.69 in 0.01 steps)
+   shows OOD leakage rate increasing monotonically as the threshold
+   drops, with in-domain recall (category proxy) flat at 100% throughout
+   — so there's no real tradeoff inside the safe range, only a clear
+   minimum: **T = 0.67**, at 13.3% OOD leakage vs. 37.8% at the prior
+   provisional 0.65.
+
+**T = 0.67 was confirmed 9/9 on a live re-run of the adversarial
+escalation test** before being adopted into production, replacing the
+provisional 0.65. Full per-threshold sweep data (both the combined metric
+and the exact-source diagnostic) is in
+[`rag_similarity_calibration_combined.csv`](data/rag_similarity_calibration_combined.csv);
+the original in-domain-only sweep (Attempt 1, kept for reference, not
+overwritten) is in
+[`rag_similarity_calibration.csv`](data/rag_similarity_calibration.csv).
+
 ### Cascade Confidence Calibration
 
 Reliability diagrams (predicted confidence vs. observed accuracy) for both
@@ -163,7 +306,7 @@ confidence (Tier-1 tops out ~0.92, Tier-2 ~0.94) — the models are
 **underconfident** rather than overconfident, a safer failure mode for a
 system designed around escalation thresholds.
 
-| Tier-1 (TF-IDF) — ECE = 0.1122 | Tier-2 (MiniLM) — ECE = 0.0992 |
+| Tier-1 (TF-IDF) — ECE = 0.1122 | Tier-2 (embedding-based) — ECE = 0.0992 |
 |---|---|
 | ![Tier-1 Calibration](data/calibration_tier1_reliability_diagram.png) | ![Tier-2 Calibration](data/calibration_tier2_reliability_diagram.png) |
 
@@ -185,8 +328,8 @@ by 33.3 percentage points on the 45-ticket benchmark — the cascade
 isn't a marginal tweak, it roughly doubles real-world classification
 accuracy versus running the cheap Tier-1 model alone.
 
-**RAG similarity threshold (0.35):** removing it means every one of the
-9 adversarial tickets — including an off-topic weather question and a
+**RAG similarity threshold:** removing it means every one of the 9
+adversarial tickets — including an off-topic weather question and a
 pizza recommendation request — would now trigger a real Gemini call
 attempting a resolution instead of correctly escalating. 6 of those 9
 tickets genuinely needed human escalation, meaning the gate is
@@ -217,15 +360,15 @@ take:
   phrasing (e.g. a VPN timeout ticket, a password-reset ticket, and a
   "reports are timing out" ticket), where Tier-1 confidence fell below the
   0.50 threshold and the ticket correctly escalated to the stronger
-  MiniLM-based Tier-2 model, which then classified correctly. In one case,
-  Gemini's suggestion correctly flagged that the new ticket didn't specify
-  which underlying database was affected, unlike the retrieved examples,
-  and recommended a human double-check that detail.
+  Tier-2 model, which then classified correctly. In one case, Gemini's
+  suggestion correctly flagged that the new ticket didn't specify which
+  underlying database was affected, unlike the retrieved examples, and
+  recommended a human double-check that detail.
 - **RAG-similarity escalation to a human** — confirmed on an intentionally
   unrelated ticket ("what's the weather today"), a vague multi-category
   ticket with no distinctive vocabulary, and a maximally uninformative
   ticket ("something is wrong, please fix it"). In every case, retrieval
-  similarity fell below the 0.35 threshold, the Gemini call was correctly
+  similarity fell below the threshold, the Gemini call was correctly
   skipped, and the ticket was escalated to a human instead of a fabricated,
   confident-sounding suggestion. This is a meaningful result on its own: a
   forced-choice classifier can never simply "refuse" to output a category,
@@ -329,11 +472,12 @@ doubt.
 **Validation that the fix worked:** every model's score improved once the
 mislabeled tickets were removed (MiniLM 29/46 → 32/45, BGE 31/46 → 33/45,
 E5 27/46 → 27/45). The **BGE-beats-MiniLM finding (73.3% vs 71.1% at
-n=45)** is now trustworthy and citable. One genuinely hard case survived
-the fix and is worth discussing on its own: a "status page shows green but
-the service is actually down" ticket, which all three models still get
-wrong — a realistic infrastructure-monitoring ambiguity, not a labeling
-error.
+n=45)** is now trustworthy and citable, and was the basis for the
+subsequent production swap to BGE (see "Embedding Model: MiniLM → BGE"
+above). One genuinely hard case survived the fix and is worth discussing
+on its own: a "status page shows green but the service is actually down"
+ticket, which all three models still get wrong — a realistic
+infrastructure-monitoring ambiguity, not a labeling error.
 
 ### Resolution-clustering calibration
 
@@ -341,10 +485,11 @@ A separate calibration effort, aimed at a different question: can
 *resolved* tickets be automatically clustered by their resolution text to
 find recurring issues worth flagging for self-service automation?
 
-Resolution text (not the ticket symptom) was embedded with the same
-MiniLM model already used elsewhere, then grouped via connected components
-at cosine-similarity thresholds swept from 0.99 down to 0.60. Each
-threshold's clustering was evaluated with pairwise precision/recall/F1
+Resolution text (not the ticket symptom) was embedded with MiniLM (this
+calibration was deliberately left un-migrated in the BGE swap — scoped as
+its own future Phase 2, see "Pending" below), then grouped via connected
+components at cosine-similarity thresholds swept from 0.99 down to 0.60.
+Each threshold's clustering was evaluated with pairwise precision/recall/F1
 against real `scenario_id` ground truth (recovered from the dataset
 generator's own internal `random.choice()` selection, verified
 byte-for-byte reproducible against the pre-change data).
@@ -374,7 +519,12 @@ The clustering method (connected components via union-find on the cosine
 similarity matrix) and the pairwise evaluation logic (precision/recall/F1
 against `scenario_id` ground truth) were reused unchanged from the pooled
 calibration script — only the population was filtered to one category at
-a time before running the same threshold sweep (0.99 down to 0.60).
+a time before running the same threshold sweep (0.99 down to 0.60). Two
+real bugs were found and fixed while building this script: an overly
+strict small-N confidence bar (100 → 60) that mis-flagged categories as
+low-confidence, and a cliff-edge-detection bug that broke on undefined
+(0/0) precision instead of skipping it, which had caused 3 categories to
+falsely report "no cliff-edge found."
 
 | Category | n | Cliff-Edge | Precision at Cliff | Recall at Cliff | vs. Pooled 0.80 |
 |---|---:|---:|---:|---:|---|
@@ -393,7 +543,10 @@ sample-size bar (60) used elsewhere in this analysis, yet it still needs a
 threshold 0.05 looser than pooled before precision holds — a genuine,
 statistically credible divergence rather than small-sample noise.
 Database shows the largest deviation (-0.10) but carries a low-N caveat,
-so it is read as indicative rather than conclusive on its own.
+so it is read as indicative rather than conclusive on its own. This
+corrected `find_cliff_edge()` implementation (with the None-precision fix
+above) is the reference version later reused and adapted for the RAG
+similarity threshold recalibration script.
 
 This is a measurement-only diagnostic: it does not change the production
 threshold. It establishes that the pooled 0.80 threshold is well-supported
@@ -453,15 +606,17 @@ guarantee at run time.
 |---|---|---|---|
 | TF-IDF + Logistic Regression | 100.0% | 7/14 (50.0%) | — |
 | Frozen MiniLM embeddings + Logistic Regression | 100.0% | 10/14 (71.4%) | 32/45 (71.1%) |
-| **Frozen BGE embeddings + Logistic Regression** | — | — | **33/45 (73.3%) — best measured** |
+| **Frozen BGE embeddings + Logistic Regression** | — | — | **33/45 (73.3%) — production choice** |
 | Frozen E5 embeddings + Logistic Regression | — | — | 27/45 (60.0%) |
 | Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) | — |
-| Cascade (TF-IDF → MiniLM, 70–80% target) | — | 10/14 (71.4%), ~21% resolved by cheap tier | — |
+| Cascade (TF-IDF → embeddings, 70–80% target) | — | 10/14 (71.4%), ~21% resolved by cheap tier | — |
 
-MiniLM remains the current production choice (already integrated
-throughout the pipeline, including the RAG layer and resolution
-clustering); the BGE finding is a validated, citable direction for a
-future accuracy-improvement pass rather than a completed swap.
+BGE is now the production embedding model for classification, RAG
+retrieval, and cascade Tier-2 (swapped from MiniLM on the strength of this
+result — see "Embedding Model: MiniLM → BGE" above). Resolution-text
+clustering for automation-flagging remains on MiniLM, deliberately scoped
+as a separate future Phase 2 rather than migrated alongside the rest of
+the pipeline.
 
 ---
 
@@ -486,6 +641,12 @@ and training-data skew. Confidence-based cascading itself is not novel
 same idea to LLM cost) — the honest novelty claim is applying and
 rigorously measuring this exact pattern, calibrated against real data
 independently at three separate layers, specifically for IT ticket triage.
+The RAG similarity threshold's recalibration story is itself a small,
+citable methodological contribution: an in-domain-only calibration set can
+produce a misleading cliff-edge for a gate whose actual job is detecting
+out-of-domain inputs, and adding negative-class data does not
+automatically fix that if the negative class's own similarity
+distribution doesn't reach into the artifact's threshold range.
 
 **Important distinction:** the current system is a *sequential pipeline*
 with confidence-based decision points — it is **not** yet a true
@@ -505,6 +666,20 @@ That remains a scoped future extension, not something built yet.
   methodology and accuracy/efficiency tradeoff analysis
 - RAG layer (FAISS retrieval + Gemini-grounded resolution) with a
   similarity-based human-escalation guard
+- Expanded 45-ticket generalization benchmark, including finding and
+  correctly fixing a benchmark-generation labeling bug (not a dataset
+  flaw), and a validated BGE > MiniLM finding at the larger sample size
+- **Embedding model swap (MiniLM → BGE)** for classification, RAG
+  retrieval, and cascade Tier-2, on the strength of the 45-ticket
+  benchmark result; model-aware, filename-suffixed artifacts throughout
+  to prevent silent stale-cache mismatches
+- **RAG similarity threshold fully recalibrated** (provisional 0.65 →
+  final **0.67**), via a new 45-ticket Gemini-paraphrased out-of-domain
+  calibration set, a combined in-domain + OOD confusion matrix, a
+  measured 5.7% in-domain self-retrieval contamination rate, and a
+  final value derived from the intersection of the 9-ticket adversarial
+  set's safe range and minimum OOD leakage rate — confirmed 9/9 on the
+  adversarial set. See "RAG Similarity Threshold Recalibration" above.
 - Working Streamlit demo tying classification + RAG together — verified
   live across all three decision paths (Tier-1 resolution, Tier-2
   escalation, RAG-similarity escalation to a human)
@@ -513,9 +688,6 @@ That remains a scoped future extension, not something built yet.
 - Class-imbalance experiment confirming real accuracy degradation on a
   shrinking minority category, with the escalation mechanism catching
   every resulting error in this run (directional, not conclusive)
-- Expanded 45-ticket generalization benchmark, including finding and
-  correctly fixing a benchmark-generation labeling bug (not a dataset
-  flaw), and a validated BGE > MiniLM finding at the larger sample size
 - Resolution-clustering calibration, finding a genuine precision
   cliff-edge and selecting a calibrated threshold (0.80)
 - Production automation-flagging feature built and run against the full
@@ -527,11 +699,9 @@ That remains a scoped future extension, not something built yet.
   safer failure mode for an escalation-gated system
 - Literature review identifying a genuine research gap
 - Permanent 9-ticket adversarial escalation test set with a live-pipeline
-  regression script, finding that escalation is driven solely by RAG
-  similarity (not cascade confidence directly) — and that short/generic
-  phrasing can still retrieve strongly if it overlaps a dominant
-  category's vocabulary, a real dataset-templating limitation worth
-  noting rather than a pipeline flaw
+  regression script, which itself caught a real bug (stale, un-migrated
+  MiniLM constants surviving the BGE swap) and is now the anchor
+  constraint for the RAG similarity threshold's derivation
 - Ablation study quantifying the real measured value of both safety-net
   thresholds: the cascade threshold contributes a 33.3-point accuracy
   gain over Tier-1-only; the RAG gate prevents 6/9 adversarial tickets
@@ -549,11 +719,11 @@ That remains a scoped future extension, not something built yet.
 
 ### Pending
 
-1. **BGE swap to production** — now validated as the stronger embedding
-   model at n=45 (73.3% vs MiniLM's 71.1%); swap it into
-   `train_embeddings.py` / the production classifier and re-verify every
-   downstream dependency (RAG layer, resolution clustering, Streamlit
-   demo).
+1. **Resolution-clustering Phase 2** — re-run pooled and per-category
+   resolution-clustering calibration under BGE embeddings, as its own
+   citable comparison against the existing MiniLM-based clustering
+   results (deliberately deferred during the main BGE swap, scoped as a
+   separate future pass).
 2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
@@ -574,11 +744,14 @@ ticket-routing-agent/
 ├── data/
 │   ├── generate_dataset.py
 │   ├── synthetic_tickets.csv
-│   ├── ticket_embeddings.npy              (gitignored, regenerable cache)
-│   ├── ticket_index.faiss
-│   ├── ticket_metadata.json
+│   ├── ticket_embeddings.npy                          (gitignored, regenerable cache)
+│   ├── ticket_index_bge-base-en-v1-5.faiss
+│   ├── ticket_metadata_bge-base-en-v1-5.json
 │   ├── calibration_tickets_paraphrased.json
-│   ├── novel_tickets_expanded.json        (final 45-ticket benchmark)
+│   ├── ood_calibration_tickets.json                    (45-ticket OOD calibration set)
+│   ├── rag_similarity_calibration.csv                  (Attempt 1: in-domain-only sweep)
+│   ├── rag_similarity_calibration_combined.csv         (Attempt 2: combined in-domain + OOD sweep)
+│   ├── novel_tickets_expanded.json                     (final 45-ticket benchmark)
 │   ├── resolution_clustering_calibration_results.csv
 │   ├── resolution_clustering_calibration_percategory.csv
 │   ├── resolution_clustering_calibration_percategory_summary.csv
@@ -598,7 +771,7 @@ ticket-routing-agent/
 │   │   ├── incoming_tickets_batch.csv
 │   │   └── batch_summary.csv
 │   ├── category_stores/
-│   │   ├── {Category}.csv                 (one per category)
+│   │   ├── {Category}.csv                             (one per category)
 │   │   └── escalation_needs_review.csv
 │   ├── embedding_comparison/
 │   │   └── embedding_model_comparison.csv
@@ -609,13 +782,14 @@ ticket-routing-agent/
 ├── src/
 │   ├── classification/
 │   │   ├── train_baseline_tfidf.py
-│   │   ├── generalization_test.py         (source of truth for NOVEL_TICKETS)
+│   │   ├── generalization_test.py                     (source of truth for NOVEL_TICKETS)
 │   │   ├── train_embeddings.py
 │   │   ├── train_embeddings_comparison.py
 │   │   ├── generalization_test_embeddings.py
 │   │   ├── train_distilbert.py
 │   │   ├── train_cascade.py
-│   │   └── generate_calibration_set.py
+│   │   ├── generate_calibration_set.py                (175-ticket in-domain calibration set)
+│   │   └── generate_ood_calibration_set.py             (45-ticket OOD calibration set)
 │   ├── rag/
 │   │   ├── build_vector_index.py
 │   │   └── suggest_resolution.py
@@ -630,15 +804,16 @@ ticket-routing-agent/
 │       ├── explore_resolution_clustering.py
 │       ├── calibrate_resolution_clustering.py
 │       ├── calibrate_resolution_clustering_percategory.py
+│       ├── calibrate_rag_similarity_threshold.py       (combined in-domain + OOD sweep)
 │       ├── flag_automation_candidates.py
 │       ├── plot_calibration_curves.py
 │       ├── test_adversarial_escalation.py
 │       └── run_ablation_study.py
-├── models/                                 (gitignored, except joblib artifact)
-│   ├── ticket_classifier.joblib
+├── models/                                             (gitignored, except joblib artifact)
+│   ├── ticket_classifier_bge-base-en-v1-5.joblib
 │   └── distilbert_ticket_classifier/
-├── .env                                    (gitignored — GEMINI_API_KEY)
-└── README.md                               (this file)
+├── .env                                                (gitignored — GEMINI_API_KEY)
+└── README.md                                           (this file)
 ```
 
 ## How to Run
@@ -691,6 +866,21 @@ python src/experiments/calibrate_resolution_clustering_percategory.py
 python src/experiments/flag_automation_candidates.py
 ```
 
+### Running the RAG similarity threshold calibration
+
+```powershell
+# (Re-)generate the 45-ticket OOD calibration set (~3.5 min, ~45 Gemini calls):
+python src\classification\generate_ood_calibration_set.py
+
+# Run the full combined in-domain + OOD calibration sweep (measurement
+# only — does not modify production SIMILARITY_THRESHOLD):
+python -m src.experiments.calibrate_rag_similarity_threshold
+
+# Confirm any candidate threshold against the adversarial set before
+# adopting it into production (SIMILARITY_THRESHOLD in suggest_resolution.py):
+python src/experiments/test_adversarial_escalation.py
+```
+
 ---
 
 ## Known Open Items
@@ -701,6 +891,9 @@ python src/experiments/flag_automation_candidates.py
   planned. That file was never created — all experimental results now
   live in this README instead. These references should be updated to
   point here the next time that file is touched.
+- Resolution-clustering calibration (pooled and per-category) still runs
+  on MiniLM embeddings, not yet re-verified under BGE — see "Pending"
+  above.
 
 ---
 
@@ -718,15 +911,22 @@ python src/experiments/flag_automation_candidates.py
 - Every script fails with clear, actionable error messages instead of raw
   tracebacks — especially important for the Streamlit demo, which may run
   live in front of an audience.
-- Embedding caches are always scoped to the exact dataset they were
-  computed from (e.g. per skew level) — never reuse a cache keyed to a
-  different row count, since that silently misaligns embeddings to the
-  wrong tickets.
-- Calibrated thresholds (RAG similarity 0.35, cascade confidence 0.50,
+- Embedding caches are always scoped to the exact dataset (and, since the
+  BGE swap, the exact embedding model) they were computed from — never
+  reuse a cache keyed to a different row count or model, since that
+  silently misaligns embeddings to the wrong tickets. Every loading
+  function checks `index.ntotal == len(metadata)` and fails loudly on
+  mismatch, after this exact failure mode was caught twice: once as a
+  general silent-stale-cache risk during the BGE swap, and once
+  specifically in `test_adversarial_escalation.py`, which had kept its
+  own independent hardcoded MiniLM constants un-migrated.
+- Calibrated thresholds (RAG similarity **0.67**, cascade confidence 0.50,
   resolution-clustering 0.80) are fixed, evidence-backed constants in
   their respective scripts — never re-derived casually or exposed as
   trivially-overridable CLI flags, since that would undermine the point
-  that these values are measured, not guessed.
+  that these values are measured, not guessed. Any change to a live
+  threshold must be re-confirmed against the 9-ticket adversarial
+  escalation set before being committed.
 - Gemini free-tier rate limits: 15 requests/minute, 500 requests/day
   (as of this writing) — keep `GEMINI_CALL_DELAY_SEC` comfortably above
   the per-minute floor (4s) in any batch-calling script.
