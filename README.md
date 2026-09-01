@@ -501,8 +501,21 @@ chosen** — the last point with zero false "these tickets share a fix"
 claims — deliberately preferred over the recall-better 0.75, because a
 false positive here (wrongly telling ops two different problems share a
 fix) is costlier than a false negative (a missed automation opportunity,
-which just means the status quo continues). This result was independently
-confirmed stable on the complete 500-ticket dataset.
+which just means the status quo continues).
+
+**BGE re-run (Phase 2):** the same pooled clustering + pairwise evaluation
+was re-run under BGE embeddings (`explore_resolution_clustering.py` and
+`calibrate_resolution_clustering.py`, both re-pointed at BGE-suffixed
+output files so the original MiniLM artifacts are preserved for
+comparison, not overwritten). `calibrate_resolution_clustering.py` prints
+the full per-threshold sweep but does not itself compute a cliff-edge, so
+this was derived by hand from the real aggregated output using the
+project's standard rule (lowest threshold with precision exactly 1.0,
+scanning tight → loose): **BGE's pooled cliff-edge is 0.90**, not 0.85 —
+precision is 1.0000 at 0.90 but drops to 0.9814 at 0.85, a real (if small)
+break in the streak. This is measurement-only; production automation-
+flagging remains on MiniLM at the calibrated 0.80 (see "Pending" below for
+why the production threshold was not swapped).
 
 ### Category-specific resolution-clustering calibration
 
@@ -547,6 +560,39 @@ so it is read as indicative rather than conclusive on its own. This
 corrected `find_cliff_edge()` implementation (with the None-precision fix
 above) is the reference version later reused and adapted for the RAG
 similarity threshold recalibration script.
+
+**BGE re-run (Phase 2):** the same per-category sweep was re-run under
+BGE (`calibrate_resolution_clustering_percategory.py`, `MODEL_NAME`
+swapped to `BAAI/bge-base-en-v1.5`, output re-pointed at BGE-suffixed
+files). Its `POOLED_THRESHOLD = 0.80` constant reflects the live
+*production* (MiniLM) value and was deliberately left unchanged rather
+than hardcoding a second stale constant — so the script's own printed
+"vs. Pooled 0.80" comparison column is not the right one to read for a
+BGE-vs-BGE comparison; the correct baseline is BGE's own pooled cliff of
+0.90 (above), applied by hand:
+
+| Category | n | BGE Cliff-Edge | vs. BGE Pooled 0.90 |
+|---|---:|---:|---|
+| Infrastructure | 115 | 0.85 | −0.05 |
+| Application | 100 | 0.85 | −0.05 |
+| Security | 61 | 0.85 | −0.05 |
+| Database | 49 | 0.85 | −0.05 (low-N) |
+| Storage | 53 | 0.85 | −0.05 (low-N) |
+| Network | 74 | 0.85 | −0.05 |
+| Access Management | 48 | 0.90 | matches exactly (low-N) |
+
+A genuinely citable finding falls out of comparing the two embedding
+models' spreads directly: under MiniLM, per-category cliffs ranged across
+a full 0.10 band (0.70–0.80), with 4/7 categories matching pooled exactly
+and the other 3 diverging by up to −0.10. Under BGE, every category lands
+within a single 0.05 step of its own pooled cliff. **BGE produces more
+cross-category-consistent clustering behavior than MiniLM did**, on top of
+needing a systematically higher absolute threshold — consistent with the
+same higher-similarity-score pattern already established during the RAG
+threshold recalibration (see "RAG Similarity Threshold Recalibration"
+above). This BGE comparison is measurement-only, same as the MiniLM
+result it's benchmarked against; see "Pending" for why it hasn't been
+promoted to production.
 
 This is a measurement-only diagnostic: it does not change the production
 threshold. It establishes that the pooled 0.80 threshold is well-supported
@@ -716,15 +762,31 @@ That remains a scoped future extension, not something built yet.
   sample-size noise. Measurement-only; production still uses the pooled
   0.80 threshold pending a future decision on category-specific
   thresholds.
+- Resolution-clustering automation-flagging threshold: BGE vs.
+  production decision.** Phase 2 (re-running pooled and per-category
+  resolution-clustering calibration under BGE) is done — see "Resolution-
+  clustering calibration" and "Category-specific resolution-clustering
+  calibration" above. BGE's clustering is measurably tighter across
+  categories than MiniLM's, but the production automation-flagging
+  threshold was deliberately **not** swapped to BGE (still 0.80 on
+  MiniLM), because — unlike the RAG similarity threshold, which had both
+  a validated accuracy benchmark (the 45-ticket set) and an adversarial
+  test to re-confirm the specific chosen value before adoption — there is
+  currently no equivalent ground-truth check for whether BGE clustering
+  produces *better* automation flags, only that its own precision/recall
+  curve looks internally consistent. Swapping production on cliff-edge
+  math alone, with no way to validate the specific value against real
+  cases, is exactly the category of unchecked assumption this project has
+  caught and rejected before (the in-distribution split, the 35-ticket
+  calibration set, the low-N artifact at RAG threshold 0.85). Building a
+  real validation method for this threshold — analogous to the
+  adversarial set's role for the RAG gate — is the open prerequisite
+  before any production swap here.
+  
 
 ### Pending
 
-1. **Resolution-clustering Phase 2** — re-run pooled and per-category
-   resolution-clustering calibration under BGE embeddings, as its own
-   citable comparison against the existing MiniLM-based clustering
-   results (deliberately deferred during the main BGE swap, scoped as a
-   separate future pass).
-2. **Genuine multi-agent restructure** — independent Classification,
+1. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
    endpoints, then building a real n8n workflow with visual conditional
@@ -733,7 +795,7 @@ That remains a scoped future extension, not something built yet.
    implemented there either. Deliberately done **last**, once everything
    above is measured and stable — it's an architecture/presentation step,
    not a new experiment.
-3. **Formal IEEE-style paper draft**, once all of the above is complete.
+
 
 ---
 
@@ -891,9 +953,10 @@ python src/experiments/test_adversarial_escalation.py
   planned. That file was never created — all experimental results now
   live in this README instead. These references should be updated to
   point here the next time that file is touched.
-- Resolution-clustering calibration (pooled and per-category) still runs
-  on MiniLM embeddings, not yet re-verified under BGE — see "Pending"
-  above.
+- Resolution-clustering calibration has been re-verified under BGE
+  (pooled and per-category), but production automation-flagging still
+  runs on the original MiniLM-calibrated threshold (0.80) pending a
+  validation method for the BGE alternative — see "Pending" above.
 
 ---
 
