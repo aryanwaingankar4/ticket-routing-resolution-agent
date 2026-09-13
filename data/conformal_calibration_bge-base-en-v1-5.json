@@ -1,0 +1,3991 @@
+{
+  "alphas": [
+    0.2,
+    0.1,
+    0.05,
+    0.01
+  ],
+  "config_fingerprint": "05f391baf27c",
+  "contamination_structure": {
+    "calibration_templates": 11,
+    "dataset_rows": 4000,
+    "median_rows_per_template": 430,
+    "rows_surviving_template_exclusion": 40,
+    "total_templates": 12
+  },
+  "embedding_model": "BAAI/bge-base-en-v1.5",
+  "fits": {
+    "clean|tier1|all|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 1.0000000000000002,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8528012560019826,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.7920174960796442,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.669906934089959,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7083242056836397,
+        "Application": 0.8745767873387631,
+        "Database": 0.6565631308337999,
+        "Infrastructure": 1.0000000000000002,
+        "Network": 0.832056487283288,
+        "Security": 0.8229292260993395,
+        "Storage": 0.7841769842112039
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7082215571457833,
+        "Application": 0.7860745817644742,
+        "Database": 0.5960476877988622,
+        "Infrastructure": 0.9999999999999999,
+        "Network": 0.8235220544234626,
+        "Security": 0.805305619220114,
+        "Storage": 0.6784441381775657
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6607579910761421,
+        "Application": 0.7214760168708264,
+        "Database": 0.5149382086741714,
+        "Infrastructure": 0.9075132581315515,
+        "Network": 0.7488168501454686,
+        "Security": 0.7316183193397832,
+        "Storage": 0.5660787409305499
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|all|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9543998449421554,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9134848419248752,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8899172420796364,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8658062024778628,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.878038564127202,
+        "Application": 0.9543998449421554,
+        "Database": 0.8633491642404529,
+        "Infrastructure": 0.9420507163318936,
+        "Network": 0.9457247744256301,
+        "Security": 0.9121259534659968,
+        "Storage": 0.8524006471256225
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8678405163495244,
+        "Application": 0.9281756490521383,
+        "Database": 0.7980938130304395,
+        "Infrastructure": 0.9388440290492602,
+        "Network": 0.9134848419248752,
+        "Security": 0.9020127580436826,
+        "Storage": 0.8400143861676136
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|all|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8213669897758087,
+        "Application": 0.8740563973999428,
+        "Database": 0.7504867975755537,
+        "Infrastructure": 0.9114913679020186,
+        "Network": 0.8878244928383725,
+        "Security": 0.8816565398179202,
+        "Storage": 0.764193393665584
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9999999999999999,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.832056487283288,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.7699317220267398,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.6565631308337999,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7083242056836397,
+        "Application": 0.8745767873387631,
+        "Database": 0.6565631308337999,
+        "Infrastructure": 0.9999999999999999,
+        "Network": 0.832056487283288,
+        "Security": 0.805305619220114,
+        "Storage": 0.7841769842112039
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7082215571457833,
+        "Application": 0.7860745817644742,
+        "Database": 0.5960476877988622,
+        "Infrastructure": 0.9999999999999999,
+        "Network": 0.8235220544234626,
+        "Security": 0.7642424374410509,
+        "Storage": 0.6784441381775657
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6607579910761421,
+        "Application": 0.7408904345934854,
+        "Database": 0.5149382086741714,
+        "Infrastructure": 0.8528012560019826,
+        "Network": 0.6744544347852572,
+        "Security": 0.7316183193397832,
+        "Storage": 0.577037224458558
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier1|clean_labels|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9543998449421554,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9121259534659968,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8878244928383725,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8541529448564986,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.878038564127202,
+        "Application": 0.9543998449421554,
+        "Database": 0.8633491642404529,
+        "Infrastructure": 0.9420507163318936,
+        "Network": 0.9134848419248752,
+        "Security": 0.9121259534659968,
+        "Storage": 0.8524006471256225
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8678405163495244,
+        "Application": 0.9281756490521383,
+        "Database": 0.7980938130304395,
+        "Infrastructure": 0.9388440290492602,
+        "Network": 0.9062684226692171,
+        "Security": 0.9020127580436826,
+        "Storage": 0.8400143861676136
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier1|clean_labels|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8213669897758087,
+        "Application": 0.8740563973999428,
+        "Database": 0.7769808286657839,
+        "Infrastructure": 0.9114913679020186,
+        "Network": 0.8617864196428249,
+        "Security": 0.8891871107295364,
+        "Storage": 0.7740816689354395
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 1.0000000316649675,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9563033059239388,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9295089244842529,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8771485090255737,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.9135903120040894,
+        "Application": 0.8808905184268951,
+        "Database": 0.8809468150138855,
+        "Infrastructure": 0.9391964040696621,
+        "Network": 0.9919885490089655,
+        "Security": 1.0000000316649675,
+        "Storage": 0.9712255597114563
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.860521137714386,
+        "Application": 0.8612606525421143,
+        "Database": 0.8226125836372375,
+        "Infrastructure": 0.9135279655456543,
+        "Network": 0.98285161703825,
+        "Security": 0.9457229375839233,
+        "Storage": 0.9574376344680786
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8299715518951416,
+        "Application": 0.7696046531200409,
+        "Database": 0.7423105239868164,
+        "Infrastructure": 0.7998398467898369,
+        "Network": 0.9561777040362358,
+        "Security": 0.8822552561759949,
+        "Storage": 0.9536837339401245
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|all|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9771071020513773,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9250425770878792,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8474442511796951,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.7055858671665192,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.734276682138443,
+        "Application": 0.8929043859243393,
+        "Database": 0.7011591792106628,
+        "Infrastructure": 0.9545393027365208,
+        "Network": 0.9771071020513773,
+        "Security": 0.9758660700172186,
+        "Storage": 0.6842556595802307
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7098568081855774,
+        "Application": 0.885548323392868,
+        "Database": 0.6949737668037415,
+        "Infrastructure": 0.9099350050091743,
+        "Network": 0.9648630693554878,
+        "Security": 0.9595122523605824,
+        "Storage": 0.48728692531585693
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|all|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6288541257381439,
+        "Application": 0.7368774116039276,
+        "Database": 0.6371343731880188,
+        "Infrastructure": 0.8703634738922119,
+        "Network": 0.9209131076931953,
+        "Security": 0.7940516620874405,
+        "Storage": 0.3221089243888855
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 1.0000000316649675,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9554580450057983,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9240427613258362,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8710061311721802,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.9135903120040894,
+        "Application": 0.8808905184268951,
+        "Database": 0.8809468150138855,
+        "Infrastructure": 0.82850581407547,
+        "Network": 0.9919885490089655,
+        "Security": 1.0000000316649675,
+        "Storage": 0.9712255597114563
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.860521137714386,
+        "Application": 0.8612606525421143,
+        "Database": 0.7837918996810913,
+        "Infrastructure": 0.8008555918931961,
+        "Network": 0.98285161703825,
+        "Security": 0.9457229375839233,
+        "Storage": 0.9574376344680786
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8299715518951416,
+        "Application": 0.8257551938295364,
+        "Database": 0.7423105239868164,
+        "Infrastructure": 0.7868529409170151,
+        "Network": 0.9295089244842529,
+        "Security": 0.9221748188138008,
+        "Storage": 0.9536837339401245
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "clean|tier2|clean_labels|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9771071020513773,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9099350050091743,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8136171996593475,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.6858662664890289,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.734276682138443,
+        "Application": 0.8929043859243393,
+        "Database": 0.7011591792106628,
+        "Infrastructure": 0.9099350050091743,
+        "Network": 0.9771071020513773,
+        "Security": 0.9758660700172186,
+        "Storage": 0.6842556595802307
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7098568081855774,
+        "Application": 0.885548323392868,
+        "Database": 0.6949737668037415,
+        "Infrastructure": 0.89876589179039,
+        "Network": 0.9584541171789169,
+        "Security": 0.9595122523605824,
+        "Storage": 0.48728692531585693
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "clean|tier2|clean_labels|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6288541257381439,
+        "Application": 0.7354857623577118,
+        "Database": 0.6695904433727264,
+        "Infrastructure": 0.8474442511796951,
+        "Network": 0.8017772883176804,
+        "Security": 0.7940516620874405,
+        "Storage": 0.3237731456756592
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 1.0000000000000002,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8777074808962484,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.7927571155538973,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.6702213344969238,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7098734081920646,
+        "Application": 0.8777074808962484,
+        "Database": 0.6572179458929219,
+        "Infrastructure": 1.0000000000000002,
+        "Network": 0.9184482206561335,
+        "Security": 0.827849528302811,
+        "Storage": 0.7947887447369796
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7094238929929598,
+        "Application": 0.7915773368900563,
+        "Database": 0.6019744135939589,
+        "Infrastructure": 1.0,
+        "Network": 0.8237447136374031,
+        "Security": 0.8063148530376375,
+        "Storage": 0.6783989178304348
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6635743170427262,
+        "Application": 0.7227035236366427,
+        "Database": 0.5242306534287935,
+        "Infrastructure": 0.9081702346794497,
+        "Network": 0.7507321328734966,
+        "Security": 0.7334471105705553,
+        "Storage": 0.5709666576510533
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|all|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9555531798676202,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9143356514192296,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8899476741209735,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8661540571516,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.8788739513433548,
+        "Application": 0.9555531798676202,
+        "Database": 0.8629228694163608,
+        "Infrastructure": 0.9425451663656104,
+        "Network": 0.9472002899333356,
+        "Security": 0.9128203651461175,
+        "Storage": 0.8516350504010348
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8686920166042871,
+        "Application": 0.9302796420099647,
+        "Database": 0.7959203318968869,
+        "Infrastructure": 0.939398621342037,
+        "Network": 0.9143356514192296,
+        "Security": 0.9026825171327815,
+        "Storage": 0.8401426979745166
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|all|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8206906274502368,
+        "Application": 0.8747073621457362,
+        "Database": 0.7483947731853331,
+        "Infrastructure": 0.9119923407068338,
+        "Network": 0.8884787609583206,
+        "Security": 0.8818224670077344,
+        "Storage": 0.762267500672032
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 1.0000000000000002,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8479008835061188,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.7663022793646324,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.659014106846956,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7098734081920646,
+        "Application": 0.8777074808962484,
+        "Database": 0.6572179458929219,
+        "Infrastructure": 1.0000000000000002,
+        "Network": 0.9184482206561335,
+        "Security": 0.8063148530376375,
+        "Storage": 0.7947887447369796
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7094238929929598,
+        "Application": 0.7915773368900563,
+        "Database": 0.6015109190263142,
+        "Infrastructure": 1.0,
+        "Network": 0.8237447136374031,
+        "Security": 0.7663022793646324,
+        "Storage": 0.6783989178304348
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6635743170427262,
+        "Application": 0.7434680519099444,
+        "Database": 0.5242306534287935,
+        "Infrastructure": 0.8545534031460179,
+        "Network": 0.6837487488731541,
+        "Security": 0.7334471105705553,
+        "Storage": 0.5801626144800234
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier1|clean_labels|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9555531798676202,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9128203651461175,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8884787609583206,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8547777299809517,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.8788739513433548,
+        "Application": 0.9555531798676202,
+        "Database": 0.8629228694163608,
+        "Infrastructure": 0.9425451663656104,
+        "Network": 0.9143356514192296,
+        "Security": 0.9128203651461175,
+        "Storage": 0.8516350504010348
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8686920166042871,
+        "Application": 0.9302796420099647,
+        "Database": 0.7959203318968869,
+        "Infrastructure": 0.939398621342037,
+        "Network": 0.9074772791367772,
+        "Security": 0.9026825171327815,
+        "Storage": 0.8401426979745166
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier1|clean_labels|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8206906274502368,
+        "Application": 0.8747073621457362,
+        "Database": 0.7731866843895026,
+        "Infrastructure": 0.9119923407068338,
+        "Network": 0.863034732024237,
+        "Security": 0.8892935585082236,
+        "Storage": 0.7724043103536551
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9999999664723873,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9582767747342587,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9317348003387451,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8781570792198181,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.9153952598571777,
+        "Application": 0.883522666990757,
+        "Database": 0.8841435313224792,
+        "Infrastructure": 0.9418402090668678,
+        "Network": 0.9922429546713829,
+        "Security": 0.9999999664723873,
+        "Storage": 0.9728154540061951
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8654811978340149,
+        "Application": 0.862979456782341,
+        "Database": 0.8256487846374512,
+        "Infrastructure": 0.9164234399795532,
+        "Network": 0.983346089720726,
+        "Security": 0.9458300322294235,
+        "Storage": 0.9589030146598816
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8335965275764465,
+        "Application": 0.7719013690948486,
+        "Database": 0.7487975358963013,
+        "Infrastructure": 0.8010699301958084,
+        "Network": 0.9564704298973083,
+        "Security": 0.88746178150177,
+        "Storage": 0.9559968113899231
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|all|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9778352975845337,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.9263173490762711,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.8453943282365799,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": 0.703177809715271,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7297675311565399,
+        "Application": 0.8940479829907417,
+        "Database": 0.6981094777584076,
+        "Infrastructure": 0.9560590013861656,
+        "Network": 0.9778352975845337,
+        "Security": 0.976538397371769,
+        "Storage": 0.6827610433101654
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7075437307357788,
+        "Application": 0.8886147364974022,
+        "Database": 0.6977973580360413,
+        "Infrastructure": 0.9100287929177284,
+        "Network": 0.9666154719889164,
+        "Security": 0.9584874585270882,
+        "Storage": 0.4851049780845642
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|all|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6252513527870178,
+        "Application": 0.7426725625991821,
+        "Database": 0.6332085132598877,
+        "Infrastructure": 0.8728712201118469,
+        "Network": 0.9230707809329033,
+        "Security": 0.7926860302686691,
+        "Storage": 0.31858283281326294
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 175,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 25,
+        "Database": 25,
+        "Infrastructure": 25,
+        "Network": 25,
+        "Security": 25,
+        "Storage": 25
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|aps|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9999999664723873,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9564704298973083,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.927463710308075,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8729860782623291,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.9153952598571777,
+        "Application": 0.883522666990757,
+        "Database": 0.8841435313224792,
+        "Infrastructure": 0.8297974392771721,
+        "Network": 0.9922429546713829,
+        "Security": 0.9999999664723873,
+        "Storage": 0.9728154540061951
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.8654811978340149,
+        "Application": 0.862979456782341,
+        "Database": 0.7939206957817078,
+        "Infrastructure": 0.8038190752267838,
+        "Network": 0.983346089720726,
+        "Security": 0.9458300322294235,
+        "Storage": 0.9589030146598816
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|aps|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.8335965275764465,
+        "Application": 0.8279089257121086,
+        "Database": 0.7487975358963013,
+        "Infrastructure": 0.7877788990736008,
+        "Network": 0.9317348003387451,
+        "Security": 0.9229259192943573,
+        "Storage": 0.9559968113899231
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "aps"
+    },
+    "contaminated|tier2|clean_labels|lac|marginal|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9778352975845337,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|marginal|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.9100287929177284,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|marginal|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.8136315941810608,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|marginal|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {},
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": false,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": 0.688500314950943,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|mondrian|0.01": {
+      "alpha": 0.01,
+      "class_quantiles": {
+        "Access Management": Infinity,
+        "Application": Infinity,
+        "Database": Infinity,
+        "Infrastructure": Infinity,
+        "Network": Infinity,
+        "Security": Infinity,
+        "Storage": Infinity
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": true,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|mondrian|0.05": {
+      "alpha": 0.05,
+      "class_quantiles": {
+        "Access Management": 0.7297675311565399,
+        "Application": 0.8940479829907417,
+        "Database": 0.6981094777584076,
+        "Infrastructure": 0.9100287929177284,
+        "Network": 0.9778352975845337,
+        "Security": 0.976538397371769,
+        "Storage": 0.6827610433101654
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|mondrian|0.1": {
+      "alpha": 0.1,
+      "class_quantiles": {
+        "Access Management": 0.7075437307357788,
+        "Application": 0.8886147364974022,
+        "Database": 0.6977973580360413,
+        "Infrastructure": 0.8989004269242287,
+        "Network": 0.9594135656952858,
+        "Security": 0.9584874585270882,
+        "Storage": 0.4851049780845642
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    },
+    "contaminated|tier2|clean_labels|lac|mondrian|0.2": {
+      "alpha": 0.2,
+      "class_quantiles": {
+        "Access Management": 0.6252513527870178,
+        "Application": 0.7426725625991821,
+        "Database": 0.6677407026290894,
+        "Infrastructure": 0.8453943282365799,
+        "Network": 0.8051235526800156,
+        "Security": 0.7926860302686691,
+        "Storage": 0.3206106424331665
+      },
+      "classes": [
+        "Access Management",
+        "Application",
+        "Database",
+        "Infrastructure",
+        "Network",
+        "Security",
+        "Storage"
+      ],
+      "is_degenerate": false,
+      "mondrian": true,
+      "n_calibration": 154,
+      "n_per_class": {
+        "Access Management": 25,
+        "Application": 22,
+        "Database": 21,
+        "Infrastructure": 19,
+        "Network": 23,
+        "Security": 22,
+        "Storage": 22
+      },
+      "quantile": null,
+      "score_function": "lac"
+    }
+  },
+  "n_calibration": 175,
+  "n_dataset": 4000,
+  "n_flagged": 21,
+  "self_retrieval_rate": 0.05714285714285714
+}

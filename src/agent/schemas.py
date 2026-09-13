@@ -124,6 +124,39 @@ class ResolutionSuggestion(_Model):
     grounded_ticket_ids: list[str | int] = Field(default_factory=list)
 
 
+class ConformalPrediction(_Model):
+    """A conformal prediction set for one ticket.
+
+    An EMPTY prediction_set is meaningful, not an error: every label was more
+    nonconforming than anything seen during calibration, i.e. a strong
+    out-of-distribution signal. It is never backfilled with the argmax.
+
+    `alpha` records the nominal error rate the set was built at. The coverage
+    guarantee holds only if calibration and deployment data are exchangeable;
+    on this project's data that holds for Tier-2 but demonstrably not for
+    Tier-1, so the tier is recorded alongside.
+    """
+
+    prediction_set: list[str] = Field(default_factory=list)
+    alpha: float
+    quantile: float | None = None
+    score_function: str = "lac"
+    mondrian: bool = False
+    tier: Tier | None = None
+
+    @property
+    def set_size(self) -> int:
+        return len(self.prediction_set)
+
+    @property
+    def is_singleton(self) -> bool:
+        return len(self.prediction_set) == 1
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.prediction_set
+
+
 class PipelineResult(_Model):
     """The complete outcome of one ticket through the pipeline.
 
@@ -148,6 +181,10 @@ class PipelineResult(_Model):
     # exist in the first place.
     error_kind: str | None = None
     error_message: str | None = None
+
+    # Populated only when settings.conformal.enabled. Default None keeps
+    # results byte-identical to the Phase 0 goldens.
+    conformal: ConformalPrediction | None = None
 
     @property
     def escalated(self) -> bool:

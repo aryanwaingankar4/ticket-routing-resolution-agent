@@ -83,6 +83,9 @@ python src/experiments/process_ticket_batch.py
 python src/experiments/generate_skewed_datasets.py
 python src/experiments/run_imbalance_sweep.py
 
+# Conformal prediction (measurement only; offline, no Gemini quota)
+python -m src.experiments.calibrate_conformal
+
 # Resolution clustering -> automation flagging
 python src/experiments/join_scenario_ground_truth.py
 python src/experiments/explore_resolution_clustering.py
@@ -173,6 +176,11 @@ All three live in `src/agent/config.py`, which is frozen — assigning to one ra
 | Cascade confidence threshold | **0.50** | `settings.cascade.confidence_threshold` |
 | Resolution-clustering threshold | **0.80** | `settings.clustering.resolution_similarity_threshold` |
 
+`settings.conformal` exists but **does not gate production** — `enabled` is
+`False`, so `PipelineResult.conformal` stays `None` and golden parity holds.
+Conformal is measured by `calibrate_conformal.py`; promoting it to a live gate
+is a separate decision needing its own evidence.
+
 Production embedding model is `BAAI/bge-base-en-v1.5` (768-dim) for classification, RAG
 retrieval, and cascade Tier-2. Resolution-text clustering deliberately remains on
 `all-MiniLM-L6-v2` — BGE has been measured there but not promoted, because no
@@ -188,6 +196,15 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 - **Benchmarks are read-only.** `NOVEL_TICKETS` in `generalization_test.py` (14 tickets)
   and `data/novel_tickets_expanded.json` (45 tickets) are fixed reference points used
   across every method comparison. Never edit or regenerate them.
+- **Conformal coverage transfers for Tier-2 but not Tier-1.** Calibrated on the
+  same 175 tickets at the same alpha, TF-IDF loses 23.3 coverage points on the
+  45-ticket benchmark while BGE loses 1.1 (noise band 4.5). Do not quote a
+  conformal guarantee for a lexical model on out-of-template text.
+- **The 175-ticket calibration set cannot be de-contaminated.** Its tickets are
+  paraphrases of training rows, but memorisation is template-level: 12
+  templates, ~430 rows each, and the set touches 11 of them. Removing source
+  rows changes nothing; removing whole templates would leave 40/4000 rows. Do
+  not "fix" this by filtering — it needs deployment-distribution data.
 - **In-distribution accuracy is uninformative here.** Template-generated data makes
   every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.

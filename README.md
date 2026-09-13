@@ -52,6 +52,11 @@ places:
   calibrated cliff-edge finding, chosen because a false "these two tickets
   share a fix" claim is costlier than a missed automation opportunity.
 
+A fourth strand now sits on top of these: **conformal prediction**, which
+upgrades the claim from *calibrated* to *provably risk-controlled* — and,
+in the process, measures where that guarantee silently fails. See
+"Conformal Prediction" below.
+
 That consistency — three independent calibration exercises converging on
 the same design philosophy — is the actual research contribution, more so
 than any single accuracy number. A recurring pattern across all three is
@@ -359,6 +364,141 @@ Scripts: `src/experiments/run_ablation_study.py`. Results:
 [`ablation_baseline_results.csv`](data/ablation_baseline_results.csv),
 [`ablation_no-cascade_results.csv`](data/ablation_no-cascade_results.csv),
 [`ablation_no-rag_results.csv`](data/ablation_no-rag_results.csv).
+
+### Conformal Prediction — from *calibrated* to *provably risk-controlled*
+
+Every threshold above is calibrated: swept against real data and chosen for a
+documented reason. None of them carries a *guarantee*. Split conformal
+prediction does — for a chosen error rate α, the true category lies in the
+predicted set with probability ≥ 1−α, distribution-free and finite-sample,
+with no assumption that the model is well calibrated (which matters here,
+since both tiers are measurably underconfident).
+
+The catch is that the guarantee holds **only under exchangeability** between
+calibration and deployment data. This project turns out to be an unusually
+clean setting in which to measure what happens when that assumption fails.
+
+Implementation is hand-rolled in `src/agent/conformal.py` (numpy only, ~150
+lines). The quantile is computed as an exact order statistic — the
+⌈(n+1)(1−α)⌉-th smallest calibration score — rather than via `np.quantile`,
+whose interpolation silently voids the finite-sample guarantee. This is
+**measurement only**: `settings.conformal.enabled` is `False`, production still
+gates on 0.50 / 0.67, and Phase 0's golden parity is untouched.
+
+#### Finding 1: coverage transfer is a property of the *representation*, not just the data
+
+Both tiers were calibrated on the same 175-ticket in-domain set, at the same α,
+and evaluated on the same 45-ticket plain-English benchmark. They behave
+completely differently.
+
+| Tier | α | Nominal | Coverage on 175 | Coverage on 45 | Gap | ±2 s.d. | Mean set size | Singleton rate |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Tier-1 (TF-IDF) | 0.20 | 0.800 | 0.806 | 0.578 | **−0.222** | 0.060 | 2.67 | 8.9% |
+| Tier-1 (TF-IDF) | 0.10 | 0.900 | 0.909 | 0.667 | **−0.233** | 0.045 | 3.44 | 8.9% |
+| Tier-1 (TF-IDF) | 0.05 | 0.950 | 0.960 | 0.844 | **−0.106** | 0.033 | 5.00 | 6.7% |
+| Tier-2 (BGE) | 0.20 | 0.800 | 0.806 | 0.756 | −0.044 | 0.060 | 1.11 | 84.4% |
+| Tier-2 (BGE) | 0.10 | 0.900 | 0.909 | **0.889** | −0.011 | 0.045 | 1.84 | 35.6% |
+| Tier-2 (BGE) | 0.05 | 0.950 | 0.960 | 0.978 | +0.028 | 0.033 | 2.56 | 17.8% |
+
+*(LAC score, marginal, all 175 labels, de-contaminated fit. The ±2 s.d. column
+is the noise band from a single calibration draw — the conformal guarantee is
+marginal over the calibration draw, not conditional on it, so a gap inside that
+band is not evidence of anything.)*
+
+At α = 0.10 the **lexical model loses 23.3 points of coverage** — more than
+five times its noise band — while the **semantic model loses 1.1 points**,
+comfortably inside it. Conformal's promise holds for BGE and collapses for
+TF-IDF, on identical data.
+
+The mechanism is straightforward once stated: TF-IDF's nonconformity scores are
+built from surface vocabulary, and a paraphrase shift changes the vocabulary
+entirely, so the calibration score distribution does not transfer. BGE encodes
+meaning, which survives the paraphrase. **Exchangeability is not purely a
+property of how the data was sampled — it is also a property of the
+representation the scores are computed in.** That is a testable claim, and it
+is the sharpest result in this project: it converts "BGE generalizes better,"
+already established on accuracy, into a statement about whether a statistical
+guarantee survives deployment at all.
+
+It also reframes the cascade. Tier-1 at α=0.10 emits a singleton for only 8.9%
+of benchmark tickets and averages 3.4 of 7 categories per set — it is, by its
+own admission, unable to commit. Tier-2 at α=0.20 emits singletons for 84.4%
+with a mean set size of 1.11, and at α=0.10 still manages 35.6%. The accuracy/autonomy trade-off the cascade
+encodes as a hand-tuned 0.50 falls out of conformal as a consequence of the
+chosen risk level.
+
+#### Finding 2: this calibration set cannot be de-contaminated
+
+`train_cascade.py` scores the 175 calibration tickets with models fit on all
+4,000 rows — and those tickets are Gemini paraphrases of rows from that same
+CSV. The model has seen the original of every ticket it is calibrated on.
+Predicted consequence: memorised sources depress nonconformity scores, shrink
+the quantile, shrink the sets, and push coverage below nominal.
+
+**The prediction was wrong in practice, and the reason is more interesting than
+the hypothesis.** Refitting both tiers with all 175 source rows removed moves
+benchmark coverage by a mean of 0.005 across all 64 paired configurations
+(maximum 0.067, in a low-sample Mondrian cell), and by nothing at three decimal
+places in most. The
+measurement of *why* is reproducible in the script's Step 1b:
+
+| | |
+|---|---:|
+| Scenario templates in the dataset | 12 |
+| Templates touched by the 175 calibration tickets | 11 (91.7%) |
+| Median rows per template | 430 |
+| Sibling rows left after removing one source row | 429 |
+| Rows surviving template-level exclusion | **40 / 4000** |
+
+Memorisation here is at *template* level, not row level. Deleting one row
+removes roughly 0.2% of its template's evidence, so the fitted model is
+effectively unchanged. The stronger move — excluding every row sharing a
+template with any calibration ticket — would leave 40 rows to train on, which
+is not a de-contamination but a destruction.
+
+So: **an in-domain calibration set built by paraphrasing training rows cannot
+be made exchangeable with a model trained on that data, at any amount of
+cleaning, when the training data is template-redundant.** The remedy is not to
+filter the calibration set; it is to calibrate on data drawn from the
+deployment distribution. That is the motivation for the next step, and it is a
+much stronger one than "the numbers are slightly off."
+
+#### Finding 3: the RAG gate, reframed as conformal novelty detection
+
+The RAG similarity threshold's actual job is detecting out-of-domain input. An
+earlier finding in this project was that an in-domain-only calibration set
+cannot calibrate such a gate. Conformal novelty detection answers that
+directly: it **calibrates on inliers only by construction**, producing a
+p-value for "is this ticket exchangeable with the indexed corpus?" and
+escalating when p ≤ α. The 45-ticket OOD set is then freed to be pure
+evaluation data rather than the thing that sets the threshold it is judged
+against.
+
+| α | In-domain false-escalation rate | OOD detection (15 seeds) | OOD detection (45 variants) | Adversarial |
+|---:|---:|---:|---:|---:|
+| 0.20 | 0.194 | 100% | 100% | 9/9 |
+| 0.10 | 0.091 | 100% | 97.8% | 9/9 |
+| 0.05 | 0.040 | 100% | 95.6% | 9/9 |
+| 0.01 | 0.000 | 93.3% | 84.4% | 6/9 |
+
+The false-escalation rate tracks α almost exactly, which is the guarantee doing
+its job: choosing α *is* choosing how often a legitimate ticket may be sent to
+a human unnecessarily — a quantity the hand-tuned 0.67 threshold never had.
+And at any α ≥ 0.05 the method matches production's **9/9** on the adversarial
+set. The degradation at α = 0.01 is a resolution limit, not a failure: with 175
+calibration points the smallest attainable p-value is 1/176 ≈ 0.0057, so α =
+0.01 sits near the floor of what this sample size can certify.
+
+OOD detection is reported at **seed level** as the headline. The 45 OOD tickets
+are 15 hand-written seeds × 3 Gemini paraphrases, and the generator carries a
+near-duplicate warning for exactly that reason — the variants are not
+independent, so the honest denominator is 15.
+
+Scripts: `src/experiments/calibrate_conformal.py`. Results:
+[`conformal_calibration_results.csv`](data/conformal_calibration_results.csv)
+(128 configurations: 2 tiers × 2 contamination variants × 2 label filters × 2
+score functions × marginal/Mondrian × 4 α),
+[`conformal_novelty_results.csv`](data/conformal_novelty_results.csv).
 
 ### Streamlit demo
 
@@ -762,6 +902,16 @@ That remains a scoped future extension, not something built yet.
   evaluated against the real 500-ticket production batch — found both
   tiers to be genuinely underconfident rather than overconfident, a
   safer failure mode for an escalation-gated system
+- **Conformal prediction (measurement-only)** — hand-rolled split conformal
+  over both cascade tiers plus conformal novelty detection for the RAG gate.
+  Three results: coverage transfer is a property of the *representation*
+  (TF-IDF loses 23.3 coverage points under a paraphrase shift where BGE
+  loses 1.1, on identical data); the in-domain calibration set is
+  structurally impossible to de-contaminate because memorisation is
+  template-level, not row-level; and conformal novelty detection matches
+  production's 9/9 on the adversarial set while adding a calibrated
+  false-escalation rate the 0.67 threshold never had. Production gating is
+  unchanged (`settings.conformal.enabled = False`).
 - Literature review identifying a genuine research gap
 - Permanent 9-ticket adversarial escalation test set with a live-pipeline
   regression script, which itself caught a real bug (stale, un-migrated
@@ -807,7 +957,16 @@ That remains a scoped future extension, not something built yet.
 
 ### Pending
 
-1. **Genuine multi-agent restructure** — independent Classification,
+1. **Deployment-distribution calibration set for conformal.** Finding 2 below
+   shows the existing 175-ticket in-domain set cannot be made exchangeable
+   with a model trained on this dataset at any amount of filtering. The fix
+   is a calibration set drawn from the deployment distribution (~300 plain-
+   English tickets, generated with the same paraphrase-and-verify method and
+   the per-category scope anchor added after the Infrastructure labelling
+   bug), then re-measuring coverage. The before/after pair would turn a
+   negative result into a demonstrated fix.
+
+2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
    endpoints, then building a real n8n workflow with visual conditional

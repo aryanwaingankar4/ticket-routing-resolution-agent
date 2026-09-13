@@ -147,12 +147,40 @@ class GeminiConfig(_Frozen):
     backoff_base_sec: float = 2.0
 
 
+class ConformalConfig(_Frozen):
+    """Split conformal prediction -- MEASUREMENT ONLY at present.
+
+    `enabled` defaults to False, so the live gates remain the calibrated
+    thresholds (cascade 0.50, RAG 0.67) and pipeline results stay
+    byte-identical to the Phase 0 goldens. Conformal is fitted and evaluated
+    by src/experiments/calibrate_conformal.py; promotion to a production gate
+    is a separate decision requiring its own evidence, exactly as with the
+    BGE clustering threshold that was measured but deliberately not promoted.
+
+    `alpha` is the target error rate: the guarantee is that the true category
+    lies in the prediction set with probability at least 1 - alpha, PROVIDED
+    calibration and deployment data are exchangeable. That proviso is the
+    whole question here and is measured rather than assumed.
+    """
+
+    enabled: bool = False
+    alpha: float = 0.10
+    score_function: str = "lac"
+    mondrian: bool = False
+    artifact_name: str = "conformal_calibration_bge-base-en-v1-5.json"
+
+    @property
+    def artifact_path(self) -> Path:
+        return DATA_DIR / self.artifact_name
+
+
 class Settings(_Frozen):
     models: ModelsConfig = ModelsConfig()
     cascade: CascadeConfig = CascadeConfig()
     rag: RAGConfig = RAGConfig()
     clustering: ClusteringConfig = ClusteringConfig()
     gemini: GeminiConfig = GeminiConfig()
+    conformal: ConformalConfig = ConformalConfig()
 
     seed: int = 42
 
@@ -185,6 +213,14 @@ CALIBRATION_PROVENANCE: dict[str, str] = {
         "truth; precision collapses at 0.75. Chosen over the recall-better "
         "0.75 because a false 'these tickets share a fix' claim costs more "
         "than a missed automation opportunity."
+    ),
+    "conformal.alpha": (
+        "0.10 -- nominal target error rate. MEASUREMENT ONLY; conformal does "
+        "not gate production (settings.conformal.enabled is False). Measured "
+        "on this project's data, the guarantee transfers for Tier-2 (BGE) "
+        "but NOT for Tier-1 (TF-IDF): benchmark coverage gaps of -0.011 and "
+        "-0.233 respectively at this alpha, against a 2sd noise band of "
+        "0.045. See README 'Conformal Prediction'."
     ),
     "models.embedding_dim": (
         "768 -- BAAI/bge-base-en-v1.5. Asserted at load time against both the "
