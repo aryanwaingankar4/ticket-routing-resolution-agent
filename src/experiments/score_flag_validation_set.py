@@ -245,11 +245,8 @@ def main():
             str(len(unlabelled)) + " pair(s) are still unlabelled, e.g. "
             + str(sorted(unlabelled)[:10]) + "\n"
             "Scoring a partially-labelled set would silently bias the result "
-            "toward whichever pairs happened to be easy to judge.
-"
-            "Finish labelling
-    " + set_path + "
-first."
+            "toward whichever pairs happened to be easy to judge.\n"
+            "Finish labelling\n    " + set_path + "\nfirst."
         )
 
     # ---- Step 2: false merges, per configuration ---------------------------
