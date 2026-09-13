@@ -1,8 +1,8 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `d6a5434` — Add Phase 2/2A automation-flag validation
-harness (no finding yet)
+**Last commit:** `d380710` — Phase 2 finding: MiniLM@0.80 and BGE@0.90 are
+indistinguishable on precision
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
 **Current phase:** Phase 2 complete (automation-flag validation). Result is
 negative and deliberately so — see below. Production gates unchanged.
