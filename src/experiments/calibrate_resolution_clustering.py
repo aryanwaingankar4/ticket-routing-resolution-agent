@@ -41,10 +41,10 @@ PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
 )
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-JSON_PATH = os.path.join(DATA_DIR, "exploratory_clustering_results.json")
+JSON_PATH = os.path.join(DATA_DIR, "exploratory_clustering_results_bge-base-en-v1-5.json")
 CSV_PATH = os.path.join(DATA_DIR, "category_stores_with_scenario_id.csv")
 OUTPUT_CSV_PATH = os.path.join(
-    DATA_DIR, "resolution_clustering_calibration_results.csv"
+    DATA_DIR, "resolution_clustering_calibration_results_bge-base-en-v1-5.csv"
 )
 
 # Threshold key strings EXACTLY as they appear in the JSON (zero-padded to

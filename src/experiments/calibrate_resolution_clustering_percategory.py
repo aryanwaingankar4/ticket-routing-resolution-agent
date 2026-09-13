@@ -29,7 +29,7 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 # Constants (verified source of truth)
 # ---------------------------------------------------------------------------
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "BAAI/bge-base-en-v1.5"
 SIMILARITY_THRESHOLDS = [0.99, 0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60]
 CATEGORIES = [
     "Infrastructure",
@@ -57,10 +57,10 @@ PROJECT_ROOT = os.path.abspath(os.path.join(_THIS_DIR, os.pardir, os.pardir))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 INPUT_CSV = os.path.join(DATA_DIR, "category_stores_with_scenario_id.csv")
 OUTPUT_CSV = os.path.join(
-    DATA_DIR, "resolution_clustering_calibration_percategory.csv"
+    DATA_DIR, "resolution_clustering_calibration_percategory_bge-base-en-v1-5.csv"
 )
 SUMMARY_CSV = os.path.join(
-    DATA_DIR, "resolution_clustering_calibration_percategory_summary.csv"
+    DATA_DIR, "resolution_clustering_calibration_percategory_summary_bge-base-en-v1-5.csv"
 )
 
 REQUIRED_COLUMNS = ["batch_ticket_id", "category", "resolution_text", "scenario_id"]

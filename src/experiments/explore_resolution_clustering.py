@@ -23,7 +23,7 @@ from sentence_transformers import SentenceTransformer
 # Configuration
 # ---------------------------------------------------------------------------
 
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 # Same categories / casing as the category_stores CSV filenames.
 # NOTE: "Access Management" has a literal space in the filename.
@@ -60,7 +60,7 @@ MAX_EXAMPLES_PER_CLUSTER = 3
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(_THIS_DIR, os.pardir, os.pardir))
 CATEGORY_STORES_DIR = os.path.join(PROJECT_ROOT, "data", "category_stores")
-OUTPUT_JSON_PATH = os.path.join(PROJECT_ROOT, "data", "exploratory_clustering_results.json")
+OUTPUT_JSON_PATH = os.path.join(PROJECT_ROOT, "data", "exploratory_clustering_results_bge-base-en-v1-5.json")
 
 # Encoding batch size -- matches build_vector_index.py.
 ENCODE_BATCH_SIZE = 64
