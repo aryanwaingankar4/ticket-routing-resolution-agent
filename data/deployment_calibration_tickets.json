@@ -1,0 +1,1418 @@
+[
+  {
+    "id": "depcal_0001",
+    "text": "The automatic night reports failed to run again because the main processing machines ran out of memory before finishing.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.5809257626533508
+  },
+  {
+    "id": "depcal_0002",
+    "text": "Whenever I try to join a meeting using our video conferencing program, my microphone cuts out completely after about two minutes and nobody can hear me.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7257519960403442
+  },
+  {
+    "id": "depcal_0003",
+    "text": "I got an email today claiming our security certificate is out of date and telling me to click a link to renew it right now or our accounts will be frozen. It looks really official, but I'm worried it might be a trap. Can someone check if this is real?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.6792312264442444
+  },
+  {
+    "id": "depcal_0004",
+    "text": "When I look at our sales figures from yesterday, half the numbers are completely missing and the system says it can't find where the daily totals were stored.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7145397067070007
+  },
+  {
+    "id": "depcal_0005",
+    "text": "The shared folder where our team keeps all our documents has completely vanished from my computer this morning. I tried restarting my machine twice, but the network drive still won't show up anywhere.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7683565616607666
+  },
+  {
+    "id": "depcal_0006",
+    "text": "Whenever I try to log into the system from my desk today, it just sits there loading forever and eventually says it cannot reach the address. My coworker sitting right across from me is having the exact same issue trying to pull anything up.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7652943134307861
+  },
+  {
+    "id": "depcal_0007",
+    "text": "I tried to log into the main scheduling portal this morning and it keeps telling me my password is wrong, even though I just changed it yesterday. Could someone reset my login so I can get in for my shift?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.8194231986999512
+  },
+  {
+    "id": "depcal_0008",
+    "text": "The main computer running our background tasks completely froze up because it ran out of memory, and now all our automated processes are stuck in place.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.6752023696899414
+  },
+  {
+    "id": "depcal_0009",
+    "text": "Whenever our online store gets busy with shoppers, the underlying computers just grind to a complete halt instead of bringing up extra capacity like they are supposed to do.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7580766081809998
+  },
+  {
+    "id": "depcal_0010",
+    "text": "The main server running our department applications is completely overloaded and grinding to a halt because it ran out of memory, so nobody can get any work done right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7423415184020996
+  },
+  {
+    "id": "depcal_0011",
+    "text": "The main computer running our overnight processing completely ground to a halt and crashed because it ran out of memory, so none of our automated tasks finished this morning.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.6776158213615417
+  },
+  {
+    "id": "depcal_0012",
+    "text": "All of our shared systems are crawling at a snail's pace and freezing up completely because the main server running them has run totally out of memory.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7160582542419434
+  },
+  {
+    "id": "depcal_0013",
+    "text": "None of our department's shared virtual servers will start up this morning, leaving our entire team locked out of the platforms we need for today's projects.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7043648362159729
+  },
+  {
+    "id": "depcal_0014",
+    "text": "Our main server rack is completely frozen and unresponsive because the machines ran entirely out of memory, so nobody in the office can load any of our shared tools right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7501907348632812
+  },
+  {
+    "id": "depcal_0015",
+    "text": "None of our shared systems are loading anything this morning and the main computers running them seem completely overloaded and stuck. It looks like the main servers have totally run out of memory again because everything is frozen solid.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.789474606513977
+  },
+  {
+    "id": "depcal_0016",
+    "text": "None of our department's shared virtual servers will boot up at all this morning, leaving the main machines running our team platforms completely unresponsive and frozen.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7420963048934937
+  },
+  {
+    "id": "depcal_0017",
+    "text": "The main machine running our shared team platform completely froze up and crashed because it ran out of memory, leaving everyone unable to load anything this morning.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7496380805969238
+  },
+  {
+    "id": "depcal_0018",
+    "text": "The main computer running all our department's shared applications has completely seized up and won't respond because it ran entirely out of memory, so nobody can get anything to load right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7110597491264343
+  },
+  {
+    "id": "depcal_0019",
+    "text": "Our main server running all our team software completely froze up and crashed because it ran completely out of memory, so nobody can load anything right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7860619425773621
+  },
+  {
+    "id": "depcal_0020",
+    "text": "The main server running our shared tools completely locked up and crashed because it ran out of memory, and now nobody in the department can load anything.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7532007694244385
+  },
+  {
+    "id": "depcal_0021",
+    "text": "None of our team tools will load this morning and the main computers running them are completely overloaded and stuck. It looks like the shared servers ran completely out of memory and everything has ground to a halt.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.777866005897522
+  },
+  {
+    "id": "depcal_0022",
+    "text": "The big shared computer hosting our department apps completely choked and stopped responding because it ran totally out of memory, so nobody can load anything right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.680785059928894
+  },
+  {
+    "id": "depcal_0023",
+    "text": "The main computer hosting our department tools has completely bogged down and refuses to respond because it ran out of memory, leaving everyone unable to get any work done today.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7601587176322937
+  },
+  {
+    "id": "depcal_0024",
+    "text": "Our main server running all our company tools completely locked up and won't respond because it ran entirely out of memory, leaving everyone unable to get any work done this morning.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7932995557785034
+  },
+  {
+    "id": "depcal_0025",
+    "text": "Every single shared tool our team uses is totally frozen and unresponsive right now because the main server running them has completely run out of memory. Nobody can load anything at all until those machines get sorted out.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7818654775619507
+  },
+  {
+    "id": "depcal_0026",
+    "text": "Whenever I try to send our weekly payroll report through the accounting software, it gives me a weird popup message and completely erases the recipient list. I've tried typing the emails in again three times, but it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7070387005805969
+  },
+  {
+    "id": "depcal_0027",
+    "text": "Whenever I try to export my campaign results from the marketing dashboard, the screen goes completely blank and none of the charts will download. I've tried using a different browser, but the same thing keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.6757936477661133
+  },
+  {
+    "id": "depcal_0028",
+    "text": "Whenever I try to pull up the weekly sales dashboard in our analytics tool, the page just loads for ten minutes and then says the connection timed out. I really need to see these numbers for my meeting this afternoon.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.74169921875
+  },
+  {
+    "id": "depcal_0029",
+    "text": "Whenever I try to send out an automatic payment reminder through our billing platform, it just sits there spinning and never actually emails the clients. I've tried doing it three times this morning and nothing goes through.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.694456934928894
+  },
+  {
+    "id": "depcal_0030",
+    "text": "Whenever I try to schedule a candidate interview through our recruiting platform, the calendar invite never actually sends out to the applicant. I've tried hitting send multiple times, but nothing goes through.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.690750002861023
+  },
+  {
+    "id": "depcal_0031",
+    "text": "Whenever I try to sync my customer records in the CRM tool with our email system, it just hangs on a blank screen and nothing gets updated. I need this working before my afternoon calls.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7720038294792175
+  },
+  {
+    "id": "depcal_0032",
+    "text": "Whenever I try to upload my signed contract into the legal approval program, the screen freezes up completely and refuses to finish the upload. I've tried doing it three times now and it just gets stuck every single time.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7347570657730103
+  },
+  {
+    "id": "depcal_0033",
+    "text": "Whenever I try to export my weekly project status from the task manager, the program immediately closes itself without saving my changes. I've tried doing it three times now and it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7087194919586182
+  },
+  {
+    "id": "depcal_0034",
+    "text": "Whenever I try to download my monthly commission statement from the sales portal, the page just freezes completely and I have to close out of my whole browser. I've tried doing it multiple times today and it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7489792704582214
+  },
+  {
+    "id": "depcal_0035",
+    "text": "Whenever I try to export my monthly budget report from the finance tool, the screen goes completely blank and it kicks me all the way back to the main login page. I've tried doing it three times and it happens every single time.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7511038780212402
+  },
+  {
+    "id": "depcal_0036",
+    "text": "Every time I try to join our daily team huddle on the video calling software, my screen freezes for a second and then completely shuts the meeting down. I've tried restarting my computer twice, but it keeps happening as soon as I click join.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7464103698730469
+  },
+  {
+    "id": "depcal_0037",
+    "text": "Whenever I try to send out our monthly customer newsletter using the email marketing tool, it gives me an error message right at the end and fails to send anything. I've tried doing it three times and it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7082595229148865
+  },
+  {
+    "id": "depcal_0038",
+    "text": "Whenever I try to upload my presentation slides to our training portal, the page just turns completely white and won't let me finish. I've tried doing it three times now and it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.8489149808883667
+  },
+  {
+    "id": "depcal_0039",
+    "text": "Whenever I try to link my calendar in our scheduling tool to my email, it throws up a strange error message and disconnects entirely. I've tried doing it multiple times this morning and it keeps failing.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7244899272918701
+  },
+  {
+    "id": "depcal_0040",
+    "text": "Whenever I try to pull up the customer feedback form in our survey tool, the page just spins forever and never loads any of the responses. I've tried refreshing multiple times but nothing comes up.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7225576043128967
+  },
+  {
+    "id": "depcal_0041",
+    "text": "Whenever I try to upload my scanned receipts into the expense reporting app, the page just spins endlessly and never finishes processing. I really need to get my travel reimbursement submitted before the deadline today.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7467060089111328
+  },
+  {
+    "id": "depcal_0042",
+    "text": "Whenever I try to send out our automatic payment reminders through the billing software, it gives me a sudden error message and clears out my entire queue. I've tried running it twice now and it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7280303239822388
+  },
+  {
+    "id": "depcal_0043",
+    "text": "Whenever I try to generate our monthly inventory report in the warehouse management system, the program just locks up completely and refuses to finish. I really need this done today so management can see what we have in stock.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7671757936477661
+  },
+  {
+    "id": "depcal_0044",
+    "text": "Whenever I try to upload my scanned tax documents into our accounting software, the program immediately crashes and loses all my progress. I've tried restarting the app multiple times, but it keeps happening every single time I touch that button.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.81257164478302
+  },
+  {
+    "id": "depcal_0045",
+    "text": "Whenever I try to schedule a client follow-up through our customer service platform, the calendar pop-up freezes completely and won't let me pick a time. I've tried closing and reopening it, but it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7490534782409668
+  },
+  {
+    "id": "depcal_0046",
+    "text": "Whenever I try to send out our automated shift reminders through the scheduling tool, the screen turns completely blank and nothing gets sent to the team. I've tried refreshing multiple times but it keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7542001008987427
+  },
+  {
+    "id": "depcal_0047",
+    "text": "Whenever I try to generate our monthly membership report in the club management software, the page just turns completely blank and kicks me back to the main menu. I really need this fixed so I can send the numbers to my boss.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7055589556694031
+  },
+  {
+    "id": "depcal_0048",
+    "text": "Whenever I try to export my weekly student attendance sheet from the education portal, the page just freezes completely and kicks me back to the main menu. I've tried refreshing multiple times but it won't let me download the file.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.7127053737640381
+  },
+  {
+    "id": "depcal_0049",
+    "text": "Whenever I try to pull up our quarterly inventory sheet in the warehouse manager tool, the whole page turns completely blank and refuses to load any of the items. I've tried refreshing multiple times but it just keeps happening.",
+    "expected": "Application",
+    "flagged": false,
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.8049538731575012
+  },
+  {
+    "id": "depcal_0050",
+    "text": "My mouse started moving around and clicking on things by itself on my screen while I was sitting here not touching it, and I am really freaked out that someone else is controlling my computer.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7250387668609619
+  },
+  {
+    "id": "depcal_0051",
+    "text": "My laptop screen suddenly went black and started typing weird command lines by itself while a box popped up saying my files were being copied somewhere else. I got so scared I just pulled the plug out of the wall, but I don't know what I should do next.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7191416025161743
+  },
+  {
+    "id": "depcal_0052",
+    "text": "My phone keeps buzzing with sign-in approvals for apps I am not even trying to open, and I am worried someone has my password.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.6645053029060364
+  },
+  {
+    "id": "depcal_0053",
+    "text": "My web browser suddenly redirected me to a really weird warning page saying my security certificate is untrusted and blocking me from getting to our main payroll site. Is our website down or has something bad happened?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7120078206062317
+  },
+  {
+    "id": "depcal_0054",
+    "text": "My screen just locked up and a scary red warning message popped up saying all my documents were stolen and I need to email some address to get them back. I am terrified to touch my keyboard right now, what do I do?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7957859635353088
+  },
+  {
+    "id": "depcal_0055",
+    "text": "I received an email that looks like it came from our bank saying our company account was compromised and urging me to download an urgent security patch attached to the message. I didn't open the file yet, but I wanted to report it right away just in case it's dangerous.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7728860378265381
+  },
+  {
+    "id": "depcal_0056",
+    "text": "I got an email from someone claiming to be our software provider saying there is a critical breach and I need to run this attached cleanup tool immediately, but it looks really suspicious. Should I open it?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7110193967819214
+  },
+  {
+    "id": "depcal_0057",
+    "text": "I noticed a bunch of money was just sent out of our department's company credit card to some online store in another country that I've never heard of, and nobody on our team made that purchase. Could someone please look into this right away because I think our card details got stolen?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.697074294090271
+  },
+  {
+    "id": "depcal_0058",
+    "text": "My web browser suddenly started flashing red warning signs and won't let me open any company pages because it says the security certificate is completely invalid and untrusted. I'm really worried to proceed in case someone is intercepting our traffic, so could someone take a look?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.6859382390975952
+  },
+  {
+    "id": "depcal_0059",
+    "text": "I got an email from a delivery service saying I missed a package and need to click a link to reschedule it, but the tracking number doesn't match anything I've ordered and now I'm worried I compromised my login details by clicking it.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7460840940475464
+  },
+  {
+    "id": "depcal_0060",
+    "text": "I noticed a folder on my desktop that I definitely didn't create, and when I tried to look inside, a bunch of black windows started popping up and typing things on their own. I am really scared my computer is being controlled by someone else, so I unplugged the internet cable just to be safe.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7402045726776123
+  },
+  {
+    "id": "depcal_0061",
+    "text": "I got an email from someone saying they hacked my webcam and recorded me, and they are demanding Bitcoin or they will send the video to everyone in my contact list. I am really scared and don't know what to do.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.6789487600326538
+  },
+  {
+    "id": "depcal_0062",
+    "text": "I just opened an attachment from an email that looked like it was from our shipping department, and immediately a bunch of weird windows flashed on my screen and started running commands by themselves. I am really scared my computer is hacked, what should I do?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7299016118049622
+  },
+  {
+    "id": "depcal_0063",
+    "text": "I noticed a bunch of strange text files appeared in my work folder overnight with names in a foreign language I don't recognize, and now I can't open my spreadsheet. Could someone please check if my computer got hacked?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7178583741188049
+  },
+  {
+    "id": "depcal_0064",
+    "text": "A pop-up just appeared on my desktop saying our main firewall has stopped working and all our network traffic is now completely exposed to the internet. I don't know what to do so I left my computer alone, but someone needs to look at this right away.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7453163862228394
+  },
+  {
+    "id": "depcal_0065",
+    "text": "I received an email from what looked like our IT department telling me my account was flagged for suspicious activity and asking me to verify my identity by entering my credentials on a page linked in the message. I typed everything in before I realized the web address looked completely wrong, and now I'm terrified someone is going to access my account.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.8245487213134766
+  },
+  {
+    "id": "depcal_0066",
+    "text": "I just got an email from someone claiming to be our chief executive asking me to secretly buy a bunch of gift cards for an urgent client meeting, and it feels really off. Can someone check if this is a legitimate request or a scam?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.6933318376541138
+  },
+  {
+    "id": "depcal_0067",
+    "text": "I plugged in my work phone to charge using one of those public USB ports at the airport yesterday, and now apps are opening and closing by themselves while my battery drains super fast. I am really worried someone might have stolen my data.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7112374305725098
+  },
+  {
+    "id": "depcal_0068",
+    "text": "A bunch of new programs I never installed just appeared on my desktop and my antivirus keeps flashing warnings about malicious software trying to steal my data.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7953593134880066
+  },
+  {
+    "id": "depcal_0069",
+    "text": "I just got a notification on my screen saying my work laptop's security shield is completely turned off and my hard drive is now publicly exposed. I am really panicked that someone is stealing our company files right now, what should I do?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7403011322021484
+  },
+  {
+    "id": "depcal_0070",
+    "text": "I received an email from an unknown sender claiming our building security system is failing and demanding I update my access badge through an external link. It looks really suspicious and I am worried about clicking it.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7519010901451111
+  },
+  {
+    "id": "depcal_0071",
+    "text": "My screen suddenly went totally blank and when it came back on, all my recent documents were gone and a weird text file opened up demanding money. I am terrified to touch my keyboard right now.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.7554425597190857
+  },
+  {
+    "id": "depcal_0072",
+    "text": "I got an alert on my phone saying someone tried to log into my work account from another country in the middle of the night, and I definitely wasn't awake. Is someone trying to break into our system?",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.8252401351928711
+  },
+  {
+    "id": "depcal_0073",
+    "text": "When I try to run our monthly sales trends, it just sits there loading forever until a pop-up says it lost contact with the stored data records.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7739282250404358
+  },
+  {
+    "id": "depcal_0074",
+    "text": "When I try to look up our client history records from last year, the screen just freezes and says it cannot talk to the main information storage area.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7825238704681396
+  },
+  {
+    "id": "depcal_0075",
+    "text": "When I try to pull up our old inventory numbers from three months ago, the whole screen just spins forever and eventually says it lost contact with the stored data records.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.775313675403595
+  },
+  {
+    "id": "depcal_0076",
+    "text": "When I try to pull up our member sign-up records from last quarter, the screen just spins for a long time and then says it can't reach the place where all the historical numbers are kept.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.8136230707168579
+  },
+  {
+    "id": "depcal_0077",
+    "text": "When I try to run the regional sales report, it takes forever to load and then tells me it lost the connection to where all the historical numbers are kept.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7240282297134399
+  },
+  {
+    "id": "depcal_0078",
+    "text": "When I try to run the yearly client review report, the screen just sits there frozen for twenty minutes before saying it can't reach the place where all the historical numbers are kept.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7384064197540283
+  },
+  {
+    "id": "depcal_0079",
+    "text": "When I try to run our department performance report, it just hangs on a blank screen for a long time and then says the system cannot find the stored data records it needs to finish.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.73934006690979
+  },
+  {
+    "id": "depcal_0080",
+    "text": "When I try to search for any patient files created before last month, the screen just spins and then tells me the system can't talk to the main record storage.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.8091270923614502
+  },
+  {
+    "id": "depcal_0081",
+    "text": "When I try to pull up our old employee payroll records from earlier this year, the whole thing just spins and then gives me an error about not being able to reach the information storage area.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.8345268368721008
+  },
+  {
+    "id": "depcal_0082",
+    "text": "When I try to pull up our old vendor payment records from six months ago, the whole screen just freezes up and says it lost the connection to the place where all the historical numbers are kept.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.787208616733551
+  },
+  {
+    "id": "depcal_0083",
+    "text": "When I try to run our annual budget report, the screen just spins for a really long time and then says the system lost its connection to where all the financial numbers are stored.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7678024768829346
+  },
+  {
+    "id": "depcal_0084",
+    "text": "When I try to look up our regional sales numbers from last month, the screen just spins forever and eventually says it lost contact with the main record storage.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.8210073709487915
+  },
+  {
+    "id": "depcal_0085",
+    "text": "When I try to run our weekly transaction summary, it sits and loads forever before telling me the database is too busy to accept any more connections right now. Can someone look at why it's dropping everyone?",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7009098529815674
+  },
+  {
+    "id": "depcal_0086",
+    "text": "When I try to check our regional sales figures from last week, the system gives me a weird pop-up saying it's completely out of room for people to log in and look at the records.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7505331635475159
+  },
+  {
+    "id": "depcal_0087",
+    "text": "When I try to run our monthly shipping report, it just sits there loading forever and eventually pops up a message saying the system is out of open connections for looking up records.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.8103938698768616
+  },
+  {
+    "id": "depcal_0088",
+    "text": "When I try to pull up our quarterly expense totals, it sits loading forever and then tells me the system ran out of open connections to handle the lookup.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7848565578460693
+  },
+  {
+    "id": "depcal_0089",
+    "text": "When I try to run our end-of-month financial summary, it just sits and spins forever before popping up a message saying the system is completely out of open connections to handle the lookup.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.809866189956665
+  },
+  {
+    "id": "depcal_0090",
+    "text": "When I try to run our weekly transaction summary, the screen just sits and loads forever before telling me the system has completely run out of open connections to talk to the stored records.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7636488676071167
+  },
+  {
+    "id": "depcal_0091",
+    "text": "When I try to run our daily order report, the screen just spins for a really long time and then says the system lost its connection to where all the financial numbers are kept.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7736026048660278
+  },
+  {
+    "id": "depcal_0092",
+    "text": "When I try to pull up our quarterly supply orders, it just sits and loads forever before giving me a message saying the system has run out of available connection slots.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7390351891517639
+  },
+  {
+    "id": "depcal_0093",
+    "text": "When I try to run our weekly store inventory report, the screen just spins for a really long time and then says the system ran out of available connections to handle the lookup.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7380570769309998
+  },
+  {
+    "id": "depcal_0094",
+    "text": "When I try to run our monthly customer ledger report, it just sits and spins forever before popping up a message saying the system is completely out of available connections.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7950369119644165
+  },
+  {
+    "id": "depcal_0095",
+    "text": "The shared team folder we use for all our daily project files is taking forever to open today. Whenever I click into any of the subfolders, it just freezes up and takes several minutes just to show a list of documents.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.752041220664978
+  },
+  {
+    "id": "depcal_0096",
+    "text": "The shared drive where we keep all our department spreadsheets has completely disappeared from my computer screen today. I tried restarting my laptop, but the network folder still won't show up anywhere.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7336498498916626
+  },
+  {
+    "id": "depcal_0097",
+    "text": "I tried opening our team's shared drive this morning to grab some paperwork, but the folder icon is completely gone and I can't find it anywhere on my computer. Can someone help me get connected back to it?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7727884650230408
+  },
+  {
+    "id": "depcal_0098",
+    "text": "I need to drop a bunch of heavy video files onto our department drive, but it stops halfway through and says there is no space left. Can someone check why the shared folder is completely full?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8115751147270203
+  },
+  {
+    "id": "depcal_0099",
+    "text": "I tried opening our department's shared folder this morning to grab some client documents, but clicking on it just causes my screen to freeze and spin for minutes. It is taking way too long just to browse through our usual files.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.772340714931488
+  },
+  {
+    "id": "depcal_0100",
+    "text": "The shared folder where our region keeps all its contracts is suddenly showing every single file as read-only. None of us can make our necessary edits today.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7042135000228882
+  },
+  {
+    "id": "depcal_0101",
+    "text": "The shared team drive where we keep all our schedules won't open at all today and just makes my computer freeze up. I need to get in there to update the roster before noon.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7938073873519897
+  },
+  {
+    "id": "depcal_0102",
+    "text": "The shared folder for our regional team has completely vanished from my desktop today. I tried looking for it everywhere, but it's like it just disappeared into thin air.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7781750559806824
+  },
+  {
+    "id": "depcal_0103",
+    "text": "The shared folder where our team keeps all our client files has completely vanished from my desktop this morning. I've tried restarting my computer twice, but the network drive is still nowhere to be found.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7512901425361633
+  },
+  {
+    "id": "depcal_0104",
+    "text": "I tried copying the new client videos over to our team shared drive, but it popped up saying the whole folder is completely out of room. We really need more space added to that drive so we can finish our uploads today.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8333302736282349
+  },
+  {
+    "id": "depcal_0105",
+    "text": "The shared drive we use for all our team documents is acting really strange today because every time I try to open a subfolder, it takes ten minutes just to load or crashes completely. I need to get in there to update our weekly schedules.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7677434682846069
+  },
+  {
+    "id": "depcal_0106",
+    "text": "The shared drive where our team keeps all our planning documents is suddenly acting completely frozen whenever I try to click into any of the folders. I need to get in there to update our weekly tracker, but it just spins and won't let me open anything.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7806854248046875
+  },
+  {
+    "id": "depcal_0107",
+    "text": "I was trying to upload the latest batch of client photos to our team folder on the network, but it popped up with a warning saying the whole drive is totally out of space. Can someone look into clearing some room or expanding it so we can keep working?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7909948825836182
+  },
+  {
+    "id": "depcal_0108",
+    "text": "I need to put a bunch of new training videos onto our team's shared network folder, but it won't let me finish copying them and says the whole drive is completely out of room. Can someone please look into getting us some more space on there?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8100101947784424
+  },
+  {
+    "id": "depcal_0109",
+    "text": "I tried opening our department's shared network drive this morning, but it just sits there loading forever and eventually tells me the connection timed out. I really need to get in there to grab today's schedule.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7757837772369385
+  },
+  {
+    "id": "depcal_0110",
+    "text": "I tried to save our quarterly budget sheet into the team's shared network folder, but a warning popped up saying the drive is completely out of room. Can someone look into getting us more space so we can finish uploading our files?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8252575397491455
+  },
+  {
+    "id": "depcal_0111",
+    "text": "I attempted to drop our office archive files onto the team network drive, but it halted halfway and gave me an error about exceeding the storage limit. Could someone look at expanding our folder capacity so I can finish uploading?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7856743335723877
+  },
+  {
+    "id": "depcal_0112",
+    "text": "I tried to open up our department folder on the network this morning to look at some old schedules, but it just sits there with the little loading wheel spinning forever before timing out. Nobody on our floor can get in to look at their documents right now.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7488011121749878
+  },
+  {
+    "id": "depcal_0113",
+    "text": "I tried saving our monthly inventory spreadsheets to the department shared drive, but it popped up saying there is no room left to save anything. Can someone clear out some space or give us more room so we can finish our work?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7942010164260864
+  },
+  {
+    "id": "depcal_0114",
+    "text": "The shared folder where my department keeps all our reference documents is taking an extremely long time to load today, and whenever I click into any of the folders, it just spins and freezes up my whole screen.",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7476209998130798
+  },
+  {
+    "id": "depcal_0115",
+    "text": "Ever since I moved my desk to the far corner of the marketing floor, my laptop won't hold onto the wireless signal and keeps kicking me off every few minutes. Everyone else around me seems to have a totally fine connection, but I can barely load my emails without it dropping out again.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7958590984344482
+  },
+  {
+    "id": "depcal_0116",
+    "text": "I am working from home today and whenever I try to log into our secure remote connection tool, it just spins and spins before saying it cannot reach the server. My home internet is working fine for everything else, so I am not sure why it won't let me connect to work.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8239200115203857
+  },
+  {
+    "id": "depcal_0117",
+    "text": "Whenever I try to pull up our main company pages from my desk today, the browser just sits there spinning forever until it says the address cannot be found. My internet at home works fine, but I can't reach anything on the work network right now.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8223574161529541
+  },
+  {
+    "id": "depcal_0118",
+    "text": "I am trying to work from my kitchen table today, but the secure connection tool keeps getting stuck trying to reach the office network and eventually times out. My home internet is working fine for everything else, so I am not sure why it won't connect.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7979176044464111
+  },
+  {
+    "id": "depcal_0119",
+    "text": "Ever since I sat down at my desk this morning, none of the web pages I try to open will load and they all end up saying the address can't be reached. My internet at home works fine, but here in the building I am totally cut off from everything.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7812961935997009
+  },
+  {
+    "id": "depcal_0120",
+    "text": "Whenever I try to open any web pages from my desk today, the browser just sits there spinning for a few minutes before saying the address can't be found. My internet at home is working fine, but nothing on my computer will load since I got into the office this morning.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7812255620956421
+  },
+  {
+    "id": "depcal_0121",
+    "text": "I am working from my hotel room today and every time I try to turn on the secure remote connection tool to reach the office files, it just sits there loading forever until it says the connection timed out. My internet here is working fine for everything else so I'm not sure what's going wrong.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7766528129577637
+  },
+  {
+    "id": "depcal_0122",
+    "text": "I am working from my couch today and no matter what I try, the remote connection tool refuses to log me into the office network so I can get to my files. My home internet is working fine for everything else, but this keeps getting stuck trying to reach the login screen.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7880114316940308
+  },
+  {
+    "id": "depcal_0123",
+    "text": "The wireless signal in the training room keeps cutting out completely every few minutes, which is making it impossible to show our slides to the new hires. Everyone else in the building seems to be working just fine.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8086085319519043
+  },
+  {
+    "id": "depcal_0124",
+    "text": "Ever since I came into the office this morning, the wifi in our corner of the building keeps cutting out every ten minutes and dropping all my tabs. My colleague sitting right across from me is having the exact same issue while everyone else in the hallway seems fine.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7863075733184814
+  },
+  {
+    "id": "depcal_0125",
+    "text": "Whenever I try to open any of our usual websites from my desk today, the browser just sits there spinning for a long time and then says the site can't be reached. My internet at home works fine, but here in the building nothing online will load.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8001990914344788
+  },
+  {
+    "id": "depcal_0126",
+    "text": "Whenever I try to open any company websites from my desk this morning, the browser just sits there spinning for ages and then says it can't find the page. My internet at home was fine earlier, but here in the building nothing online will load for me at all.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8047990798950195
+  },
+  {
+    "id": "depcal_0127",
+    "text": "I am working from a coffee shop today and whenever I turn on our secure remote connection tool to reach the office network, it just spins for a long time and says it cannot find the server.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7718923091888428
+  },
+  {
+    "id": "depcal_0128",
+    "text": "Whenever I try to join our team's daily morning call from the conference room on the second floor, the audio cuts out constantly and people say I keep freezing. Everyone else sitting at their desks in the main open area seems to have no trouble at all.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7265499830245972
+  },
+  {
+    "id": "depcal_0129",
+    "text": "Whenever I try to pull up our main company websites from my desk this afternoon, the browser just sits there spinning for ages and then says it can't find the page. My internet at home works fine, so it must be something wrong with the office connection.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8045058250427246
+  },
+  {
+    "id": "depcal_0130",
+    "text": "I am trying to check our employee portal from my desk this morning, but the browser just sits there spinning and eventually says it can't find the page. My internet at home worked fine earlier, so I'm not sure what's going on here in the office.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8100987672805786
+  },
+  {
+    "id": "depcal_0131",
+    "text": "Every time I try to open the company website from my desk today, it just loads forever before giving me an error saying the page doesn't exist. My internet at home is working fine for everything else, so I'm not sure what's going on.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.840288519859314
+  },
+  {
+    "id": "depcal_0132",
+    "text": "I am working from my kitchen table today and whenever I turn on our secure remote connection tool to reach the office network, it just spins for a few minutes before saying it cannot reach the server. My home internet is working fine for everything else.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8004505038261414
+  },
+  {
+    "id": "depcal_0133",
+    "text": "I am working from home today and no matter what I do, the remote connection tool to reach the office network just sits there loading forever until it fails. My home internet is working fine for everything else.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8335529565811157
+  },
+  {
+    "id": "depcal_0134",
+    "text": "Whenever I try to bring up any of our internal work sites from my desk today, the browser just sits there loading forever until it tells me the page can't be found. Everyone else sitting near me is having the exact same trouble getting anywhere online.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7814688086509705
+  },
+  {
+    "id": "depcal_0135",
+    "text": "I am trying to work from the local library today, but the program we use to securely connect back to the office network keeps timing out before it can get me in. My regular internet is working fine for looking up other websites, so I'm not sure why it won't reach our systems.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8015092015266418
+  },
+  {
+    "id": "depcal_0136",
+    "text": "I'm trying to look at the regional sales documents in the team folder, but it keeps popping up a message saying access is denied. Can someone add me to the correct permission list so I can open those files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7712645530700684
+  },
+  {
+    "id": "depcal_0137",
+    "text": "I started working on the inventory team today and need to be added to the group chat and folder so I can see what everyone else is working on.",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.6923000812530518
+  },
+  {
+    "id": "depcal_0138",
+    "text": "I tried to log into the payroll system this morning to check my hours, but it keeps telling me my account is locked because of too many tries. Could someone please unlock it for me?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7966881990432739
+  },
+  {
+    "id": "depcal_0139",
+    "text": "I need to log into the employee benefits portal to update my direct deposit information, but my phone number changed last week and the verification code is going to my old number. Can someone help reset my multi-factor authentication so I can get back in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7829917669296265
+  },
+  {
+    "id": "depcal_0140",
+    "text": "I need to open our team's shared workspace to upload some documents, but it says I don't have the right permissions to view the contents. Could someone update my access so I can get in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.8157199025154114
+  },
+  {
+    "id": "depcal_0141",
+    "text": "I started helping out the accounting team with invoices this week, but when I try to open their secure folder it says my user profile isn't authorized. Could someone update my account so I can get in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7582525610923767
+  },
+  {
+    "id": "depcal_0142",
+    "text": "I need to get into the design team's digital asset library to download some logos, but when I click the link it says my login isn't recognized. Can someone hook me up with access?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7061426639556885
+  },
+  {
+    "id": "depcal_0143",
+    "text": "I tried to log into my work account this morning to check my schedule, but it says my username doesn't work anymore since my name changed. Can someone update my profile so I can get back in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.852179765701294
+  },
+  {
+    "id": "depcal_0144",
+    "text": "I got a new phone over the weekend and now the security app won't send the code to let me log into my email. Can someone help reset my verification method so I can check my messages?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.6780848503112793
+  },
+  {
+    "id": "depcal_0145",
+    "text": "I need to open up the archive folder for last year's projects, but the system says I don't have the right clearance to view those files. Could someone update my account so I can get in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.714942216873169
+  },
+  {
+    "id": "depcal_0146",
+    "text": "I need to help out with the budgeting spreadsheets for the end of the quarter, but when I try to open the financial planning folder it tells me my account is restricted. Could someone please grant me access so I can view those documents?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.8211708068847656
+  },
+  {
+    "id": "depcal_0147",
+    "text": "I need to get into the training portal to finish my mandatory yearly courses, but it keeps saying my account is locked out after I tried typing my old password. Could someone unlock me so I can get my modules done?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7325577735900879
+  },
+  {
+    "id": "depcal_0148",
+    "text": "I switched roles within the company this week and now I can't open the folder where we keep the customer feedback logs. Could someone update my account so I have permission to view those files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7684938311576843
+  },
+  {
+    "id": "depcal_0149",
+    "text": "I need to look up some records in our customer database for a client on the phone, but the system keeps saying my login credentials are invalid. Can someone reset my password so I can get back to work?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7445229291915894
+  },
+  {
+    "id": "depcal_0150",
+    "text": "I need to look at some product designs in the creative team's digital folder, but when I click on it, the system says I am not on the approved list. Can someone add me to that folder so I can review the files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.717610239982605
+  },
+  {
+    "id": "depcal_0151",
+    "text": "I need to open up our department's personnel records folder today to check some vacation dates, but it says my login isn't authorized for that section. Could someone please grant me access to view those files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7264657616615295
+  },
+  {
+    "id": "depcal_0152",
+    "text": "I need to look at the new project planning documents in the development team's folder, but the system says I don't have permission to open it. Could someone update my account so I can view those files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7733087539672852
+  },
+  {
+    "id": "depcal_0153",
+    "text": "I need to open up the logistics team's shipping schedule folder to check a delivery status, but it says my account doesn't have the right clearance. Could someone update my access so I can view it?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7308334708213806
+  },
+  {
+    "id": "depcal_0154",
+    "text": "I just got a new work phone yesterday and now the login app won't send the security text to let me into my email. Can someone help reset my verification device so I can get back to work?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7225159406661987
+  },
+  {
+    "id": "depcal_0155",
+    "text": "I need to get into the company library of training videos for some onboarding modules this afternoon, but it keeps telling me my account isn't authorized to view that page. Could someone update my profile so I can get in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7563570737838745
+  },
+  {
+    "id": "depcal_0156",
+    "text": "I need to check some travel receipts in our project folder today, but it keeps giving me a message saying my user account is blocked from viewing it. Could someone fix my permissions so I can open the files?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7459880709648132
+  },
+  {
+    "id": "depcal_0157",
+    "text": "I joined the quality assurance team this week and need to be added to our team's main document repository so I can read the testing guides. When I click the link now, it just gives me an error saying I don't have permission.",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7674965858459473
+  },
+  {
+    "id": "depcal_0158",
+    "text": "I need to look at the new vendor contracts in our department's archive, but it says my user profile isn't allowed to open those files. Could someone update my access so I can view the documents?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7371586561203003
+  },
+  {
+    "id": "depcal_0159",
+    "text": "I'm trying to open the document library for our regional projects, but it says my account doesn't have the required permissions to view the files. Could someone update my access so I can get in?",
+    "expected": "Access Management",
+    "flagged": false,
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7564030885696411
+  },
+  {
+    "id": "depcal_0160",
+    "text": "None of our shared company systems are working at all this morning because the main server running them has completely frozen up and run out of memory.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7683485746383667,
+    "max_internal_similarity": 0.885776162147522
+  },
+  {
+    "id": "depcal_0161",
+    "text": "Our main server running all our shared tools completely froze up and stopped responding because it ran entirely out of memory, leaving everyone in the office unable to load anything.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7613428831100464,
+    "max_internal_similarity": 0.9264170527458191
+  },
+  {
+    "id": "depcal_0162",
+    "text": "The main shared computer we use to run our department applications has completely locked up and won't respond because it ran entirely out of memory, leaving everyone unable to get any work done.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7306166887283325,
+    "max_internal_similarity": 0.9357076287269592
+  },
+  {
+    "id": "depcal_0163",
+    "text": "The main server running our shared tools won't start back up after we tried to restart it this morning, and now all our team platforms are completely offline.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.8217618465423584,
+    "max_internal_similarity": 0.86269211769104
+  },
+  {
+    "id": "depcal_0164",
+    "text": "None of our shared team systems are working at all this morning because the main server running them has completely frozen up and run out of memory. Nobody can load anything right now.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7867515087127686,
+    "max_internal_similarity": 0.9309725761413574
+  },
+  {
+    "id": "depcal_0165",
+    "text": "The main computer running all our team software completely froze up and crashed because it ran out of memory, leaving everyone in the office unable to load any of our shared tools.",
+    "expected": "Infrastructure",
+    "flagged": false,
+    "gemini_guess": "Infrastructure",
+    "max_benchmark_similarity": 0.7621932029724121,
+    "max_internal_similarity": 0.9206477403640747
+  },
+  {
+    "id": "depcal_0166",
+    "text": "I was looking at our public website just now and noticed that the main company logo has been replaced with a weird political message and a countdown timer. Nobody on our team made that change, and I'm worried our site got hacked.",
+    "expected": "Security",
+    "flagged": false,
+    "gemini_guess": "Security",
+    "max_benchmark_similarity": 0.660964846611023,
+    "max_internal_similarity": 0.7550062537193298
+  },
+  {
+    "id": "depcal_0167",
+    "text": "When I try to run our weekly transaction summary, it sits and loads forever before telling me the system is completely out of available connections to handle the lookup.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7411709427833557,
+    "max_internal_similarity": 0.9383392333984375
+  },
+  {
+    "id": "depcal_0168",
+    "text": "When I try to run our monthly purchasing summary, it sits and loads forever before telling me the system is completely out of available connections to handle the request.",
+    "expected": "Database",
+    "flagged": false,
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7932898998260498,
+    "max_internal_similarity": 0.8884303569793701
+  },
+  {
+    "id": "depcal_0169",
+    "text": "I tried to save our team's annual report onto the network folder, but it popped up saying the whole drive is completely full and won't let me finish. Could someone check on the space limit for us?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8721975684165955,
+    "max_internal_similarity": 0.9035064578056335
+  },
+  {
+    "id": "depcal_0170",
+    "text": "I tried to save our big presentation to the department network folder, but a message popped up saying the drive is completely out of space and won't let me finish. How can we get more room on there so I can upload these files?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.8524181842803955,
+    "max_internal_similarity": 0.8732728958129883
+  },
+  {
+    "id": "depcal_0171",
+    "text": "I tried to drop our group's latest project recordings onto the office network drive, but it stopped midway and said there is no room left anywhere on the disk. Could someone please check what is filling it up or give us more space?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.787004828453064,
+    "max_internal_similarity": 0.8613792657852173
+  },
+  {
+    "id": "depcal_0172",
+    "text": "I tried to open up our team folder on the network this morning to grab some invoice templates, but it just sits there spinning and refuses to load anything. Could someone look into why it's acting so stuck?",
+    "expected": "Storage",
+    "flagged": false,
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7863056659698486,
+    "max_internal_similarity": 0.8417784571647644
+  },
+  {
+    "id": "depcal_0173",
+    "text": "I'm sitting in the back breakout room trying to research some vendor options, but none of the external websites will load at all and keep timing out. Everyone else on this side of the hall is having the exact same issue getting anywhere online.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.735203742980957,
+    "max_internal_similarity": 0.7912188768386841
+  },
+  {
+    "id": "depcal_0174",
+    "text": "Whenever I try to use the internet from the basement storage room today, web pages just spin forever before saying they can't be reached. My phone has great service down here, but my work laptop completely refuses to load anything.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.7586949467658997,
+    "max_internal_similarity": 0.8436775207519531
+  },
+  {
+    "id": "depcal_0175",
+    "text": "Whenever I try to use the internet from the cafeteria during lunch, web pages just spin forever and eventually say the address can't be found. Everyone else sitting near me seems to be having the exact same issue getting online.",
+    "expected": "Network",
+    "flagged": false,
+    "gemini_guess": "Network",
+    "max_benchmark_similarity": 0.8002789616584778,
+    "max_internal_similarity": 0.8182426691055298
+  }
+]

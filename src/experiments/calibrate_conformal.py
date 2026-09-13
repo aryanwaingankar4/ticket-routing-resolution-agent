@@ -78,6 +78,12 @@ BENCHMARK_JSON = os.path.join(DATA_DIR, "novel_tickets_expanded.json")
 OOD_JSON = os.path.join(DATA_DIR, "ood_calibration_tickets.json")
 ADVERSARIAL_JSON = os.path.join(DATA_DIR,
                                 "adversarial_escalation_tickets.json")
+# Optional: the deployment-distribution calibration set, if it has been
+# generated. Its whole purpose is to satisfy the exchangeability
+# assumption the in-domain set provably cannot -- see
+# generate_deployment_calibration_set.py.
+DEPLOYMENT_JSON = os.path.join(DATA_DIR,
+                               "deployment_calibration_tickets.json")
 EMBEDDINGS_NPY = os.path.join(DATA_DIR,
                               "ticket_embeddings_bge-base-en-v1-5.npy")
 
@@ -394,6 +400,32 @@ def run():
     bench_emb = embed(bench_texts, artifacts.embedder)
     print(f"  calibration {cal_emb.shape} | benchmark {bench_emb.shape}")
 
+    # ---- Optional deployment-distribution calibration set ----------------- #
+    # The in-domain set cannot satisfy exchangeability (Step 1b). If a
+    # deployment-distribution set exists, it is swept as a second calibration
+    # SOURCE so the before/after coverage pair is directly comparable.
+    deployment = None
+    if os.path.isfile(DEPLOYMENT_JSON):
+        deployment = _read_json(DEPLOYMENT_JSON, "Deployment calibration set")
+        dep_texts = [r["text"] for r in deployment]
+        dep_labels = [r["expected"] for r in deployment]
+        dep_emb = embed(dep_texts, artifacts.embedder)
+        print(f"  deployment calibration set: {len(deployment)} tickets "
+              f"{dep_emb.shape}")
+
+        overlap = set(dep_texts) & set(bench_texts)
+        if overlap:
+            _fatal(
+                f"{len(overlap)} deployment calibration ticket(s) are "
+                "verbatim benchmark tickets. Calibrating on the evaluation "
+                "set would make the coverage measurement meaningless."
+            )
+    else:
+        print("  (no deployment calibration set yet at "
+              f"{DEPLOYMENT_JSON};")
+        print("   in-domain only. Generate it with "
+              "generate_deployment_calibration_set.py)")
+
     # ---- Conformal sweep -------------------------------------------------- #
     _banner("STEP 3 - Conformal sweep")
     rows = []
@@ -436,6 +468,7 @@ def run():
                                 score_function, mondrian,
                             )
                             row = {
+                                "calibration_source": "in_domain",
                                 "contamination": contamination,
                                 "tier": tier,
                                 "label_filter": label_filter,
@@ -457,6 +490,56 @@ def run():
                                    f"|{score_function}|{mode}|{alpha}")
                             fits_out[key] = fitted.to_dict()
 
+
+    # ---- Same sweep, calibrated on the DEPLOYMENT-distribution set -------- #
+    # This is the fix for the exchangeability failure measured above. The
+    # models here are the production (full-data) ones: the deployment set
+    # shares no source rows with training, so the contamination axis does not
+    # apply to it and is recorded as "n/a" rather than faked.
+    if deployment is not None:
+        dep_tier_sources = {
+            "tier1": (
+                tier1_probabilities(c_t1v, c_t1c, dep_texts),
+                tier1_probabilities(c_t1v, c_t1c, bench_texts),
+            ),
+            "tier2": (
+                (c_t2.predict_proba(dep_emb), list(c_t2.classes_)),
+                (c_t2.predict_proba(bench_emb), list(c_t2.classes_)),
+            ),
+        }
+
+        for tier, ((cal_probs, classes), (bench_probs, _)) in \
+                dep_tier_sources.items():
+            for score_function in SCORE_FUNCTIONS:
+                for mondrian in (False, True):
+                    for alpha in ALPHAS:
+                        res, fitted = evaluate(
+                            cal_probs, dep_labels, bench_probs, bench_labels,
+                            classes, alpha, score_function, mondrian,
+                        )
+                        row = {
+                            "calibration_source": "deployment",
+                            "contamination": "n/a",
+                            "tier": tier,
+                            "label_filter": "all",
+                            "score_function": score_function,
+                            "mondrian": mondrian,
+                            "alpha": alpha,
+                            "n_calibration": len(dep_labels),
+                            "nominal_coverage": 1 - alpha,
+                            "coverage_sd": coverage_sd(alpha,
+                                                       len(dep_labels)),
+                        }
+                        row.update(res)
+                        row["coverage_gap"] = (
+                            row["coverage_benchmark"] - (1 - alpha))
+                        rows.append(row)
+
+                        mode = "mondrian" if mondrian else "marginal"
+                        key = (f"deployment|{tier}|all|{score_function}"
+                               f"|{mode}|{alpha}")
+                        fits_out[key] = fitted.to_dict()
+
     print(f"  {len(rows)} configurations evaluated")
 
     # ---- Headline table --------------------------------------------------- #
@@ -464,16 +547,17 @@ def run():
     print("LAC, marginal, all 175 labels. gap = benchmark coverage - nominal.")
     print("2sd = noise from ONE calibration draw; a gap inside it is not")
     print("evidence of anything.\n")
-    header = (f"{'contam':<13}{'tier':<7}{'alpha':>6}{'nominal':>9}"
-              f"{'cal':>8}{'bench':>8}{'gap':>8}{'2sd':>8}{'setsz':>7}"
-              f"{'1-set':>8}")
+    header = (f"{'calset':<12}{'contam':<13}{'tier':<7}{'alpha':>6}"
+              f"{'nominal':>9}{'cal':>8}{'bench':>8}{'gap':>8}{'2sd':>8}"
+              f"{'setsz':>7}{'1-set':>8}")
     print(header)
     print("-" * len(header))
     for r in rows:
         if (r["score_function"] != "lac" or r["mondrian"]
                 or r["label_filter"] != "all"):
             continue
-        print(f"{r['contamination']:<13}{r['tier']:<7}{r['alpha']:>6.2f}"
+        print(f"{r['calibration_source']:<12}{r['contamination']:<13}"
+              f"{r['tier']:<7}{r['alpha']:>6.2f}"
               f"{r['nominal_coverage']:>9.3f}{r['coverage_calibration']:>8.3f}"
               f"{r['coverage_benchmark']:>8.3f}{r['coverage_gap']:>+8.3f}"
               f"{2 * r['coverage_sd']:>8.3f}{r['mean_set_size']:>7.2f}"

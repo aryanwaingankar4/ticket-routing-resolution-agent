@@ -494,11 +494,95 @@ are 15 hand-written seeds × 3 Gemini paraphrases, and the generator carries a
 near-duplicate warning for exactly that reason — the variants are not
 independent, so the honest denominator is 15.
 
+#### Finding 4: matching the calibration distribution is necessary but not sufficient
+
+Finding 2 established that the in-domain calibration set cannot be repaired by
+filtering. The remedy had to be different data, so a **deployment-distribution
+calibration set** was generated: 175 tickets, 25 per category — exactly the
+size and class balance of the in-domain set, so any difference is attributable
+to the distribution alone and not to sample size or quantile granularity.
+
+It is written in the same plain, non-technical register as the 45-ticket
+benchmark, with per-category scope anchors (generalising the fix from the
+Infrastructure labelling bug), and disjointness from the benchmark is
+*enforced* rather than assumed: every candidate is embedded with the production
+model and rejected above 0.90 cosine against any benchmark ticket. Observed
+maximum after generation: 0.872. Self-consistency disagreements are discarded,
+not kept — benchmark policy, not the old calibration policy.
+Script: `generate_deployment_calibration_set.py`.
+
+| Tier | α | Gap (in-domain) | Gap (deployment) | ±2 s.d. | Set size in-dom → dep | Singleton in-dom → dep |
+|---|---:|---:|---:|---:|---:|---:|
+| Tier-1 | 0.20 | −0.222 | −0.244 | 0.060 | 2.67 → 2.58 | 8.9% → 8.9% |
+| Tier-1 | 0.10 | −0.233 | **−0.144** | 0.045 | 3.44 → 4.04 | 8.9% → 6.7% |
+| Tier-1 | 0.05 | −0.106 | −0.083 | 0.033 | 5.00 → 5.13 | 6.7% → 6.7% |
+| Tier-2 | 0.20 | −0.044 | **0.000** | 0.060 | 1.11 → 1.20 | 84.4% → 80.0% |
+| Tier-2 | 0.10 | −0.011 | −0.011 | 0.045 | 1.84 → **1.67** | 35.6% → **46.7%** |
+| Tier-2 | 0.05 | +0.028 | −0.039 | 0.033 | 2.56 → **1.89** | 17.8% → **33.3%** |
+| Tier-2 | 0.01 | +0.010 | −0.012 | 0.015 | 4.76 → **2.47** | 2.2% → **20.0%** |
+
+Two results, and the second is the more useful one.
+
+**The guarantee is not restored for Tier-1.** At α = 0.10 the shortfall closes
+from −0.233 to −0.144 — about 38% of the gap recovered — but −0.144 is still
+more than six times the noise band. Calibrating on realistic deployment data
+helps a lexical model materially and does not fix it. **Distribution matching
+is necessary but not sufficient; where the representation itself fails to
+transfer, no amount of calibration-set realism repairs the guarantee.** That
+strengthens Finding 1 rather than competing with it: the representation is the
+binding constraint, and the calibration set is the looser one.
+
+**For Tier-2 the win is set size, not coverage.** Coverage was already inside
+the noise band, so there was nothing to repair — but at identical coverage the
+deployment-calibrated predictor emits markedly tighter sets: at α = 0.10, mean
+size 1.67 against 1.84 and singletons on 46.7% of benchmark tickets against
+35.6%. At α = 0.01 mean set size nearly halves, 4.76 → 2.47. Since a singleton
+is precisely the case the system can route without a human, that is **~11
+percentage points more autonomy at the same risk level** — the practical payoff
+of an exchangeable calibration set, independent of whether coverage was broken.
+
+##### A data-quality defect found after the first run, and what it cost
+
+The first generated set contained **21 near-duplicate pairs** at ≥0.95 cosine,
+3 of them byte-identical. Duplicated calibration points are not exchangeable
+draws: they inflate *n* without adding information and drag the empirical
+quantile toward whatever score region they cluster in. This is the same defect
+already documented for the OOD set (15 seeds × 3 near-identical variants), and
+it matters more here, because a calibration set *determines* the quantile
+rather than merely being scored against it.
+
+It had a specific and slightly embarrassing cause. Tightening the
+Infrastructure scope anchor to demand an explicit machine-level cue cut
+self-consistency rejections from 36% to 3% — and narrowed the scenario space
+enough that the generator kept re-writing the same "ran out of memory" ticket.
+**Scope anchors buy label accuracy at the cost of diversity**, and that
+trade-off is worth stating because the same prompt pattern is used in three
+generators in this project.
+
+The fix is enforced at generation time rather than cleaned up afterwards: a
+within-category near-duplicate cap, set at **0.95** because the measured
+within-category similarity distribution runs p50 = 0.729, p95 = 0.892,
+p99 = 0.949 — legitimate same-category tickets genuinely reach 0.89, so 0.95
+removes the anomalous top ~1% without suppressing real variation. Dedup kept
+159 of 175; 16 regenerated under the guard. Final set: **0 near-duplicate
+pairs, maximum off-diagonal similarity 0.9494.**
+
+The numbers in the table above are from the clean set. The pre-dedup set is
+preserved as `deployment_calibration_tickets.predup.json` so the effect is
+auditable — and it was not cosmetic: on the defective set Tier-2 appeared to
+*lose* coverage at α = 0.10 (−0.056), which would have been reported as a
+finding had the duplicates gone unnoticed.
+
 Scripts: `src/experiments/calibrate_conformal.py`. Results:
 [`conformal_calibration_results.csv`](data/conformal_calibration_results.csv)
 (128 configurations: 2 tiers × 2 contamination variants × 2 label filters × 2
 score functions × marginal/Mondrian × 4 α),
-[`conformal_novelty_results.csv`](data/conformal_novelty_results.csv).
+[`conformal_novelty_results.csv`](data/conformal_novelty_results.csv),
+[`deployment_calibration_tickets.json`](data/deployment_calibration_tickets.json)
+(the 175-ticket deployment-distribution calibration set) and
+[`deployment_calibration_rejected.json`](data/deployment_calibration_rejected.json)
+(every candidate the self-consistency, benchmark-overlap and near-duplicate
+guards rejected, with the reason).
 
 ### Streamlit demo
 
@@ -912,6 +996,15 @@ That remains a scoped future extension, not something built yet.
   production's 9/9 on the adversarial set while adding a calibrated
   false-escalation rate the 0.67 threshold never had. Production gating is
   unchanged (`settings.conformal.enabled = False`).
+- **Deployment-distribution calibration set** (175 tickets, 25/category)
+  built to test whether matching the calibration distribution repairs the
+  conformal guarantee. It does not, for a lexical model: Tier-1's coverage
+  shortfall closes from −0.233 to −0.144 at α=0.10, still six times the
+  noise band. For Tier-2 the payoff is set size rather than coverage —
+  identical coverage with singletons on 46.7% of benchmark tickets versus
+  35.6%, i.e. more autonomy at the same risk. Includes a generation-time
+  near-duplicate guard added after the first run produced 21 near-duplicate
+  pairs.
 - Literature review identifying a genuine research gap
 - Permanent 9-ticket adversarial escalation test set with a live-pipeline
   regression script, which itself caught a real bug (stale, un-migrated
@@ -957,16 +1050,7 @@ That remains a scoped future extension, not something built yet.
 
 ### Pending
 
-1. **Deployment-distribution calibration set for conformal.** Finding 2 below
-   shows the existing 175-ticket in-domain set cannot be made exchangeable
-   with a model trained on this dataset at any amount of filtering. The fix
-   is a calibration set drawn from the deployment distribution (~300 plain-
-   English tickets, generated with the same paraphrase-and-verify method and
-   the per-category scope anchor added after the Infrastructure labelling
-   bug), then re-measuring coverage. The before/after pair would turn a
-   negative result into a demonstrated fix.
-
-2. **Genuine multi-agent restructure** — independent Classification,
+1. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
    endpoints, then building a real n8n workflow with visual conditional

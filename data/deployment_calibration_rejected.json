@@ -1,0 +1,204 @@
+[
+  {
+    "category": "Infrastructure",
+    "text": "The automated payroll processing tasks that usually run overnight completely failed to execute, and now none of the scheduled pay slips have generated for the department.",
+    "reason": "self_consistency",
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.575879693031311
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The overnight processing jobs didn't run for any of our databases, and now all our morning reports are blank. It looks like the scheduled background tasks failed to trigger across the board.",
+    "reason": "self_consistency",
+    "gemini_guess": "Database",
+    "max_benchmark_similarity": 0.7136574983596802
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The automatic background tasks that are supposed to process our nightly orders completely stopped running last night, so nothing updated by this morning. Now all our processing queues are stuck and nobody can move forward with their work.",
+    "reason": "self_consistency",
+    "gemini_guess": "Application",
+    "max_benchmark_similarity": 0.6967471837997437
+  },
+  {
+    "category": "Network",
+    "text": "Whenever I try to open our company portal from home using the secure remote connection, it just spins for a few minutes and eventually says it can't reach the server. My home internet is working fine for everything else, but I can't get into any of our work stuff.",
+    "reason": "benchmark_overlap",
+    "max_benchmark_similarity": 0.901764988899231
+  },
+  {
+    "category": "Security",
+    "text": "I was looking through our shared company drive and noticed a folder full of customer tax forms that anyone in the company seems to be able to open, even though that information is supposed to be restricted. Can someone please lock that down before someone outside our department sees it?",
+    "reason": "self_consistency",
+    "gemini_guess": "Access Management",
+    "max_benchmark_similarity": 0.7561455965042114
+  },
+  {
+    "category": "Database",
+    "text": "When I try to check our regional sales figures from last week, the system gives me a weird pop-up saying it's completely out of room for people to log in and look up records.",
+    "reason": "self_consistency",
+    "gemini_guess": "Storage",
+    "max_benchmark_similarity": 0.7522335052490234
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main computer handling our background tasks completely froze up because it ran out of memory, and now all our automated processes are stuck in place.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9962649941444397,
+    "duplicate_of": "depcal_0008"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main computer running our background tasks completely froze up because it ran out of memory, and now all our automated processes are stuck in place.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 1.0,
+    "duplicate_of": "depcal_0008"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "None of our department's shared virtual servers will start up this morning, leaving the main machines running our team platforms completely unresponsive and stuck.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.968407154083252,
+    "duplicate_of": "depcal_0018"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main computer running our shared systems completely seized up and won't respond because it ran entirely out of memory, so nobody can load anything right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9540581703186035,
+    "duplicate_of": "depcal_0021"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "None of our department's shared virtual servers will boot up at all this morning, leaving the main machines running our team platforms completely unresponsive and stuck.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9893091320991516,
+    "duplicate_of": "depcal_0018"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main server running our shared tools completely locked up and won't respond because it ran totally out of memory, so nobody in the department can load anything.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.964150071144104,
+    "duplicate_of": "depcal_0024"
+  },
+  {
+    "category": "Security",
+    "text": "My phone keeps buzzing with sign-in approvals for apps I am not even trying to open, and I am worried someone has my password.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 1.000000238418579,
+    "duplicate_of": "depcal_0058"
+  },
+  {
+    "category": "Database",
+    "text": "When I try to run our weekly transaction summary, it sits and loads forever before telling me the database is too busy to accept any more connections right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9523808360099792,
+    "duplicate_of": "depcal_0092"
+  },
+  {
+    "category": "Database",
+    "text": "When I try to run our weekly transaction summary, it sits and loads forever before telling me the system has completely run out of available connections to handle any more people looking up records right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9616059064865112,
+    "duplicate_of": "depcal_0098"
+  },
+  {
+    "category": "Storage",
+    "text": "The shared drive where our whole team keeps our project documents has completely vanished from my computer this morning. I've restarted my laptop twice now, but that network folder still won't show up anywhere.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.970541775226593,
+    "duplicate_of": "depcal_0005"
+  },
+  {
+    "category": "Storage",
+    "text": "I tried to open our department's shared folder this morning to grab some client documents, but clicking on it just causes my screen to freeze and spin for minutes before timing out completely.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9594478607177734,
+    "duplicate_of": "depcal_0108"
+  },
+  {
+    "category": "Storage",
+    "text": "The shared drive where we keep all our department spreadsheets has completely disappeared from my computer screen today. I tried restarting my laptop, but the network folder still won't show up anywhere.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 1.0,
+    "duplicate_of": "depcal_0105"
+  },
+  {
+    "category": "Storage",
+    "text": "The shared drive where our whole team keeps our project files has completely vanished from my computer this morning. I've restarted my laptop twice now, but the network folder still won't show up anywhere.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9554086923599243,
+    "duplicate_of": "depcal_0005"
+  },
+  {
+    "category": "Network",
+    "text": "Every time I try to check our company intranet pages from my desk today, the browser just sits there spinning for ages and eventually says the address cannot be found. My internet at home was fine this morning, so I'm not sure why it's not working here.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9515787363052368,
+    "duplicate_of": "depcal_0130"
+  },
+  {
+    "category": "Network",
+    "text": "Whenever I try to pull up our main company websites from my desk this afternoon, the browser just sits there spinning for ages and then says it can't find the page. My internet at home was fine earlier, but here in the building nothing internal will open at all.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9654783010482788,
+    "duplicate_of": "depcal_0139"
+  },
+  {
+    "category": "Network",
+    "text": "I am working from my living room today and whenever I turn on our secure remote connection tool to reach the office network, it just spins and spins before saying it cannot reach the server. My home internet is working fine for everything else.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9501591920852661,
+    "duplicate_of": "depcal_0129"
+  },
+  {
+    "category": "Infrastructure",
+    "text": "Our main server running all our team applications just completely locked up and crashed because it ran out of memory, leaving everyone unable to load anything right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9641255140304565,
+    "max_benchmark_similarity": 0.7844365835189819
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main server running all our shared department tools completely froze up and stopped responding because it ran entirely out of memory, leaving everyone in the office unable to load anything.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9842004179954529,
+    "max_benchmark_similarity": 0.7543601393699646
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main server running all our team software completely froze up and stopped responding because it ran entirely out of memory, leaving everyone in the office unable to load any of our shared tools right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9754760265350342,
+    "max_benchmark_similarity": 0.7863609194755554
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main server running our shared company tools has completely locked up and won't respond because it ran entirely out of memory, leaving everyone unable to get any work done this morning.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9773311614990234,
+    "max_benchmark_similarity": 0.7824873924255371
+  },
+  {
+    "category": "Infrastructure",
+    "text": "The main server running all our team applications completely froze up and stopped responding because it ran entirely out of memory, leaving everyone in the office unable to load any of our shared tools right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9792264699935913,
+    "max_benchmark_similarity": 0.7800119519233704
+  },
+  {
+    "category": "Infrastructure",
+    "text": "Every single shared tool our team relies on is completely frozen and unresponsive right now because the main server running them has run totally out of memory. Nobody can load anything or get any work done until those overloaded machines are sorted out.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 0.9841272830963135,
+    "max_benchmark_similarity": 0.7749022841453552
+  },
+  {
+    "category": "Infrastructure",
+    "text": "None of our shared team systems are working at all this morning because the main server running them has completely frozen up and run out of memory. Nobody can load anything right now.",
+    "reason": "internal_near_duplicate",
+    "max_internal_similarity": 1.0,
+    "max_benchmark_similarity": 0.7867515087127686
+  }
+]

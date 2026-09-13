@@ -86,6 +86,13 @@ python src/experiments/run_imbalance_sweep.py
 # Conformal prediction (measurement only; offline, no Gemini quota)
 python -m src.experiments.calibrate_conformal
 
+# Regenerate the deployment-distribution calibration set (~360 Gemini calls,
+# ~30 min). ALWAYS dry-run first -- it costs ~14 calls and catches a bad
+# prompt before the full budget is spent.
+python -m src.classification.generate_deployment_calibration_set \
+    --per-category 1
+python -m src.classification.generate_deployment_calibration_set
+
 # Resolution clustering -> automation flagging
 python src/experiments/join_scenario_ground_truth.py
 python src/experiments/explore_resolution_clustering.py
@@ -205,6 +212,12 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   templates, ~430 rows each, and the set touches 11 of them. Removing source
   rows changes nothing; removing whole templates would leave 40/4000 rows. Do
   not "fix" this by filtering — it needs deployment-distribution data.
+- **Generated sets need a near-duplicate guard, not just a label check.** The
+  first deployment calibration set had 21 near-duplicate pairs because
+  tightening a scope anchor narrowed the scenario space. Duplicated
+  calibration points skew the conformal quantile. Scope anchors buy label
+  accuracy at the cost of diversity -- all three Gemini generators in this
+  project use that pattern, so check diversity whenever you tighten one.
 - **In-distribution accuracy is uninformative here.** Template-generated data makes
   every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.
