@@ -65,7 +65,7 @@ LLM_MODEL_NAME = "gemini"  # display label; actual model id lives in suggest_res
 # NOT re-derived at app startup (calibration is slow and would make the demo
 # sluggish). This is the value derived by the calibration methodology in
 # src/classification/train_cascade.py (175-ticket paraphrased calibration set,
-# 70-80% Tier-1 target-accuracy band - see RESULTS.md for the full derivation
+# 70-80% Tier-1 target-accuracy band - see README.md for the full derivation
 # and the accuracy/efficiency tradeoff analysis behind this number).
 CASCADE_CONFIDENCE_THRESHOLD = 0.50
 
@@ -233,7 +233,7 @@ def load_resources():
     # --- Reused cascade classifier layer ------------------------------------ #
     # train_tier1 / get_tier1_confidence come from train_cascade.py and are
     # reused as-is (same TF-IDF config, same confidence-extraction logic as
-    # every calibration/evaluation run already documented in RESULTS.md).
+    # every calibration/evaluation run already documented in README.md).
     try:
         from src.classification.train_cascade import train_tier1, get_tier1_confidence
     except Exception as exc:
@@ -308,7 +308,13 @@ def load_resources():
             )
         }
 
-    similarity_threshold = getattr(sr, "SIMILARITY_THRESHOLD", 0.35)
+    # Read the calibrated value directly. Previously this was
+    # getattr(sr, "SIMILARITY_THRESHOLD", 0.35) -- if that import had ever
+    # degraded, the human-escalation gate would have silently reverted to a
+    # dead MiniLM-era threshold. Fail loudly instead of guessing.
+    from src.agent.config import settings as _settings
+
+    similarity_threshold = _settings.rag.similarity_threshold
 
     return {
         "model": model,
@@ -497,7 +503,7 @@ with st.sidebar:
     )
     st.caption(
         "Cascade threshold derived via calibration on a 175-ticket paraphrased "
-        "set (see RESULTS.md). Below the RAG similarity threshold, the agent "
+        "set (see README.md). Below the RAG similarity threshold, the agent "
         "escalates to a human instead of calling the LLM."
     )
 
@@ -569,91 +575,77 @@ def run_pipeline(title: str, description: str) -> dict:
     Execute the full pipeline and return a serializable results dict that is
     stored in session_state so the display survives Streamlit reruns.
 
-    Any Gemini-specific error is mapped to the same categories established in
-    suggest_resolution.py and returned as a ('error_kind', message) pair so the
-    UI can render actionable st.error() guidance instead of a stack trace.
+    THIN ADAPTER. The orchestration itself now lives in src/agent/pipeline.py,
+    which is the single implementation shared by this demo, the batch
+    processor, and the adversarial regression test. This function only
+    translates the typed PipelineResult into the flat dict shape the UI
+    widgets below already expect.
+
+    Previously this duplicated the classify -> retrieve -> escalate logic (one
+    of four copies) and carried its own Gemini error ladder (one of three).
     """
-    text = combined_text(title, description)
+    from src.agent import pipeline as agent_pipeline
+    from src.agent.artifacts import Artifacts
+    from src.agent.schemas import TicketIn
 
-    # (a) Cascade classification
-    classification = classify_ticket_cascade(
-        text,
-        TIER1_VECTORIZER,
-        TIER1_CLASSIFIER,
-        TIER2_CLASSIFIER,
-        MODEL,
-        GET_TIER1_CONFIDENCE,
+    artifacts = Artifacts(
+        embedder=MODEL,
+        index=INDEX,
+        metadata=METADATA,
+        faiss=FAISS,
+        tier1_vectorizer=TIER1_VECTORIZER,
+        tier1_classifier=TIER1_CLASSIFIER,
+        tier2_classifier=TIER2_CLASSIFIER,
+        gemini_client=CLIENT,
     )
 
-    # (b) Retrieval — reuse the existing function; be defensive about sorting.
-    retrieved = SR.retrieve_similar_tickets(text, MODEL, INDEX, METADATA, FAISS, top_k=5) or []
-    retrieved = sorted(
-        retrieved, key=lambda r: r.get("similarity", 0.0), reverse=True
+    outcome = agent_pipeline.run(
+        TicketIn(title=title, description=description),
+        artifacts=artifacts,
+        generate_resolution=True,
     )
 
-    top_similarity = retrieved[0]["similarity"] if retrieved else 0.0
-
-    result = {
-        "category": classification["category"],
-        "confidence": classification["confidence"],
-        "tier": classification["tier"],
-        "tier1_pred": classification["tier1_pred"],
-        "tier1_conf": classification["tier1_conf"],
-        "retrieved": retrieved,
-        "top_similarity": top_similarity,
-        "escalated": False,
-        "suggestion": None,
-        "llm_error": None,  # (kind, message)
-    }
-
-    # (c) Suggestion vs. escalation — same threshold logic as suggest_resolution.
-    if top_similarity < SIMILARITY_THRESHOLD:
-        result["escalated"] = True
-        return result
-
-    # Build the grounded prompt and call Gemini, reusing the existing helpers.
-    try:
-        prompt = SR.build_llm_prompt(title, description, retrieved)
-        suggestion = SR.call_gemini(CLIENT, prompt)
-
-        if not suggestion or not str(suggestion).strip():
-            result["llm_error"] = (
-                "empty",
-                "The LLM returned an empty or blocked response. This can happen "
-                "if the content was filtered. Try rephrasing the ticket, or "
-                "escalate to a human agent.",
-            )
-        else:
-            result["suggestion"] = str(suggestion).strip()
-
-    except Exception as exc:  # map to the categories used in suggest_resolution
-        msg = f"{exc}".lower()
-        if "api" in msg and "key" in msg or "credential" in msg:
-            kind, guidance = (
+    # Map the typed error back onto the UI's existing (kind, guidance) pairs.
+    llm_error = None
+    if outcome.error_kind:
+        guidance = {
+            "AuthError": (
                 "auth",
-                "Authentication failed. Check that GEMINI_API_KEY in your .env "
-                "file is valid and has not expired.",
-            )
-        elif "rate" in msg or "quota" in msg or "429" in msg:
-            kind, guidance = (
+                "Authentication failed. Check that GEMINI_API_KEY in your "
+                ".env file is valid and has not expired.",
+            ),
+            "RateLimitError": (
                 "rate_limit",
                 "Gemini rate limit / quota exceeded. Wait a moment and try "
                 "again, or check your API usage quota.",
-            )
-        elif "network" in msg or "connection" in msg or "timeout" in msg or "dns" in msg:
-            kind, guidance = (
+            ),
+            "NetworkError": (
                 "network",
                 "Network error reaching the Gemini API. Check your internet "
                 "connection and try again.",
-            )
-        else:
-            kind, guidance = (
-                "unknown",
-                f"Unexpected error while generating the suggestion: {exc}",
-            )
-        result["llm_error"] = (kind, guidance)
+            ),
+        }.get(
+            outcome.error_kind,
+            ("unknown",
+             f"Unexpected error while generating the suggestion: "
+             f"{outcome.error_message}"),
+        )
+        llm_error = guidance
 
-    return result
+    return {
+        "category": outcome.classification.category,
+        "confidence": outcome.classification.confidence,
+        "tier": int(outcome.classification.tier),
+        "tier1_pred": outcome.classification.tier1_pred,
+        "tier1_conf": outcome.classification.tier1_conf,
+        "retrieved": [r.model_dump() for r in outcome.retrieval.retrieved],
+        "top_similarity": outcome.top_similarity,
+        "escalated": outcome.decision.reason.value == (
+            "low_retrieval_similarity"
+        ) or outcome.decision.reason.value == "no_retrieval_results",
+        "suggestion": outcome.suggestion.text if outcome.suggestion else None,
+        "llm_error": llm_error,
+    }
 
 
 if analyze:

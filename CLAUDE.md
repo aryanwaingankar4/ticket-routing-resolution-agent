@@ -1,0 +1,239 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this is
+
+An IT support ticket triage agent: classify a ticket into one of 7 teams, retrieve
+similar past tickets and draft a grounded resolution via Gemini, escalate to a human
+whenever confidence is too low, and separately cluster resolved tickets to flag
+recurring issues for automation.
+
+It is a research project (B.Tech final year, extending toward an IEEE-style paper),
+not a production service. **The experimental results ARE the deliverable.** `README.md`
+is the lab notebook — it records every calibration attempt including the ones that
+failed, and why. Read the relevant README section before changing anything it describes.
+
+## Environment and commands
+
+Windows + PowerShell. Python venv lives at `venv/` (gitignored).
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+`GEMINI_API_KEY` must be in `.env` at the project root. Any script that calls Gemini
+needs it; the classification-only and clustering scripts do not.
+
+### Core pipeline (in order, from a clean clone)
+
+```powershell
+python data/generate_dataset.py                      # 4,000 synthetic tickets, seed 42
+python src/classification/train_embeddings.py        # production BGE classifier
+python src/rag/build_vector_index.py                 # FAISS index + aligned metadata
+streamlit run src/app/streamlit_app.py               # live demo
+```
+
+### Tests
+
+```powershell
+pytest                     # full suite, offline, ~50s
+pytest -m "not slow"       # fast subset, no model loading
+pytest tests/test_pipeline_parity.py -v
+```
+
+`pytest.ini` deselects `-m gemini` by default so the suite never spends API quota.
+Markers: `slow` (loads BGE + fits Tier-1), `gemini` (live API call).
+
+The standalone regression gate still exists and produces the CSV report:
+
+```powershell
+python src/experiments/test_adversarial_escalation.py
+```
+
+9 hand-written tickets that must all escalate or proceed correctly. **Any change to a
+live threshold, embedding model, or retrieval path must be re-confirmed 9/9 here before
+being committed.** This has already caught two real bugs.
+
+**Golden parity is the refactor safety net.** `tests/goldens/*.json` record the exact
+routing decisions for both fixed benchmark sets. Any change that moves a number there
+is a regression unless it is deliberate. Regenerate only on purpose:
+
+```powershell
+python tests/capture_goldens.py
+```
+
+### Experiments
+
+```powershell
+# Ablation — quantifies what each safety net is actually worth
+python src/experiments/run_ablation_study.py --mode baseline
+python src/experiments/run_ablation_study.py --mode no-cascade
+python src/experiments/run_ablation_study.py --mode no-rag
+
+# RAG similarity threshold calibration (measurement only; does not edit production)
+python src\classification\generate_ood_calibration_set.py     # ~3.5 min, ~45 Gemini calls
+python -m src.experiments.calibrate_rag_similarity_threshold  # note: -m, not a path
+
+# Batch intake / traffic skew
+python src/experiments/simulate_ticket_intake.py
+python src/experiments/process_ticket_batch.py
+
+# Training-data skew
+python src/experiments/generate_skewed_datasets.py
+python src/experiments/run_imbalance_sweep.py
+
+# Resolution clustering -> automation flagging
+python src/experiments/join_scenario_ground_truth.py
+python src/experiments/explore_resolution_clustering.py
+python src/experiments/calibrate_resolution_clustering.py
+python src/experiments/calibrate_resolution_clustering_percategory.py
+python src/experiments/flag_automation_candidates.py          # the production feature
+```
+
+`calibrate_rag_similarity_threshold.py` is the one script run as a module (`-m`).
+There are no `__init__.py` files anywhere — `src.experiments.*` resolves as an implicit
+namespace package, so it only works from the project root.
+
+## Architecture
+
+Sequential pipeline with two confidence gates, plus one offline analysis path.
+It is explicitly **not** a multi-agent system yet (that is a planned phase).
+
+**All inference lives in `src/agent/`** — one implementation, consolidated from what
+were four independent copies:
+
+```
+src/agent/
+├── config.py        frozen typed config + CALIBRATION_PROVENANCE + config_fingerprint()
+├── schemas.py       pydantic models for every stage; Tier/EscalationReason enums
+├── errors.py        typed exceptions; ONE Gemini error ladder (was three)
+├── logging_setup.py structured JSON decision logs
+├── artifacts.py     THE loader, with both hard guards
+├── classifier.py    cascade Tier-1 -> Tier-2
+├── retriever.py     FAISS retrieval
+├── resolver.py      prompt + Gemini call with retry
+└── pipeline.py      run(TicketIn) -> PipelineResult
+```
+
+`streamlit_app.run_pipeline()`, `test_adversarial_escalation.run_ticket_through_
+pipeline()` and `process_ticket_batch` are now thin adapters over `pipeline.run()`.
+Add new consumers the same way — never re-implement the orchestration.
+
+```
+ticket text
+    |
+    v
+[Tier 1: TF-IDF + LogReg] --confidence >= 0.50--> category
+    |  below threshold
+    v
+[Tier 2: BGE + LogReg] ------------------------->  category
+    |
+    v
+[FAISS top-5 retrieval] --top1 sim >= 0.67--> [Gemini drafts grounded resolution]
+    |  below threshold
+    v
+ESCALATE TO HUMAN  (Gemini is never called)
+
+offline: resolved tickets -> embed resolution text -> union-find clustering
+         at 0.80 -> automation candidates for human review
+```
+
+Key points that are not obvious from any single file:
+
+- **Gemini never decides the category.** Classification is entirely the trained
+  models'. Gemini's only job is resolution generation, grounded in retrieved tickets.
+- **The two gates are independent and calibrated separately.** The cascade threshold
+  depends only on Tier-1/TF-IDF confidence, so swapping the Tier-2 embedding model
+  does not require recalibrating it. The RAG threshold *is* embedding-model-specific
+  and must be recalibrated on any model swap.
+- **`src/agent/config.py` is the single source of truth for every calibrated
+  constant.** `suggest_resolution.SIMILARITY_THRESHOLD` still exists and still works,
+  but it now re-exports `settings.rag.similarity_threshold` so the older experiment
+  scripts keep running unchanged. Never redeclare a threshold anywhere else.
+- **Never write `getattr(obj, "SOME_THRESHOLD", <number>)`.** That pattern silently
+  reverted the human-escalation gate to a dead MiniLM value. `tests/
+  test_no_silent_fallback.py` fails the build if it reappears.
+- **`scenario_id` ground truth** for clustering evaluation is recovered from the
+  dataset generator's own internal `random.choice()` sequence by
+  `join_scenario_ground_truth.py` — it is reproducible only because the seed is fixed.
+
+## Calibrated constants — do not casually change
+
+These are measured values, each backed by a documented calibration exercise. The point
+of the project is that they are evidence-backed rather than guessed. Never re-derive one
+casually, and never expose one as a trivially-overridable CLI flag.
+
+All three live in `src/agent/config.py`, which is frozen — assigning to one raises
+`ValidationError`. Each carries its evidence in `CALIBRATION_PROVENANCE`.
+
+| Constant | Value | Config path |
+|---|---|---|
+| RAG similarity threshold | **0.67** | `settings.rag.similarity_threshold` |
+| Cascade confidence threshold | **0.50** | `settings.cascade.confidence_threshold` |
+| Resolution-clustering threshold | **0.80** | `settings.clustering.resolution_similarity_threshold` |
+
+Production embedding model is `BAAI/bge-base-en-v1.5` (768-dim) for classification, RAG
+retrieval, and cascade Tier-2. Resolution-text clustering deliberately remains on
+`all-MiniLM-L6-v2` — BGE has been measured there but not promoted, because no
+ground-truth validation exists for automation-flag quality. See README "Pending".
+
+Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
+(`from google import genai`) — not the deprecated `google-generativeai` package.
+
+## Project-specific invariants
+
+- **Seed 42 everywhere.** Every classification script uses the same 80/20 stratified
+  split (`test_size=0.2, random_state=42`) so results stay directly comparable.
+- **Benchmarks are read-only.** `NOVEL_TICKETS` in `generalization_test.py` (14 tickets)
+  and `data/novel_tickets_expanded.json` (45 tickets) are fixed reference points used
+  across every method comparison. Never edit or regenerate them.
+- **In-distribution accuracy is uninformative here.** Template-generated data makes
+  every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
+  anything real. Treat a new 100% in-distribution number as a red flag, not a success.
+- **Artifacts are model-aware and filename-suffixed**
+  (`ticket_index_bge-base-en-v1-5.faiss`, `ticket_classifier_bge-base-en-v1-5.joblib`).
+  `artifacts.load_artifacts()` enforces two guards: `index.ntotal == len(metadata)`
+  and `encoder dim == index.d == settings.models.embedding_dim`. Preserve both —
+  silent stale-artifact mismatch has bitten this project **four** times, most recently
+  in `run_ablation_study.py`, where it reached published results.
+- **Load artifacts only through `artifacts.load_artifacts()`.** Constructing a
+  `SentenceTransformer` or reading the index directly is how the three divergent
+  loaders drifted apart in the first place.
+- **Never overwrite a previous model's results file.** BGE re-runs write to
+  `*_bge-base-en-v1-5.*` alongside the original MiniLM outputs, so the comparison stays
+  auditable.
+- **Path resolution** is always two directories up from the script's own location via
+  `os.path.*`.
+- **Scripts fail with clear actionable messages, not tracebacks** — the Streamlit demo
+  may run live in front of an audience.
+- **Gemini free tier is 15 req/min, 500/day.** Keep `GEMINI_CALL_DELAY_SEC` at 4s or
+  above in any batch-calling script.
+- **Before committing, check for stray embedding caches:**
+  `git status | Select-String "\.npy"`
+
+## Known inconsistencies
+
+- `process_ticket_batch.py`'s MiniLM/BGE dimension mismatch is fixed in code, but the
+  script has **not** been re-run. `data/category_stores/*.csv` were produced under
+  MiniLM and feed the clustering calibration behind the production 0.80 threshold;
+  regenerating them under BGE would silently invalidate it. Re-running is a deliberate
+  decision requiring its own re-calibration — never a side effect of another change.
+- Resolution clustering is still MiniLM on purpose. BGE is measured (pooled cliff 0.90)
+  but not promoted, because no ground-truth check for automation-flag quality exists.
+
+## The recurring bug class
+
+Four occurrences so far, all the same shape: an artifact or constant surviving a model
+swap un-migrated, staying internally consistent, and therefore producing wrong results
+with no error.
+
+1. Silent stale embedding cache during the BGE swap.
+2. `test_adversarial_escalation.py` keeping its own MiniLM constants.
+3. `process_ticket_batch.py` encoding with MiniLM against a BGE index.
+4. `run_ablation_study.py` measuring the entire pre-BGE pipeline — this one reached
+   published results and stood for eleven days.
+
+When touching anything model-related, assume a fifth is waiting. Run `pytest` and the
+adversarial gate before believing a green result.
+

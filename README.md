@@ -319,14 +319,33 @@ to measure their real cost/benefit, rather than assuming they help:
 
 | Mode | 45-Ticket Accuracy | Adversarial Escalation |
 |---|---:|---:|
-| **Baseline** (both thresholds active) | 68.89% (31/45) | 9/9 correctly escalated |
+| **Baseline** (both thresholds active) | 71.11% (32/45) | 9/9 correctly escalated |
 | **No cascade** (Tier-1 only, threshold=0) | 35.56% (16/45) | — |
 | **No RAG gate** (pretend threshold=0) | — | 9/9 would attempt a resolution; 6/9 should have escalated |
 
 **Cascade threshold (0.50):** removing it drops classification accuracy
-by 33.3 percentage points on the 45-ticket benchmark — the cascade
+by 35.6 percentage points on the 45-ticket benchmark — the cascade
 isn't a marginal tweak, it roughly doubles real-world classification
 accuracy versus running the cheap Tier-1 model alone.
+
+> **Correction (re-measured under BGE).** The numbers above were
+> originally 68.89% (31/45) baseline and a 33.3-point gain. Those were
+> measured on **MiniLM** and never re-run after the BGE swap:
+> `run_ablation_study.py` had kept its own hardcoded `ticket_index.faiss`,
+> `ticket_metadata.json`, `ticket_classifier.joblib` and
+> `all-MiniLM-L6-v2`. Because those four artifacts were mutually
+> consistent, the script ran without error and silently measured the old
+> pipeline. The results CSV was written 2026-08-15; the BGE swap landed
+> 2026-08-26, eleven days later. This was the **fourth** occurrence of
+> this project's recurring stale-artifact bug class, and the first to
+> reach published results — caught by the golden-parity discipline
+> introduced during the `src/agent/` consolidation. The script now reads
+> every one of those four values from `src/agent/config.py`, so it cannot
+> drift from production independently again.
+>
+> Note that **no-cascade is unchanged at 16/45**, which is the expected
+> result and a useful internal check: Tier-1 is TF-IDF, so a Tier-2
+> embedding swap cannot affect Tier-1-only accuracy.
 
 **RAG similarity threshold:** removing it means every one of the 9
 adversarial tickets — including an off-topic weather question and a
@@ -749,9 +768,11 @@ That remains a scoped future extension, not something built yet.
   MiniLM constants surviving the BGE swap) and is now the anchor
   constraint for the RAG similarity threshold's derivation
 - Ablation study quantifying the real measured value of both safety-net
-  thresholds: the cascade threshold contributes a 33.3-point accuracy
+  thresholds: the cascade threshold contributes a 35.6-point accuracy
   gain over Tier-1-only; the RAG gate prevents 6/9 adversarial tickets
   from receiving a fabricated resolution instead of correctly escalating
+  (re-measured under BGE — see the correction note in "Ablation Study"
+  above for why the original 33.3-point figure was a MiniLM-era number)
 - Category-specific resolution-clustering threshold check: re-ran the
   pooled calibration independently per category. Four of seven categories
   (Infrastructure, Application, Security, Access Management) match the
@@ -947,16 +968,20 @@ python src/experiments/test_adversarial_escalation.py
 
 ## Known Open Items
 
-- A couple of stray comment/caption references to a `RESULTS.md` file
-  still exist in `streamlit_app.py` (sidebar caption and a code comment)
-  from an earlier point in the project when a separate results doc was
-  planned. That file was never created — all experimental results now
-  live in this README instead. These references should be updated to
-  point here the next time that file is touched.
+- ~~Stray `RESULTS.md` references in `streamlit_app.py`~~ — fixed; they
+  now point at this README.
 - Resolution-clustering calibration has been re-verified under BGE
   (pooled and per-category), but production automation-flagging still
   runs on the original MiniLM-calibrated threshold (0.80) pending a
   validation method for the BGE alternative — see "Pending" above.
+- The `no-rag` and `no-cascade` ablation CSVs have been regenerated under
+  BGE along with the baseline. `process_ticket_batch.py`'s MiniLM/BGE
+  dimension mismatch is fixed in code, but the script has deliberately
+  **not** been re-run: `data/category_stores/*.csv` were produced under
+  MiniLM and feed the resolution-clustering calibration behind the
+  production 0.80 threshold. Regenerating them under BGE would silently
+  invalidate that calibration, so re-running is its own deliberate
+  decision with its own re-derivation — not a side effect of a refactor.
 
 ---
 

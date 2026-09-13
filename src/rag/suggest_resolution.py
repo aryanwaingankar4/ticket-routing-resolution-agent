@@ -72,7 +72,23 @@ TOP_K = 5
 # calibration tickets' top-1 match is their own source ticket in the
 # index) -- this threshold's derivation did not rely on the contaminated
 # in-domain precision curve, only the adversarial set + OOD leakage.
-SIMILARITY_THRESHOLD = 0.67
+#
+# SOURCE OF TRUTH: this value now lives in src/agent/config.py and is
+# re-exported here so that every existing consumer (run_ablation_study.py,
+# retry_failed_resolutions.py, calibrate_rag_similarity_threshold.py, and
+# anything else reading sr.SIMILARITY_THRESHOLD) keeps working unchanged
+# while there remains exactly ONE place the number is declared.
+# (Self-contained path setup: PROJECT_ROOT proper is defined further down,
+# but this constant belongs up here with the other configuration.)
+_ROOT_FOR_IMPORT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
+if _ROOT_FOR_IMPORT not in sys.path:
+    sys.path.insert(0, _ROOT_FOR_IMPORT)
+
+from src.agent.config import settings as _settings  # noqa: E402
+
+SIMILARITY_THRESHOLD = _settings.rag.similarity_threshold
 
 # If True, print the full constructed LLM prompt before sending it to Gemini.
 DEBUG = False

@@ -8,12 +8,13 @@ individually and measuring the downstream effect:
   1. Cascade confidence threshold (0.50) -- escalates classification from
      Tier-1 (TF-IDF + LogisticRegression) to Tier-2 (MiniLM embeddings +
      classifier) when Tier-1 confidence < 0.50.
-  2. RAG similarity threshold (0.35) -- escalates a ticket to a human
-     (skips Gemini) when the top retrieval similarity < 0.35.
+  2. RAG similarity threshold -- escalates a ticket to a human (skips
+     Gemini) when the top retrieval similarity falls below it. The live
+     value comes from src/agent/config.py.
 
 Modes (--mode):
   baseline     -- Real thresholds. 45-ticket classification accuracy AND the
-                  9-ticket adversarial real-escalation decision (< 0.35).
+                  9-ticket adversarial real-escalation decision.
   no-cascade   -- run_cascade(threshold=0.0) => Tier-1 raw preds for every
                   ticket, evaluated on the 45-ticket benchmark.
   no-rag       -- Real retrieval on the 9-ticket adversarial set, but the
@@ -43,6 +44,11 @@ import numpy as np
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(THIS_DIR, os.pardir, os.pardir))
 
+# Needed before the src.agent.config import below, since this script is run
+# as a path (python src/experiments/run_ablation_study.py) rather than -m.
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 SRC_DIR = os.path.join(PROJECT_ROOT, "src")
 CLASSIFICATION_DIR = os.path.join(SRC_DIR, "classification")
 RAG_DIR = os.path.join(SRC_DIR, "rag")
@@ -53,15 +59,34 @@ MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 EXPANDED_JSON_PATH = os.path.join(DATA_DIR, "novel_tickets_expanded.json")
 ADVERSARIAL_JSON_PATH = os.path.join(DATA_DIR, "adversarial_escalation_tickets.json")
 SYNTHETIC_CSV_PATH = os.path.join(DATA_DIR, "synthetic_tickets.csv")
-FAISS_INDEX_PATH = os.path.join(DATA_DIR, "ticket_index.faiss")
-METADATA_JSON_PATH = os.path.join(DATA_DIR, "ticket_metadata.json")
-TIER2_MODEL_PATH = os.path.join(MODELS_DIR, "ticket_classifier.joblib")
+# MIGRATED TO BGE (was MiniLM).
+#
+# This script previously pointed at ticket_index.faiss, ticket_metadata.json,
+# ticket_classifier.joblib and all-MiniLM-L6-v2 -- every one of them a
+# pre-BGE-swap artifact. Because those four were mutually consistent, it ran
+# without error and silently measured the OLD pipeline. The results CSV was
+# written 2026-08-15; the BGE swap landed 2026-08-26, eleven days later, and
+# this script was never re-run. The published ablation numbers therefore
+# described a pipeline that no longer existed.
+#
+# All four now come from src/agent/config.py, so this script can never again
+# drift from production independently.
+from src.agent.config import settings as _settings  # noqa: E402
 
-# Applied live thresholds (streamlit_app.py values).
-CASCADE_CONFIDENCE_THRESHOLD = 0.50
-# RAG SIMILARITY_THRESHOLD (0.35) is imported from suggest_resolution.
+FAISS_INDEX_PATH = str(_settings.models.faiss_index_path)
+METADATA_JSON_PATH = str(_settings.models.metadata_path)
+TIER2_MODEL_PATH = str(_settings.models.tier2_classifier_path)
 
-EMBED_MODEL_NAME = "all-MiniLM-L6-v2"
+# Applied live thresholds -- single source of truth.
+CASCADE_CONFIDENCE_THRESHOLD = _settings.cascade.confidence_threshold
+# RAG SIMILARITY_THRESHOLD is imported from suggest_resolution, which itself
+# now re-exports settings.rag.similarity_threshold.
+
+EMBED_MODEL_NAME = _settings.models.embedding_model
+
+# For summary text only; the gate value actually applied comes from
+# suggest_resolution.SIMILARITY_THRESHOLD via _import_project_functions().
+SIMILARITY_THRESHOLD_DISPLAY = _settings.rag.similarity_threshold
 
 VALID_MODES = ("baseline", "no-cascade", "no-rag")
 
@@ -420,7 +445,8 @@ def evaluate_rag_escalation(funcs, faiss, adversarial, model, index, metadata,
       escalated        = (top_similarity < gate_threshold)
       would_call_gemini= (top_similarity >= gate_threshold)
 
-    baseline uses gate_threshold = SIMILARITY_THRESHOLD (0.35).
+    baseline uses gate_threshold = SIMILARITY_THRESHOLD (see
+    src/agent/config.py).
     no-rag   uses gate_threshold = 0.0 (pretend), so nothing escalates as
              long as retrieval returns at least one hit.
 
@@ -487,7 +513,8 @@ def evaluate_rag_escalation(funcs, faiss, adversarial, model, index, metadata,
 # Mode runners
 # --------------------------------------------------------------------------
 def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
-    _banner("MODE: baseline  (cascade=0.50, rag=0.35)")
+    _banner("MODE: baseline  (cascade={c}, rag={r})".format(
+        c=CASCADE_CONFIDENCE_THRESHOLD, r=funcs["SIMILARITY_THRESHOLD"]))
 
     print("Loading resources...")
     tier1_vec, tier1_clf = load_tier1(funcs, pd)
@@ -508,8 +535,9 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
         embedder,
     )
 
-    # --- real escalation on the 9-ticket adversarial set (gate @ 0.35) ---
-    print("Evaluating 9-ticket adversarial escalation (rag threshold=0.35)...")
+    # --- real escalation on the 9-ticket adversarial set ---
+    print("Evaluating 9-ticket adversarial escalation (rag threshold={r})..."
+          .format(r=funcs["SIMILARITY_THRESHOLD"]))
     rag_rows, rag_summary = evaluate_rag_escalation(
         funcs,
         faiss,
@@ -579,7 +607,8 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
     )
     print(
         "Adversarial escalation (9-ticket): {esc}/{tot} correctly escalated "
-        "(gate < 0.35)".format(
+        "(gate < {g})".format(
+            g=funcs["SIMILARITY_THRESHOLD"],
             esc=rag_summary["n_correct_escalation"], tot=rag_summary["n_total"]
         )
     )
@@ -737,7 +766,9 @@ def print_comparison(result):
         rs = result["rag_summary"]
         print(
             "baseline: {esc}/{t} adversarial tickets correctly escalated "
-            "(gate < 0.35).".format(esc=rs["n_correct_escalation"], t=rs["n_total"])
+            "(gate < {g}).".format(esc=rs["n_correct_escalation"],
+                                   t=rs["n_total"],
+                                   g=SIMILARITY_THRESHOLD_DISPLAY)
         )
         print("")
         print(
@@ -774,7 +805,7 @@ def print_comparison(result):
         print(
             "Compare against 'baseline: N/9 correctly escalated'. The "
             "difference is the\nmeasured value of the RAG similarity threshold "
-            "(0.35)."
+            "({g}).".format(g=SIMILARITY_THRESHOLD_DISPLAY)
         )
 
 
@@ -786,7 +817,7 @@ def parse_args(argv):
         description=(
             "Ablation study for the ticket routing agent. Measures the value "
             "of the cascade confidence threshold (0.50) and the RAG similarity "
-            "threshold (0.35) by disabling each individually."
+            "threshold by disabling each individually."
         )
     )
     parser.add_argument(

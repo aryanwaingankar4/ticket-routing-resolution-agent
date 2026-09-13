@@ -1,8 +1,39 @@
-sentence-transformers
-scikit-learn
-pandas
-numpy
-faiss-cpu
-streamlit
-fastapi
-uvicorn
+# Pinned to the versions this project's published results were produced with.
+# Python 3.14 (see venv/).
+#
+# Install:  pip install -r requirements.txt
+
+# --- Core ML / retrieval ---------------------------------------------------
+sentence-transformers==5.6.1
+transformers==5.14.1
+torch==2.13.0
+scikit-learn==1.9.0
+faiss-cpu==1.14.3
+joblib==1.5.3
+
+# --- Data ------------------------------------------------------------------
+pandas==3.0.5
+numpy==2.5.1
+
+# --- LLM -------------------------------------------------------------------
+# The CURRENT unified SDK, imported as `from google import genai`.
+# NOT the deprecated google-generativeai package.
+google-genai==2.14.0
+python-dotenv==1.2.2
+
+# --- Typed config / schemas ------------------------------------------------
+pydantic==2.13.4
+
+# --- UI / plotting ---------------------------------------------------------
+streamlit==1.60.0
+matplotlib==3.11.1
+
+# --- Testing ---------------------------------------------------------------
+pytest==9.1.1
+pytest-cov==7.1.0
+
+# --- Reserved for the planned orchestrator phase ---------------------------
+# Not imported anywhere yet; kept so the service work does not need a
+# dependency change mid-phase.
+fastapi==0.140.0
+uvicorn==0.51.0

@@ -1,0 +1,103 @@
+{
+  "manifest": {
+    "adversarial_pass": "9/9",
+    "benchmark_score": "32/45",
+    "cascade_confidence_threshold": 0.5,
+    "classify_source": "streamlit_app.classify_ticket_cascade",
+    "embedding_model": "BAAI/bge-base-en-v1.5",
+    "index_ntotal": 4000,
+    "similarity_threshold": 0.67
+  },
+  "rows": [
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_01",
+      "n_retrieved": 5,
+      "predicted_category": "Application",
+      "rag_similarity": 0.5176095962524414,
+      "tier": 2,
+      "tier1_confidence": 0.17856614331657106
+    },
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_02",
+      "n_retrieved": 5,
+      "predicted_category": "Storage",
+      "rag_similarity": 0.5228346586227417,
+      "tier": 2,
+      "tier1_confidence": 0.2852720857342676
+    },
+    {
+      "actual_escalate": false,
+      "expected_escalate": false,
+      "id": "adv_03",
+      "n_retrieved": 5,
+      "predicted_category": "Access Management",
+      "rag_similarity": 0.6704270839691162,
+      "tier": 1,
+      "tier1_confidence": 0.81192460945459
+    },
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_04",
+      "n_retrieved": 5,
+      "predicted_category": "Application",
+      "rag_similarity": 0.6195766925811768,
+      "tier": 2,
+      "tier1_confidence": 0.269481223310437
+    },
+    {
+      "actual_escalate": false,
+      "expected_escalate": false,
+      "id": "adv_05",
+      "n_retrieved": 5,
+      "predicted_category": "Application",
+      "rag_similarity": 0.6765815019607544,
+      "tier": 2,
+      "tier1_confidence": 0.2589745625924322
+    },
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_06",
+      "n_retrieved": 5,
+      "predicted_category": "Storage",
+      "rag_similarity": 0.604331374168396,
+      "tier": 2,
+      "tier1_confidence": 0.18374886202121365
+    },
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_07",
+      "n_retrieved": 5,
+      "predicted_category": "Application",
+      "rag_similarity": 0.5862715244293213,
+      "tier": 2,
+      "tier1_confidence": 0.27590498900516003
+    },
+    {
+      "actual_escalate": true,
+      "expected_escalate": true,
+      "id": "adv_08",
+      "n_retrieved": 5,
+      "predicted_category": "Infrastructure",
+      "rag_similarity": 0.6123800277709961,
+      "tier": 2,
+      "tier1_confidence": 0.3182984770932253
+    },
+    {
+      "actual_escalate": false,
+      "expected_escalate": false,
+      "id": "adv_09",
+      "n_retrieved": 5,
+      "predicted_category": "Security",
+      "rag_similarity": 0.6896988153457642,
+      "tier": 2,
+      "tier1_confidence": 0.2697218477960402
+    }
+  ]
+}

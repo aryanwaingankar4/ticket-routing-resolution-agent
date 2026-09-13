@@ -46,6 +46,8 @@ PROJECT_ROOT = os.path.abspath(os.path.join(_SCRIPT_DIR, "..", ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+from src.agent.config import settings as _settings  # noqa: E402
+
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 BATCH_DIR = os.path.join(DATA_DIR, "batch_intake")
 BATCH_CSV = os.path.join(BATCH_DIR, "incoming_tickets_batch.csv")
@@ -54,8 +56,18 @@ SUMMARY_CSV = os.path.join(BATCH_DIR, "batch_summary.csv")
 CATEGORY_STORE_DIR = os.path.join(DATA_DIR, "category_stores")
 ESCALATION_CSV = os.path.join(CATEGORY_STORE_DIR, "escalation_needs_review.csv")
 
-MODEL_PATH = os.path.join(DATA_DIR, "..", "models", "ticket_classifier.joblib")
-MODEL_PATH = os.path.abspath(MODEL_PATH)
+# BUG FIX (BGE dimension mismatch).
+#
+# This script loaded the MiniLM classifier (ticket_classifier.joblib, 384-dim)
+# and encoded queries with all-MiniLM-L6-v2, but obtained its FAISS index via
+# suggest_resolution -- which points at the 768-dim BGE index. It encoded with
+# MiniLM and searched BGE. The mismatch was latent only because this script
+# had not been run since before the BGE swap; the next run would have raised.
+#
+# Both now come from src/agent/config.py, and artifacts.load_artifacts()
+# asserts encoder dim == index dim == configured dim at load time, so this
+# class of mismatch cannot recur silently.
+MODEL_PATH = str(_settings.models.tier2_classifier_path)
 
 CATEGORIES = [
     "Infrastructure",
@@ -160,7 +172,10 @@ def load_classifier(joblib):
 
 
 def get_embedding_model(SentenceTransformer):
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    # Was hardcoded to all-MiniLM-L6-v2 (384-dim) while the index it searched
+    # was BGE (768-dim). Now driven by config, so encoder and index cannot
+    # disagree.
+    model_name = _settings.models.embedding_model
     try:
         return SentenceTransformer(model_name)
     except Exception as exc:  # noqa: BLE001
@@ -496,7 +511,9 @@ def main() -> None:
     if not hasattr(sr, "SIMILARITY_THRESHOLD"):
         _fail(
             "suggest_resolution.py has no SIMILARITY_THRESHOLD constant to "
-            "import. Expected SIMILARITY_THRESHOLD = 0.35."
+            "import. It is the single source of truth for the RAG
+"
+            "  human-escalation gate."
         )
 
     batch = load_batch()

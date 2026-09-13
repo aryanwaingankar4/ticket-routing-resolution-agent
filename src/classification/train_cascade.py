@@ -20,7 +20,8 @@ WHY THIS DESIGN (the "don't guess when uncertain, escalate instead" principle)
 ------------------------------------------------------------------------------
 This mirrors EXACTLY the same philosophy already used one level up in this
 project's RAG layer. In src/rag/suggest_resolution.py there is a
-SIMILARITY_THRESHOLD = 0.35 guard: when retrieval confidence is too low, the
+SIMILARITY_THRESHOLD guard (currently 0.67, see src/agent/config.py): when
+retrieval confidence is too low, the
 code REFUSES to guess with the LLM and instead escalates the ticket to a human.
 
 This cascade applies the identical philosophy one level DOWN - at
@@ -1275,7 +1276,8 @@ def main():
     print("CONFIDENCE-BASED CASCADE CLASSIFIER  (Tier1 TF-IDF -> Tier2 BGE)")
     print("=" * 66)
     print("Philosophy: same 'escalate when unsure' guard as the RAG layer's")
-    print("SIMILARITY_THRESHOLD=0.35 - applied here at model-selection time.")
+    print("the RAG SIMILARITY_THRESHOLD guard - applied here at "
+          "model-selection time.")
 
     df = load_and_validate_csv(CSV_PATH)
     df = df.reset_index(drop=True)

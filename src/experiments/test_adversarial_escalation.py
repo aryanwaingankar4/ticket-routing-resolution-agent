@@ -25,11 +25,11 @@ In src/app/streamlit_app.py's run_pipeline(), the flow is:
                                          human escalation.
     2. SR.retrieve_similar_tickets(...) -> always runs; yields top_similarity.
     3. HUMAN ESCALATION DECISION:
-           escalated = (top_similarity < SIMILARITY_THRESHOLD)   # 0.35
+           escalated = (top_similarity < SIMILARITY_THRESHOLD)
        Gemini is only called when top_similarity >= threshold.
 
 So in the live pipeline the ACTUAL human-escalation decision depends SOLELY on
-the RAG top-similarity vs SIMILARITY_THRESHOLD (0.35). The cascade tier only
+the RAG top-similarity vs SIMILARITY_THRESHOLD. The cascade tier only
 affects the predicted category. This script therefore computes actual_escalate
 as (top_similarity < SIMILARITY_THRESHOLD), byte-for-byte matching the live
 code path. tier1_confidence and the resolving tier are recorded as DIAGNOSTIC
@@ -37,7 +37,7 @@ columns only; they never drive actual_escalate.
 
 That is also why the JSON's expected_trigger field can be either
 "rag_similarity" or "cascade_confidence_or_rag_similarity": both ultimately
-escalate through the same 0.35 similarity gate; the field only documents WHY a
+escalate through the same similarity gate; the field only documents WHY a
 ticket is adversarial, and is informational here.
 
 GEMINI IS NEVER CALLED
@@ -50,15 +50,15 @@ threshold logic the live pipeline uses to reach the escalation decision.
 
 REUSE, DON'T REIMPLEMENT
 ------------------------
-This script imports and calls the project's real functions:
-  - src.classification.train_cascade.train_tier1
-  - src.classification.train_cascade.get_tier1_confidence
-  - src.rag.suggest_resolution.retrieve_similar_tickets  (+ SIMILARITY_THRESHOLD)
-  - src.app.streamlit_app.classify_ticket_cascade
-        (imported when possible so cascade behavior is guaranteed identical to
-         the live demo; a local, signature-identical fallback is used only if
-         streamlit_app cannot be imported headlessly, e.g. because importing it
-         triggers Streamlit page calls.)
+This script runs the SHARED pipeline in src/agent/pipeline.py -- the single
+implementation used by the Streamlit demo and the batch processor as well.
+
+It previously carried its own signature-identical copy of the cascade, used
+whenever streamlit_app could not be imported headlessly (which was always,
+since importing it fires st.set_page_config). That copy is exactly how this
+script kept its own un-migrated MiniLM constants through the BGE swap while
+still reporting green. There is now nothing left to drift: thresholds come
+from src/agent/config.py and the orchestration from src/agent/pipeline.py.
 
 Run from the project root:
     python src/experiments/test_adversarial_escalation.py
@@ -84,6 +84,15 @@ import numpy as np
 # ---------------------------------------------------------------------------
 random.seed(42)
 np.random.seed(42)
+
+# This report prints check marks; on a default Windows console (cp1252) that
+# raised UnicodeEncodeError and killed the run with a raw traceback even when
+# all nine tickets passed.
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)))
+from src.agent.logging_setup import ensure_utf8_console  # noqa: E402
+
+ensure_utf8_console()
 
 
 # ---------------------------------------------------------------------------
@@ -121,8 +130,10 @@ EMBEDDING_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 #   - CASCADE_CONFIDENCE_THRESHOLD = 0.50 (the value streamlit_app.py applies;
 #     it is intentionally the applied constant, NOT train_cascade's default of
 #     0.80, which is only a pre-calibration fallback there).
-#   - SIMILARITY_THRESHOLD is imported from suggest_resolution.py (0.35), with a
-#     0.35 fallback identical to streamlit_app.py's getattr(...) default.
+#   - SIMILARITY_THRESHOLD is read from src/agent/config.py, the single
+#     source of truth. There is deliberately NO fallback default: a missing
+#     or degraded import must fail loudly rather than silently testing
+#     against a dead MiniLM-era value.
 CASCADE_CONFIDENCE_THRESHOLD = 0.50
 
 EXPECTED_TICKET_COUNT = 9
@@ -595,8 +606,14 @@ def load_pipeline_resources(train_tier1, sr):
             f"({type(exc).__name__}: {exc})."
         )
 
-    # ---- Resolve the applied SIMILARITY_THRESHOLD (import; 0.35 fallback) -
-    similarity_threshold = float(getattr(sr, "SIMILARITY_THRESHOLD", 0.35))
+    # ---- Resolve the applied SIMILARITY_THRESHOLD -------------------------
+    # Read the calibrated value from the single source of truth. This used to
+    # be getattr(sr, "SIMILARITY_THRESHOLD", 0.35); a degraded import would
+    # have silently tested against a dead MiniLM-era threshold and reported a
+    # green 9/9 for the wrong reason.
+    from src.agent.config import settings as _settings
+
+    similarity_threshold = float(_settings.rag.similarity_threshold)
     print(f"[step2] Applied thresholds -> cascade confidence "
           f"{CASCADE_CONFIDENCE_THRESHOLD:.2f}, RAG similarity "
           f"{similarity_threshold:.2f}")
@@ -620,61 +637,52 @@ def load_pipeline_resources(train_tier1, sr):
 def run_ticket_through_pipeline(ticket, resources, classify_cascade_fn,
                                 get_tier1_confidence):
     """
-    Run a single ticket's text through the SAME pipeline logic as
-    streamlit_app.py's run_pipeline():
+    Run a single ticket through the shared pipeline.
 
-        (a) cascade classification (category + tier + tier1 confidence)
-        (b) RAG retrieval -> top_similarity
-        (c) actual_escalate = (top_similarity < SIMILARITY_THRESHOLD)
+    THIN ADAPTER. The orchestration now lives in src/agent/pipeline.py, which
+    is the one implementation used by this test, the Streamlit demo, and the
+    batch processor alike. This function keeps its original signature and
+    return shape so the report/CSV code below is unchanged.
 
-    Gemini is intentionally NOT called (see module docstring).
+    Previously this re-implemented classify -> retrieve -> escalate locally
+    (one of four copies), which is precisely how it came to carry its own
+    un-migrated MiniLM constants through the BGE swap.
 
-    Returns a dict of recorded fields. On a per-ticket failure it returns a
-    dict with "error" set so the caller can render it cleanly and count it as
-    a FAIL rather than crashing the whole run.
+    classify_cascade_fn and get_tier1_confidence are retained in the
+    signature for backward compatibility but are no longer used: the cascade
+    is now a single implementation in src/agent/classifier.py.
+
+    Gemini is still never called (see module docstring).
     """
-    text = ticket["text"]
-    sr = resources["sr"]
+    from src.agent import pipeline as agent_pipeline
+    from src.agent.artifacts import Artifacts
+    from src.agent.schemas import TicketIn
 
-    # (a) Cascade classification (reuse the live function).
-    classification = classify_cascade_fn(
-        text,
-        resources["tier1_vectorizer"],
-        resources["tier1_classifier"],
-        resources["tier2_classifier"],
-        resources["model"],
-        get_tier1_confidence,
+    artifacts = Artifacts(
+        embedder=resources["model"],
+        index=resources["index"],
+        metadata=resources["metadata"],
+        faiss=resources["faiss"],
+        tier1_vectorizer=resources["tier1_vectorizer"],
+        tier1_classifier=resources["tier1_classifier"],
+        tier2_classifier=resources["tier2_classifier"],
+        gemini_client=None,
     )
-    predicted_category = classification["category"]
-    tier = classification["tier"]
-    tier1_conf = classification["tier1_conf"]
 
-    # (b) RAG retrieval (reuse the live function, exact signature/arg order).
-    retrieved = sr.retrieve_similar_tickets(
-        text,
-        resources["model"],
-        resources["index"],
-        resources["metadata"],
-        resources["faiss"],
-        top_k=TOP_K,
-    ) or []
-    # Defensive sort (matches streamlit_app.run_pipeline).
-    retrieved = sorted(
-        retrieved, key=lambda r: r.get("similarity", 0.0), reverse=True
+    outcome = agent_pipeline.run(
+        TicketIn(title=ticket["text"], ticket_id=ticket.get("id")),
+        artifacts=artifacts,
+        generate_resolution=False,
+        emit_log=False,
     )
-    top_similarity = float(retrieved[0]["similarity"]) if retrieved else 0.0
-
-    # (c) Human-escalation decision — SOLELY the RAG similarity gate, exactly
-    #     as run_pipeline() decides result["escalated"].
-    actual_escalate = top_similarity < resources["similarity_threshold"]
 
     return {
-        "predicted_category": str(predicted_category),
-        "tier": int(tier),
-        "tier1_confidence": float(tier1_conf),
-        "rag_similarity": float(top_similarity),
-        "actual_escalate": bool(actual_escalate),
-        "n_retrieved": len(retrieved),
+        "predicted_category": str(outcome.classification.category),
+        "tier": int(outcome.classification.tier),
+        "tier1_confidence": float(outcome.classification.tier1_conf),
+        "rag_similarity": float(outcome.top_similarity),
+        "actual_escalate": bool(outcome.decision.escalated),
+        "n_retrieved": len(outcome.retrieval.retrieved),
     }
 
 
