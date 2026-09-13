@@ -4,9 +4,8 @@
 **Last commit:** `d6a5434` — Add Phase 2/2A automation-flag validation
 harness (no finding yet)
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** Phase 2 (automation-flag validation harness). The 2A
-harness is committed; **no finding has been produced yet** — the 12-pair
-pilot is built and still unlabelled.
+**Current phase:** Phase 2 complete (automation-flag validation). Result is
+negative and deliberately so — see below. Production gates unchanged.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -21,6 +20,7 @@ changes; this file describes where it currently is and changes every session.
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
+| Phase 2 pilot | `score_flag_validation_set.py --pilot` | **0/12 false merges**, STOP verdict |
 
 Production gates are unchanged and remain the calibrated values: cascade
 **0.50**, RAG similarity **0.67**, resolution clustering **0.80**.
@@ -88,117 +88,92 @@ history.
 
 ---
 
+### Phase 2 — automation-flag validation (complete, negative result)
+
+Built the ground-truth check the README named as the prerequisite for
+swapping resolution clustering from MiniLM@0.80 to BGE@0.90. **The answer is
+that this dataset cannot answer the question**, and that is the finding.
+
+#### The structural diagnostic
+
+At their own cliff-edges, **neither configuration ever merges across dataset
+templates**. All 1,069 pairs both merge, and all 411 pairs they disagree
+about, are within-template. MiniLM@0.80 merges 1,167 pairs total; BGE@0.90
+merges 1,382; the disagreement is 98 MiniLM-only + 313 BGE-only.
+
+So the entire measured difference between them is **recall**, not precision.
+
+#### A pre-registered rule that had to be thrown out
+
+The original rule — an exact binomial on which configuration wins more
+discordant pairs — would have promoted whichever model merges more,
+inverting the project's precision-over-recall stance. A dry run against
+synthetic labels confirmed it: label everything `same_fix` and it printed
+PROMOTE at p = 0.0027 on zero evidence about flag correctness.
+
+Replaced before any label was collected. **Primary** is now the false-merge
+rate on each configuration's *extra* merges; promote BGE only if it makes
+zero observed false merges **and** MiniLM makes at least one. If neither
+does, the verdict is **no precision signal**, not promotion. The binomial
+survives as an explicitly demoted recall comparison.
+
+#### The pilot and its result
+
+12 pairs (6 per direction) from the most divergent end of the region,
+divergence 0.53–0.68 against a region median of ~0.42, labelled blind.
+
+| Configuration | Extra merges judged | False merges | Rate |
+|---|---:|---:|---:|
+| MiniLM @ 0.80 | 6 | **0** | 0.0% |
+| BGE @ 0.90 | 6 | **0** | 0.0% |
+
+**Zero false merges by either.** The closest call was PL005, labelled
+`same_fix` but flagged low-confidence — two `fstab` boot failures where one
+ticket adds an explicit restart step and the other does not. PL009/PL010
+(cause named on one side only, identical remediation) and PL011 (same
+branch twice) resolved cleanly. Secondary `scenario_id` agreement was 12/12,
+the degeneracy the diagnostic predicted.
+
+**Zero observed is not zero.** Rule-of-three upper bounds: 50% per
+configuration at 0/6, 25% pooled at 0/12. This does not establish that no
+false-merge case exists — only that none was found among the 12 most
+divergent pairs. What carries the conclusion is the diagnostic underneath
+it, not the pilot alone.
+
+#### Conclusion
+
+MiniLM@0.80 and BGE@0.90 are **indistinguishable on precision** and differ
+only in recall. Promotion would surface more candidates (1,382 vs 1,167
+pairs), which is a product judgement about review-queue capacity, not a
+calibration result. **Production stays on MiniLM@0.80.** The other 48
+judgements were not spent — the pilot existed to determine whether they
+would measure anything, and they would not.
+
+The limitation is the dataset, not the method: template-generated data
+cannot produce two tickets that look alike but need different fixes, because
+the templates *are* the fix classes. Same wall the conformal work hit from a
+different direction.
+
+---
+
 ## In progress
 
-**Phase 2 / 2A — the automation-flag validation harness. Committed and
-pushed. Waiting on 12 human labels.**
-
-**No result exists yet.** The harness is the tool, not the finding. Nothing
-in this repository currently states an outcome for the MiniLM@0.80 vs
-BGE@0.90 promotion question, and nothing should until the pilot is labelled
-and scored.
-
-Naming note: the README previously used "Phase 2" for the already-committed
-BGE clustering measurement. That work is now retitled **"BGE clustering
-re-run"** throughout, and **"Phase 2" means this harness**.
-
-Files that landed:
-
-| File | What it is |
-|---|---|
-| `src/experiments/build_flag_validation_set.py` | Builds the set. `--pilot` builds the 12-pair probe. |
-| `src/experiments/score_flag_validation_set.py` | Scores it. `--pilot` scores the probe. |
-| `data/automation_flag_validation_set.json` | 60-pair blind labelling file (unlabelled) |
-| `data/automation_flag_validation_key.json` | Withheld answer key |
-| `data/automation_flag_validation_pilot.json` | **12-pair pilot — label this one first** |
-| `data/automation_flag_validation_pilot_key.json` | Pilot answer key |
-| `README.md` (modified) | Phase 2 naming fix + new Pending entry |
-
-Both scripts are offline, deterministic (seed 42, byte-identical across
-re-runs), load no model and spend no Gemini quota.
-
-### The structural finding that reshaped 2A
-
-Building the full set surfaced this, and it is the reason the design changed
-mid-phase:
-
-**At their own cliff-edges, neither configuration ever merges across dataset
-templates.** All 1,069 pairs both configurations merge, and all 411 pairs
-they disagree about, are within-template. MiniLM@0.80 merges 1,167 pairs
-total; BGE@0.90 merges 1,382; the disagreement is 98 MiniLM-only + 313
-BGE-only.
-
-So the entire measured difference between the two is **recall**, not
-precision. The originally pre-registered rule — an exact binomial on which
-configuration wins more discordant pairs — would therefore have promoted
-whichever model merges more, inverting production's stated
-precision-over-recall stance. A dry run confirmed it: label everything
-`same_fix` and the old rule printed PROMOTE at p = 0.0027, on zero real
-evidence about flag correctness.
-
-### The amended decision rule
-
-**Primary** is the false-merge rate on each configuration's *extra* merges
-(the pairs it uniquely co-clusters). A `different_fix` label there is a false
-merge — the costly error.
-
-    Promote BGE only if it makes ZERO observed false merges AND MiniLM
-    makes at least one. If NEITHER makes a false merge the verdict is
-    NO PRECISION SIGNAL, not promotion.
-
-The binomial win-rate is still reported but demoted and explicitly labelled
-as the recall comparison it is. The scorer also prints rule-of-three upper
-bounds, because zero observed is not zero: 0/42 bounds BGE's true rate only
-at 7.1%, and 0/18 bounds MiniLM's at 16.7%.
-
-### The pilot
-
-Rather than spend 60 judgements, `--pilot` draws **12 pairs (6 per
-direction) from the most divergent end** of the region — divergence 0.53–0.68
-against a region median of ~0.42 — where a genuine different-fix pair would
-appear if one exists anywhere. It is balanced across directions on purpose,
-which would bias a win-rate test, so the scorer refuses to compute the
-head-to-head on it. Distinct `PL###` pair ids prevent a pilot file being
-scored against the full key.
-
-**If the pilot comes back all `same_fix`**, that is the Phase 2 finding: this
-dataset structurally cannot distinguish MiniLM@0.80 from BGE@0.90 on
-precision, only on recall, and promotion becomes a product decision about how
-many candidates to surface rather than an evidence-backed calibration
-result. Inspection of the most divergent pairs suggests this is the likely
-outcome — even the max-divergence pair differs only in verbosity and app
-name — but that is an impression from a handful, not a measurement.
+**Nothing is mid-flight.** Working tree clean, everything pushed.
 
 ---
 
 ## Immediate next step
 
-**Label the 12-pair pilot**, then score it:
+**Phase 2 is closed. The review gate is here** — confirm the finding reads
+correctly before the next phase starts.
 
-```powershell
-# label data/automation_flag_validation_pilot.json -- set each "label" to
-# exactly one of: same_fix | different_fix | unclear
-python src/experiments/score_flag_validation_set.py --pilot
-```
-
-The scorer refuses to run on a partially-labelled file, rejects invalid label
-strings, and refuses to score a pilot against the full key — each with an
-actionable message rather than a traceback.
-
-Then, depending on the pilot:
-
-- **Any `different_fix`** → a false merge is observable; build and label the
-  full 60-pair set (`build_flag_validation_set.py` with no flag).
-- **All `same_fix`** → write up the no-precision-signal result as the Phase 2
-  finding in the README, and close 2A without spending the other 48
-  judgements.
-
-The harness is already committed. The finding lands as its own separate
-commit once the pilot resolves, so the tool and the result stay distinct in
-the history.
-
-Remaining sequence after Phase 2: multi-agent orchestrator → drift detection
+Next in the agreed sequence: **multi-agent orchestrator** → drift detection
 → Docker/CI packaging.
+
+One prerequisite to settle first, already flagged as an open question: the
+orchestrator cannot refit Tier-1 per request, so Tier-1 needs persisting
+rather than fitting at startup. That is the natural first task of that
+phase rather than a separate one.
 
 ---
 
@@ -210,6 +185,13 @@ Remaining sequence after Phase 2: multi-agent orchestrator → drift detection
   decision with its own evidence, not a quiet flip of `enabled`.
 - **Should `process_ticket_batch.py` be re-run under BGE?** The code is fixed but
   has not been executed. See Known risks.
+- **Should resolution clustering swap to BGE@0.90?** Phase 2 answered the
+  *evidence* half: no, not on precision grounds, because the two are
+  indistinguishable there on this dataset. What remains is a product call —
+  BGE surfaces 1,382 co-clustered pairs against MiniLM's 1,167, and whether
+  that extra recall is wanted depends on review-queue capacity. Decide it as
+  a product question or re-run the harness on deployment-distribution data;
+  do not reopen it as a calibration question.
 - **Should Tier-1 be persisted rather than fitted at startup?** It is currently
   refit on every startup. Not needed yet; it blocks the orchestrator phase, where
   a per-request service cannot refit per call.

@@ -862,6 +862,196 @@ Results:
 [`resolution_clustering_calibration_percategory_summary.csv`](data/resolution_clustering_calibration_percategory_summary.csv)
 (one row per category).
 
+### Phase 2 — automation-flag validation (the BGE promotion question)
+
+The two sections above leave one question open, and the "Pending" list
+named it as the prerequisite for any production swap: BGE's clustering is
+*internally* tidier than MiniLM's, but is it actually *better* at flagging
+automation candidates? Cliff-edge math alone cannot answer that. The RAG
+similarity threshold was only adopted because a 45-ticket accuracy
+benchmark and a 9-ticket adversarial set could re-confirm the specific
+chosen value against real cases. Resolution clustering had no equivalent.
+
+Phase 2 built that equivalent. The answer it produced is a negative one,
+and the reason is more interesting than the verdict.
+
+#### The structural diagnostic
+
+Before spending any human labelling budget, the two configurations were
+compared pair-by-pair. For each category, every pair of resolved tickets
+co-clustered by MiniLM @ 0.80 was compared against every pair co-clustered
+by BGE @ 0.90 — each model at its **own** calibrated cliff-edge, since
+comparing both at 0.80 would handicap BGE at a threshold its own precision
+curve does not endorse.
+
+| Category | MiniLM@0.80 | BGE@0.90 | Both | MiniLM-only | BGE-only |
+|---|---:|---:|---:|---:|---:|
+| Infrastructure | 402 | 449 | 370 | 32 | 79 |
+| Application | 277 | 372 | 254 | 23 | 118 |
+| Security | 182 | 160 | 160 | 22 | 0 |
+| Database | 34 | 34 | 23 | 11 | 11 |
+| Storage | 101 | 119 | 99 | 2 | 20 |
+| Network | 125 | 201 | 121 | 4 | 80 |
+| Access Management | 46 | 47 | 42 | 4 | 5 |
+| **Total** | **1,167** | **1,382** | **1,069** | **98** | **313** |
+
+Then the decisive check, against `scenario_id` ground truth:
+
+**Not one of the 1,382 merges either configuration makes is a
+cross-template merge.** All 1,069 pairs both models merge, and all 411
+pairs they disagree about, join two tickets from the same dataset
+template.
+
+That single fact reframes the whole question. Both configurations are
+perfectly template-precise at their own cliff-edges — which is, of course,
+exactly how those cliff-edges were chosen. **The entire measured
+difference between MiniLM @ 0.80 and BGE @ 0.90 is recall**: which
+within-template pairs each one manages to find. BGE finds 313 that MiniLM
+misses; MiniLM finds 98 that BGE misses.
+
+#### A pre-registered decision rule that had to be thrown out
+
+The validation set was originally built with a rule fixed in advance: each
+sampled pair is co-clustered by exactly one configuration, so a human label
+awards the point to exactly one of them, and the winner is decided by an
+exact two-sided binomial (McNemar) test on the split.
+
+Statistically that rule is sound. For *this* project it was wrong, and the
+diagnostic above is why. Since the sample is drawn proportionally from a
+disagreement region that is 313 BGE-only against 98 MiniLM-only, labelling
+every pair `same_fix` hands BGE a 42–18 win at p = 0.0027. A dry run
+against synthetic labels confirmed it: the rule printed **PROMOTE** on zero
+evidence about flag correctness. It was rewarding whichever model merges
+more.
+
+That directly inverts the cost asymmetry this feature is built on — a false
+"these two share a fix" claim misleads operators, while a missed automation
+opportunity merely preserves the status quo. A precision gate that promotes
+on recall is not a gate.
+
+The rule was replaced before any label was collected:
+
+> **Primary:** the false-merge rate on each configuration's *extra* merges
+> — the pairs it uniquely co-clusters. A `different_fix` label there is a
+> false merge by that configuration, and a false merge is the costly error.
+> Promote BGE only if it makes **zero** observed false merges **and**
+> MiniLM makes at least one. If neither makes one, the verdict is **no
+> precision signal**, not promotion.
+>
+> **Secondary:** the binomial win-rate, still reported but explicitly
+> demoted and labelled as the recall comparison it is.
+
+#### The pilot
+
+Rather than spend the full 60-judgement budget confirming something the
+diagnostic already made likely, a 12-pair pilot was drawn from the **most
+textually divergent end** of the disagreement region — ranked by
+`1 − token Jaccard` of the two resolution texts, since a genuinely
+different fix, if one exists anywhere in the region, would surface where
+the wording diverges most. The selected pairs span divergence **0.53–0.68**
+against a region median of ~0.42, and the near-duplicate guard rejected 7
+candidates along the way.
+
+The pilot is balanced 6/6 across directions on purpose. That balance would
+bias a win-rate comparison, so the scorer refuses to compute the
+head-to-head on a pilot at all; the probe asks only whether a false merge
+is observable *at all*. Labelling was blind: the file shown to the labeller
+omits `scenario_id` and does not reveal which configuration co-clustered
+each pair, and entries are shuffled so ordering cannot leak direction
+either.
+
+#### Result
+
+| Configuration | Extra merges judged | `same_fix` | False merges | Rate |
+|---|---:|---:|---:|---:|
+| MiniLM @ 0.80 | 6 | 6 | **0** | 0.0% |
+| BGE @ 0.90 | 6 | 6 | **0** | 0.0% |
+
+**Zero false merges by either configuration, in the 12 pairs where a false
+merge was most likely to appear.**
+
+The one pair that came close is worth recording, because it is the only
+place in the pilot where the judgement was genuinely contested. **PL005**
+(Infrastructure) pairs two `fstab`-blocked boot failures: ticket A corrects
+the mount entry, ticket B corrects it *and* explicitly restarts/resumes the
+boot. It was labelled `same_fix` but flagged low-confidence at labelling
+time — the note reads, verbatim, that it "could be read as an implied
+trivial follow-on to an otherwise identical fix, OR as a materially
+different remediation SOP (one action vs two)." For contrast, **PL012**
+pairs two tickets that *both* state the reboot step, and is unambiguous.
+The remaining judgement-worthy pairs resolved cleanly: **PL009/PL010** name
+the SMTP change as a cause on one side only, but prescribe word-for-word
+equivalent remediation; **PL011** pairs two tickets from the same branch,
+where whether it is one recurring incident or two is a separate question
+from whether the fix is shared.
+
+The secondary `scenario_id` measurement agreed with the human label 12/12
+(100%) — exactly the degeneracy predicted by the diagnostic, reported so
+the degeneracy is visible rather than assumed.
+
+#### Zero observed is not zero
+
+The honest bound on this result is wide, and the scorer prints it rather
+than letting the table above speak unqualified. By the rule of three, zero
+events in *n* trials supports a one-sided 95% upper bound of 3/*n*:
+
+| Claim | Observed | 95% upper bound on the true rate |
+|---|---|---|
+| MiniLM @ 0.80 makes no false merges | 0 / 6 | **50.0%** |
+| BGE @ 0.90 makes no false merges | 0 / 6 | **50.0%** |
+| Neither makes a false merge | 0 / 12 | **25.0%** |
+
+So this finding does **not** establish that no false-merge case exists in
+the disagreement region. It establishes that none was found among the 12
+most divergent pairs in it — which is a much weaker claim, and the correct
+one to make. A false-merge rate as high as one in four would be entirely
+consistent with observing zero here.
+
+What makes the result still worth acting on is not the bound but the
+diagnostic underneath it: the region contains no cross-template merges at
+all, so there is no structural mechanism by which either model's extra
+merges *could* be systematically wrong on this data. The pilot is
+consistent with the diagnostic rather than carrying the conclusion alone.
+
+#### Conclusion: this is a product decision, not an evidence one
+
+**The promotion from MiniLM @ 0.80 to BGE @ 0.90 cannot be settled by
+flag-correctness evidence on this dataset.** The two configurations are
+indistinguishable on precision — the axis the production threshold exists
+to protect — and differ only in recall, which the cluster counts already
+report for free and which no amount of labelling will convert into a
+precision argument.
+
+Swapping to BGE would surface more automation candidates (1,382
+co-clustered pairs against 1,167). Whether that is an improvement depends
+on how many candidates the review queue should carry, which is a product
+judgement about human review capacity, not a calibration result. It should
+be argued and recorded as such.
+
+**Production therefore stays on MiniLM @ 0.80**, and the remaining 48
+judgements were not spent — the pilot's purpose was to determine whether
+they would measure anything, and they would not.
+
+The deeper limitation is the dataset, not the method. Template-generated
+data cannot produce two tickets that look alike but need different fixes,
+because the templates *are* the fix classes. Distinguishing these two
+configurations on precision needs deployment-distribution resolved tickets
+— the same conclusion the conformal calibration work reached from an
+entirely different direction, which is itself some evidence that the
+limitation is real rather than an artifact of one experiment's design.
+
+Scripts: `src/experiments/build_flag_validation_set.py` (add `--pilot` for
+the probe), `src/experiments/score_flag_validation_set.py` (likewise).
+Both are offline, deterministic at seed 42, load no model and spend no
+Gemini quota. Data:
+[`automation_flag_validation_pilot.json`](data/automation_flag_validation_pilot.json)
+(the 12 labelled pairs),
+[`automation_flag_validation_pilot_key.json`](data/automation_flag_validation_pilot_key.json)
+(the withheld key),
+[`automation_flag_validation_pilot_results.csv`](data/automation_flag_validation_pilot_results.csv)
+(scored output). The unlabelled 60-pair set is retained for the record,
+since building it is what produced the diagnostic.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
@@ -1053,24 +1243,30 @@ That remains a scoped future extension, not something built yet.
   math alone, with no way to validate the specific value against real
   cases, is exactly the category of unchecked assumption this project has
   caught and rejected before (the in-distribution split, the 35-ticket
-  calibration set, the low-N artifact at RAG threshold 0.85). Building a
-  real validation method for this threshold — analogous to the
-  adversarial set's role for the RAG gate — is the open prerequisite
-  before any production swap here.
+  calibration set, the low-N artifact at RAG threshold 0.85). That
+  validation method has since been built and run — see "Phase 2 —
+  automation-flag validation" above. It returned a negative result: at
+  their own cliff-edges neither configuration makes a single
+  cross-template merge, so the two are indistinguishable on precision and
+  differ only in recall. **Production stays on MiniLM @ 0.80**, and any
+  future swap is a product decision about review-queue capacity rather
+  than something flag-correctness evidence can settle on this dataset.
   
 
 ### Pending
 
-1. **Phase 2 — automation-flag validation set** — the open prerequisite
-   named above, before any production swap of the resolution-clustering
-   threshold from MiniLM@0.80 to BGE@0.90. Builds cluster-level ground
-   truth by human adjudication over the region where the two
-   configurations actually disagree, deliberately labelled without
-   showing `scenario_id` so the judgement is independent of the dataset
-   generator's own template identity. The direct analogue of the
-   9-ticket adversarial set's role for the RAG gate. "Phase 2" refers to
-   this harness; the already-completed BGE measurement is referred to
-   throughout as the "BGE clustering re-run".
+1. **Re-run the automation-flag validation on deployment-distribution
+   data** — Phase 2 is complete and its harness works, but it ran into
+   the dataset rather than into the method: template-generated tickets
+   cannot produce two cases that look alike yet need different fixes,
+   because the templates *are* the fix classes. The 12-pair pilot found
+   zero false merges with a 25% rule-of-three upper bound, which is
+   consistent with the structural diagnostic but cannot rule a false
+   merge out. Deciding MiniLM@0.80 vs BGE@0.90 on precision needs real
+   resolved tickets — the same blocker the conformal work hit
+   independently. The harness itself needs no changes; point it at a new
+   `category_stores` and re-run. ("Phase 2" refers to that harness; the
+   earlier BGE measurement is the "BGE clustering re-run" throughout.)
 
 2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,

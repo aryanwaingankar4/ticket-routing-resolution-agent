@@ -7,7 +7,8 @@
     "precision_over_recall": "The production design choice is that a false 'these share a fix' claim is costlier than a missed automation opportunity. When genuinely torn between same_fix and different_fix, that asymmetry is the tie-breaker; use \"unclear\" only when the texts do not support a judgement at all.",
     "pairs": 12,
     "seed": 42,
-    "near_duplicate_jaccard": 0.9
+    "near_duplicate_jaccard": 0.9,
+    "labelling_note": "These labels were drafted by Claude (chat) as a second opinion for Aryan to review, per the project's requirement that ground truth be independent, human judgement -- not a substitute for that judgement. REVIEW EACH LABEL BEFORE TREATING THIS AS FINAL, especially PL005 which is flagged as a genuine judgement call with low confidence."
   },
   "pairs": [
     {
@@ -23,8 +24,8 @@
         "title": "Field Service App throwing errors after latest deploy",
         "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Both: missed migration, run it, redeploy. Only the app name differs."
     },
     {
       "pair_id": "PL002",
@@ -39,8 +40,8 @@
         "title": "Memory exhaustion on STG-APP-07",
         "resolution_text": "Based on past resolved tickets for this exact issue, the recommended resolution is to increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion earlier. \n\n*Note: The retrieved examples closely match the new ticket.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Identical fix (raise limit + 80% alert) on two different hosts."
     },
     {
       "pair_id": "PL003",
@@ -55,8 +56,8 @@
         "title": "Memory exhaustion on STG-APP-07",
         "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples closely match the new ticket.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Same pattern as PL002, different hosts."
     },
     {
       "pair_id": "PL004",
@@ -71,8 +72,8 @@
         "title": "Expense Tracker throwing errors after latest deploy",
         "resolution_text": "**Suggested Resolution:**\nBased on past ticket resolutions, the post-release errors are caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending database migration and redeploy the application to clear the errors.\n\n*Note: The retrieved past tickets match the new ticket's symptoms and title exactly; however, a human agent should still verify the deployment logs to confirm the missing migration.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Missed migration + redeploy, different app names only."
     },
     {
       "pair_id": "PL005",
@@ -87,8 +88,8 @@
         "title": "Server K8S-NODE-14 unresponsive after reboot",
         "resolution_text": "**Suggested Resolution:**\nGain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "LOW CONFIDENCE -- REVIEW THIS ONE YOURSELF. Same root cause (fstab) and same core corrective action. Ticket B explicitly adds a restart/resume step that ticket A doesn't state; could be read as an implied trivial follow-on to an otherwise identical fix, OR as a materially different remediation SOP (one action vs two). Genuinely torn between same_fix and unclear."
     },
     {
       "pair_id": "PL006",
@@ -103,8 +104,8 @@
         "title": "Expense Tracker throwing errors after latest deploy",
         "resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the error is likely caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the deployment logs to confirm.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Same migration+redeploy pattern as PL001/PL004, different app."
     },
     {
       "pair_id": "PL007",
@@ -119,8 +120,8 @@
         "title": "Server K8S-NODE-15 unresponsive after reboot",
         "resolution_text": "**Suggested Resolution:**\nGain console access to K8S-NODE-15 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match the new ticket.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Same fstab fix, no restart mentioned on either side -- host differs only."
     },
     {
       "pair_id": "PL008",
@@ -135,8 +136,8 @@
         "title": "Billing Portal throwing errors after latest deploy",
         "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match this new ticket.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Migration+redeploy pattern again, CRM vs Billing Portal."
     },
     {
       "pair_id": "PL009",
@@ -151,8 +152,8 @@
         "title": "Procurement Portal scheduled report emails not sending",
         "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Identical remediation steps (update mailer settings, drain queue, verify resume). Ticket A names SMTP change as cause, ticket B doesn't -- but the prescribed action is word-for-word equivalent regardless."
     },
     {
       "pair_id": "PL010",
@@ -167,8 +168,8 @@
         "title": "Procurement Portal scheduled report emails not sending",
         "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Same as PL009's reasoning -- identical remediation, cause named or not doesn't change the action."
     },
     {
       "pair_id": "PL011",
@@ -183,8 +184,8 @@
         "title": "VPN failing for Pune Branch users",
         "resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the VPN concentrator serving the Pune Branch has likely exhausted its IP pool. To resolve the timeout during negotiation, enlarge the IP pool on the VPN concentrator and clear stale sessions to restore VPN access.\n\n*Note: The retrieved past tickets are an exact match for this issue, but a human agent should still verify that the IP pool expansion resolves the connections successfully.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Whether this is one recurring incident or two is a separate question from whether the fix is shared -- the fix (enlarge IP pool, clear stale sessions) is identical."
     },
     {
       "pair_id": "PL012",
@@ -199,8 +200,8 @@
         "title": "Server PRD-AUTH-05 unresponsive after reboot",
         "resolution_text": "**Suggested Resolution:**\nGain console access to PRD-AUTH-05 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, then reboot the host to ensure it boots cleanly and responds to SSH and ping.\n\n*Note: The retrieved examples closely match this new ticket and directly apply.*"
       },
-      "label": null,
-      "label_reason": ""
+      "label": "same_fix",
+      "label_reason": "Both explicitly include a reboot/restart step after the fstab correction -- more textually aligned than PL005's pair."
     }
   ]
 }

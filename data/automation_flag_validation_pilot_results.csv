@@ -1,0 +1,13 @@
+pair_id,category,ticket_a,ticket_b,divergence,human_label,co_clustered_by,separated_by,false_merge_by,winner,scenario_id_match,label_reason
+PL001,Application,176,239,0.6667,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,"Both: missed migration, run it, redeploy. Only the app name differs."
+PL002,Infrastructure,371,421,0.5254,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,Identical fix (raise limit + 80% alert) on two different hosts.
+PL003,Infrastructure,35,248,0.5763,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,"Same pattern as PL002, different hosts."
+PL004,Application,84,206,0.661,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,"Missed migration + redeploy, different app names only."
+PL005,Infrastructure,103,120,0.6429,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,"LOW CONFIDENCE -- REVIEW THIS ONE YOURSELF. Same root cause (fstab) and same core corrective action. Ticket B explicitly adds a restart/resume step that ticket A doesn't state; could be read as an implied trivial follow-on to an otherwise identical fix, OR as a materially different remediation SOP (one action vs two). Genuinely torn between same_fix and unclear."
+PL006,Application,239,389,0.6833,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,"Same migration+redeploy pattern as PL001/PL004, different app."
+PL007,Infrastructure,9,484,0.623,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,"Same fstab fix, no restart mentioned on either side -- host differs only."
+PL008,Application,376,447,0.566,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,"Migration+redeploy pattern again, CRM vs Billing Portal."
+PL009,Application,331,380,0.5273,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,"Identical remediation steps (update mailer settings, drain queue, verify resume). Ticket A names SMTP change as cause, ticket B doesn't -- but the prescribed action is word-for-word equivalent regardless."
+PL010,Application,280,380,0.6167,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,"Same as PL009's reasoning -- identical remediation, cause named or not doesn't change the action."
+PL011,Network,159,499,0.5818,same_fix,minilm@0.80,bge@0.90,,minilm@0.80,True,"Whether this is one recurring incident or two is a separate question from whether the fix is shared -- the fix (enlarge IP pool, clear stale sessions) is identical."
+PL012,Infrastructure,120,383,0.625,same_fix,bge@0.90,minilm@0.80,,bge@0.90,True,Both explicitly include a reboot/restart step after the fstab correction -- more textually aligned than PL005's pair.
