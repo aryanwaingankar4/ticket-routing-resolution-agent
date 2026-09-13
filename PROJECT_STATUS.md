@@ -1,8 +1,8 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `65840c8` — Refresh PROJECT_STATUS.md after committing the
-BGE clustering re-run
+**Last commit:** `d6a5434` — Add Phase 2/2A automation-flag validation
+harness (no finding yet)
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
 **Current phase:** Phase 2 (automation-flag validation harness). The 2A
 harness is committed; **no finding has been produced yet** — the 12-pair
