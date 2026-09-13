@@ -1,0 +1,206 @@
+{
+  "_meta": {
+    "set_type": "pilot",
+    "purpose": "Phase 2 / 2A FALSE-MERGE PILOT PROBE. Twelve pairs drawn from the most textually divergent end of the disagreement region, to establish whether either configuration makes an observable false merge here at all. If every pair is same_fix, the region contains no precision signal and the promotion question cannot be settled by flag correctness on this dataset.",
+    "how_to_label": "For each pair, read both resolution texts and set \"label\" to exactly one of: \"same_fix\" (one automation would resolve both), \"different_fix\" (they need different fixes), or \"unclear\" (genuinely cannot tell). Optionally add a short \"label_reason\". Do not leave any label null.",
+    "blind_by_design": "This file deliberately omits scenario_id and does not say which configuration co-clustered each pair. Both are in automation_flag_validation_key.json, which the scorer reads and the labeller should not.",
+    "precision_over_recall": "The production design choice is that a false 'these share a fix' claim is costlier than a missed automation opportunity. When genuinely torn between same_fix and different_fix, that asymmetry is the tie-breaker; use \"unclear\" only when the texts do not support a judgement at all.",
+    "pairs": 12,
+    "seed": 42,
+    "near_duplicate_jaccard": 0.9
+  },
+  "pairs": [
+    {
+      "pair_id": "PL001",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "176",
+        "title": "Payroll throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nCheck for any missed database migrations from the latest Payroll release. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the migration status and redeployment.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "239",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL002",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "371",
+        "title": "Memory exhaustion on PRD-WEB-02",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-WEB-02 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the server state before applying changes.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "421",
+        "title": "Memory exhaustion on STG-APP-07",
+        "resolution_text": "Based on past resolved tickets for this exact issue, the recommended resolution is to increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion earlier. \n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL003",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "35",
+        "title": "Memory exhaustion on PRD-WEB-01",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-WEB-01 to resolve the out-of-memory kills, and add a memory-usage alert set at 80% to catch future issues earlier.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the container settings and alert thresholds are applied correctly.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "248",
+        "title": "Memory exhaustion on STG-APP-07",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL004",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "84",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the recent Field Service App deploy, then redeploy the application to clear the post-release errors. \n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "206",
+        "title": "Expense Tracker throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nBased on past ticket resolutions, the post-release errors are caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending database migration and redeploy the application to clear the errors.\n\n*Note: The retrieved past tickets match the new ticket's symptoms and title exactly; however, a human agent should still verify the deployment logs to confirm the missing migration.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL005",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "103",
+        "title": "Server PRD-WEB-03 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to PRD-WEB-03 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match this new ticket and directly apply to the issue.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "120",
+        "title": "Server K8S-NODE-14 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL006",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "239",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "389",
+        "title": "Expense Tracker throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the error is likely caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the deployment logs to confirm.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL007",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "9",
+        "title": "Server PRD-APP-04 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nAccess the console for server PRD-APP-04 to investigate the boot process, as this is typically caused by a failed `fstab` mount blocking the boot. Correct the problematic mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still double-check the console logs to confirm the specific mount entry failing.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "484",
+        "title": "Server K8S-NODE-15 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to K8S-NODE-15 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL008",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "376",
+        "title": "CRM throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nThe errors are likely caused by a missed database migration accompanying the recent CRM deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "447",
+        "title": "Billing Portal throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL009",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "331",
+        "title": "Ticketing System scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nThe outbound mail worker for the Ticketing System has a stuck queue following an SMTP change. Update the mailer settings, drain the queue, and verify that the scheduled report emails resume sending to users.\n\n*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the configuration changes during execution."
+      },
+      "ticket_b": {
+        "batch_ticket_id": "380",
+        "title": "Procurement Portal scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL010",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "280",
+        "title": "Inventory Manager scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for Inventory Manager to resolve the stuck outbound mail queue caused by the SMTP change. Drain the queue and confirm that the scheduled report emails have resumed sending to users.\n\n*Note: The retrieved past tickets closely match this new ticket, but a human agent should still double-check the configuration steps during execution.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "380",
+        "title": "Procurement Portal scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL011",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "159",
+        "title": "VPN failing for Pune Branch users",
+        "resolution_text": "**Suggested Resolution:**\nEnlarge the IP pool on the VPN concentrator serving the Pune Branch and clear any stale sessions to restore VPN access.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "499",
+        "title": "VPN failing for Pune Branch users",
+        "resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the VPN concentrator serving the Pune Branch has likely exhausted its IP pool. To resolve the timeout during negotiation, enlarge the IP pool on the VPN concentrator and clear stale sessions to restore VPN access.\n\n*Note: The retrieved past tickets are an exact match for this issue, but a human agent should still verify that the IP pool expansion resolves the connections successfully.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "PL012",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "120",
+        "title": "Server K8S-NODE-14 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "383",
+        "title": "Server PRD-AUTH-05 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to PRD-AUTH-05 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, then reboot the host to ensure it boots cleanly and responds to SSH and ping.\n\n*Note: The retrieved examples closely match this new ticket and directly apply.*"
+      },
+      "label": null,
+      "label_reason": ""
+    }
+  ]
+}

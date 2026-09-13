@@ -1,10 +1,12 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `c9d956d` — Commit BGE resolution-clustering re-run
-(Phase 2 measurement): pooled cliff 0.90, per-category 6/7 at 0.85
+**Last commit:** `65840c8` — Refresh PROJECT_STATUS.md after committing the
+BGE clustering re-run
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** Phases 0 and 1 complete. Ready for Phase 2 planning.
+**Current phase:** Phase 2 (automation-flag validation harness). The 2A
+harness is committed; **no finding has been produced yet** — the 12-pair
+pilot is built and still unlabelled.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -88,24 +90,115 @@ history.
 
 ## In progress
 
-**Nothing is mid-flight.** The working tree is clean and everything is pushed.
-`main` and `origin/main` are at the same SHA.
+**Phase 2 / 2A — the automation-flag validation harness. Committed and
+pushed. Waiting on 12 human labels.**
+
+**No result exists yet.** The harness is the tool, not the finding. Nothing
+in this repository currently states an outcome for the MiniLM@0.80 vs
+BGE@0.90 promotion question, and nothing should until the pilot is labelled
+and scored.
+
+Naming note: the README previously used "Phase 2" for the already-committed
+BGE clustering measurement. That work is now retitled **"BGE clustering
+re-run"** throughout, and **"Phase 2" means this harness**.
+
+Files that landed:
+
+| File | What it is |
+|---|---|
+| `src/experiments/build_flag_validation_set.py` | Builds the set. `--pilot` builds the 12-pair probe. |
+| `src/experiments/score_flag_validation_set.py` | Scores it. `--pilot` scores the probe. |
+| `data/automation_flag_validation_set.json` | 60-pair blind labelling file (unlabelled) |
+| `data/automation_flag_validation_key.json` | Withheld answer key |
+| `data/automation_flag_validation_pilot.json` | **12-pair pilot — label this one first** |
+| `data/automation_flag_validation_pilot_key.json` | Pilot answer key |
+| `README.md` (modified) | Phase 2 naming fix + new Pending entry |
+
+Both scripts are offline, deterministic (seed 42, byte-identical across
+re-runs), load no model and spend no Gemini quota.
+
+### The structural finding that reshaped 2A
+
+Building the full set surfaced this, and it is the reason the design changed
+mid-phase:
+
+**At their own cliff-edges, neither configuration ever merges across dataset
+templates.** All 1,069 pairs both configurations merge, and all 411 pairs
+they disagree about, are within-template. MiniLM@0.80 merges 1,167 pairs
+total; BGE@0.90 merges 1,382; the disagreement is 98 MiniLM-only + 313
+BGE-only.
+
+So the entire measured difference between the two is **recall**, not
+precision. The originally pre-registered rule — an exact binomial on which
+configuration wins more discordant pairs — would therefore have promoted
+whichever model merges more, inverting production's stated
+precision-over-recall stance. A dry run confirmed it: label everything
+`same_fix` and the old rule printed PROMOTE at p = 0.0027, on zero real
+evidence about flag correctness.
+
+### The amended decision rule
+
+**Primary** is the false-merge rate on each configuration's *extra* merges
+(the pairs it uniquely co-clusters). A `different_fix` label there is a false
+merge — the costly error.
+
+    Promote BGE only if it makes ZERO observed false merges AND MiniLM
+    makes at least one. If NEITHER makes a false merge the verdict is
+    NO PRECISION SIGNAL, not promotion.
+
+The binomial win-rate is still reported but demoted and explicitly labelled
+as the recall comparison it is. The scorer also prints rule-of-three upper
+bounds, because zero observed is not zero: 0/42 bounds BGE's true rate only
+at 7.1%, and 0/18 bounds MiniLM's at 16.7%.
+
+### The pilot
+
+Rather than spend 60 judgements, `--pilot` draws **12 pairs (6 per
+direction) from the most divergent end** of the region — divergence 0.53–0.68
+against a region median of ~0.42 — where a genuine different-fix pair would
+appear if one exists anywhere. It is balanced across directions on purpose,
+which would bias a win-rate test, so the scorer refuses to compute the
+head-to-head on it. Distinct `PL###` pair ids prevent a pilot file being
+scored against the full key.
+
+**If the pilot comes back all `same_fix`**, that is the Phase 2 finding: this
+dataset structurally cannot distinguish MiniLM@0.80 from BGE@0.90 on
+precision, only on recall, and promotion becomes a product decision about how
+many candidates to surface rather than an evidence-backed calibration
+result. Inspection of the most divergent pairs suggests this is the likely
+outcome — even the max-divergence pair differs only in verbosity and app
+name — but that is an impression from a handful, not a measurement.
 
 ---
 
 ## Immediate next step
 
-**Plan Phase 2 — the resolution-quality evaluation harness.** Enter plan mode,
-present the plan, and wait for review before writing code.
+**Label the 12-pair pilot**, then score it:
 
-It is the highest-value next phase for a specific reason: there is currently no
-ground truth for resolution quality anywhere in the project, and that absence is
-exactly what blocks the long-standing BGE automation-flagging decision. Phase 2
-would unblock a decision that has been deferred for want of a validation method,
-rather than adding a measurement for its own sake.
+```powershell
+# label data/automation_flag_validation_pilot.json -- set each "label" to
+# exactly one of: same_fix | different_fix | unclear
+python src/experiments/score_flag_validation_set.py --pilot
+```
 
-Remaining sequence after that: multi-agent orchestrator → drift detection →
-Docker/CI packaging.
+The scorer refuses to run on a partially-labelled file, rejects invalid label
+strings, and refuses to score a pilot against the full key — each with an
+actionable message rather than a traceback.
+
+Then, depending on the pilot:
+
+- **Any `different_fix`** → a false merge is observable; build and label the
+  full 60-pair set (`build_flag_validation_set.py` with no flag).
+- **All `same_fix`** → write up the no-precision-signal result as the Phase 2
+  finding in the README, and close 2A without spending the other 48
+  judgements.
+
+The harness is already committed. The finding lands as its own separate
+commit once the pilot resolves, so the tool and the result stay distinct in
+the history.
+
+Remaining sequence after Phase 2: multi-agent orchestrator → drift detection
+→ Docker/CI packaging.
 
 ---
 

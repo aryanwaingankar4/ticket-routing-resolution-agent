@@ -1,0 +1,974 @@
+{
+  "_meta": {
+    "set_type": "full",
+    "purpose": "Phase 2 / 2A automation-flag validation set. Human ground truth for whether two tickets genuinely share the same underlying fix, used to adjudicate whether production resolution clustering should swap from minilm@0.80 to bge@0.90.",
+    "how_to_label": "For each pair, read both resolution texts and set \"label\" to exactly one of: \"same_fix\" (one automation would resolve both), \"different_fix\" (they need different fixes), or \"unclear\" (genuinely cannot tell). Optionally add a short \"label_reason\". Do not leave any label null.",
+    "blind_by_design": "This file deliberately omits scenario_id and does not say which configuration co-clustered each pair. Both are in automation_flag_validation_key.json, which the scorer reads and the labeller should not.",
+    "precision_over_recall": "The production design choice is that a false 'these share a fix' claim is costlier than a missed automation opportunity. When genuinely torn between same_fix and different_fix, that asymmetry is the tie-breaker; use \"unclear\" only when the texts do not support a judgement at all.",
+    "pairs": 60,
+    "seed": 42,
+    "near_duplicate_jaccard": 0.9
+  },
+  "pairs": [
+    {
+      "pair_id": "P001",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "193",
+        "title": "High latency to STG-APP-08",
+        "resolution_text": "**Suggested Resolution:**\nTrace the latency to identify the saturated link on the path to STG-APP-08, reroute the traffic over a secondary path, and open a capacity request.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "245",
+        "title": "High latency to PRD-AUTH-05",
+        "resolution_text": "**Suggested Resolution:**\nTrace the latency to identify the saturated link on the path to PRD-AUTH-05, reroute traffic over a secondary path, and open a capacity request.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check to ensure network conditions remain consistent with past occurrences.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P002",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "315",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation along with a regression test.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "461",
+        "title": "Field Service App returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Field Service App to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match the new ticket issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P003",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "51",
+        "title": "Scheduled job failing on PRD-DB-12",
+        "resolution_text": "**Suggested Resolution:**\nInvestigate the cron job on PRD-DB-12, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume to resolve the non-zero exit code failures.\n\n*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the server environment to ensure no other factors are contributing to the failure."
+      },
+      "ticket_b": {
+        "batch_ticket_id": "439",
+        "title": "Scheduled job failing on PRD-WEB-01",
+        "resolution_text": "**Suggested Resolution:**\nCheck the cron job on PRD-WEB-01 to confirm if it is hitting a full `/tmp` directory. Clean out the `/tmp` directory and move the job's scratch space to a larger volume.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the server state.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P004",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "288",
+        "title": "Service on port 3306 unreachable from Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nInvestigate whether a recent routing change has removed the path from Pune Branch to the service subnet on port 3306. Restore any missing route and confirm successful connectivity from Pune Branch.\n\n*Note: The retrieved examples closely match this ticket (exact title/description match), so no additional human verification is strictly necessary beyond following the documented steps.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "313",
+        "title": "Service on port 8080 unreachable from Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nCheck for a recent routing change that may have removed the path from the Pune Branch to the service subnet on port 8080. Restore the missing route, and then confirm that connectivity from the Pune Branch to the service has been successfully re-established.\n\n*Note: The retrieved past tickets closely match this issue and outline the exact resolution steps taken previously.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P005",
+      "category": "Database",
+      "ticket_a": {
+        "batch_ticket_id": "74",
+        "title": "Slow queries on catalog_pg",
+        "resolution_text": "**Suggested Resolution:**\nAnalyze the catalog_pg slow-query log, add two missing indexes, and rewrite any correlated subqueries to improve execution times.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the specific query plans before applying changes.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "350",
+        "title": "Slow queries on audit_mysql",
+        "resolution_text": "**Suggested Resolution:**\nAnalyze the `audit_mysql` slow-query log, add the two missing indexes, and rewrite the correlated subquery to restore optimal execution times.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should double-check the specific indexes and subquery being modified before applying changes in production.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P006",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "34",
+        "title": "Inventory Manager returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Inventory Manager application to an unhandled null in the request handler. Deploy a hotfix along with input validation and a corresponding regression test.\n\n*Note: The retrieved past tickets closely match this issue; however, a human agent should double-check the deployment.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "481",
+        "title": "Procurement Portal returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the deployment process.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P007",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "452",
+        "title": "Server PRD-QUEUE-06 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to PRD-QUEUE-06 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, after which the host should boot cleanly.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "484",
+        "title": "Server K8S-NODE-15 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to K8S-NODE-15 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P008",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "157",
+        "title": "Memory exhaustion on PRD-WEB-01",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-WEB-01, and add a memory-usage alert set at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "268",
+        "title": "Memory exhaustion on STG-APP-07",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-07 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier. \n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify the appropriate container and memory allocation values.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P009",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "163",
+        "title": "Firewall blocking port 6379",
+        "resolution_text": "**Suggested Resolution:**\nAdd an explicit firewall allow rule for port 6379 scoped to the required source ranges, and then verify that the service becomes reachable.\n\n*Note: The retrieved examples closely match the issue described in the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "283",
+        "title": "Firewall blocking port 3306",
+        "resolution_text": "**Suggested Resolution:**\nAdd an explicit firewall allow rule for port 3306 scoped to the required source ranges, then verify that the service becomes reachable.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific source ranges required.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P010",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "239",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "349",
+        "title": "Billing Portal throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment logs to confirm.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P011",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "204",
+        "title": "Payroll scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nBased on past tickets for this exact issue, the outbound mail worker for Payroll has likely developed a stuck queue following an SMTP change. To resolve this, update the mailer settings, drain the queue, and verify that the scheduled report emails have resumed.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the mailer configuration and confirm report delivery.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "380",
+        "title": "Procurement Portal scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P012",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "473",
+        "title": "Search returning no results in Billing Portal",
+        "resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Billing Portal search index, as it has likely drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.\n\n*Note: The retrieved examples closely match this ticket and its historical resolution.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "494",
+        "title": "Search returning no results in Procurement Portal",
+        "resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Procurement Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P013",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "369",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add input validation, and include a regression test.\n\n*Note: The retrieved examples closely match this ticket, so the same resolution steps apply.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "411",
+        "title": "Learning Management System returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Learning Management System HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved past tickets closely match this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P014",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "208",
+        "title": "High CPU on server VM-BATCH-09",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process causing the high CPU usage on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed the excess load. \n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the specific process and scaling parameters.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "435",
+        "title": "High CPU on server PRD-APP-03",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on server PRD-APP-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. \n\n*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the server state and scaling actions before applying."
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P015",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "20",
+        "title": "DNS resolution failing for Payroll",
+        "resolution_text": "**Suggested Resolution:**\nCorrect the stale DNS record for Payroll on the authoritative server and flush the resolver caches to restore resolution.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the resolution steps have successfully restored connectivity.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "183",
+        "title": "DNS resolution failing for Expense Tracker",
+        "resolution_text": "**Suggested Resolution:**\nCorrect the stale DNS record for Expense Tracker on the authoritative server and flush the resolver caches to restore resolution.\n\n*Note: The retrieved examples are an exact match for this ticket, but a human agent should still double-check the changes after implementation.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P016",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "120",
+        "title": "Server K8S-NODE-14 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to server K8S-NODE-14 to investigate the boot process, as it is likely blocked by a failed `fstab` mount. Correct the faulty mount entry, then restart or resume the boot process so the host can come back online cleanly.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the specific mount entry during console troubleshooting.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "383",
+        "title": "Server PRD-AUTH-05 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to PRD-AUTH-05 to check for a failed `fstab` mount blocking the boot process. Correct the mount entry, then reboot the host to ensure it boots cleanly and responds to SSH and ping.\n\n*Note: The retrieved examples closely match this new ticket and directly apply.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P017",
+      "category": "Security",
+      "ticket_a": {
+        "batch_ticket_id": "194",
+        "title": "Expired TLS certificate on HR Self-Service",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for HR Self-Service, then configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "227",
+        "title": "Expired TLS certificate on Expense Tracker",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for Expense Tracker, then configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved past examples closely match this ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P018",
+      "category": "Access Management",
+      "ticket_a": {
+        "batch_ticket_id": "343",
+        "title": "Elevated access request for r.sharma",
+        "resolution_text": "**Suggested Resolution:**\nGrant user r.sharma time-boxed elevated access to Payroll via the privileged-access workflow with automatic expiry after 7 days.\n\n*Note: The retrieved examples closely match this ticket (an exact match was found in Past Ticket #1), so a human agent can proceed with confidence.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "487",
+        "title": "Elevated access request for v.nair",
+        "resolution_text": "**Suggested Resolution:**\nGrant user v.nair time-boxed elevated access to the Billing Portal via the privileged-access workflow with an automatic expiry set after 7 days.\n\n*Note: The retrieved examples closely match the details of this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P019",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "87",
+        "title": "Payroll returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Payroll HTTP 500 errors to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "401",
+        "title": "Learning Management System returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add proper input validation, and include a regression test to prevent future occurrences.\n\n*Note: The retrieved past tickets match the new ticket precisely; however, a human agent should still verify the hotfix deployment.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P020",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "225",
+        "title": "Procurement Portal throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nCheck for a missed database migration from the recent Procurement Portal deploy. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "376",
+        "title": "CRM throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nThe errors are likely caused by a missed database migration accompanying the recent CRM deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P021",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "35",
+        "title": "Memory exhaustion on PRD-WEB-01",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-WEB-01 to resolve the out-of-memory kills, and add a memory-usage alert set at 80% to catch future issues earlier.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify that the container settings and alert thresholds are applied correctly.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "333",
+        "title": "Memory exhaustion on STG-APP-08",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-08 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved past tickets closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P022",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "6",
+        "title": "Intermittent connectivity at Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at the Pune Branch to check if it is flapping due to a hardware failure. Replace the faulty switch and reconfigure link redundancy to prevent single-point network drops.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify hardware availability before proceeding with the replacement.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "337",
+        "title": "Intermittent connectivity at Mumbai HQ",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Mumbai HQ for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point network drops.\n\n*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the switch diagnostics before proceeding with hardware replacement.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P023",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "206",
+        "title": "Expense Tracker throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nBased on past ticket resolutions, the post-release errors are caused by a missed database migration accompanying the Expense Tracker deploy. Run the pending database migration and redeploy the application to clear the errors.\n\n*Note: The retrieved past tickets match the new ticket's symptoms and title exactly; however, a human agent should still verify the deployment logs to confirm the missing migration.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "239",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P024",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "412",
+        "title": "Memory exhaustion on PRD-AUTH-05",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-AUTH-05 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "421",
+        "title": "Memory exhaustion on STG-APP-07",
+        "resolution_text": "Based on past resolved tickets for this exact issue, the recommended resolution is to increase the memory limit for the affected container on STG-APP-07 and add a memory-usage alert at 80% to catch future memory exhaustion earlier. \n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P025",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "239",
+        "title": "Field Service App throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Field Service App deploy, then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "447",
+        "title": "Billing Portal throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nRun the pending database migration that was missed during the Billing Portal deploy, and then redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P026",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "228",
+        "title": "Intermittent connectivity at Remote/WFH",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Remote/WFH for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the hardware status.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "352",
+        "title": "Intermittent connectivity at Noida Tech Park",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P027",
+      "category": "Database",
+      "ticket_a": {
+        "batch_ticket_id": "279",
+        "title": "Autovacuum not keeping up on billing_mysql",
+        "resolution_text": "**Suggested Resolution:**\nTune the autovacuum thresholds and cost limits on `billing_mysql`, then run a manual vacuum on the worst tables to recover query performance and disk usage.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the specific table bloat metrics before executing.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "479",
+        "title": "Autovacuum not keeping up on warehouse_pg",
+        "resolution_text": "**Suggested Resolution:**\nTune the autovacuum thresholds and cost limits on `warehouse_pg`, and then run a manual vacuum on the worst tables to recover query performance and disk usage.\n\n*Note: The retrieved examples closely match this ticket, so the same resolution steps apply directly.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P028",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "136",
+        "title": "High CPU on server VM-BATCH-09",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "435",
+        "title": "High CPU on server PRD-APP-03",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on server PRD-APP-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. \n\n*Note:* The retrieved examples are an exact match for this ticket; however, a human agent should double-check the server state and scaling actions before applying."
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P029",
+      "category": "Storage",
+      "ticket_a": {
+        "batch_ticket_id": "32",
+        "title": "Storage quota exceeded for Hyderabad Office",
+        "resolution_text": "**Suggested Resolution:**\nReview the current storage usage for the Hyderabad Office, archive stale data to cold storage, and raise their storage quota after obtaining manager approval. \n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "436",
+        "title": "Storage quota exceeded for Noida Tech Park",
+        "resolution_text": "**Suggested Resolution:**\nReview usage for Noida Tech Park, archive stale data to cold storage, and raise their quota after obtaining manager approval.\n\n*Note: The retrieved past tickets closely match the new ticket; however, a human agent should double-check manager approval before raising the quota.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P030",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "257",
+        "title": "Expense Tracker throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nInvestigate the recent Expense Tracker deployment for a missed database migration. Run the pending migration and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples closely match the new ticket; a human agent should verify the migration status.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "376",
+        "title": "CRM throwing errors after latest deploy",
+        "resolution_text": "**Suggested Resolution:**\nThe errors are likely caused by a missed database migration accompanying the recent CRM deploy. Run any pending database migrations and redeploy the application to clear the post-release errors.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the deployment logs to confirm.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P031",
+      "category": "Access Management",
+      "ticket_a": {
+        "batch_ticket_id": "31",
+        "title": "Password reset for m.chatterjee",
+        "resolution_text": "**Suggested Resolution:**\nVerify the identity of user m.chatterjee, reset their corporate account password, and configure the account to require a password change and MFA re-registration upon their next login.\n\n*Note: The retrieved past tickets closely match this new ticket request.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "201",
+        "title": "Password reset for t.rao",
+        "resolution_text": "**Suggested Resolution:**\nVerify the identity of user t.rao, reset their corporate account password, and configure the account to require a password change along with MFA re-registration upon their next login.\n\n*Note: The retrieved past tickets closely match this issue and support the proposed resolution steps.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P032",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "38",
+        "title": "Scheduled job failing on PRD-AUTH-05",
+        "resolution_text": "**Suggested Resolution:**\nCheck if the cron job on PRD-AUTH-05 is hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume. \n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the server state.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "161",
+        "title": "Scheduled job failing on PRD-AUTH-05",
+        "resolution_text": "**Suggested Resolution:**\nCheck the cron job on PRD-AUTH-05, as it is likely hitting a full `/tmp` directory. Clean the `/tmp` directory and move the job's scratch space to a larger volume to resolve the non-zero exit code failure.\n\n*Note: The retrieved examples are an exact match for this ticket, so the standard resolution steps can be safely applied.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P033",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "369",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add input validation, and include a regression test.\n\n*Note: The retrieved examples closely match this ticket, so the same resolution steps apply.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "480",
+        "title": "Field Service App returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Field Service App to an unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the deployment.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P034",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "28",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, deploy a hotfix, and add input validation along with a regression test.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "59",
+        "title": "Billing Portal returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Billing Portal HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes added input validation and a regression test.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P035",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "136",
+        "title": "High CPU on server VM-BATCH-09",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "170",
+        "title": "High CPU on server PRD-DB-11",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on server PRD-DB-11, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P036",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "37",
+        "title": "Service on port 3306 unreachable from Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nRestore the missing route from Pune Branch to the service subnet on port 3306, as a routing change had removed the path. Once applied, confirm that connectivity from Pune Branch to the service is working.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "150",
+        "title": "Service on port 8080 unreachable from Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nInvestigate whether a recent routing change has removed the path from Pune Branch to the service subnet on port 8080. If so, restore the missing route and confirm connectivity from the Pune Branch.\n\n*Note: The retrieved past tickets closely match this issue, but a human agent should double-check the routing configuration and verify connectivity.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P037",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "50",
+        "title": "Memory exhaustion on PRD-APP-04",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on PRD-APP-04 and add a memory-usage alert set at 80% to catch future memory exhaustion earlier.\n\n*Note: The retrieved past tickets closely match this issue and provide an exact resolution.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "333",
+        "title": "Memory exhaustion on STG-APP-08",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-08 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved past tickets closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P038",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "33",
+        "title": "Intermittent connectivity at Chennai Support",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Chennai Support for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should verify the hardware status before proceeding with replacement.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "352",
+        "title": "Intermittent connectivity at Noida Tech Park",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P039",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "286",
+        "title": "Intermittent connectivity at Hyderabad Office",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at the Hyderabad Office for flapping. Replace the faulty switch and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved past tickets match the new ticket's issue exactly.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "337",
+        "title": "Intermittent connectivity at Mumbai HQ",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Mumbai HQ for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point network drops.\n\n*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the switch diagnostics before proceeding with hardware replacement.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P040",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "359",
+        "title": "Billing Portal scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Billing Portal outbound mail worker (which has a stuck queue following an SMTP change), drain the queue, and verify that the scheduled report emails have successfully resumed.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the current SMTP configuration before making updates.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "380",
+        "title": "Procurement Portal scheduled report emails not sending",
+        "resolution_text": "**Suggested Resolution:**\nUpdate the mailer settings for the Procurement Portal, drain the stuck outbound mail queue, and verify that the scheduled report emails resume successfully.\n\n*Note: The retrieved past tickets are an exact match for this issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P041",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "224",
+        "title": "Search returning no results in Procurement Portal",
+        "resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Procurement Portal search index, as it has drifted out of sync with the database. Additionally, schedule incremental reindexing to maintain accurate search results moving forward.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "270",
+        "title": "Search returning no results in Payroll",
+        "resolution_text": "**Suggested Resolution:**\nTrigger a full reindex of the Payroll search index, as it has drifted out of sync with the database, and schedule incremental reindexing to maintain accurate search results.\n\n*Note: The retrieved examples closely match this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P042",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "172",
+        "title": "Stale data shown in Procurement Portal",
+        "resolution_text": "**Suggested Resolution:**\nThe Procurement Portal cache is not being invalidated on write. Fix the cache-busting key and reduce the TTL so users see current data.\n\n*Note: The retrieved examples closely match the new ticket issue.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "186",
+        "title": "Stale data shown in Vendor Portal",
+        "resolution_text": "**Suggested Resolution:**\nFix the cache-busting key to ensure the Vendor Portal cache is properly invalidated on write, and reduce the Time To Live (TTL) so users are served current data.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should verify the fix in the environment.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P043",
+      "category": "Database",
+      "ticket_a": {
+        "batch_ticket_id": "274",
+        "title": "Can't pull up records in Vendor Portal",
+        "resolution_text": "**Suggested Resolution:**\nCheck for an exhausted connection pool on the application server (such as `orders_pg`, `sessions_redis`, `billing_mysql`, or `analytics_mongo`), restart the pooler, and verify that the Vendor Portal can successfully reach the records system again to restore record lookups.\n\n*Note: The retrieved examples closely match the symptoms and past resolutions of this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "475",
+        "title": "Can't pull up records in CRM",
+        "resolution_text": "**Suggested Resolution:**\nThe application server's connection pool to the database (such as `billing_mysql`) has likely exhausted. Restart the pooler, then verify that the CRM can successfully reach the database again to restore record lookups.\n\n*Note:* The retrieved examples closely match this ticket, but a human agent should double-check the specific database connection associated with this instance."
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P044",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "41",
+        "title": "VPN failing for Ahmedabad Office users",
+        "resolution_text": "**Suggested Resolution:**\nEnlarge the IP pool on the VPN concentrator serving the Ahmedabad Office and clear any stale sessions to restore VPN access.\n\n*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the configuration changes before applying them.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "278",
+        "title": "VPN failing for Mumbai HQ users",
+        "resolution_text": "**Suggested Resolution:**\nEnlarge the IP pool on the VPN concentrator serving Mumbai HQ and clear any stale sessions to restore VPN access.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P045",
+      "category": "Security",
+      "ticket_a": {
+        "batch_ticket_id": "145",
+        "title": "Expired TLS certificate on Vendor Portal",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for the Vendor Portal, then configure auto-renewal via ACME to prevent future recurrence.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the installation and verification.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "194",
+        "title": "Expired TLS certificate on HR Self-Service",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for HR Self-Service, then configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P046",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "242",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved past tickets closely match this issue and recommend the exact resolution steps above.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "480",
+        "title": "Field Service App returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Field Service App to an unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match the new ticket; however, a human agent should double-check the deployment.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P047",
+      "category": "Security",
+      "ticket_a": {
+        "batch_ticket_id": "194",
+        "title": "Expired TLS certificate on HR Self-Service",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for HR Self-Service, then configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved examples closely match this ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "363",
+        "title": "Expired TLS certificate on Expense Tracker",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for Expense Tracker, then configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still double-check the deployment.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P048",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "199",
+        "title": "Billing Portal returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Billing Portal HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should double-check the deployment.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "369",
+        "title": "Analytics Dashboard returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the Analytics Dashboard HTTP 500 errors to an unhandled null in the request handler. Deploy a hotfix, add input validation, and include a regression test.\n\n*Note: The retrieved examples closely match this ticket, so the same resolution steps apply.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P049",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "25",
+        "title": "Memory exhaustion on PRD-DB-11",
+        "resolution_text": "Based on the retrieved past tickets, increase the memory limit for the affected container on PRD-DB-11 and add a memory-usage alert at 80% to catch future issues earlier. \n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "333",
+        "title": "Memory exhaustion on STG-APP-08",
+        "resolution_text": "**Suggested Resolution:**\nIncrease the memory limit for the affected container on STG-APP-08 and add a memory-usage alert at 80% to catch future memory exhaustion issues earlier.\n\n*Note: The retrieved past tickets closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P050",
+      "category": "Storage",
+      "ticket_a": {
+        "batch_ticket_id": "263",
+        "title": "File share \\\\fs02\\marketing inaccessible",
+        "resolution_text": "**Suggested Resolution:**\nRestart the share service backing `\\\\fs02\\marketing` (as it has crashed), verify the permissions, and remap the share for the affected users.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "291",
+        "title": "File share \\\\nas05\\engineering inaccessible",
+        "resolution_text": "**Suggested Resolution:**\nRestart the share service backing `\\\\nas05\\engineering`, verify the permissions, and remap the share for the affected users.\n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should double-check the steps during execution.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P051",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "167",
+        "title": "Server PRD-APP-04 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to server PRD-APP-04 to investigate the boot process, as it is likely blocked by a failed fstab mount. Once accessed, correct the faulty fstab mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved past tickets are an exact match for this issue; however, a human agent should still verify the mount configuration during the process.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "484",
+        "title": "Server K8S-NODE-15 unresponsive after reboot",
+        "resolution_text": "**Suggested Resolution:**\nGain console access to K8S-NODE-15 to check for a failed `fstab` mount blocking the boot process. Once identified, correct the mount entry to allow the host to boot cleanly.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P052",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "98",
+        "title": "High CPU on server PRD-DB-11",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process causing high CPU utilization on server PRD-DB-11, cap its cgroup CPU quota, and scale the service horizontally to shed load and resolve request timeouts.\n\n*Note: The retrieved past tickets closely match this issue and share the exact same symptom and resolution.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "208",
+        "title": "High CPU on server VM-BATCH-09",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process causing the high CPU usage on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed the excess load. \n\n*Note: The retrieved examples are an exact match for this ticket; however, a human agent should still verify the specific process and scaling parameters.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P053",
+      "category": "Database",
+      "ticket_a": {
+        "batch_ticket_id": "326",
+        "title": "Can't pull up records in HR Self-Service",
+        "resolution_text": "**Suggested Resolution:**\nCheck the application server's connection pool to the database (such as `billing_mysql`), as the pool has likely exhausted. Restart the connection pooler and verify that HR Self-Service can successfully reach the database again to restore record lookups.\n\n*Note: The retrieved past ticket is an exact historical match for this issue; however, a human agent should still double-check the specific database connection pool involved.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "416",
+        "title": "Can't pull up records in Payroll",
+        "resolution_text": "**Suggested Resolution:**\nThe application server's connection pool to the database (such as `customers_pg`) has likely exhausted. Restart the pooler and verify that Payroll can successfully reach the database again to restore record lookups.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P054",
+      "category": "Security",
+      "ticket_a": {
+        "batch_ticket_id": "215",
+        "title": "Expired TLS certificate on Learning Management System",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for the Learning Management System, and configure auto-renewal via ACME to prevent recurrence.\n\n*Note: The retrieved examples closely match this ticket, but a human agent should still double-check the deployment.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "374",
+        "title": "Expired TLS certificate on Vendor Portal",
+        "resolution_text": "**Suggested Resolution:**\nReissue and install a valid TLS certificate for the Vendor Portal, and configure auto-renewal via ACME to prevent future recurrence.\n\n*Note: The retrieved examples are an exact match to the new ticket issue.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P055",
+      "category": "Access Management",
+      "ticket_a": {
+        "batch_ticket_id": "22",
+        "title": "Elevated access request for j.singh",
+        "resolution_text": "**Suggested Resolution:**\nGrant user j.singh time-boxed elevated access to Payroll via the privileged-access workflow with an automatic expiry set after 7 days.\n\n*Note: The retrieved examples closely match this ticket, so a human agent can apply this standard resolution directly.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "487",
+        "title": "Elevated access request for v.nair",
+        "resolution_text": "**Suggested Resolution:**\nGrant user v.nair time-boxed elevated access to the Billing Portal via the privileged-access workflow with an automatic expiry set after 7 days.\n\n*Note: The retrieved examples closely match the details of this new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P056",
+      "category": "Infrastructure",
+      "ticket_a": {
+        "batch_ticket_id": "232",
+        "title": "High CPU on server PRD-CACHE-03",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on server PRD-CACHE-03, cap its cgroup CPU quota, and scale the service horizontally to shed load. \n\n*Note: The retrieved examples closely match the new ticket (including an exact historical match for PRD-CACHE-03).*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "340",
+        "title": "High CPU on server VM-BATCH-09",
+        "resolution_text": "**Suggested Resolution:**\nIdentify the runaway process on VM-BATCH-09, cap its cgroup CPU quota, and scale the service horizontally to shed load.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P057",
+      "category": "Application",
+      "ticket_a": {
+        "batch_ticket_id": "461",
+        "title": "Field Service App returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors in the Field Service App to the unhandled null in the request handler. Deploy a hotfix and add input validation along with a regression test. \n\n*Note: The retrieved examples closely match the new ticket issue.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "481",
+        "title": "Procurement Portal returning HTTP 500 errors",
+        "resolution_text": "**Suggested Resolution:**\nTrace the HTTP 500 errors to an unhandled null in the request handler, then deploy a hotfix that includes input validation and a regression test. \n\n*Note: The retrieved examples closely match this ticket; however, a human agent should double-check the deployment process.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P058",
+      "category": "Storage",
+      "ticket_a": {
+        "batch_ticket_id": "32",
+        "title": "Storage quota exceeded for Hyderabad Office",
+        "resolution_text": "**Suggested Resolution:**\nReview the current storage usage for the Hyderabad Office, archive stale data to cold storage, and raise their storage quota after obtaining manager approval. \n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "187",
+        "title": "Storage quota exceeded for Chennai Support",
+        "resolution_text": "**Suggested Resolution:**\nReview usage for the Chennai Support share, archive stale data to cold storage, and raise their storage quota after obtaining manager approval.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should verify that manager approval has been secured before applying the quota increase.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P059",
+      "category": "Network",
+      "ticket_a": {
+        "batch_ticket_id": "6",
+        "title": "Intermittent connectivity at Pune Branch",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at the Pune Branch to check if it is flapping due to a hardware failure. Replace the faulty switch and reconfigure link redundancy to prevent single-point network drops.\n\n*Note: The retrieved past tickets closely match this new ticket; however, a human agent should still verify hardware availability before proceeding with the replacement.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "352",
+        "title": "Intermittent connectivity at Noida Tech Park",
+        "resolution_text": "**Suggested Resolution:**\nInspect the uplink switch at Noida Tech Park for flapping, replace the faulty switch, and reconfigure link redundancy to prevent single-point drops.\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "label": null,
+      "label_reason": ""
+    },
+    {
+      "pair_id": "P060",
+      "category": "Storage",
+      "ticket_a": {
+        "batch_ticket_id": "177",
+        "title": "Snapshot/backup restore request for \\\\fs02\\shared",
+        "resolution_text": "**Suggested Resolution:**\nRestore the requested folder on \\\\fs02\\shared from the previous night's snapshot, and then confirm file integrity with the requesting user (p.menon).\n\n*Note: The retrieved examples closely match the new ticket.*"
+      },
+      "ticket_b": {
+        "batch_ticket_id": "289",
+        "title": "Snapshot/backup restore request for \\\\fs04\\legal",
+        "resolution_text": "**Suggested Resolution:**\nRestore the requested folder on \\\\fs04\\legal from the previous night's snapshot and confirm file integrity with the requesting user (t.rao).\n\n*Note: The retrieved examples closely match this ticket, but a human agent should double-check the restoration.*"
+      },
+      "label": null,
+      "label_reason": ""
+    }
+  ]
+}

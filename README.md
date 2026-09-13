@@ -741,7 +741,7 @@ find recurring issues worth flagging for self-service automation?
 
 Resolution text (not the ticket symptom) was embedded with MiniLM (this
 calibration was deliberately left un-migrated in the BGE swap — scoped as
-its own future Phase 2, see "Pending" below), then grouped via connected
+its own separate exercise — the BGE clustering re-run below), then grouped via connected
 components at cosine-similarity thresholds swept from 0.99 down to 0.60.
 Each threshold's clustering was evaluated with pairwise precision/recall/F1
 against real `scenario_id` ground truth (recovered from the dataset
@@ -757,7 +757,7 @@ false positive here (wrongly telling ops two different problems share a
 fix) is costlier than a false negative (a missed automation opportunity,
 which just means the status quo continues).
 
-**BGE re-run (Phase 2):** the same pooled clustering + pairwise evaluation
+**BGE clustering re-run:** the same pooled clustering + pairwise evaluation
 was re-run under BGE embeddings (`explore_resolution_clustering.py` and
 `calibrate_resolution_clustering.py`, both re-pointed at BGE-suffixed
 output files so the original MiniLM artifacts are preserved for
@@ -815,7 +815,7 @@ corrected `find_cliff_edge()` implementation (with the None-precision fix
 above) is the reference version later reused and adapted for the RAG
 similarity threshold recalibration script.
 
-**BGE re-run (Phase 2):** the same per-category sweep was re-run under
+**BGE clustering re-run:** the same per-category sweep was re-run under
 BGE (`calibrate_resolution_clustering_percategory.py`, `MODEL_NAME`
 swapped to `BAAI/bge-base-en-v1.5`, output re-pointed at BGE-suffixed
 files). Its `POOLED_THRESHOLD = 0.80` constant reflects the live
@@ -915,7 +915,7 @@ BGE is now the production embedding model for classification, RAG
 retrieval, and cascade Tier-2 (swapped from MiniLM on the strength of this
 result — see "Embedding Model: MiniLM → BGE" above). Resolution-text
 clustering for automation-flagging remains on MiniLM, deliberately scoped
-as a separate future Phase 2 rather than migrated alongside the rest of
+as a separate BGE clustering re-run rather than migrated alongside the rest of
 the pipeline.
 
 ---
@@ -1038,7 +1038,7 @@ That remains a scoped future extension, not something built yet.
   0.80 threshold pending a future decision on category-specific
   thresholds.
 - Resolution-clustering automation-flagging threshold: BGE vs.
-  production decision.** Phase 2 (re-running pooled and per-category
+  production decision.** The BGE clustering re-run (re-running pooled and per-category
   resolution-clustering calibration under BGE) is done — see "Resolution-
   clustering calibration" and "Category-specific resolution-clustering
   calibration" above. BGE's clustering is measurably tighter across
@@ -1061,7 +1061,18 @@ That remains a scoped future extension, not something built yet.
 
 ### Pending
 
-1. **Genuine multi-agent restructure** — independent Classification,
+1. **Phase 2 — automation-flag validation set** — the open prerequisite
+   named above, before any production swap of the resolution-clustering
+   threshold from MiniLM@0.80 to BGE@0.90. Builds cluster-level ground
+   truth by human adjudication over the region where the two
+   configurations actually disagree, deliberately labelled without
+   showing `scenario_id` so the judgement is independent of the dataset
+   generator's own template identity. The direct analogue of the
+   9-ticket adversarial set's role for the RAG gate. "Phase 2" refers to
+   this harness; the already-completed BGE measurement is referred to
+   throughout as the "BGE clustering re-run".
+
+2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,
    likely via n8n (wrapping the existing Python pieces as small local API
    endpoints, then building a real n8n workflow with visual conditional
