@@ -1,8 +1,8 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `bcb21c8` — Add deployment-distribution calibration set:
-distribution matching is necessary but not sufficient for conformal coverage
+**Last commit:** `c9d956d` — Commit BGE resolution-clustering re-run
+(Phase 2 measurement): pooled cliff 0.90, per-category 6/7 at 0.85
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
 **Current phase:** Phases 0 and 1 complete. Ready for Phase 2 planning.
 
@@ -67,19 +67,29 @@ Four findings:
    size instead: identical coverage, singletons on 46.7% of benchmark tickets
    versus 35.6% — more autonomy at the same risk.
 
+### BGE resolution-clustering re-run (`c9d956d`)
+
+Measurement only; production automation-flagging still runs at 0.80 on MiniLM.
+Closes a doc-ahead-of-code gap — the README had described these results since
+the README commit while the code and data that produced them were never in
+history.
+
+- BGE's pooled cliff-edge is **0.90** (precision 1.0000 at 0.90, breaking to
+  0.9814 at 0.85), against MiniLM's 0.80
+- Per-category: six categories cliff at 0.85, Access Management at 0.90
+- The citable comparison is the **spread**: MiniLM's per-category cliffs ranged
+  across a 0.10 band with 3 of 7 diverging from pooled; under BGE every category
+  sits within a single 0.05 step. BGE clusters more consistently across
+  categories
+- Output paths are model-aware suffixed, so the MiniLM artefacts survive for
+  comparison rather than being overwritten
+
 ---
 
 ## In progress
 
-Nothing is mid-flight. The working tree is clean apart from the item below.
-
-**Uncommitted and deliberately so — BGE clustering Phase 2 work.** Three
-modified scripts (`calibrate_resolution_clustering.py`,
-`..._percategory.py`, `explore_resolution_clustering.py`) plus four BGE result
-files. This predates the current work and is unrelated to Phases 0 and 1. The
-README already documents these results while the code that produced them is not
-in history. It wants its own commit; it was kept out of the phase commits so
-those stayed clean.
+**Nothing is mid-flight.** The working tree is clean and everything is pushed.
+`main` and `origin/main` are at the same SHA.
 
 ---
 
