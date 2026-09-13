@@ -496,6 +496,17 @@ independent, so the honest denominator is 15.
 
 #### Finding 4: matching the calibration distribution is necessary but not sufficient
 
+> **Which measurement stands.** Every figure in this section is from the
+> **deduplicated** 175-ticket set (0 near-duplicate pairs, max off-diagonal
+> similarity 0.9494). An earlier run of the same comparison used a set that
+> contained 21 near-duplicate pairs; those results were discarded, never
+> published here, and are **superseded** by the table below. The defect and
+> its cause are documented at the end of this section rather than omitted,
+> because on the defective set Tier-2 appeared to *lose* coverage at α = 0.10
+> — a false negative result that would have been reported had the duplicates
+> gone unnoticed. The pre-dedup set is committed as
+> `deployment_calibration_tickets.predup.json` so the difference is auditable.
+
 Finding 2 established that the in-domain calibration set cannot be repaired by
 filtering. The remedy had to be different data, so a **deployment-distribution
 calibration set** was generated: 175 tickets, 25 per category — exactly the

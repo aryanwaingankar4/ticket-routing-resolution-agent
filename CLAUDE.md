@@ -14,6 +14,21 @@ not a production service. **The experimental results ARE the deliverable.** `REA
 is the lab notebook — it records every calibration attempt including the ones that
 failed, and why. Read the relevant README section before changing anything it describes.
 
+## Session continuity
+
+**Read `PROJECT_STATUS.md` first.** It carries the live state: current phase, what is
+done, what is in progress, the immediate next step, open questions and known risks. This
+file (CLAUDE.md) describes how the project works and does not change often;
+PROJECT_STATUS.md describes where it currently is and changes every session.
+
+The work is organised as numbered phases with an explicit review gate between each —
+finish a phase, report, and stop rather than rolling into the next one. Phases 0
+(pipeline consolidation) and 1 (conformal prediction) are complete and pushed.
+
+**Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
+the last commit SHA, what moved, and what the next step is. A future session should be
+able to resume from that file alone without re-deriving context from the git log.
+
 ## Environment and commands
 
 Windows + PowerShell. Python venv lives at `venv/` (gitignored).
@@ -174,14 +189,16 @@ These are measured values, each backed by a documented calibration exercise. The
 of the project is that they are evidence-backed rather than guessed. Never re-derive one
 casually, and never expose one as a trivially-overridable CLI flag.
 
-All three live in `src/agent/config.py`, which is frozen — assigning to one raises
-`ValidationError`. Each carries its evidence in `CALIBRATION_PROVENANCE`.
+Every one of them lives in `src/agent/config.py`, which is frozen — assigning to one
+raises `ValidationError`. Each carries its evidence in `CALIBRATION_PROVENANCE`, and
+`tests/test_config.py` fails the build if a value drifts or loses its provenance entry.
 
-| Constant | Value | Config path |
-|---|---|---|
-| RAG similarity threshold | **0.67** | `settings.rag.similarity_threshold` |
-| Cascade confidence threshold | **0.50** | `settings.cascade.confidence_threshold` |
-| Resolution-clustering threshold | **0.80** | `settings.clustering.resolution_similarity_threshold` |
+| Constant | Value | Gates production? | Config path |
+|---|---|---|---|
+| RAG similarity threshold | **0.67** | yes | `settings.rag.similarity_threshold` |
+| Cascade confidence threshold | **0.50** | yes | `settings.cascade.confidence_threshold` |
+| Resolution-clustering threshold | **0.80** | yes | `settings.clustering.resolution_similarity_threshold` |
+| Conformal target error rate | **0.10** | **no — measurement only** | `settings.conformal.alpha` |
 
 `settings.conformal` exists but **does not gate production** — `enabled` is
 `False`, so `PipelineResult.conformal` stays `None` and golden parity holds.
