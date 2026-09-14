@@ -231,11 +231,12 @@ def load_resources():
             }
 
     # --- Reused cascade classifier layer ------------------------------------ #
-    # train_tier1 / get_tier1_confidence come from train_cascade.py and are
-    # reused as-is (same TF-IDF config, same confidence-extraction logic as
-    # every calibration/evaluation run already documented in README.md).
+    # get_tier1_confidence comes from train_cascade.py and is reused as-is
+    # (same confidence-extraction logic as every calibration/evaluation run
+    # already documented in README.md). train_tier1 is no longer imported
+    # here: Tier-1 is loaded from disk below, not refitted at startup.
     try:
-        from src.classification.train_cascade import train_tier1, get_tier1_confidence
+        from src.classification.train_cascade import get_tier1_confidence
     except Exception as exc:
         return {
             "error": (
@@ -264,33 +265,21 @@ def load_resources():
             )
         }
 
-    # --- Train Tier-1 (TF-IDF + LogReg) at startup ------------------------- #
-    # No saved artifact exists for Tier-1 - it trains in seconds even on 4000
-    # rows, so training here on every app start is fine (unlike Tier-2, which
-    # is loaded from disk to avoid the ~100s embedding step).
+    # --- Load Tier-1 (TF-IDF + LogReg) from disk --------------------------- #
+    # This used to refit Tier-1 on all 4,000 rows at every app start. As of
+    # Phase 3A it is a persisted artifact, loaded through THE loader so the
+    # demo, the test suite and the batch path all use the same Tier-1 rather
+    # than three separately-fitted ones that could quietly diverge. The load
+    # also verifies the artifact against the dataset it was fitted on.
     try:
-        df = pd.read_csv(DATA_CSV)
-        required_cols = {"title", "description", "category"}
-        missing_cols = required_cols - set(df.columns)
-        if missing_cols:
-            return {
-                "error": (
-                    f"{os.path.basename(DATA_CSV)} is missing required "
-                    f"column(s): {sorted(missing_cols)}"
-                )
-            }
-        tier1_texts = (
-            df["title"].fillna("").astype(str)
-            + " "
-            + df["description"].fillna("").astype(str)
-        ).tolist()
-        tier1_labels = df["category"].astype(str).tolist()
-        tier1_vectorizer, tier1_classifier = train_tier1(tier1_texts, tier1_labels)
+        from src.agent.artifacts import load_tier1
+
+        tier1_vectorizer, tier1_classifier = load_tier1()
     except Exception as exc:
         return {
             "error": (
-                "Failed to train the Tier-1 (TF-IDF) fast-path classifier "
-                f"({type(exc).__name__}: {exc})."
+                "Failed to load the Tier-1 (TF-IDF) fast-path classifier.\n\n"
+                f"{exc}"
             )
         }
 

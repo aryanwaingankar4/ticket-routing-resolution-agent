@@ -44,6 +44,7 @@ needs it; the classification-only and clustering scripts do not.
 
 ```powershell
 python data/generate_dataset.py                      # 4,000 synthetic tickets, seed 42
+python src/classification/train_tier1.py             # persisted Tier-1 (TF-IDF)
 python src/classification/train_embeddings.py        # production BGE classifier
 python src/rag/build_vector_index.py                 # FAISS index + aligned metadata
 streamlit run src/app/streamlit_app.py               # live demo
@@ -145,7 +146,7 @@ src/agent/
 ├── schemas.py       pydantic models for every stage; Tier/EscalationReason enums
 ├── errors.py        typed exceptions; ONE Gemini error ladder (was three)
 ├── logging_setup.py structured JSON decision logs
-├── artifacts.py     THE loader, with both hard guards
+├── artifacts.py     THE loader, with all three hard guards
 ├── classifier.py    cascade Tier-1 -> Tier-2
 ├── retriever.py     FAISS retrieval
 ├── resolver.py      prompt + Gemini call with retry
@@ -251,13 +252,22 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.
 - **Artifacts are model-aware and filename-suffixed**
   (`ticket_index_bge-base-en-v1-5.faiss`, `ticket_classifier_bge-base-en-v1-5.joblib`).
-  `artifacts.load_artifacts()` enforces two guards: `index.ntotal == len(metadata)`
-  and `encoder dim == index.d == settings.models.embedding_dim`. Preserve both —
+  `artifacts.load_artifacts()` enforces three guards: `index.ntotal == len(metadata)`,
+  `encoder dim == index.d == settings.models.embedding_dim`, and Tier-1's manifest
+  still matching the dataset it was fitted on. Preserve all three —
   silent stale-artifact mismatch has bitten this project **four** times, most recently
   in `run_ablation_study.py`, where it reached published results.
-- **Load artifacts only through `artifacts.load_artifacts()`.** Constructing a
-  `SentenceTransformer` or reading the index directly is how the three divergent
-  loaders drifted apart in the first place.
+- **Tier-1 is a persisted artifact, not a startup refit.** It is fitted on the
+  **full** 4,000 rows — never an 80/20 split, unlike every other script in
+  `src/classification/` — because that is what the goldens were captured under. The
+  bundle carries a manifest (dataset sha256, rows fitted, sklearn and vectorizer
+  config) that `artifacts.load_tier1()` verifies; a mismatch fails loud and there is
+  deliberately **no refit-on-miss fallback**. Rebuild it with
+  `python src/classification/train_tier1.py`.
+- **Load artifacts only through `artifacts.load_artifacts()`** (or
+  `artifacts.load_tier1()` for consumers that need Tier-1 alone). Constructing a
+  `SentenceTransformer`, reading the index directly, or refitting Tier-1 locally is how
+  the three divergent loaders drifted apart in the first place.
 - **Never overwrite a previous model's results file.** BGE re-runs write to
   `*_bge-base-en-v1-5.*` alongside the original MiniLM outputs, so the comparison stays
   auditable.

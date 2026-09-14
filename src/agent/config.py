@@ -80,6 +80,13 @@ class ModelsConfig(_Frozen):
     metadata_name: str = "ticket_metadata_bge-base-en-v1-5.json"
     tier2_classifier_name: str = "ticket_classifier_bge-base-en-v1-5.joblib"
 
+    # Tier-1 is TF-IDF + LogReg, so its identity is not an embedding model --
+    # it is the DATASET it was fitted on plus the vectorizer/sklearn
+    # configuration. Those cannot go in the filename, so they travel in the
+    # artifact's own manifest, which artifacts._load_tier1() verifies against
+    # the live dataset at load time.
+    tier1_classifier_name: str = "tier1_tfidf_logreg.joblib"
+
     # Tier-1 is TF-IDF, so it is embedding-model independent, but it is trained
     # from this dataset and must stay aligned with it.
     dataset_name: str = "synthetic_tickets.csv"
@@ -95,6 +102,10 @@ class ModelsConfig(_Frozen):
     @property
     def tier2_classifier_path(self) -> Path:
         return MODELS_DIR / self.tier2_classifier_name
+
+    @property
+    def tier1_classifier_path(self) -> Path:
+        return MODELS_DIR / self.tier1_classifier_name
 
     @property
     def dataset_path(self) -> Path:

@@ -466,6 +466,11 @@ def load_pipeline_resources(train_tier1, sr):
     require GEMINI_API_KEY and does NOT build a Gemini client, because it never
     calls the LLM (the escalation decision is fully determined before any LLM
     call in the live pipeline).
+
+    `train_tier1` is no longer used -- Tier-1 is loaded from its persisted
+    artifact as of Phase 3A rather than refitted here. The parameter is kept
+    so tests/capture_goldens.py, which passes it, keeps working unchanged; the
+    goldens must not need editing to remain comparable.
     """
     _banner("STEP 2 — Loading live pipeline resources")
 
@@ -572,39 +577,20 @@ def load_pipeline_resources(train_tier1, sr):
         )
     print(f"[step2] Index/metadata in sync: {index.ntotal} entries.")
 
-    # ---- Train Tier-1 fresh at startup (same as the live demo) -----------
+    # ---- Load Tier-1 from disk (same as the live demo) --------------------
+    # This used to refit Tier-1 here on every run. As of Phase 3A it is a
+    # persisted artifact loaded through THE loader, which also verifies it
+    # against the dataset it was fitted on. The regression gate must exercise
+    # the same Tier-1 the demo and the service use -- a separately-fitted copy
+    # here would be a second derivation free to diverge, which is how the
+    # four divergent loaders happened in the first place.
     try:
-        print(f"[step2] Reading dataset for Tier-1 training: "
-              f"{SYNTHETIC_TICKETS_CSV}")
-        df = pd.read_csv(SYNTHETIC_TICKETS_CSV)
-    except Exception as exc:
-        _fatal(f"Failed to read {SYNTHETIC_TICKETS_CSV} "
-               f"({type(exc).__name__}: {exc}).")
+        from src.agent.artifacts import load_tier1
 
-    required_cols = {"title", "description", "category"}
-    missing_cols = required_cols - set(df.columns)
-    if missing_cols:
-        _fatal(
-            f"{os.path.basename(SYNTHETIC_TICKETS_CSV)} is missing required "
-            f"column(s): {sorted(missing_cols)}.\n"
-            f"  Found columns: {list(df.columns)}"
-        )
-
-    try:
-        tier1_texts = (
-            df["title"].fillna("").astype(str)
-            + " "
-            + df["description"].fillna("").astype(str)
-        ).tolist()
-        tier1_labels = df["category"].astype(str).tolist()
-        print(f"[step2] Training Tier-1 (TF-IDF + LogReg) on "
-              f"{len(tier1_texts):,} tickets (fresh, as the live demo does)...")
-        tier1_vectorizer, tier1_classifier = train_tier1(tier1_texts, tier1_labels)
+        print("[step2] Loading persisted Tier-1 (TF-IDF + LogReg)...")
+        tier1_vectorizer, tier1_classifier = load_tier1()
     except Exception as exc:
-        _fatal(
-            "Failed to train the Tier-1 fast-path classifier "
-            f"({type(exc).__name__}: {exc})."
-        )
+        _fatal(f"Failed to load the Tier-1 fast-path classifier.\n\n{exc}")
 
     # ---- Resolve the applied SIMILARITY_THRESHOLD -------------------------
     # Read the calibrated value from the single source of truth. This used to

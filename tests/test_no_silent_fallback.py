@@ -117,6 +117,9 @@ def test_agent_package_declares_no_local_thresholds():
 @pytest.mark.parametrize("module_name", [
     "config", "errors", "schemas", "logging_setup",
     "artifacts", "classifier", "retriever", "resolver", "pipeline",
+    # conformal.py was added in Phase 1 and never listed here, so the
+    # import-side-effect guard had a hole in it.
+    "conformal",
 ])
 def test_agent_modules_import_without_side_effects(module_name):
     """Importing the library must not load models, read .env, or print.

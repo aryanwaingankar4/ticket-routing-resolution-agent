@@ -16,19 +16,26 @@ The batch path encoded queries with a 384-dim MiniLM model and searched a
 mismatch was latent rather than visible -- the third occurrence of this
 project's recurring stale-artifact bug class.
 
-TWO HARD GUARDS
----------------
+THREE HARD GUARDS
+-----------------
 1. index.ntotal == len(metadata)
    Ported from suggest_resolution.py. If these drift, FAISS position i no
    longer maps to the right ticket and retrieval returns confidently wrong
    resolutions with no error.
 
 2. embedder dim == index.d == settings.models.embedding_dim
-   New. This is the guard that makes the batch-script mismatch impossible
-   rather than merely fixed: any future encoder/index divergence fails at
-   load time with an actionable message instead of surfacing as bad results.
+   Added in Phase 0. This is the guard that makes the batch-script mismatch
+   impossible rather than merely fixed: any future encoder/index divergence
+   fails at load time with an actionable message instead of surfacing as bad
+   results.
 
-Both raise ArtifactError. The library raises; entry points decide how to
+3. Tier-1's manifest still matches the dataset it was fitted on
+   Added in Phase 3A, when Tier-1 stopped being refitted at startup and
+   became a persisted artifact. Persisting it bought a service that does not
+   refit per request, at the cost of a new place for a stale artifact to
+   hide; this guard is that cost being paid. See load_tier1().
+
+All three raise ArtifactError. The library raises; entry points decide how to
 render.
 """
 
@@ -199,47 +206,89 @@ def _load_tier2():
         ) from exc
 
 
-def _train_tier1():
-    """Fit Tier-1 (TF-IDF + LogReg) on the full dataset.
+def load_tier1():
+    """Load the persisted Tier-1 (TF-IDF + LogReg) bundle and verify it.
 
-    Matches the live demo exactly: streamlit_app.py and the adversarial test
-    both fit Tier-1 fresh at startup over all rows of synthetic_tickets.csv,
-    not an 80/20 split. Reuses train_cascade.train_tier1 rather than
-    duplicating the vectorizer configuration a fourth time.
+    Tier-1 used to be REFITTED here on every startup, over all 4,000 rows of
+    synthetic_tickets.csv. That is wrong for a service -- a per-request API
+    must not derive a model from raw training data at boot -- so it is now a
+    persisted artifact written by src/classification/train_tier1.py.
+
+    Persisting it creates a new place for a stale artifact to hide, which is
+    this project's recurring bug class. So the bundle carries a manifest
+    recording the dataset it was fitted on, how many rows it saw, and the
+    sklearn/vectorizer configuration; train_tier1.verify_manifest() checks
+    that against reality here, and anything that has moved raises.
+
+    There is deliberately NO refit-on-miss fallback. A quiet in-process refit
+    would be exactly the silent-fallback pattern tests/test_no_silent_fallback
+    exists to ban: it would paper over a missing or stale artifact and leave
+    the cascade running on a model nobody asked for. Fail loud instead.
     """
     try:
-        import pandas as pd
+        import joblib
     except ImportError as exc:
         raise ArtifactError(
-            "pandas is required but not installed."
+            "joblib is required but not installed.\n"
+            "  Install it with:  pip install joblib"
         ) from exc
 
-    from src.classification.train_cascade import train_tier1
+    from src.classification.train_tier1 import verify_manifest
 
-    path = settings.models.dataset_path
+    path = settings.models.tier1_classifier_path
+    dataset_path = settings.models.dataset_path
+    retrain = (
+        "  Train it from the project root with:\n"
+        "      python src/classification/train_tier1.py"
+    )
+
     if not path.is_file():
         raise ArtifactError(
-            f"Dataset not found:\n    - {path}\n\n"
+            f"Tier-1 classifier not found:\n    - {path}\n\n" + retrain
+        )
+
+    if not dataset_path.is_file():
+        raise ArtifactError(
+            f"Dataset not found:\n    - {dataset_path}\n\n"
+            "  Tier-1 cannot be verified against the data it was fitted "
+            "on.\n"
             "  Generate it from the project root with:\n"
             "      python data/generate_dataset.py"
         )
 
-    df = pd.read_csv(path)
-    required = {"title", "description", "category"}
-    missing = required - set(df.columns)
-    if missing:
+    try:
+        bundle = joblib.load(path)
+    except Exception as exc:
         raise ArtifactError(
-            f"{path.name} is missing required column(s): {sorted(missing)}\n"
-            f"  Found: {list(df.columns)}"
+            f"Failed to load the Tier-1 classifier at {path}\n"
+            f"  ({type(exc).__name__}: {exc})\n" + retrain
+        ) from exc
+
+    if not isinstance(bundle, dict) or not {
+        "vectorizer", "classifier"
+    } <= set(bundle):
+        raise ArtifactError(
+            f"{path.name} is not a Tier-1 bundle as expected "
+            "(needs 'vectorizer', 'classifier' and 'manifest').\n" + retrain
         )
 
-    texts = (
-        df["title"].fillna("").astype(str)
-        + " "
-        + df["description"].fillna("").astype(str)
-    ).tolist()
-    labels = df["category"].astype(str).tolist()
-    return train_tier1(texts, labels)
+    problems = verify_manifest(
+        bundle.get("manifest"),
+        bundle["vectorizer"],
+        bundle["classifier"],
+        dataset_path=dataset_path,
+    )
+    if problems:
+        raise ArtifactError(
+            "STALE TIER-1 ARTIFACT:\n"
+            + "\n".join(f"    - {problem}" for problem in problems)
+            + "\n\n  The persisted model no longer matches what it was "
+            "derived from.\n  Using it would route tickets with a model "
+            "that is wrong for its\n  context but internally consistent -- "
+            "wrong answers, no error.\n" + retrain
+        )
+
+    return bundle["vectorizer"], bundle["classifier"]
 
 
 def _build_gemini_client():
@@ -286,7 +335,7 @@ def load_artifacts(require_gemini: bool = False) -> Artifacts:
     _assert_dimensions(embedder, index)
 
     tier2 = _load_tier2()
-    tier1_vectorizer, tier1_classifier = _train_tier1()
+    tier1_vectorizer, tier1_classifier = load_tier1()
     client = _build_gemini_client() if require_gemini else None
 
     return Artifacts(
