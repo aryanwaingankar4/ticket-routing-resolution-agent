@@ -1,0 +1,244 @@
+{
+  "_meta": {
+    "purpose": "LLM judge verdicts for Phase 2B. Studied against the human labels, never substituted for them.",
+    "dry_run": false,
+    "gemini_model": "gemini-flash-lite-latest",
+    "rubric_source": "build_groundedness_set.RUBRIC_TEXT (verbatim)",
+    "items_judged": 33,
+    "failures": 0,
+    "warning": "Do not read this while labelling data/groundedness_set.json."
+  },
+  "verdicts": [
+    {
+      "item_id": "G001",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution correctly applies the wireless controller fix from the retrieved examples while properly noting the discrepancy between an individual laptop issue and an office-wide outage."
+    },
+    {
+      "item_id": "G002",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution accurately synthesizes the core fix from the retrieved resolutions involving exhausted database connection pools and pooler restarts."
+    },
+    {
+      "item_id": "G003",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafter correctly recognized that the retrieved resolutions do not match the new ticket and explicitly declined to apply them, which is fully supported by the rubric."
+    },
+    {
+      "item_id": "G004",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted steps are directly drawn from the retrieved resolutions, and the hedge correctly notes the mismatch between the individual account in the ticket and the DC quotas in the examples."
+    },
+    {
+      "item_id": "G005",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted steps are directly supported by the retrieved file share resolutions, and the hedge correctly notes the mismatch between the new ticket's network connection issue and the retrieved storage tickets."
+    },
+    {
+      "item_id": "G006",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that the retrieved tickets (about payroll uploads and file shares) do not match the spreadsheet formula scrambling issue and declines to apply them."
+    },
+    {
+      "item_id": "G007",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The prescribed steps are fully supported by the retrieved access management resolutions, and the hedge appropriately notes that the specific scenario of an unprompted MFA text differs slightly from the direct examples."
+    },
+    {
+      "item_id": "G008",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly declines to apply the retrieved fixes because they address stale data and dropped connections rather than deleted items reappearing after a restart, and its hedge is appropriate."
+    },
+    {
+      "item_id": "G009",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that none of the retrieved tickets match the issue and appropriately defers to human investigation."
+    },
+    {
+      "item_id": "G010",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "All suggested resolution steps and the closing note are directly traceable to the retrieved past tickets."
+    },
+    {
+      "item_id": "G011",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution matches the retrieved past resolutions regarding fixing inherited NTFS permissions and re-propagating ACLs, and appropriately hedges due to the quota ambiguity mentioned in the new ticket."
+    },
+    {
+      "item_id": "G012",
+      "label": "ungrounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "checking for session cookie domain misconfigurations after a recent deployment, correcting the cookie settings, and clearing the CDN cache.",
+      "reason": "The drafted resolution prescribes a technical fix for session cookies based on retrieved tickets, which completely contradicts its own correct observation that the user needs an account set up rather than an application-wide login bug fix."
+    },
+    {
+      "item_id": "G013",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that the retrieved past tickets do not match the new ticket's symptom of freezing and crashing, and properly declines to apply them while recommending human investigation."
+    },
+    {
+      "item_id": "G014",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution for the shared drive is fully supported by the retrieved storage tickets, and the note appropriately flags that the printer issue is not covered."
+    },
+    {
+      "item_id": "G015",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that the retrieved tickets (dealing with cookie misconfigurations and login loops) do not match the new ticket's issue (account disabled) and appropriately declines to apply them while recommending human verification."
+    },
+    {
+      "item_id": "G016",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution directly mirrors the exact diagnostic steps, cause, and fix found across multiple retrieved past resolutions for data connection failures."
+    },
+    {
+      "item_id": "G017",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted steps directly match the actions taken in the retrieved role change and entitlement review tickets, and the hedge appropriately notes that the specific scheduling software mention is not explicitly covered by the examples."
+    },
+    {
+      "item_id": "G018",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The core fix steps are directly traceable to the retrieved resolutions, and the draft appropriately hedges due to the new laptop context."
+    },
+    {
+      "item_id": "G019",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution accurately reflects the troubleshooting steps found in all retrieved past resolutions regarding credentials rotation and connection string updates, and the hedge appropriately notes the vagueness of the new ticket compared to the specific past examples."
+    },
+    {
+      "item_id": "G020",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "Every substantive step in the draft is directly derived from the retrieved past resolutions regarding database credential rotations and cache invalidation issues."
+    },
+    {
+      "item_id": "G021",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that the retrieved examples are irrelevant to the user's local laptop storage issue and appropriately declines to apply them while recommending human verification."
+    },
+    {
+      "item_id": "G022",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution follows the retrieved fix of checking the wireless controller and restoring configuration, and the hedge appropriately notes the mismatch in scope between the office-wide outage and the single room issue."
+    },
+    {
+      "item_id": "G023",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft explicitly declines to apply the retrieved fixes due to a mismatch in the problem description and recommends human investigation."
+    },
+    {
+      "item_id": "G024",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly identifies that the retrieved tickets (NTFS permission issues) do not match the ransomware symptoms of the new ticket and declines to apply them while appropriately hedging."
+    },
+    {
+      "item_id": "G025",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution directly mirrors the fix steps found in all retrieved past tickets regarding slow-loading pages caused by missing database indexes."
+    },
+    {
+      "item_id": "G026",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly declines to apply the retrieved fixes due to a mismatch and explicitly states that a human agent should double-check the issue."
+    },
+    {
+      "item_id": "G027",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The substantive fix steps are fully traceable to the retrieved resolutions, and the hedging note correctly acknowledges the distinction between server-level storage and a user-level report download error."
+    },
+    {
+      "item_id": "G028",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution accurately reflects the fix provided in all retrieved past resolutions regarding the exhausted VPN IP pool and stale sessions."
+    },
+    {
+      "item_id": "G029",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted steps directly mirror the resolution pattern found in the retrieved tickets, and the hedge correctly notes the mismatch between individual user issues and an organization-wide failure."
+    },
+    {
+      "item_id": "G030",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted steps directly match the actions taken in the retrieved resolutions, and the hedge appropriately notes that the retrieved examples deal with specific endpoint detections rather than a generic user popup."
+    },
+    {
+      "item_id": "G031",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The draft correctly recognizes that the retrieved resolutions do not match the new ticket and explicitly declines to apply them, which is classified as grounded."
+    },
+    {
+      "item_id": "G032",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "The drafted resolution directly mirrors the actions taken in the retrieved resolutions regarding NTFS permissions on the finance share."
+    },
+    {
+      "item_id": "G033",
+      "label": "grounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "",
+      "reason": "All steps prescribed in the draft are directly supported by the retrieved resolutions for phishing incidents."
+    }
+  ]
+}

@@ -1,0 +1,1366 @@
+{
+  "_meta": {
+    "purpose": "Phase 2B groundedness labelling set. Human ground truth for whether each drafted resolution says only what its retrieved context supports.",
+    "dry_run": false,
+    "how_to_label": "For each item set \"label\" to exactly one of ['grounded', 'partially_grounded', 'ungrounded'], set \"hedge_appropriate\" to true or false, and when the label is not \"grounded\" put the offending text in \"unsupported_span\". \"label_reason\" is optional but useful.",
+    "rubric": "You are judging GROUNDEDNESS of a drafted IT-support resolution.\n\nYou are given a new ticket, a drafted resolution, and the past tickets that\nwere retrieved to ground that draft. Judge ONLY whether the draft's content is\nsupported by the retrieved resolutions. Do NOT judge whether the draft is a\ngood fix, whether it would work, or whether you would have written it\ndifferently. A draft can be excellent advice and still be ungrounded.\n\nChoose exactly one label:\n\n  \"grounded\"\n      Every substantive step the draft prescribes is traceable to at least\n      one of the retrieved resolutions. Rewording, merging steps from several\n      retrieved tickets, and substituting the new ticket's own hostname,\n      app name or user is all fine -- that is not new content.\n\n  \"partially_grounded\"\n      The core fix is supported by the retrieved resolutions, but the draft\n      adds at least one substantive step, cause, or claim that no retrieved\n      resolution supports.\n\n  \"ungrounded\"\n      The fix the draft prescribes is not supported by any retrieved\n      resolution -- it answers from general knowledge, or addresses a\n      different problem than the retrieved tickets solved.\n\nDECLINING IS NOT AN UNSUPPORTED CLAIM. A draft that explicitly declines to\napply the retrieved fix, states that the retrieved examples do not match the\nnew ticket, and recommends that a human investigate is \"grounded\". Judge the\nsubstantive fix steps a draft PRESCRIBES, not its recommendation to\ninvestigate. Penalising a correct refusal would measure the opposite of what\nthis rubric is for.\n\nThen answer one further question about the draft's closing note:\n\n  hedge_appropriate: true | false\n      The drafter is instructed to end with a note saying either that the\n      retrieved examples closely match, or that a human should verify.\n      Answer true if that note matches how well the retrieved resolutions\n      actually agree with each other and with the ticket; answer false if it\n      claims a close match when the retrieved tickets in fact disagree or\n      fit poorly, or hedges when they plainly agree.\n",
+    "blind_by_design": "This file carries only the ticket, the draft and the retrieved resolutions. Provenance is in groundedness_key.json and the LLM judge's verdicts are in groundedness_judge.json -- do not open either while labelling.",
+    "items": 33,
+    "seed": 42
+  },
+  "items": [
+    {
+      "item_id": "G001",
+      "ticket_text": "My laptop refuses to connect to the office network altogether since I got into the office this morning, and it keeps saying it's out of range even though I'm sitting right by the router.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the issue may be related to a wireless controller losing its configuration after a power event. Check the wireless controller to see if it has lost its configuration, and restore the configuration so that access points can come back online and devices can associate.\n\n*Note:* The retrieved examples deal with a broader office-wide Wi-Fi outage at the Hyderabad Office rather than an individual laptop issue, so a human agent should double-check and verify the exact cause.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 2,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 3,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 4,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 5,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G002",
+      "ticket_text": "When I try to pull up last month's customer records the whole thing just spins and then shows an error about not being able to reach the records system.",
+      "draft": "**Suggested Resolution:**\nThe application server's connection pool to the database (such as reporting_mongo, audit_mysql, or billing_mysql) has likely exhausted. Restart the pooler and verify that the system can successfully reach the records database again to restore customer record lookups.\n\n*Note: The retrieved examples closely match the symptoms described in the new ticket, but a human agent should verify the specific database and pooler associated with this system.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Can't pull up records in CRM",
+          "resolution": "The application server's connection pool to reporting_mongo had exhausted; restarted the pooler and verified CRM could reach reporting_mongo again, restoring record lookups."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Can't pull up records in HR Self-Service",
+          "resolution": "The application server's connection pool to audit_mysql had exhausted; restarted the pooler and verified HR Self-Service could reach audit_mysql again, restoring record lookups."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Can't pull up records in CRM",
+          "resolution": "The application server's connection pool to audit_mysql had exhausted; restarted the pooler and verified CRM could reach audit_mysql again, restoring record lookups."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Can't pull up records in CRM",
+          "resolution": "The application server's connection pool to billing_mysql had exhausted; restarted the pooler and verified CRM could reach billing_mysql again, restoring record lookups."
+        },
+        {
+          "rank": 5,
+          "category": "Database",
+          "title": "Can't pull up records in HR Self-Service",
+          "resolution": "The application server's connection pool to reporting_mongo had exhausted; restarted the pooler and verified HR Self-Service could reach reporting_mongo again, restoring record lookups."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G003",
+      "ticket_text": "The time-tracking app won't let me submit my hours for last week because the submit button is completely grayed out. I've tried clicking around and closing the tab, but it's still stuck.",
+      "draft": "Based on the retrieved past tickets, the resolutions for application issues involving stale or stuck data focused on fixing the application cache-busting key and reducing the TTL to ensure proper data updating. \n\nHowever, none of the retrieved past tickets address a grayed-out \"submit\" button for a time-tracking app specifically; they deal with NTP time drift and stale data display in Payroll and the Field Service App. \n\n*Note: The retrieved examples do not closely match this specific UI/submission issue, so a human agent should double-check the appropriate troubleshooting steps.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Infrastructure",
+          "title": "NTP time drift on STG-APP-07",
+          "resolution": "Reconfigured chrony on STG-APP-07 to use the internal NTP pool and forced an immediate sync; drift returned to sub-millisecond."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Stale data shown in Field Service App",
+          "resolution": "The Field Service App cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 3,
+          "category": "Application",
+          "title": "Stale data shown in Payroll",
+          "resolution": "The Payroll cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Stale data shown in Field Service App",
+          "resolution": "The Field Service App cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Stale data shown in Payroll",
+          "resolution": "The Payroll cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G004",
+      "ticket_text": "I went to attach a video clip to an email just now and a little pop-up told me my cloud account has zero gigabytes left. I delete stuff all the time, so I'm not sure why it's saying everything is maxed out.",
+      "draft": "**Suggested Resolution:**\nReview the user's cloud account storage usage, archive stale data to cold storage, and seek manager approval to raise their storage quota. \n\n*Note:* The retrieved examples involve team/DC storage quotas rather than individual cloud accounts, so a human agent should double-check these steps for this specific ticket.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Storage quota exceeded for Bangalore DC",
+          "resolution": "Reviewed usage for Bangalore DC, archived stale data to cold storage, and raised their quota after manager approval."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Storage quota exceeded for Bangalore DC",
+          "resolution": "Reviewed usage for Bangalore DC, archived stale data to cold storage, and raised their quota after manager approval."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Storage quota exceeded for Bangalore DC",
+          "resolution": "Reviewed usage for Bangalore DC, archived stale data to cold storage, and raised their quota after manager approval."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G005",
+      "ticket_text": "I can't seem to access any internal websites or shared folders from my desk today, even though my Ethernet cable is plugged in securely. The little network icon on my taskbar has a yellow triangle over it.",
+      "draft": "Based on the retrieved past tickets, the resolution steps involve checking and restarting the relevant share service, verifying permissions, and remapping the share for affected users. \n\n*Note: The retrieved examples deal with specific network file share accessibility issues rather than a general workstation network connection issue with a yellow triangle. A human agent should double-check this recommendation.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\operations inaccessible",
+          "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\hr inaccessible",
+          "resolution": "The share service backing \\\\fs01\\hr had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\hr inaccessible",
+          "resolution": "The share service backing \\\\fs01\\hr had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\hr inaccessible",
+          "resolution": "The share service backing \\\\fs01\\hr had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "File share \\\\fs04\\legal inaccessible",
+          "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G006",
+      "ticket_text": "The spreadsheet program keeps scrambling all my formulas every time I try to share the file with my team. Half the numbers turn into error codes and I have to keep undoing my changes.",
+      "draft": "**Suggested Resolution:**\nThe retrieved past tickets relate exclusively to Payroll file-upload crashes and file-share mounting issues (`\\\\fs01\\finance`), which do not address spreadsheet formula scrambling or file-sharing corruption. \n\n*Note:* The retrieved examples do not match the new ticket; a human agent should double-check and investigate this issue independently.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Payroll crashes on file upload",
+          "resolution": "Raised the upload body-size limit in the Payroll reverse proxy and worker config, then verified large uploads complete successfully."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Payroll crashes on file upload",
+          "resolution": "Raised the upload body-size limit in the Payroll reverse proxy and worker config, then verified large uploads complete successfully."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Cannot mount \\\\fs01\\finance on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Cannot mount \\\\fs01\\finance on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Cannot mount \\\\fs01\\finance on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G007",
+      "ticket_text": "I noticed someone tried to log into my work account from another state overnight because I got a text with a code I didn't ask for, and now I'm really worried my password got stolen. Can we lock my account down right away?",
+      "draft": "**Suggested Resolution:**\nVerify the user's identity, reset their password, and require a password change plus MFA re-registration at their next login. \n\n*Note:* While the retrieved examples address password resets and account security, they do not specifically address an unprompted MFA text code from another state; therefore, a human agent should double-check this recommendation.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Access Management",
+          "title": "Password reset for s.joshi",
+          "resolution": "Verified the identity of s.joshi, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 2,
+          "category": "Access Management",
+          "title": "Password reset for d.mehta",
+          "resolution": "Verified the identity of d.mehta, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 3,
+          "category": "Access Management",
+          "title": "Password reset for s.joshi",
+          "resolution": "Verified the identity of s.joshi, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 4,
+          "category": "Security",
+          "title": "Brute-force attack against Payroll login",
+          "resolution": "Enabled rate limiting and account lockout on the Payroll login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures."
+        },
+        {
+          "rank": 5,
+          "category": "Access Management",
+          "title": "Password reset for d.mehta",
+          "resolution": "Verified the identity of d.mehta, reset the password, and required a change plus MFA re-registration at next login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G008",
+      "ticket_text": "I went through and deleted all those duplicate vendor entries in the main lookup list, but every time I close the program and open it back up, all the duplicates are right back there like I didn't do anything.",
+      "draft": "Based on the retrieved past tickets, the available examples address issues related to the Vendor Portal displaying stale data or dropped connections, but they do not directly match an issue where deleted duplicate vendor entries reappear after restarting the application. \n\n*Note: The retrieved examples do not fully match the new ticket; a human agent should double-check and investigate further.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Vendor Portal says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Vendor Portal and orders_pg caused by a credentials rotation; updated the stored connection string and confirmed Vendor Portal could load data again."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Stale data shown in Vendor Portal",
+          "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 3,
+          "category": "Application",
+          "title": "Stale data shown in Vendor Portal",
+          "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Stale data shown in Vendor Portal",
+          "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Stale data shown in Vendor Portal",
+          "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G009",
+      "ticket_text": "Whenever I try to upload my presentation slides to the company video tool, the whole thing just spins for a few minutes and then tells me my session expired. I've tried logging out and back in three times now and it keeps happening.",
+      "draft": "Based on the retrieved past tickets, there are no examples matching the issue of uploading presentation slides to the company video tool (the retrieved tickets address database report timeouts and a vendor portal cache issue). \n\nTherefore, please note that the retrieved examples do not match the new ticket, and a human agent should double-check and investigate the video tool upload and session expiration issue directly.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Reports in Learning Management System won't generate",
+          "resolution": "Found the report queries in Learning Management System were timing out against catalog_pg due to a missing index; added the index and reports now generate within seconds."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Reports in Learning Management System won't generate",
+          "resolution": "Found the report queries in Learning Management System were timing out against audit_mysql due to a missing index; added the index and reports now generate within seconds."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Reports in Payroll won't generate",
+          "resolution": "Found the report queries in Payroll were timing out against audit_mysql due to a missing index; added the index and reports now generate within seconds."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Reports in Billing Portal won't generate",
+          "resolution": "Found the report queries in Billing Portal were timing out against audit_mysql due to a missing index; added the index and reports now generate within seconds."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Stale data shown in Vendor Portal",
+          "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G010",
+      "ticket_text": "I was entering the new client addresses into our main client tracker, but when I came back from lunch, none of the new names were there and my search just keeps bringing up a blank page.",
+      "draft": "Based on the retrieved past tickets, the symptoms described (new entries disappearing and search returning a blank page/no results) suggest an issue with the search index or database connection. \n\n**Suggested Resolution Steps:**\n1. Check if the search index has drifted out of sync with the database and trigger a full reindex (as done in Past Ticket #5).\n2. Alternatively, verify if there is a broken connection between the application and its data source, and update the connection string if credentials were recently rotated (as done in Past Ticket #4).\n\n*Note: The retrieved examples do not provide an exact match for a client tracker app, so a human agent should double-check the specific system architecture before proceeding.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Network",
+          "title": "DNS resolution failing for Expense Tracker",
+          "resolution": "A stale DNS record for Expense Tracker was corrected on the authoritative server and the resolver caches were flushed, restoring resolution."
+        },
+        {
+          "rank": 2,
+          "category": "Network",
+          "title": "DNS resolution failing for Expense Tracker",
+          "resolution": "A stale DNS record for Expense Tracker was corrected on the authoritative server and the resolver caches were flushed, restoring resolution."
+        },
+        {
+          "rank": 3,
+          "category": "Network",
+          "title": "DNS resolution failing for Expense Tracker",
+          "resolution": "A stale DNS record for Expense Tracker was corrected on the authoritative server and the resolver caches were flushed, restoring resolution."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Expense Tracker says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Expense Tracker and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Expense Tracker could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Search returning no results in Expense Tracker",
+          "resolution": "The Expense Tracker search index had drifted out of sync with the database; triggered a full reindex and scheduled incremental reindexing to keep results accurate."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G011",
+      "ticket_text": "I went to save my final report this afternoon and a warning popped up saying I don't have permission to put anything else in the department shared folder. Is our team quota completely full, or did something happen to my access?",
+      "draft": "**Suggested Resolution:**\nCheck and correct the inherited NTFS permissions on the department shared folder for the user's relevant group, then re-propagate the ACLs so that files can be saved and opened as expected.\n\n*Note:* The retrieved examples address \"access denied\" errors related to incorrect inherited NTFS permissions and ACL propagation, but do not specifically address folder storage quotas; therefore, a human agent should double-check the exact cause.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\hr",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\hr for the relevant Bangalore DC group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Pune Branch group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Pune Branch group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G012",
+      "ticket_text": "I just joined the marketing team today and when I try to open our main planning app, it won't let me past the login screen. Is there a special request I need to submit to get my account set up for it?",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, login issues for applications are typically resolved by checking for session cookie domain misconfigurations after a recent deployment, correcting the cookie settings, and clearing the CDN cache. \n\n*Note:* The retrieved examples involve global application login loops for existing users, whereas the new ticket describes a new employee who may need an account set up or permission granted. A human agent should double-check the user's specific access rights for the planning app.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Login broken on Field Service App",
+          "resolution": "The Field Service App session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Login broken on Expense Tracker",
+          "resolution": "The Expense Tracker session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Can't pull up records in Field Service App",
+          "resolution": "The application server's connection pool to billing_mysql had exhausted; restarted the pooler and verified Field Service App could reach billing_mysql again, restoring record lookups."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Login broken on Field Service App",
+          "resolution": "The Field Service App session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Login broken on Field Service App",
+          "resolution": "The Field Service App session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G013",
+      "ticket_text": "Every time I open the expense program it freezes on the loading screen and then closes itself. I've tried restarting but it keeps crashing.",
+      "draft": "Based on the retrieved past tickets, the available resolutions address backend login, database connection drops, and slow page loads for the Expense Tracker application, rather than an application freezing and crashing on the loading screen. \n\nRecommended Action: Because none of the past tickets directly match an application freezing and crashing on the local loading screen, a human agent should double-check and investigate further.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Login broken on Expense Tracker",
+          "resolution": "The Expense Tracker session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Expense Tracker says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Expense Tracker and customers_pg caused by a credentials rotation; updated the stored connection string and confirmed Expense Tracker could load data again."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Expense Tracker says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Expense Tracker and orders_pg caused by a credentials rotation; updated the stored connection string and confirmed Expense Tracker could load data again."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Expense Tracker says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Expense Tracker and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Expense Tracker could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Expense Tracker extremely slow to load",
+          "resolution": "A missing database index behind Expense Tracker was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G014",
+      "ticket_text": "I can't print anything to the printer down the hall or open up the shared drive where we keep our team files. Everything else on my computer seems to work, but those two things keep telling me they are unavailable.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the issue with the inaccessible shared drive is likely due to the file share service crashing or requiring a remap. Restart the backing share service, verify the user's permissions, and remap the shared drive. \n\n*Note: The retrieved examples cover the shared drive issue but do not mention the printer; a human agent should double-check the printer aspect of this ticket.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\hr inaccessible",
+          "resolution": "The share service backing \\\\fs01\\hr had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\hr inaccessible",
+          "resolution": "The share service backing \\\\fs01\\hr had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "File share \\\\fs02\\marketing inaccessible",
+          "resolution": "The share service backing \\\\fs02\\marketing had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "File share \\\\fs01\\operations inaccessible",
+          "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Cannot mount \\\\fs02\\marketing on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G015",
+      "ticket_text": "I am trying to log into the time-tracking site for my shift today, but it keeps telling me my account has been disabled. Can someone turn it back on so I can submit my hours?",
+      "draft": "Based on the retrieved past tickets, the resolutions deal with session cookie domain misconfigurations and CDN cache issues causing login loops across applications like Expense Tracker and Payroll. However, the retrieved examples do not address an individual user account being disabled for a time-tracking site. A human agent should double-check and verify the resolution for this specific account status issue.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Login broken on Expense Tracker",
+          "resolution": "The Expense Tracker session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Login broken on Payroll",
+          "resolution": "The Payroll session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 3,
+          "category": "Application",
+          "title": "Login broken on Expense Tracker",
+          "resolution": "The Expense Tracker session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Login broken on Expense Tracker",
+          "resolution": "The Expense Tracker session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Login broken on Payroll",
+          "resolution": "The Payroll session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G016",
+      "ticket_text": "The report tool says it can't find the numbers it needs and mentions something about a broken connection to where the data is kept.",
+      "draft": "**Suggested Resolution:**\nDiagnose a potential dropped connection between the report tool and its data source caused by a recent credentials rotation. Update the stored connection string and confirm that the report tool can load data again.\n\n*Note: The retrieved examples match the symptoms of a broken data connection due to a credentials rotation, but because the specific application and database names were not mentioned in the new ticket, a human agent should double-check the exact connection details.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Procurement Portal says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Procurement Portal and analytics_mongo caused by a credentials rotation; updated the stored connection string and confirmed Procurement Portal could load data again."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Expense Tracker says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Expense Tracker and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Expense Tracker could load data again."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Database",
+          "title": "HR Self-Service says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between HR Self-Service and billing_mysql caused by a credentials rotation; updated the stored connection string and confirmed HR Self-Service could load data again."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G017",
+      "ticket_text": "I am trying to log into the software we use for scheduling our weekly shifts, but it says my account doesn't exist anymore since I transferred departments. Could someone update my profile so I can see my schedule?",
+      "draft": "Based on the retrieved past tickets, review the user's entitlements, remove any obsolete permissions from their prior department role, and assign the correct role and permissions for their new team so they can access the scheduling software. \n\n*Note: While the past examples address role changes and permission updates after transferring teams, they do not specifically mention scheduling software account non-existence; therefore, a human agent should double-check these steps.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Access Management",
+          "title": "Role change access review for k.verma",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team."
+        },
+        {
+          "rank": 2,
+          "category": "Access Management",
+          "title": "Role change access review for k.verma",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team."
+        },
+        {
+          "rank": 3,
+          "category": "Access Management",
+          "title": "Role change access review for d.mehta",
+          "resolution": "Reviewed the entitlements for d.mehta, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team."
+        },
+        {
+          "rank": 4,
+          "category": "Access Management",
+          "title": "Role change access review for s.joshi",
+          "resolution": "Reviewed the entitlements for s.joshi, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team."
+        },
+        {
+          "rank": 5,
+          "category": "Access Management",
+          "title": "Role change access review for d.mehta",
+          "resolution": "Reviewed the entitlements for d.mehta, removed the obsolete HR Self-Service permissions from the prior role, and assigned the correct role for their new team."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G018",
+      "ticket_text": "I got a new laptop and now the system keeps saying my username or password is wrong even though I'm sure it's right. Can someone reset me so I can get back in?",
+      "draft": "**Suggested Resolution:**\nVerify the user's identity, reset their corporate account password, and set the system to require a password change plus MFA re-registration at their next login.\n\n*Note: While the retrieved examples address password resets for locked-out accounts, the new ticket specifically mentions getting a new laptop. Therefore, a human agent should double-check to ensure no additional laptop setup or domain joining issues are present.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Access Management",
+          "title": "Password reset for s.khan",
+          "resolution": "Verified the identity of s.khan, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 2,
+          "category": "Access Management",
+          "title": "Password reset for s.joshi",
+          "resolution": "Verified the identity of s.joshi, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 3,
+          "category": "Access Management",
+          "title": "Password reset for m.iyer",
+          "resolution": "Verified the identity of m.iyer, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 4,
+          "category": "Access Management",
+          "title": "Password reset for s.khan",
+          "resolution": "Verified the identity of s.khan, reset the password, and required a change plus MFA re-registration at next login."
+        },
+        {
+          "rank": 5,
+          "category": "Access Management",
+          "title": "Password reset for j.singh",
+          "resolution": "Verified the identity of j.singh, reset the password, and required a change plus MFA re-registration at next login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G019",
+      "ticket_text": "Something is wrong. It's not working properly and I need this fixed today.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, diagnose whether there is a dropped connection caused by a credentials rotation between the affected application and its database backend. Update the stored connection string for the application and confirm that data loads properly again.\n\n*Note: The retrieved examples deal with specific database connection errors (Inventory Manager, Payroll, and Procurement Portal), whereas the new ticket description is extremely vague (\"Something is wrong. It's not working properly\"). A human agent should double-check the specific error details.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Inventory Manager says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Inventory Manager and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Inventory Manager could load data again."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and warehouse_pg caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and orders_pg caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Database",
+          "title": "Procurement Portal says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Procurement Portal and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Procurement Portal could load data again."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G020",
+      "ticket_text": "Every time I add a new product to the inventory tool, it just loads forever and none of my new items show up on anyone else's screen. It's like the changes are vanishing into thin air instead of saving where they're supposed to.",
+      "draft": "Based on the retrieved past tickets, the issue with the inventory tool may be related to either a dropped database connection caused by a credentials rotation or a caching issue where data is not being invalidated/saved properly on write. \n\nSuggested steps:\n1. Check the connection between the inventory tool and the database to see if a recent credentials rotation broke the connection, and update the stored connection string if necessary.\n2. Verify whether the application cache is failing to invalidate on write, and fix the cache-busting key or adjust the TTL if required.\n\n*Note: The retrieved examples address similar inventory tool symptoms (connection drops and cache invalidation on write), but because the exact behavior described (\"loading forever\" and vanishing changes) spans multiple potential causes, a human agent should double-check the root cause.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Inventory Manager says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Inventory Manager and orders_pg caused by a credentials rotation; updated the stored connection string and confirmed Inventory Manager could load data again."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Stale data shown in Inventory Manager",
+          "resolution": "The Inventory Manager cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Inventory Manager says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Inventory Manager and warehouse_pg caused by a credentials rotation; updated the stored connection string and confirmed Inventory Manager could load data again."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Inventory Manager says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Inventory Manager and billing_mysql caused by a credentials rotation; updated the stored connection string and confirmed Inventory Manager could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Stale data shown in Inventory Manager",
+          "resolution": "The Inventory Manager cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G021",
+      "ticket_text": "My laptop started running super slow this morning, and when I checked the settings, it looks like my main hard drive is completely jammed up with old files. I need someone to help me figure out what's taking up all the gigabytes so I can clean it out.",
+      "draft": "Based on the retrieved past tickets, the resolutions deal with network file share storage performance issues caused by failing disks in an array. However, the new ticket describes a local laptop hard drive that is jammed up with old files and causing slow performance, which is a completely different issue from the retrieved examples. \n\n**Suggested Resolution:**\nSince the retrieved examples do not address local laptop storage cleanup, please manually inspect the user's local hard drive usage, identify large old files or temporary data, and assist the user in clearing out unnecessary files to free up disk space.\n\n*Note: The retrieved examples do not closely match the new ticket; a human agent should double-check and handle this request.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Slow read/write on \\\\fs01\\finance",
+          "resolution": "A failing disk in the array behind \\\\fs01\\finance was causing rebuild-related slowness; replaced the disk and performance returned to normal."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Slow read/write on \\\\nas03\\media",
+          "resolution": "A failing disk in the array behind \\\\nas03\\media was causing rebuild-related slowness; replaced the disk and performance returned to normal."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Slow read/write on \\\\fs01\\finance",
+          "resolution": "A failing disk in the array behind \\\\fs01\\finance was causing rebuild-related slowness; replaced the disk and performance returned to normal."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Slow read/write on \\\\fs04\\legal",
+          "resolution": "A failing disk in the array behind \\\\fs04\\legal was causing rebuild-related slowness; replaced the disk and performance returned to normal."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Slow read/write on \\\\fs02\\marketing",
+          "resolution": "A failing disk in the array behind \\\\fs02\\marketing was causing rebuild-related slowness; replaced the disk and performance returned to normal."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G022",
+      "ticket_text": "The wifi in the third floor meeting room keeps dropping every few minutes so we can't run our video calls. Everyone else in the building seems fine.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, check the wireless controller for configuration issues or losses following power events, and restore the configuration if necessary to bring the access points back online.\n\n*Note:* The retrieved examples deal with entire office-wide wireless outages caused by wireless controller configuration loss, whereas this new ticket describes an intermittent issue localized to a single third-floor meeting room; therefore, a human agent should double-check the specifics of this case.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 2,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 3,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 4,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        },
+        {
+          "rank": 5,
+          "category": "Network",
+          "title": "Wi-Fi outage at Hyderabad Office",
+          "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G023",
+      "ticket_text": "Every time I try to move these big project folders over to my work share, it stops halfway and tells me there isn't enough room to fit them all. I really need to get these backed up somewhere today before my local copy acts up.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the issue relates to file share mapping and missing SMB protocol settings where client configurations are pushed via policy. However, the new ticket describes a disk space or capacity error (\"isn't enough room to fit them all\") when moving project folders, which differs from the network share mounting issues in the history. \n\n*Note: The retrieved examples do not closely match the specific disk space issue described in this new ticket; a human agent should double-check and investigate the share capacity.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Cannot mount \\\\nas03\\projects on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\nas03\\projects; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Cannot mount \\\\nas03\\projects on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\nas03\\projects; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Cannot mount \\\\nas03\\projects on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\nas03\\projects; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Cannot mount \\\\nas03\\projects on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\nas03\\projects; pushed the correct client configuration via policy and the share mapped successfully."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Cannot mount \\\\fs01\\finance on new machines",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G024",
+      "ticket_text": "I keep getting these constant pop-ups on my screen telling me my files are locked and I have to pay money to get them back. I am really scared to touch anything, can someone please help me before my whole computer is ruined?",
+      "draft": "Based on the retrieved past tickets, all historical examples address incorrect NTFS permissions and access denied errors on network storage folders (such as `\\\\fs01\\operations`, `\\\\fs02\\shared`, etc.), which do not match the ransomware/malware symptoms described in the new ticket. \n\n**Suggested Resolution:**\nBecause the retrieved examples do not address ransomware or locked files, please do not attempt the NTFS permission fixes from the past tickets. Instead, immediately disconnect the computer from the network (unplug the ethernet cable and disable Wi-Fi) to prevent potential spread, and escalate this ticket to the security/incident response team for further instructions.\n\n*Note: The retrieved examples do not closely match the new ticket, so a human agent should double-check and handle this request.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\operations",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\operations for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\nas03\\media",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\nas03\\media for the relevant Chennai Support group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\nas03\\media",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\nas03\\media for the relevant Chennai Support group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\marketing",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\marketing for the relevant Bangalore DC group and re-propagated ACLs so the files opened as expected."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G025",
+      "ticket_text": "Pages take forever to load today and sometimes just time out. My colleague next to me has the same slowness on her machine too.",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets regarding slow-loading application pages, investigate the backend database for missing indexes causing full table scans. Add the required database index and enable query caching to restore fast page loads.\n\n*Note:* The retrieved examples specifically reference slowness in individual applications (like Payroll, Learning Management System, and Billing Portal) rather than a general system-wide slowdown, so a human agent should double-check whether this issue affects a specific application or requires a different troubleshooting step.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Payroll extremely slow to load",
+          "resolution": "A missing database index behind Payroll was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Payroll extremely slow to load",
+          "resolution": "A missing database index behind Payroll was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        },
+        {
+          "rank": 3,
+          "category": "Application",
+          "title": "Payroll extremely slow to load",
+          "resolution": "A missing database index behind Payroll was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Learning Management System extremely slow to load",
+          "resolution": "A missing database index behind Learning Management System was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Billing Portal extremely slow to load",
+          "resolution": "A missing database index behind Billing Portal was causing full table scans; added the index and enabled query caching, restoring fast page loads."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G026",
+      "ticket_text": "I can't access anything today, nothing is working.",
+      "draft": "Based on the provided past tickets, the retrieved examples specifically deal with database connection drops caused by credential rotations or application login/session issues, whereas the new ticket describes a very vague issue (\"I can't access anything today, nothing is working\") without specifying the affected system or error. \n\n**Suggested Resolution:**\nContact the user to identify the specific application or portal they are trying to access. Once identified, check for dropped database connections caused by recent credential rotations and update the stored connection string, or verify application session configurations as applicable.\n\n*Note: The retrieved examples do not closely match the vague description in this new ticket; a human agent should double-check the user's specific issue before proceeding.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Database",
+          "title": "Procurement Portal says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Procurement Portal and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Procurement Portal could load data again."
+        },
+        {
+          "rank": 2,
+          "category": "Database",
+          "title": "Inventory Manager says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Inventory Manager and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Inventory Manager could load data again."
+        },
+        {
+          "rank": 3,
+          "category": "Database",
+          "title": "Payroll says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Payroll and sessions_redis caused by a credentials rotation; updated the stored connection string and confirmed Payroll could load data again."
+        },
+        {
+          "rank": 4,
+          "category": "Database",
+          "title": "Billing Portal says it can't find the data",
+          "resolution": "Diagnosed a dropped connection between Billing Portal and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Billing Portal could load data again."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Login broken on Inventory Manager",
+          "resolution": "The Inventory Manager session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G027",
+      "ticket_text": "I keep getting a message that there's no room left to save my files and I can't download the report I need. It says the drive is full.",
+      "draft": "**Suggested Resolution:**\nReclaim space on the affected storage volume by purging expired snapshots and old logs, and then extend the volume to free up capacity for file saves and downloads.\n\n*Note: While the retrieved examples address full storage volumes, they pertain to server-level volumes rather than a specific user's local drive or download error; a human agent should double-check the exact cause.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Storage volume nearly full",
+          "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G028",
+      "ticket_text": "Whenever I try to open our company portal from home using the new VPN, it just spins forever and eventually says the connection failed. My home internet is working fine for everything else, so I'm not sure why it won't let me in today.",
+      "draft": "**Suggested Resolution:**\nBased on past tickets regarding VPN connection failures, check if the VPN concentrator serving the user has exhausted its IP pool. If so, enlarge the IP pool and clear stale sessions to restore VPN access. \n\n*Note: The retrieved examples closely match the reported VPN timeout issue.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Network",
+          "title": "VPN failing for Remote/WFH users",
+          "resolution": "The VPN concentrator serving Remote/WFH had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
+        },
+        {
+          "rank": 2,
+          "category": "Network",
+          "title": "VPN failing for Bangalore DC users",
+          "resolution": "The VPN concentrator serving Bangalore DC had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
+        },
+        {
+          "rank": 3,
+          "category": "Network",
+          "title": "VPN failing for Remote/WFH users",
+          "resolution": "The VPN concentrator serving Remote/WFH had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
+        },
+        {
+          "rank": 4,
+          "category": "Network",
+          "title": "VPN failing for Mumbai HQ users",
+          "resolution": "The VPN concentrator serving Mumbai HQ had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
+        },
+        {
+          "rank": 5,
+          "category": "Network",
+          "title": "VPN failing for Mumbai HQ users",
+          "resolution": "The VPN concentrator serving Mumbai HQ had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G029",
+      "ticket_text": "requesting immediate remediation of persistent authentication failure across all provisioned endpoints",
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, authentication and SSO access failures typically occur when a user is missing from the required application SSO assignment group. To remediate, check the user's group memberships for the affected endpoints, add them to the corresponding SSO assignment groups, and confirm that federated login succeeds.\n\n*Note:* The retrieved examples specifically address individual user SSO assignment issues rather than an organization-wide failure across *all* provisioned endpoints; therefore, a human agent should double-check the root cause.",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Access Management",
+          "title": "SSO access failing for j.singh to Azure",
+          "resolution": "Found j.singh was missing from the Azure SSO assignment group; added them to the group and confirmed federated login to Azure succeeded."
+        },
+        {
+          "rank": 2,
+          "category": "Access Management",
+          "title": "SSO access failing for t.rao to GCP",
+          "resolution": "Found t.rao was missing from the GCP SSO assignment group; added them to the group and confirmed federated login to GCP succeeded."
+        },
+        {
+          "rank": 3,
+          "category": "Access Management",
+          "title": "SSO access failing for s.joshi to AWS",
+          "resolution": "Found s.joshi was missing from the AWS SSO assignment group; added them to the group and confirmed federated login to AWS succeeded."
+        },
+        {
+          "rank": 4,
+          "category": "Access Management",
+          "title": "SSO access failing for n.gupta to AWS",
+          "resolution": "Found n.gupta was missing from the AWS SSO assignment group; added them to the group and confirmed federated login to AWS succeeded."
+        },
+        {
+          "rank": 5,
+          "category": "Access Management",
+          "title": "SSO access failing for k.verma to Cloudflare",
+          "resolution": "Found k.verma was missing from the Cloudflare SSO assignment group; added them to the group and confirmed federated login to Cloudflare succeeded."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G030",
+      "ticket_text": "My antivirus popped up a warning that something suspicious was blocked and now I'm worried my computer has a virus on it.",
+      "draft": "Based on the retrieved past tickets, the standard procedure for handling blocked suspicious items/malware is to isolate the endpoint from the network, run a full offline scan to remove the threat, and re-image the machine as a precaution. \n\n*Note: The retrieved examples specifically address EDR agent detections of trojans on named workstations rather than a generic user-reported antivirus popup, so a human agent should double-check the appropriateness of these steps for this specific user.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Security",
+          "title": "Malware detected on endpoint of m.iyer",
+          "resolution": "Isolated the endpoint of m.iyer from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
+        },
+        {
+          "rank": 2,
+          "category": "Security",
+          "title": "Malware detected on endpoint of m.iyer",
+          "resolution": "Isolated the endpoint of m.iyer from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
+        },
+        {
+          "rank": 3,
+          "category": "Security",
+          "title": "Malware detected on endpoint of s.khan",
+          "resolution": "Isolated the endpoint of s.khan from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
+        },
+        {
+          "rank": 4,
+          "category": "Security",
+          "title": "Malware detected on endpoint of s.khan",
+          "resolution": "Isolated the endpoint of s.khan from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
+        },
+        {
+          "rank": 5,
+          "category": "Security",
+          "title": "Malware detected on endpoint of v.nair",
+          "resolution": "Isolated the endpoint of v.nair from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G031",
+      "ticket_text": "I need to log into the HR portal from home today to check my benefits, but it's locking me out and asking for a security code I never set up. Can someone help me unlock my profile?",
+      "draft": "Based on the retrieved past tickets, the resolutions deal with a global login issue caused by a misconfigured session cookie domain and CDN cache following a deployment on HR Self-Service. However, the new ticket describes a user-specific lockout and a security code setup issue rather than a general session cookie or redirect problem. \n\n*Note: The retrieved examples do not closely match the specifics of this new ticket, so a human agent should double-check and handle this user's account unlock and security code setup manually.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Application",
+          "title": "Login broken on HR Self-Service",
+          "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 2,
+          "category": "Application",
+          "title": "Login broken on HR Self-Service",
+          "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 3,
+          "category": "Application",
+          "title": "Login broken on HR Self-Service",
+          "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 4,
+          "category": "Application",
+          "title": "Login broken on HR Self-Service",
+          "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        },
+        {
+          "rank": 5,
+          "category": "Application",
+          "title": "Login broken on HR Self-Service",
+          "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G032",
+      "ticket_text": "My manager said I should be able to see the finance shared folder but it just says I'm not allowed. Can you give me permission to open it?",
+      "draft": "**Suggested Resolution:**\nCorrect the inherited NTFS permissions on `\\\\fs01\\finance` for the user's relevant regional or department group, and re-propagate the ACLs so the folder can be opened as expected.\n\n*Note: The retrieved examples address permission errors on the finance folder for groups, so a human agent should double-check the user's specific departmental or regional group membership for this request.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\finance",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\finance for the relevant Noida Tech Park group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 2,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\finance",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\finance for the relevant Kolkata Branch group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 3,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\finance",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\finance for the relevant Noida Tech Park group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 4,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs01\\finance",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\finance for the relevant Ahmedabad Office group and re-propagated ACLs so the files opened as expected."
+        },
+        {
+          "rank": 5,
+          "category": "Storage",
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    },
+    {
+      "item_id": "G033",
+      "ticket_text": "I got a weird email pretending to be from HR asking me to type in my password on a link, and I think I might have clicked it by mistake. What should I do?",
+      "draft": "Based on the retrieved past tickets for similar phishing and credential-harvesting incidents, here are the recommended steps to resolve this ticket:\n\n1. Remove the phishing message from all mailboxes via mail-flow rules and block the sender domain.\n2. Immediately reset the password for the affected user who clicked the link.\n\n*Note: The retrieved examples closely match this user-reported phishing scenario, but a human agent should double-check to ensure the message has been fully purged from mailboxes and the account is secured.*",
+      "retrieved_resolutions": [
+        {
+          "rank": 1,
+          "category": "Security",
+          "title": "Brute-force attack against HR Self-Service login",
+          "resolution": "Enabled rate limiting and account lockout on the HR Self-Service login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures."
+        },
+        {
+          "rank": 2,
+          "category": "Security",
+          "title": "Phishing email reported by m.iyer",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users."
+        },
+        {
+          "rank": 3,
+          "category": "Security",
+          "title": "Brute-force attack against HR Self-Service login",
+          "resolution": "Enabled rate limiting and account lockout on the HR Self-Service login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures."
+        },
+        {
+          "rank": 4,
+          "category": "Security",
+          "title": "Phishing email reported by a.patel",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users."
+        },
+        {
+          "rank": 5,
+          "category": "Security",
+          "title": "Phishing email reported by a.patel",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users."
+        }
+      ],
+      "label": null,
+      "hedge_appropriate": null,
+      "unsupported_span": "",
+      "label_reason": ""
+    }
+  ]
+}

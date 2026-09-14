@@ -1,0 +1,798 @@
+{
+  "_meta": {
+    "purpose": "Provenance key for groundedness_set.json.",
+    "dry_run": false,
+    "config_fingerprint": "05f391baf27c",
+    "gemini_model": "gemini-flash-lite-latest",
+    "rag_gate": 0.67,
+    "eligible_population": 33,
+    "escalated_no_draft": 21,
+    "generated": 33,
+    "escalated_ids": [
+      "N06",
+      "N12",
+      "N13",
+      "N14",
+      "N15",
+      "N18",
+      "N23",
+      "N28",
+      "N30",
+      "N36",
+      "N41",
+      "N42",
+      "N43",
+      "N44",
+      "N45",
+      "A01",
+      "A02",
+      "A04",
+      "A06",
+      "A07",
+      "A08"
+    ],
+    "note": "33 is the entire eligible population of the two fixed benchmarks, not a sample. The 14-ticket NOVEL_TICKETS set is a strict subset of the 45 and adds nothing.",
+    "seed": 42
+  },
+  "items": [
+    {
+      "item_id": "G001",
+      "source": "novel-45",
+      "ticket_id": "N38",
+      "predicted_category": "Network",
+      "top_similarity": 0.6950258016586304,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6950258016586304,
+        0.6941072940826416,
+        0.6936610341072083,
+        0.6917965412139893,
+        0.6866390109062195
+      ],
+      "retrieved_ids": [
+        2875,
+        2036,
+        1262,
+        2832,
+        2226
+      ]
+    },
+    {
+      "item_id": "G002",
+      "source": "novel-45",
+      "ticket_id": "N07",
+      "predicted_category": "Database",
+      "top_similarity": 0.8307088017463684,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.8307088017463684,
+        0.8232513070106506,
+        0.8177131414413452,
+        0.8150460720062256,
+        0.8127326965332031
+      ],
+      "retrieved_ids": [
+        1940,
+        1565,
+        2625,
+        1181,
+        2223
+      ]
+    },
+    {
+      "item_id": "G003",
+      "source": "novel-45",
+      "ticket_id": "N17",
+      "predicted_category": "Application",
+      "top_similarity": 0.671837329864502,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.671837329864502,
+        0.6702755689620972,
+        0.6682990789413452,
+        0.6679714322090149,
+        0.6637352108955383
+      ],
+      "retrieved_ids": [
+        574,
+        1119,
+        3096,
+        1209,
+        1662
+      ]
+    },
+    {
+      "item_id": "G004",
+      "source": "novel-45",
+      "ticket_id": "N24",
+      "predicted_category": "Storage",
+      "top_similarity": 0.699328601360321,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.699328601360321,
+        0.696823239326477,
+        0.6962774991989136,
+        0.6958587169647217,
+        0.6954714059829712
+      ],
+      "retrieved_ids": [
+        288,
+        1506,
+        2524,
+        2980,
+        2707
+      ]
+    },
+    {
+      "item_id": "G005",
+      "source": "novel-45",
+      "ticket_id": "N37",
+      "predicted_category": "Network",
+      "top_similarity": 0.7308971881866455,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7308971881866455,
+        0.7288306355476379,
+        0.728765606880188,
+        0.7257863879203796,
+        0.7252794504165649
+      ],
+      "retrieved_ids": [
+        3245,
+        1936,
+        681,
+        3420,
+        284
+      ]
+    },
+    {
+      "item_id": "G006",
+      "source": "novel-45",
+      "ticket_id": "N19",
+      "predicted_category": "Storage",
+      "top_similarity": 0.6701457500457764,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6701457500457764,
+        0.6691107749938965,
+        0.6629567742347717,
+        0.661949872970581,
+        0.6615311503410339
+      ],
+      "retrieved_ids": [
+        2933,
+        3270,
+        2322,
+        164,
+        1428
+      ]
+    },
+    {
+      "item_id": "G007",
+      "source": "novel-45",
+      "ticket_id": "N29",
+      "predicted_category": "Security",
+      "top_similarity": 0.7032899856567383,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7032899856567383,
+        0.6970497369766235,
+        0.6947537064552307,
+        0.6900535821914673,
+        0.6896875500679016
+      ],
+      "retrieved_ids": [
+        1855,
+        1093,
+        3072,
+        1463,
+        2118
+      ]
+    },
+    {
+      "item_id": "G008",
+      "source": "novel-45",
+      "ticket_id": "N22",
+      "predicted_category": "Database",
+      "top_similarity": 0.6996182203292847,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6996182203292847,
+        0.6859225034713745,
+        0.681694507598877,
+        0.681515097618103,
+        0.6810867786407471
+      ],
+      "retrieved_ids": [
+        1369,
+        2343,
+        3182,
+        2578,
+        1816
+      ]
+    },
+    {
+      "item_id": "G009",
+      "source": "novel-45",
+      "ticket_id": "N16",
+      "predicted_category": "Application",
+      "top_similarity": 0.7240623235702515,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7240623235702515,
+        0.7207241058349609,
+        0.7153635025024414,
+        0.7150694131851196,
+        0.696830153465271
+      ],
+      "retrieved_ids": [
+        3106,
+        2927,
+        1242,
+        2398,
+        2343
+      ]
+    },
+    {
+      "item_id": "G010",
+      "source": "novel-45",
+      "ticket_id": "N21",
+      "predicted_category": "Application",
+      "top_similarity": 0.6754908561706543,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6754908561706543,
+        0.6654465794563293,
+        0.6606438159942627,
+        0.658312201499939,
+        0.657080888748169
+      ],
+      "retrieved_ids": [
+        2484,
+        2651,
+        76,
+        1717,
+        2743
+      ]
+    },
+    {
+      "item_id": "G011",
+      "source": "novel-45",
+      "ticket_id": "N27",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7543913125991821,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7543913125991821,
+        0.748735249042511,
+        0.742929995059967,
+        0.7414283752441406,
+        0.7408473491668701
+      ],
+      "retrieved_ids": [
+        329,
+        662,
+        880,
+        1205,
+        617
+      ]
+    },
+    {
+      "item_id": "G012",
+      "source": "novel-45",
+      "ticket_id": "N32",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.689045786857605,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.689045786857605,
+        0.6890381574630737,
+        0.6885855197906494,
+        0.6873412132263184,
+        0.6870357394218445
+      ],
+      "retrieved_ids": [
+        2709,
+        2237,
+        1372,
+        1427,
+        1284
+      ]
+    },
+    {
+      "item_id": "G013",
+      "source": "novel-45",
+      "ticket_id": "N11",
+      "predicted_category": "Application",
+      "top_similarity": 0.7324777245521545,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7324777245521545,
+        0.7197765111923218,
+        0.7193865776062012,
+        0.7161188125610352,
+        0.7140977382659912
+      ],
+      "retrieved_ids": [
+        2237,
+        2028,
+        2000,
+        1717,
+        1088
+      ]
+    },
+    {
+      "item_id": "G014",
+      "source": "novel-45",
+      "ticket_id": "N40",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7361388206481934,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7361388206481934,
+        0.735644519329071,
+        0.727507472038269,
+        0.7257283329963684,
+        0.7213813662528992
+      ],
+      "retrieved_ids": [
+        681,
+        1936,
+        3678,
+        3245,
+        2050
+      ]
+    },
+    {
+      "item_id": "G015",
+      "source": "novel-45",
+      "ticket_id": "N34",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7052785158157349,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7052785158157349,
+        0.7051671147346497,
+        0.7030197381973267,
+        0.7020280957221985,
+        0.6988368630409241
+      ],
+      "retrieved_ids": [
+        900,
+        653,
+        2237,
+        3761,
+        2097
+      ]
+    },
+    {
+      "item_id": "G016",
+      "source": "novel-45",
+      "ticket_id": "N08",
+      "predicted_category": "Database",
+      "top_similarity": 0.7711212038993835,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7711212038993835,
+        0.7506755590438843,
+        0.7462297677993774,
+        0.7444025278091431,
+        0.7432699203491211
+      ],
+      "retrieved_ids": [
+        3480,
+        2998,
+        1717,
+        434,
+        1490
+      ]
+    },
+    {
+      "item_id": "G017",
+      "source": "novel-45",
+      "ticket_id": "N35",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7036538124084473,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7036538124084473,
+        0.6970452666282654,
+        0.6948280334472656,
+        0.6943725347518921,
+        0.6933677792549133
+      ],
+      "retrieved_ids": [
+        1185,
+        2649,
+        2881,
+        2545,
+        1124
+      ]
+    },
+    {
+      "item_id": "G018",
+      "source": "novel-45",
+      "ticket_id": "N01",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.6753429174423218,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6753429174423218,
+        0.6657286882400513,
+        0.6655986309051514,
+        0.6635074615478516,
+        0.66264808177948
+      ],
+      "retrieved_ids": [
+        3333,
+        1855,
+        3200,
+        859,
+        3999
+      ]
+    },
+    {
+      "item_id": "G019",
+      "source": "adversarial-9",
+      "ticket_id": "A05",
+      "predicted_category": "Application",
+      "top_similarity": 0.6765815019607544,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6765815019607544,
+        0.6617802381515503,
+        0.659014105796814,
+        0.6567245125770569,
+        0.6565062999725342
+      ],
+      "retrieved_ids": [
+        3803,
+        434,
+        1100,
+        233,
+        3953
+      ]
+    },
+    {
+      "item_id": "G020",
+      "source": "novel-45",
+      "ticket_id": "N20",
+      "predicted_category": "Application",
+      "top_similarity": 0.6982809901237488,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6982809901237488,
+        0.6959514021873474,
+        0.695110559463501,
+        0.6951038837432861,
+        0.6941618323326111
+      ],
+      "retrieved_ids": [
+        796,
+        3020,
+        2372,
+        57,
+        909
+      ]
+    },
+    {
+      "item_id": "G021",
+      "source": "novel-45",
+      "ticket_id": "N26",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7010266780853271,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7010266780853271,
+        0.700791597366333,
+        0.697013258934021,
+        0.6968164443969727,
+        0.6918256878852844
+      ],
+      "retrieved_ids": [
+        2212,
+        3369,
+        587,
+        3128,
+        2685
+      ]
+    },
+    {
+      "item_id": "G022",
+      "source": "novel-45",
+      "ticket_id": "N03",
+      "predicted_category": "Network",
+      "top_similarity": 0.7057803869247437,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7057803869247437,
+        0.7033942937850952,
+        0.6891247034072876,
+        0.6850746273994446,
+        0.6800951957702637
+      ],
+      "retrieved_ids": [
+        1262,
+        2036,
+        2832,
+        2226,
+        1265
+      ]
+    },
+    {
+      "item_id": "G023",
+      "source": "novel-45",
+      "ticket_id": "N25",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7354455590248108,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7354455590248108,
+        0.7334055304527283,
+        0.7302807569503784,
+        0.7250021696090698,
+        0.7247226238250732
+      ],
+      "retrieved_ids": [
+        1669,
+        1987,
+        1593,
+        141,
+        1428
+      ]
+    },
+    {
+      "item_id": "G024",
+      "source": "novel-45",
+      "ticket_id": "N31",
+      "predicted_category": "Storage",
+      "top_similarity": 0.6747423410415649,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6747423410415649,
+        0.6720408201217651,
+        0.6648105978965759,
+        0.6642556190490723,
+        0.6634896397590637
+      ],
+      "retrieved_ids": [
+        1708,
+        662,
+        1457,
+        35,
+        3934
+      ]
+    },
+    {
+      "item_id": "G025",
+      "source": "novel-45",
+      "ticket_id": "N04",
+      "predicted_category": "Application",
+      "top_similarity": 0.7591496706008911,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7591496706008911,
+        0.7572548389434814,
+        0.7564557790756226,
+        0.7476693391799927,
+        0.7476005554199219
+      ],
+      "retrieved_ids": [
+        3606,
+        3960,
+        1997,
+        2700,
+        2256
+      ]
+    },
+    {
+      "item_id": "G026",
+      "source": "adversarial-9",
+      "ticket_id": "A03",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.6704270839691162,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6704270839691162,
+        0.667811393737793,
+        0.6473280191421509,
+        0.6459860801696777,
+        0.6452356576919556
+      ],
+      "retrieved_ids": [
+        3953,
+        3803,
+        3480,
+        2246,
+        3724
+      ]
+    },
+    {
+      "item_id": "G027",
+      "source": "novel-45",
+      "ticket_id": "N05",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7308734059333801,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7308734059333801,
+        0.7298116683959961,
+        0.7293685674667358,
+        0.727753221988678,
+        0.7273001670837402
+      ],
+      "retrieved_ids": [
+        1985,
+        3197,
+        3868,
+        550,
+        376
+      ]
+    },
+    {
+      "item_id": "G028",
+      "source": "novel-45",
+      "ticket_id": "N39",
+      "predicted_category": "Database",
+      "top_similarity": 0.7392354607582092,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7392354607582092,
+        0.7367703914642334,
+        0.7305928468704224,
+        0.7299779653549194,
+        0.7270808219909668
+      ],
+      "retrieved_ids": [
+        2272,
+        2100,
+        3462,
+        3566,
+        848
+      ]
+    },
+    {
+      "item_id": "G029",
+      "source": "adversarial-9",
+      "ticket_id": "A09",
+      "predicted_category": "Security",
+      "top_similarity": 0.6896988153457642,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6896988153457642,
+        0.6856029033660889,
+        0.6838580965995789,
+        0.6801137924194336,
+        0.6788879632949829
+      ],
+      "retrieved_ids": [
+        3589,
+        3985,
+        3908,
+        2413,
+        1200
+      ]
+    },
+    {
+      "item_id": "G030",
+      "source": "novel-45",
+      "ticket_id": "N10",
+      "predicted_category": "Security",
+      "top_similarity": 0.6733653545379639,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.6733653545379639,
+        0.6732670068740845,
+        0.6636064052581787,
+        0.6613088250160217,
+        0.6602494716644287
+      ],
+      "retrieved_ids": [
+        2678,
+        3731,
+        645,
+        3596,
+        3338
+      ]
+    },
+    {
+      "item_id": "G031",
+      "source": "novel-45",
+      "ticket_id": "N33",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7361786365509033,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7361786365509033,
+        0.735920786857605,
+        0.7356395721435547,
+        0.7323518991470337,
+        0.7309004068374634
+      ],
+      "retrieved_ids": [
+        3540,
+        1272,
+        410,
+        2196,
+        2996
+      ]
+    },
+    {
+      "item_id": "G032",
+      "source": "novel-45",
+      "ticket_id": "N02",
+      "predicted_category": "Storage",
+      "top_similarity": 0.8112151622772217,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.8112151622772217,
+        0.8088757991790771,
+        0.8055725693702698,
+        0.8054701089859009,
+        0.7887563705444336
+      ],
+      "retrieved_ids": [
+        213,
+        1320,
+        3901,
+        1802,
+        2634
+      ]
+    },
+    {
+      "item_id": "G033",
+      "source": "novel-45",
+      "ticket_id": "N09",
+      "predicted_category": "Security",
+      "top_similarity": 0.7071911096572876,
+      "llm_model": "gemini-flash-lite-latest",
+      "config_fingerprint": "05f391baf27c",
+      "retrieved_similarities": [
+        0.7071911096572876,
+        0.7064197063446045,
+        0.7044321298599243,
+        0.7035045027732849,
+        0.7022813558578491
+      ],
+      "retrieved_ids": [
+        3099,
+        1801,
+        1327,
+        3989,
+        3306
+      ]
+    }
+  ]
+}
