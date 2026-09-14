@@ -1,12 +1,13 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `b6d0d5a` — Phase 2B finding: 93.9% grounded, and an LLM
-judge that fails on this rubric
-**Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** **Phase 2 complete.** 2A (automation-flag validation) and
-2B (resolution groundedness) are both labelled, scored and written up.
-Production gates unchanged; both phases were measurement-only.
+**Last commit:** `1c753ae` — Phase 3A: persist Tier-1 instead of refitting it
+at startup
+**Branch:** `main`, **2 commits ahead of `origin/main` (unpushed)** — Phase 3A
+is committed locally and waiting on the review gate before it is pushed
+**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phase 3A
+complete.** Phase 2 closed and its gate cleared. 3A persisted Tier-1 and is
+parity-preserving: no number moved. Production gates unchanged.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -17,7 +18,7 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **69 passed**, offline, ~60s |
+| Test suite | `pytest` | **75 passed**, offline, ~40s |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
@@ -218,22 +219,75 @@ is readable.
 
 ---
 
+### Phase 3A — Tier-1 persistence (`1c753ae`)
+
+First sub-phase of the orchestrator work. Tier-1 was refitted from
+`synthetic_tickets.csv` on every process start; a per-request service cannot
+do that, so it is now a persisted artifact built by
+`python src/classification/train_tier1.py`.
+
+**Parity-preserving, as Phase 3 is meant to be — no number moved.** Goldens
+exact (45/45 and 9/9), adversarial 9/9, and
+`data/adversarial_escalation_results.csv` regenerates byte-identical.
+Persistence is verified bit-exact against a fresh fit: predictions identical,
+max confidence delta 0.0.
+
+Measured: fit 1.56s vs load 0.014s. The latency win is real but small beside
+BGE's ~60s, so the justification is determinism and deployability — the model
+is a pinned, fingerprinted object rather than something re-derived at boot.
+
+**The guard is the substance.** Persisting a model creates a new place for a
+stale artifact to hide, so the bundle carries a manifest (dataset sha256, rows
+fitted, sklearn version, vectorizer config) that `artifacts.load_tier1()`
+verifies. No refit-on-miss fallback — that would be the silent-fallback
+pattern `test_no_silent_fallback.py` bans. The specific trap it catches:
+Tier-1 is fitted on the **full** 4,000 rows, not the 80/20 split every other
+script in `src/classification/` uses, and a split fit would shift every
+cascade routing decision invisibly.
+
+**Also consolidated three Tier-1 derivations into one.** `streamlit_app.py`
+and `test_adversarial_escalation.py` each still fitted their own Tier-1 and
+passed it to `pipeline.run()`, so both bypassed the persisted artifact — the
+same shape as the four divergent loaders Phase 0 removed. Both now load
+through `artifacts.load_tier1()`. `calibrate_conformal.py` and
+`plot_calibration_curves.py` keep their own fits deliberately: they fit on
+leave-out subsets and must not use the production artifact.
+
+Test suite 69 → 75; `conformal.py` was also added to the import-side-effect
+guard list, where it had been missing since Phase 1.
+
+---
+
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean, everything pushed.
+**Nothing is mid-flight.** Working tree clean. Phase 3A is committed locally
+and **not pushed** — it is waiting on the review gate.
 
 ---
 
 ## Immediate next step
 
-**Phase 2 is closed. The review gate is here** — confirm the 2A and 2B
-write-ups read correctly before any Phase 3 work begins.
+**The Phase 3A review gate is here.** Confirm the change reads correctly, then
+push. Do not start 3B before it clears.
 
-Next in the agreed sequence: **multi-agent orchestrator** → drift detection →
-Docker/CI packaging. Tier-1 persistence is that phase's natural first task,
-since a per-request service cannot refit Tier-1 per call.
+Phase 3 was planned this session with two decisions taken up front:
 
-Phase 3 has not been planned. Do not start it before this gate clears.
+- **Orchestration logic stays in Python.** Agents become independent modules
+  behind a typed contract with FastAPI as transport; n8n may wrap the
+  endpoints later for the demo but owns no decision, because the escalation
+  gate must stay inside pytest and the goldens.
+- **Phase 3 is parity-preserving architecture, not a new experiment.** Success
+  is that no number moves. Any new claim needs its own evidence and gate.
+
+Remaining sub-phases, each with its own gate:
+
+| Sub-phase | Scope |
+|---|---|
+| 3B | Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`; still in-process |
+| 3C | FastAPI service — per-agent endpoints, `/triage`, startup preload, health endpoint reporting `config_fingerprint()` |
+| 3D | n8n workflow over the endpoints (presentation only) + architecture write-up |
+
+After Phase 3: drift detection → Docker/CI packaging.
 
 ---
 
@@ -258,9 +312,10 @@ Phase 3 has not been planned. Do not start it before this gate clears.
   that extra recall is wanted depends on review-queue capacity. Decide it as
   a product question or re-run the harness on deployment-distribution data;
   do not reopen it as a calibration question.
-- **Should Tier-1 be persisted rather than fitted at startup?** It is currently
-  refit on every startup. Not needed yet; it blocks the orchestrator phase, where
-  a per-request service cannot refit per call.
+- ~~**Should Tier-1 be persisted rather than fitted at startup?**~~ **Answered
+  in Phase 3A: yes, and it is.** Loaded from `models/tier1_tfidf_logreg.joblib`
+  through `artifacts.load_tier1()`, behind a manifest guard, with no behaviour
+  change.
 - **Is the 45-ticket benchmark large enough to carry the conformal claims?** Each
   ticket is worth 2.2 coverage points, so a ±2 s.d. band at α = 0.10 is ~4.5
   points. Findings 1 and 2 clear that comfortably; some Tier-2 differences do not.
@@ -274,11 +329,17 @@ Phase 3 has not been planned. Do not start it before this gate clears.
   the resolution-clustering calibration behind the production 0.80 threshold.
   Regenerating them under BGE requires re-deriving that threshold in the same
   change. Never a side effect.
-- **The recurring stale-artifact bug class has surfaced four times**, most
-  recently reaching published results and standing for eleven days. Anything
-  touching a model, index, or threshold should be assumed to have a fifth
-  instance waiting. Run `pytest` and the adversarial gate before believing a
-  green result.
+- **The recurring stale-artifact bug class has surfaced five times**, once
+  reaching published results and standing for eleven days. Anything touching a
+  model, index, or threshold should be assumed to have a sixth instance
+  waiting. Run `pytest` and the adversarial gate before believing a green
+  result.
+- **Tier-1 is now a persisted artifact, which is new surface for that class.**
+  A clean clone must run `python src/classification/train_tier1.py`, and the
+  artifact must be rebuilt whenever `synthetic_tickets.csv` changes. The
+  manifest guard turns both into a loud failure rather than a silent wrong
+  answer, but the guard is only as good as the manifest — do not add a
+  refit-on-miss fallback to make the error go away.
 - **Scope anchors buy label accuracy at the cost of diversity.** Tightening the
   Infrastructure anchor cut self-consistency rejections from 36% to 3% and
   produced 21 near-duplicate pairs. Three Gemini generators in this project use
