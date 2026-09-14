@@ -114,6 +114,17 @@ python src/experiments/explore_resolution_clustering.py
 python src/experiments/calibrate_resolution_clustering.py
 python src/experiments/calibrate_resolution_clustering_percategory.py
 python src/experiments/flag_automation_candidates.py          # the production feature
+
+# Phase 2A -- automation-flag validation (offline, no Gemini quota)
+python src/experiments/build_flag_validation_set.py           # add --pilot for the 12-pair probe
+python src/experiments/score_flag_validation_set.py           # add --pilot to score it
+
+# Phase 2B -- resolution groundedness. SPENDS GEMINI QUOTA: one call per
+# draft, then one per judge verdict (33 + 33). ALWAYS dry-run first.
+python src/experiments/build_groundedness_set.py --limit 3    # prompt check, 3 calls
+python src/experiments/build_groundedness_set.py              # 33 calls
+python src/experiments/run_groundedness_judge.py              # 33 calls
+python src/experiments/score_groundedness_set.py              # offline, 0 calls
 ```
 
 `calibrate_rag_similarity_threshold.py` is the one script run as a module (`-m`).
@@ -271,16 +282,28 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## The recurring bug class
 
-Four occurrences so far, all the same shape: an artifact or constant surviving a model
-swap un-migrated, staying internally consistent, and therefore producing wrong results
-with no error.
+Five occurrences so far, all the same shape: a value or artifact that is wrong for its
+context, stays internally consistent, and therefore produces wrong results with no
+error. The first four were model swaps; the fifth shows the shape is not limited to
+those.
 
 1. Silent stale embedding cache during the BGE swap.
 2. `test_adversarial_escalation.py` keeping its own MiniLM constants.
 3. `process_ticket_batch.py` encoding with MiniLM against a BGE index.
 4. `run_ablation_study.py` measuring the entire pre-BGE pipeline — this one reached
    published results and stood for eleven days.
+5. `build_groundedness_set.py` testing `result.status == ResolutionStatus.ESCALATED`
+   to decide which benchmark tickets reach the resolver. A RAG-gate escalation carries
+   status `NEEDS_HUMAN_RESOLUTION`; `ESCALATED` belongs to the *filing* gate. The check
+   ran clean, returned a plausible number, and silently classed all 21 escalating
+   tickets as eligible — it would have spent 54 Gemini calls instead of 33 and drafted
+   for tickets production never sends to the resolver, contaminating the result with
+   items that do not exist in production. **Escalation is `decision.escalated`, never
+   the status enum** — that field is true in every escalation branch. Caught only
+   because the dry run's count (54/0) was checked against an independently measured
+   number (33/21).
 
-When touching anything model-related, assume a fifth is waiting. Run `pytest` and the
-adversarial gate before believing a green result.
+When touching anything model-related — or any routing/eligibility test — assume a sixth
+is waiting. Run `pytest` and the adversarial gate before believing a green result, and
+check any count you rely on against a second, independent derivation of it.
 
