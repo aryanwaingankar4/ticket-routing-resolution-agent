@@ -132,6 +132,13 @@ def log_decision(result, **extra: Any) -> None:
             "status": result.status.value,
             "config_fingerprint": result.config_fingerprint,
             "latency_ms": result.latency_ms,
+            # Per-agent trace, flattened into two compact maps. A resolution
+            # agent recorded as "skipped" is the positive evidence that the
+            # RAG gate held and no LLM call was made.
+            "agent_status": {s.agent: s.status.value for s in result.steps},
+            "agent_latency_ms": {
+                s.agent: round(s.latency_ms, 3) for s in result.steps
+            },
             **extra,
         },
     )

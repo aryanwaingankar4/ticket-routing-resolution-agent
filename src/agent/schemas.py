@@ -124,6 +124,34 @@ class ResolutionSuggestion(_Model):
     grounded_ticket_ids: list[str | int] = Field(default_factory=list)
 
 
+class StepStatus(str, Enum):
+    """What happened to one agent on one request."""
+
+    OK = "ok"
+    SKIPPED = "skipped"
+    FAILED = "failed"
+
+
+class StepTrace(_Model):
+    """One agent's participation in a single request.
+
+    The orchestrator records these so a decision can be read back as a
+    sequence of agent actions rather than as one opaque outcome. `SKIPPED` is
+    as informative as `OK` here: a resolution step marked skipped is the
+    positive evidence that the LLM was never called, which is the property the
+    RAG gate exists to provide.
+
+    logging_setup.py was written in Phase 1 on the basis that decision records
+    are "the raw input for drift detection". These are the per-agent half of
+    that record.
+    """
+
+    agent: str
+    status: StepStatus
+    latency_ms: float
+    detail: str | None = None
+
+
 class ConformalPrediction(_Model):
     """A conformal prediction set for one ticket.
 
@@ -185,6 +213,11 @@ class PipelineResult(_Model):
     # Populated only when settings.conformal.enabled. Default None keeps
     # results byte-identical to the Phase 0 goldens.
     conformal: ConformalPrediction | None = None
+
+    # Per-agent trace, populated by the orchestrator. Default-empty for the
+    # same reason `conformal` defaults to None: stored results and the Phase 0
+    # goldens must be unaffected by a field being added here.
+    steps: list[StepTrace] = Field(default_factory=list)
 
     @property
     def escalated(self) -> bool:

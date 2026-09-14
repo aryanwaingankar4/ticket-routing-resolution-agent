@@ -1,13 +1,13 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `1c753ae` — Phase 3A: persist Tier-1 instead of refitting it
-at startup
-**Branch:** `main`, **2 commits ahead of `origin/main` (unpushed)** — Phase 3A
-is committed locally and waiting on the review gate before it is pushed
-**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phase 3A
-complete.** Phase 2 closed and its gate cleared. 3A persisted Tier-1 and is
-parity-preserving: no number moved. Production gates unchanged.
+**Last commit:** `<3B commit>` — Phase 3B: agent boundaries and the
+orchestrator
+**Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3B is
+committed locally and waiting on the review gate before it is pushed
+**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phases 3A and 3B
+complete.** Both parity-preserving: no number moved. Production gates
+unchanged. 3A's gate cleared and was pushed (`9320c18`).
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -18,7 +18,7 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **75 passed**, offline, ~40s |
+| Test suite | `pytest` | **92 passed**, offline, ~73s |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
@@ -258,19 +258,67 @@ guard list, where it had been missing since Phase 1.
 
 ---
 
+### Phase 3B — agent boundaries and the orchestrator (`<3B commit>`)
+
+The restructure the phase is named for. The three stages were free functions
+with three different signatures, each taking the whole `Artifacts` blob and
+reaching into whatever it needed; nothing declared what a stage actually
+depended on, so nothing could be moved or served independently.
+
+**Parity-preserving — no number moved.** Goldens exact, adversarial 9/9,
+benchmark 32/45, regression CSV byte-identical. **No consumer changed**:
+`pipeline.run()` stayed as a façade over `orchestrator.run()`, so all seven
+call sites were untouched.
+
+What is actually different, and why each matters for 3C:
+
+- **Declared dependencies.** Each agent names the `Artifacts` fields it
+  requires, validated at construction — a missing *or misspelled* dependency
+  fails before routing starts. That declaration is the agent boundary written
+  down, and it is what makes splitting the agents across HTTP endpoints in 3C
+  mechanical rather than exploratory.
+- **The orchestrator owns all routing.** No agent reads a threshold or knows
+  what runs after it. Both gates are pure functions (`_filing_gate`,
+  `_rag_gate`) testable without loading a model — an escalation policy that
+  needs BGE and FAISS to test is one nobody tests.
+- **Per-agent traces.** `PipelineResult.steps` records every agent including
+  the skipped ones, and the decision log carries `agent_status` and
+  `agent_latency_ms`. A resolution step marked `skipped` is the positive
+  evidence that the RAG gate held and no LLM call was made. This is the
+  per-agent history drift detection will read.
+
+Stage implementations (`classifier.py`, `retriever.py`, `resolver.py`) were
+deliberately **not** touched — they hold the parity-critical logic (the
+L2-normalise before search, the calibrated prompt, the retry ladder) and are
+wrapped, not absorbed.
+
+The one observable difference, on a path unreachable in practice: a missing
+Gemini client is now recorded with `error_kind` `ArtifactError` where it said
+`LLMError`. Same status, same escalation, same gate.
+
+Test suite 75 → 92.
+
+---
+
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean. Phase 3A is committed locally
+**Nothing is mid-flight.** Working tree clean. Phase 3B is committed locally
 and **not pushed** — it is waiting on the review gate.
 
 ---
 
 ## Immediate next step
 
-**The Phase 3A review gate is here.** Confirm the change reads correctly, then
-push. Do not start 3B before it clears.
+**The Phase 3B review gate is here.** Confirm the change reads correctly, then
+push. Do not start 3C before it clears.
 
-Phase 3 was planned this session with two decisions taken up front:
+**3C is where the agent failure boundary lands.** It was deliberately deferred
+from 3B: agent errors still propagate exactly as they always have, and a
+FastAPI service cannot crash the process on one bad request. Expect a new
+`EscalationReason` for it, and note that it is a real behaviour change on the
+failure path — plan it as such.
+
+Phase 3 was planned with two decisions taken up front:
 
 - **Orchestration logic stays in Python.** Agents become independent modules
   behind a typed contract with FastAPI as transport; n8n may wrap the
@@ -283,8 +331,8 @@ Remaining sub-phases, each with its own gate:
 
 | Sub-phase | Scope |
 |---|---|
-| 3B | Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`; still in-process |
-| 3C | FastAPI service — per-agent endpoints, `/triage`, startup preload, health endpoint reporting `config_fingerprint()` |
+| ~~3B~~ | ~~Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`~~ — **done** |
+| 3C | FastAPI service — per-agent endpoints, `/triage`, startup preload, health endpoint reporting `config_fingerprint()`, plus the agent failure boundary deferred from 3B |
 | 3D | n8n workflow over the endpoints (presentation only) + architecture write-up |
 
 After Phase 3: drift detection → Docker/CI packaging.

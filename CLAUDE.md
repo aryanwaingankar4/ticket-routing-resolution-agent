@@ -129,13 +129,17 @@ python src/experiments/score_groundedness_set.py              # offline, 0 calls
 ```
 
 `calibrate_rag_similarity_threshold.py` is the one script run as a module (`-m`).
-There are no `__init__.py` files anywhere — `src.experiments.*` resolves as an implicit
-namespace package, so it only works from the project root.
+`src/experiments/` and `src/classification/` have no `__init__.py` — `src.experiments.*`
+resolves as an implicit namespace package, so it only works from the project root.
+(`src/agent/` does have one, and is a regular package.)
 
 ## Architecture
 
 Sequential pipeline with two confidence gates, plus one offline analysis path.
-It is explicitly **not** a multi-agent system yet (that is a planned phase).
+As of Phase 3B the stages are separated into agents with declared dependencies behind
+an orchestrator, but they still run **in one process, sequentially**. Do not describe
+this as a distributed multi-agent system: no agent runs independently of the others
+yet, and nothing is served over a network. That is Phase 3C.
 
 **All inference lives in `src/agent/`** — one implementation, consolidated from what
 were four independent copies:
@@ -147,15 +151,27 @@ src/agent/
 ├── errors.py        typed exceptions; ONE Gemini error ladder (was three)
 ├── logging_setup.py structured JSON decision logs
 ├── artifacts.py     THE loader, with all three hard guards
-├── classifier.py    cascade Tier-1 -> Tier-2
-├── retriever.py     FAISS retrieval
-├── resolver.py      prompt + Gemini call with retry
-└── pipeline.py      run(TicketIn) -> PipelineResult
+├── classifier.py    cascade Tier-1 -> Tier-2          (stage implementation)
+├── retriever.py     FAISS retrieval                    (stage implementation)
+├── resolver.py      prompt + Gemini call with retry    (stage implementation)
+├── agents.py        the three agents: name + requires + run()
+├── orchestrator.py  the sequence and BOTH gates; run(TicketIn) -> PipelineResult
+└── pipeline.py      the public façade over orchestrator.run()
 ```
 
 `streamlit_app.run_pipeline()`, `test_adversarial_escalation.run_ticket_through_
 pipeline()` and `process_ticket_batch` are now thin adapters over `pipeline.run()`.
 Add new consumers the same way — never re-implement the orchestration.
+
+**Agents vs orchestrator (Phase 3B).** `classifier.py`, `retriever.py` and
+`resolver.py` hold the parity-critical stage logic and are wrapped, not absorbed,
+by the agents in `agents.py`. An agent declares `requires` — the attributes of
+`Artifacts` it cannot work without — and those are validated at construction, so a
+missing or misspelled dependency fails before any routing happens. **An agent
+decides nothing**: no agent reads a threshold or knows what runs after it. Every
+gate lives in `orchestrator.py`, which also records a `StepTrace` per agent
+(including the ones deliberately skipped — a `skipped` resolution step is the
+positive evidence that no LLM call was made).
 
 ```
 ticket text

@@ -120,6 +120,8 @@ def test_agent_package_declares_no_local_thresholds():
     # conformal.py was added in Phase 1 and never listed here, so the
     # import-side-effect guard had a hole in it.
     "conformal",
+    # Phase 3B.
+    "agents", "orchestrator",
 ])
 def test_agent_modules_import_without_side_effects(module_name):
     """Importing the library must not load models, read .env, or print.
