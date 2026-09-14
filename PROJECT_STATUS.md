@@ -1,8 +1,8 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `639ab6a` — Add Phase 2B groundedness harness and its
-generated data (no finding yet)
+**Last commit:** `b6d0d5a` — Phase 2B finding: 93.9% grounded, and an LLM
+judge that fails on this rubric
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
 **Current phase:** **Phase 2 complete.** 2A (automation-flag validation) and
 2B (resolution groundedness) are both labelled, scored and written up.
