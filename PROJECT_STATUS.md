@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-14
-**Last commit:** `<3B commit>` — Phase 3B: agent boundaries and the
+**Last commit:** `156f07b` — Phase 3B: agent boundaries and the
 orchestrator
 **Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3B is
 committed locally and waiting on the review gate before it is pushed
@@ -258,7 +258,7 @@ guard list, where it had been missing since Phase 1.
 
 ---
 
-### Phase 3B — agent boundaries and the orchestrator (`<3B commit>`)
+### Phase 3B — agent boundaries and the orchestrator (`156f07b`)
 
 The restructure the phase is named for. The three stages were free functions
 with three different signatures, each taking the whole `Artifacts` blob and
