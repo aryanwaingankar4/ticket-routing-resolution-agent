@@ -278,7 +278,17 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   regenerating them under BGE would silently invalidate it. Re-running is a deliberate
   decision requiring its own re-calibration — never a side effect of another change.
 - Resolution clustering is still MiniLM on purpose. BGE is measured (pooled cliff 0.90)
-  but not promoted, because no ground-truth check for automation-flag quality exists.
+  but not promoted. Phase 2A built the missing ground-truth check and it returned a
+  negative result: neither configuration makes a cross-template merge anywhere, so the
+  two are indistinguishable on precision and differ only in recall. Promotion is now a
+  product decision about review-queue capacity, not a calibration one — do not reopen
+  it as a calibration question.
+- **Never use an LLM judge unaudited.** Phase 2B measured one against human labels on
+  the same rubric, shared verbatim so both answered the same question. Raw agreement
+  was 90.9% and Cohen's κ was **−0.042**: every disagreement was the judge substituting
+  *appropriateness* for *support*, in both directions. A judge is an object of study
+  here, never a scaling tool, unless a human-labelled subset large enough to read every
+  disagreement says otherwise. An aggregate agreement score will not reveal this.
 
 ## The recurring bug class
 

@@ -862,7 +862,7 @@ Results:
 [`resolution_clustering_calibration_percategory_summary.csv`](data/resolution_clustering_calibration_percategory_summary.csv)
 (one row per category).
 
-### Phase 2 — automation-flag validation (the BGE promotion question)
+### Phase 2A — automation-flag validation (the BGE promotion question)
 
 The two sections above leave one question open, and the "Pending" list
 named it as the prerequisite for any production swap: BGE's clustering is
@@ -1051,6 +1051,216 @@ Gemini quota. Data:
 [`automation_flag_validation_pilot_results.csv`](data/automation_flag_validation_pilot_results.csv)
 (scored output). The unlabelled 60-pair set is retained for the record,
 since building it is what produced the diagnostic.
+
+### Phase 2B — resolution groundedness, and the limits of an LLM judge
+
+Phase 2A ended by establishing that the in-distribution corpus could not
+answer the question put to it. Phase 2B asked a different question —
+**does the resolver say only what its retrieved context supports?** — and
+this time the data could answer, because a pre-flight diagnostic was run
+before any quota was spent to check that it could.
+
+#### The pre-flight diagnostic
+
+A judge can only find an unsupported claim if the retrieved context leaves
+room for one. If all five retrieved resolutions prescribe the same fix, any
+faithful draft is grounded by construction and the judge returns 1.0 on every
+item with no variance — the exact 2A failure mode. So before designing the
+harness, the retrieved context was measured directly: production BGE
+retrieval, with the calibrated production resolution-clustering instrument
+(MiniLM @ 0.80, union-find) used to ask how many *distinct fixes* appear in
+each top-5.
+
+| Query set | All 5 → one fix | 2+ distinct fixes | Mean pairwise sim | Spans >1 category |
+|---|---:|---:|---:|---:|
+| In-distribution (n=200) | **85.0%** | 15.0% | 0.945 | 0.5% |
+| Novel-45 | 28.9% | **71.1%** | 0.720 | 40.0% |
+| Adversarial-9 | 11.1% | **88.9%** | 0.663 | 44.4% |
+
+The in-distribution corpus is structurally degenerate, exactly as 2A found
+for clustering. The benchmarks are not. **The degeneracy is a property of the
+template-generated corpus, not of groundedness as a construct** — which is
+why 2B could proceed where 2A could not.
+
+That settled the scope: the two fixed benchmarks, and not the 500-ticket
+in-distribution batch. The batch was disqualified twice over — degenerate
+context, and drafts generated under MiniLM retrieval, so the context they saw
+is not the context they would be judged against. A groundedness audit must
+judge a draft against its real context.
+
+Of 54 benchmark tickets, 21 escalate at the RAG gate and never reach Gemini,
+so no draft exists to judge. That leaves **33** (novel-45: 30,
+adversarial-9: 3) — the entire eligible population, not a sample. The
+14-ticket `NOVEL_TICKETS` set was checked and is a strict subset of the 45
+(14/14 verbatim); it adds nothing.
+
+#### Design
+
+One rubric, defined once and shared **verbatim** by the human labeller and the
+LLM judge — agreement is only interpretable if both answered the same
+question, so the judge imports the rubric string rather than restating it.
+Three levels (`grounded` / `partially_grounded` / `ungrounded`) plus a
+`hedge_appropriate` boolean.
+
+At n = 33 the human labels everything, so **the judge is not a labour-saving
+device — it is the object of study**, and judge–human agreement is reported as
+a result in its own right. Its verdicts are written to a separate file so they
+cannot leak into the labelling pass, which is itself blind: the labelling file
+carries only the ticket, the draft and the retrieved resolutions, shuffled at
+seed 42, with no provenance, similarities or source benchmark.
+
+One rubric clause was added after a 3-draft dry run and **before any
+labelling**, because a dry-run case exposed a gap: a draft that declines to
+apply the retrieved fix and recommends human investigation. Read literally,
+its "investigate" step is unsupported, which would have penalised a correct
+refusal. The clause makes declining explicitly `grounded`. It was fixed before
+labelling deliberately — changing a rubric afterwards would silently
+invalidate the judge–human comparison.
+
+#### Primary result: groundedness
+
+| Label | n | Rate | Wilson 95% CI |
+|---|---:|---:|---|
+| `grounded` | 31 / 33 | **93.9%** | 80.4% – 98.3% |
+| `partially_grounded` | 0 / 33 | 0.0% | 0.0% – 10.4% |
+| `ungrounded` | 2 / 33 | 6.1% | 1.7% – 19.6% |
+
+The two ungrounded cases share a precise and repeatable shape, and it is not
+the shape the rubric clause was written for.
+
+**G021** (laptop disk full) and **G024** (ransomware pop-ups) both retrieved
+irrelevant context — network-share disk performance and NTFS permissions
+respectively. Both drafts correctly *recognised* the mismatch and said so
+explicitly. Then both went on to prescribe a substantive fix anyway, drawn
+from general knowledge rather than from anything retrieved: inspecting local
+disk usage and clearing old files in G021; disconnecting the machine from the
+network and escalating to incident response in G024.
+
+The contrast is what makes this a finding rather than an anecdote. **Ten of
+the 33 drafts contain explicit mismatch language. Eight of them declined
+cleanly and are grounded. Only these two acknowledged the mismatch and then
+prescribed unsupported content regardless.** So the failure is not "the model
+cannot tell when retrieval is irrelevant" — it demonstrably can, 10 times out
+of 10. The failure is that recognising irrelevance does not reliably stop it
+from answering anyway.
+
+**G024 is the cleanest illustration of why groundedness is not quality.**
+"Disconnect from the network and escalate to the security team" is excellent
+ransomware advice — very likely better than anything the retrieved tickets
+could have supported. It is also entirely ungrounded. The rubric anticipated
+this ("a draft can be excellent advice and still be ungrounded"), and the
+labelling held the line. A groundedness metric that rewarded good advice
+would have measured something else. (Note also that a ransomware ticket was
+routed to **Storage** — a separate classification concern, not a groundedness
+one.)
+
+#### Secondary result: hedge appropriateness
+
+The resolver prompt instructs the drafter to close with a note saying either
+that the retrieved examples closely match or that a human should verify.
+Judged against how well the retrieved resolutions actually agree with each
+other and with the ticket:
+
+**32 / 33 appropriate (97.0%, Wilson 95% CI 84.7–99.5%)** — 10/10 where the
+context collapsed to a single fix, 22/23 where it carried two or more. The
+single inappropriate hedge was G033.
+
+This costs nothing extra to measure: the note is already in every draft, and
+the context heterogeneity is the same quantity the pre-flight diagnostic
+computed offline.
+
+#### Methodological result: the LLM judge fails on this rubric, and the negative kappa says how
+
+| Dimension | Raw agreement | Cohen's κ |
+|---|---:|---:|
+| Groundedness | 30 / 33 = **90.9%** | **−0.042** |
+| `hedge_appropriate` | 32 / 33 = 97.0% | 0.000 |
+
+A κ below zero means the two raters agreed *less* than their marginal
+distributions alone would predict. With 90.9% raw agreement that looks
+paradoxical, and part of it genuinely is the well-known prevalence effect:
+when 31 of 33 items sit in one category, chance agreement is already ≈91%, so
+there is almost no headroom above it and κ becomes hypersensitive. At n = 33
+with three disagreements, the point estimate −0.042 carries enormous
+uncertainty and **should not be quoted as a magnitude**.
+
+What survives that caveat is the *mechanism*, because all three disagreements
+fall on one axis — and in both directions:
+
+- **G021, G024** — judge `grounded`, human `ungrounded`. The judge credited
+  the drafts for recognising that retrieved context was irrelevant, and did
+  not penalise the unsupported fix each then prescribed. Its stated reasons
+  say so outright: *"correctly recognizes that the retrieved examples are
+  irrelevant... and appropriately declines to apply them."* The draft did not
+  decline. It said the examples did not match and then answered anyway. The
+  judge **over-applied the declining-is-not-unsupported clause**, stopping at
+  the acknowledgement without checking what followed it.
+
+- **G012** — judge `ungrounded`, human `grounded`. Here the draft prescribed
+  the retrieved session-cookie fix, which the context does support, and hedged
+  that the new employee may instead need an account provisioned. The judge
+  marked it ungrounded because the fix *"completely contradicts its own
+  correct observation"* — that is, because the advice was inappropriate to the
+  ticket. The rubric explicitly forbids this: *"Do NOT judge whether the draft
+  is a good fix."*
+
+Both error types are the same confusion with opposite signs: **the judge
+substituted appropriateness for support.** In G021/G024 it rewarded a draft
+for noticing that its context was inappropriate; in G012 it punished a draft
+for being inappropriate despite being supported. That is why the errors are
+anti-aligned with the human axis rather than scattered, and it is why κ lands
+at or below zero instead of merely low.
+
+So the negative κ is a real result and not a null one — but the load-bearing
+evidence is the case-by-case mechanism, identifiable because n = 33 was small
+enough to read every disagreement. **An LLM judge should not be trusted
+unaudited on a rubric whose central distinction is support-versus-quality,**
+which is precisely the distinction groundedness rests on. Had the judge been
+used as a scaling tool over hundreds of items — the design this harness
+started as — it would have reported ~97% grounded, missed both real failures,
+and invented a third. The agreement number would have looked reassuring.
+
+That is the methodological contribution here: not that LLM judges are
+unreliable in general, but that raw agreement of 90.9% concealed a
+systematically wrong judge, and only labelling the full population and reading
+every disagreement exposed it.
+
+#### Honest limits
+
+n = 33 gives a proportion a ±2 s.d. band of roughly ±17 points at p = 0.5,
+tightening to about ±10 near p = 0.9 — hence the Wilson intervals above rather
+than bare percentages. The 93.9% groundedness rate is compatible with anything
+from ~80% to ~98%. Enough to say gross ungroundedness is not endemic; not
+enough to claim a precise rate.
+
+The adversarial-9 set contributes only 3 drafts (the other 6 escalate, as they
+are designed to). All three are grounded, but nothing can be claimed about
+that subset on its own.
+
+The κ figures inherit both the small n and the prevalence effect, as above.
+The hedge κ of 0.000 is degenerate for a specific reason worth recording: the
+**judge** returned `hedge_appropriate: true` on all 33 items, so it had no
+variance at all, while the human returned one `false`. A κ computed against a
+constant rater is uninformative by construction; the 97% raw agreement is the
+only readable number there, and it should never be cited as a κ.
+
+Finally, the same dataset limit that closed 2A applies here in a narrower
+form: these 33 tickets are the only out-of-template text the project has, and
+they are a fixed benchmark that has now been used for classification
+accuracy, conformal coverage, and groundedness. Reusing one small benchmark
+across several questions accumulates selection risk that no single experiment
+can see.
+
+Scripts: `src/experiments/build_groundedness_set.py` (`--limit N` to dry-run),
+`src/experiments/run_groundedness_judge.py`,
+`src/experiments/score_groundedness_set.py` (offline). Data:
+[`groundedness_set.json`](data/groundedness_set.json) (33 labelled drafts with
+their retrieved context),
+[`groundedness_key.json`](data/groundedness_key.json) (provenance),
+[`groundedness_judge.json`](data/groundedness_judge.json) (judge verdicts),
+[`groundedness_results.csv`](data/groundedness_results.csv) (scored). Every
+draft carries config fingerprint `05f391baf27c`; the builder aborts if a run
+produces more than one.
 
 ### Automation-flagging feature
 
@@ -1255,18 +1465,30 @@ That remains a scoped future extension, not something built yet.
 
 ### Pending
 
-1. **Re-run the automation-flag validation on deployment-distribution
-   data** — Phase 2 is complete and its harness works, but it ran into
-   the dataset rather than into the method: template-generated tickets
-   cannot produce two cases that look alike yet need different fixes,
-   because the templates *are* the fix classes. The 12-pair pilot found
-   zero false merges with a 25% rule-of-three upper bound, which is
-   consistent with the structural diagnostic but cannot rule a false
-   merge out. Deciding MiniLM@0.80 vs BGE@0.90 on precision needs real
-   resolved tickets — the same blocker the conformal work hit
-   independently. The harness itself needs no changes; point it at a new
-   `category_stores` and re-run. ("Phase 2" refers to that harness; the
-   earlier BGE measurement is the "BGE clustering re-run" throughout.)
+1. **Re-run both Phase 2 harnesses on deployment-distribution data** — 2A
+   and 2B hit the same dataset wall from opposite directions, and neither is
+   blocked by its method.
+
+   *2A* could not measure precision at all: at their own cliff-edges neither
+   MiniLM@0.80 nor BGE@0.90 makes a single cross-template merge, because
+   template-generated tickets cannot produce two cases that look alike yet
+   need different fixes — the templates *are* the fix classes. The 12-pair
+   pilot found zero false merges with a 25% rule-of-three upper bound, which
+   is consistent with that diagnostic but cannot rule a false merge out.
+   Deciding MiniLM@0.80 vs BGE@0.90 on precision needs real resolved
+   tickets — the same blocker the conformal work hit independently. Point the
+   harness at a new `category_stores` and re-run.
+
+   *2B* could measure groundedness, but only on the 33 out-of-template
+   benchmark drafts, since 85% of in-distribution retrievals collapse to a
+   single fix. That same 45-ticket benchmark has now carried classification
+   accuracy, conformal coverage and groundedness, accumulating selection risk
+   that no single experiment can see. It also leaves the judge finding resting
+   on three disagreements.
+
+   Both harnesses are built, guarded and need no code changes. ("Phase 2A" and
+   "Phase 2B" refer to these harnesses; the earlier BGE measurement is the
+   "BGE clustering re-run" throughout.)
 
 2. **Genuine multi-agent restructure** — independent Classification,
    Retrieval, and Resolution agents coordinated by a real Orchestrator,

@@ -4,11 +4,9 @@
 **Last commit:** `639ab6a` — Add Phase 2B groundedness harness and its
 generated data (no finding yet)
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** Phase 2A complete (automation-flag validation, negative
-result). **Phase 2B data is collected and awaiting human labelling** — 33
-drafts and 33 judge verdicts are committed, nothing is labelled, the scorer
-has not been run, and no groundedness result exists. Production gates
-unchanged.
+**Current phase:** **Phase 2 complete.** 2A (automation-flag validation) and
+2B (resolution groundedness) are both labelled, scored and written up.
+Production gates unchanged; both phases were measurement-only.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -24,7 +22,7 @@ changes; this file describes where it currently is and changes every session.
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
 | Phase 2A pilot | `score_flag_validation_set.py --pilot` | **0/12 false merges**, STOP verdict |
-| Phase 2B data | `build_groundedness_set.py` / `run_groundedness_judge.py` | **33/33 drafts, 33/33 verdicts**, 0 failures |
+| Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
 
 Production gates are unchanged and remain the calibrated values: cascade
 **0.50**, RAG similarity **0.67**, resolution clustering **0.80**.
@@ -160,98 +158,82 @@ different direction.
 
 ---
 
+### Phase 2B — resolution groundedness (complete)
+
+Committed in `639ab6a` (harness + data) and the finding commit below.
+Measurement-only; production untouched.
+
+**Scope was set by a pre-flight diagnostic run before any quota was spent.** A
+judge can only find an unsupported claim if the retrieved context permits one:
+
+| Query set | All 5 → one fix | 2+ distinct fixes |
+|---|---:|---:|
+| In-distribution (n=200) | **85.0%** | 15.0% |
+| Novel-45 | 28.9% | **71.1%** |
+| Adversarial-9 | 11.1% | **88.9%** |
+
+The in-distribution corpus is degenerate — the same wall 2A hit. The
+benchmarks are not, so 2B could proceed where 2A could not. Of 54 benchmark
+tickets 21 escalate at the RAG gate, leaving **33** — the entire eligible
+population, not a sample.
+
+**Primary — groundedness: 31/33 = 93.9%** (Wilson 95% CI 80.4–98.3%). Zero
+`partially_grounded`; two `ungrounded`.
+
+Both failures share one shape. G021 (laptop disk full) and G024 (ransomware)
+retrieved irrelevant context, correctly *said so*, and then prescribed a
+substantive fix from general knowledge anyway. The contrast is what makes it a
+finding: **10 drafts contain explicit mismatch language, 8 declined cleanly
+and are grounded, only these 2 acknowledged the mismatch and answered
+regardless.** The model can tell when retrieval is irrelevant; that
+recognition just does not reliably stop it answering. G024 is the cleanest
+illustration that groundedness is not quality — "disconnect from the network
+and escalate to security" is excellent ransomware advice and entirely
+ungrounded.
+
+**Secondary — hedge appropriateness: 32/33 = 97.0%** (CI 84.7–99.5%), 10/10
+on single-fix context and 22/23 on heterogeneous. The one miss was G033.
+
+**Methodological — the LLM judge fails on this rubric.** Raw agreement 30/33 =
+90.9%, but **Cohen's κ = −0.042**. All three disagreements fall on one axis,
+in both directions: the judge substituted *appropriateness* for *support*.
+G021/G024 it marked grounded, crediting the acknowledgement of mismatch and
+ignoring the unsupported fix that followed — over-applying the
+declining-is-not-unsupported clause. G012 it marked ungrounded because the
+supported fix was inappropriate to the ticket, which the rubric explicitly
+forbids. Anti-aligned errors, not scattered ones, which is why κ sits at or
+below zero rather than merely low.
+
+Read the mechanism, not the magnitude: at n = 33 with three disagreements and
+31/33 in one category, the prevalence effect makes κ hypersensitive and the
+point estimate carries enormous uncertainty. The load-bearing evidence is the
+case-by-case reading, possible only because the full population was labelled.
+Had the judge been used as the scaling tool this harness started as, it would
+have reported ~97% grounded, missed both real failures and invented a third —
+and 90.9% raw agreement would have looked reassuring.
+
+The hedge κ of 0.000 is degenerate and must never be cited: the **judge**
+returned `true` on all 33, so it had no variance; only the 97% raw agreement
+is readable.
+
+---
+
 ## In progress
 
-**Phase 2B — resolution groundedness. Data collected, awaiting human
-labelling.** Committed in `639ab6a`. **No finding exists.** Nothing is
-labelled, the scorer has not been run, and no groundedness number is claimed
-anywhere in the repository.
-
-### Why the scope is 33 benchmark drafts
-
-A pre-flight diagnostic ran before any quota was spent, asking whether the
-retrieved context leaves room to be ungrounded at all — a judge can only find
-an unsupported claim if the top-5 context permits one:
-
-| query set | all 5 → one fix | 2+ distinct fixes |
-|---|---:|---:|
-| in-distribution (200) | **85.0%** | 15.0% |
-| novel-45 | 28.9% | **71.1%** |
-| adversarial-9 | 11.1% | **88.9%** |
-
-The in-distribution corpus is structurally degenerate — the same failure mode
-2A hit. The benchmarks are not. So the harness targets the two fixed
-benchmarks and drops the 500-ticket batch, which was disqualified
-independently too: those drafts were generated under MiniLM retrieval, so the
-context they saw is not the context they would be judged against.
-
-Of 54 benchmark tickets, 21 escalate at the RAG gate and never reach Gemini,
-leaving **33** (novel-45: 30, adversarial-9: 3) — the entire eligible
-population, not a sample. The 14-ticket `NOVEL_TICKETS` set is a strict subset
-of the 45 (14/14 verbatim) and adds nothing.
-
-### Design points that matter
-
-- **One rubric**, defined once and shared verbatim by the human labeller and
-  the LLM judge. Agreement is only interpretable if both answered the same
-  question.
-- **The judge is not a scaling tool.** The human labels all 33; the judge is
-  the object of study, and judge–human agreement is its own reported result.
-  Verdicts live in a separate file so they cannot leak into labelling.
-- **Blind labelling file** — ticket, draft, retrieved resolutions only. No
-  provenance, no similarities, no source benchmark. Shuffled at seed 42.
-- **Rubric clause added after the dry run**, before any labelling: a draft
-  that declines to apply the retrieved fix and recommends human investigation
-  is `grounded`. Literally read, its "investigate" step was unsupported, which
-  would have penalised a correct refusal. Fixed before labelling because
-  changing it afterwards would invalidate the judge–human comparison.
-
-### Guards verified after collection
-
-config fingerprint single (`05f391baf27c`) across all 33 · dry-run flags
-cleared on all three files · routing eligibility 30+3 matches the diagnostic
-independently · labelling file leaks no provenance · all human labels still
-`null` after the judge run · set/key/judge ids align.
-
-### One thing to watch when scoring
-
-The judge returned `hedge_appropriate: true` on all 33 — zero variance. Cohen's
-kappa is degenerate when one rater uses a single value throughout, so the
-scorer will warn and the hedge agreement should be read as raw agreement with
-that stated plainly, not quoted as a kappa. The groundedness dimension has
-some spread (judge: 32 grounded, 1 ungrounded), but whether kappa is
-meaningful there depends on how the human labels come out.
+**Nothing is mid-flight.** Working tree clean, everything pushed.
 
 ---
 
 ## Immediate next step
 
-**Label `data/groundedness_set.json`, then run the scorer.**
+**Phase 2 is closed. The review gate is here** — confirm the 2A and 2B
+write-ups read correctly before any Phase 3 work begins.
 
-```powershell
-# set "label" to one of: grounded | partially_grounded | ungrounded
-# set "hedge_appropriate" to true or false
-# when not "grounded", put the offending text in "unsupported_span"
-python src/experiments/score_groundedness_set.py
-```
+Next in the agreed sequence: **multi-agent orchestrator** → drift detection →
+Docker/CI packaging. Tier-1 persistence is that phase's natural first task,
+since a per-request service cannot refit Tier-1 per call.
 
-The rubric is embedded in the file's `_meta.rubric`. Do not open
-`groundedness_judge.json` or `groundedness_key.json` while labelling — the
-first holds the judge's verdicts and the second the provenance, and both
-would bias the pass.
-
-The scorer refuses a partially-labelled set, an invalid label string, a
-missing boolean `hedge_appropriate`, a dry-run file, and a set whose items
-carry more than one config fingerprint — each with an actionable message.
-
-After scoring: write the 2B finding up in the README with the same rigour as
-2A, including the honest n = 33 limits (±2 s.d. ≈ ±17 points at p = 0.5,
-±10 near p = 0.9; adversarial-9 contributes only 3 drafts).
-
-**Phase 3 has not been planned and should not be started before 2B is scored
-and written up.** The remaining sequence after that is unchanged: multi-agent
-orchestrator → drift detection → Docker/CI packaging, with Tier-1
-persistence as the orchestrator's natural first task.
+Phase 3 has not been planned. Do not start it before this gate clears.
 
 ---
 
@@ -263,6 +245,12 @@ persistence as the orchestrator's natural first task.
   decision with its own evidence, not a quiet flip of `enabled`.
 - **Should `process_ticket_batch.py` be re-run under BGE?** The code is fixed but
   has not been executed. See Known risks.
+- **Can an LLM judge be used unaudited anywhere in this project?** Phase 2B
+  says not for a support-versus-quality distinction: raw agreement of 90.9%
+  concealed a systematically wrong judge (κ = −0.042), and only labelling the
+  full population exposed it. Any future use of an LLM judge needs a human-
+  labelled subset large enough to read every disagreement, not just an
+  aggregate agreement score.
 - **Should resolution clustering swap to BGE@0.90?** Phase 2 answered the
   *evidence* half: no, not on precision grounds, because the two are
   indistinguishable there on this dataset. What remains is a product call —

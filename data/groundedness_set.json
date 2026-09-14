@@ -45,8 +45,8 @@
           "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -86,8 +86,8 @@
           "resolution": "The application server's connection pool to reporting_mongo had exhausted; restarted the pooler and verified HR Self-Service could reach reporting_mongo again, restoring record lookups."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -127,8 +127,8 @@
           "resolution": "The Payroll cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -168,8 +168,8 @@
           "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -209,8 +209,8 @@
           "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -250,8 +250,8 @@
           "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -291,8 +291,8 @@
           "resolution": "Verified the identity of d.mehta, reset the password, and required a change plus MFA re-registration at next login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -332,8 +332,8 @@
           "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -373,8 +373,8 @@
           "resolution": "The Vendor Portal cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -414,8 +414,8 @@
           "resolution": "The Expense Tracker search index had drifted out of sync with the database; triggered a full reindex and scheduled incremental reindexing to keep results accurate."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -455,8 +455,8 @@
           "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -496,8 +496,8 @@
           "resolution": "The Field Service App session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -537,8 +537,8 @@
           "resolution": "A missing database index behind Expense Tracker was causing full table scans; added the index and enabled query caching, restoring fast page loads."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -578,8 +578,8 @@
           "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -619,8 +619,8 @@
           "resolution": "The Payroll session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -660,8 +660,8 @@
           "resolution": "Diagnosed a dropped connection between HR Self-Service and billing_mysql caused by a credentials rotation; updated the stored connection string and confirmed HR Self-Service could load data again."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -701,8 +701,8 @@
           "resolution": "Reviewed the entitlements for d.mehta, removed the obsolete HR Self-Service permissions from the prior role, and assigned the correct role for their new team."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -742,8 +742,8 @@
           "resolution": "Verified the identity of j.singh, reset the password, and required a change plus MFA re-registration at next login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -783,8 +783,8 @@
           "resolution": "Diagnosed a dropped connection between Procurement Portal and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Procurement Portal could load data again."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -824,8 +824,8 @@
           "resolution": "The Inventory Manager cache was not being invalidated on write; fixed the cache-busting key and reduced the TTL so users see current data."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -865,9 +865,9 @@
           "resolution": "A failing disk in the array behind \\\\fs02\\marketing was causing rebuild-related slowness; replaced the disk and performance returned to normal."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
-      "unsupported_span": "",
+      "label": "ungrounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "please manually inspect the user's local hard drive usage, identify large old files or temporary data, and assist the user in clearing out unnecessary files",
       "label_reason": ""
     },
     {
@@ -906,8 +906,8 @@
           "resolution": "The wireless controller at Hyderabad Office had lost its config after a power event; restored the configuration and access points came back online."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -947,8 +947,8 @@
           "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs01\\finance; pushed the correct client configuration via policy and the share mapped successfully."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -988,9 +988,9 @@
           "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\marketing for the relevant Bangalore DC group and re-propagated ACLs so the files opened as expected."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
-      "unsupported_span": "",
+      "label": "ungrounded",
+      "hedge_appropriate": true,
+      "unsupported_span": "immediately disconnect the computer from the network... and escalate this ticket to the security/incident response team",
       "label_reason": ""
     },
     {
@@ -1029,8 +1029,8 @@
           "resolution": "A missing database index behind Billing Portal was causing full table scans; added the index and enabled query caching, restoring fast page loads."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1070,8 +1070,8 @@
           "resolution": "The Inventory Manager session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1111,8 +1111,8 @@
           "resolution": "Reclaimed space by purging expired snapshots and old logs, then extended the volume; utilization dropped to a safe 60%."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1152,8 +1152,8 @@
           "resolution": "The VPN concentrator serving Mumbai HQ had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1193,8 +1193,8 @@
           "resolution": "Found k.verma was missing from the Cloudflare SSO assignment group; added them to the group and confirmed federated login to Cloudflare succeeded."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1234,8 +1234,8 @@
           "resolution": "Isolated the endpoint of v.nair from the network, ran a full offline scan to remove the trojan, and re-imaged the machine as a precaution."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1275,8 +1275,8 @@
           "resolution": "The HR Self-Service session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1316,8 +1316,8 @@
           "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": true,
       "unsupported_span": "",
       "label_reason": ""
     },
@@ -1357,8 +1357,8 @@
           "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users."
         }
       ],
-      "label": null,
-      "hedge_appropriate": null,
+      "label": "grounded",
+      "hedge_appropriate": false,
       "unsupported_span": "",
       "label_reason": ""
     }
