@@ -110,19 +110,19 @@ def test_rag_gate_uses_the_calibrated_threshold_not_a_literal():
         RetrievedTicket(id=1, similarity=threshold),
     ])
 
-    decision = orchestrator._rag_gate(below)
+    decision = orchestrator.rag_gate(below)
     assert decision is not None
     assert decision.escalated is True
     assert decision.reason is EscalationReason.LOW_RETRIEVAL_SIMILARITY
     assert decision.threshold_applied == threshold
 
-    assert orchestrator._rag_gate(at) is None, (
+    assert orchestrator.rag_gate(at) is None, (
         "the gate is >= threshold, not > threshold"
     )
 
 
 def test_rag_gate_escalates_when_nothing_was_retrieved():
-    decision = orchestrator._rag_gate(RetrievalResult())
+    decision = orchestrator.rag_gate(RetrievalResult())
     assert decision is not None
     assert decision.reason is EscalationReason.NO_RETRIEVAL_RESULTS
     assert decision.observed_value == 0.0
@@ -135,7 +135,7 @@ def test_filing_gate_stays_off_by_default():
         tier1_pred="Network", tier1_conf=0.01,
     )
     assert settings.cascade.filing_gate_enabled is False
-    assert orchestrator._filing_gate(hopeless) is None
+    assert orchestrator.filing_gate(hopeless) is None
 
 
 # --------------------------------------------------------------------------- #

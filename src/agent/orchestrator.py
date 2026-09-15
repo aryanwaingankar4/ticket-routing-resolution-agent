@@ -15,7 +15,7 @@ No agent reads a threshold; no agent knows what runs after it.
 
 That separation is not cosmetic. The escalation policy is the claim this
 project rests on, and it now sits in one file, as two small pure functions
-(_filing_gate, _rag_gate) that can be read and tested without loading a model.
+(filing_gate, rag_gate) that can be read and tested without loading a model.
 
 THE TWO GATES
 -------------
@@ -83,7 +83,7 @@ from src.agent.schemas import (
 # Routing policy. Pure, model-free, and readable side by side on purpose.      #
 # Each returns an EscalationDecision to escalate, or None to continue.         #
 # --------------------------------------------------------------------------- #
-def _filing_gate(
+def filing_gate(
     classification: ClassificationResult,
 ) -> EscalationDecision | None:
     """Batch-processing behaviour: refuse to file a low-confidence ticket."""
@@ -102,7 +102,7 @@ def _filing_gate(
     )
 
 
-def _rag_gate(retrieval: RetrievalResult) -> EscalationDecision | None:
+def rag_gate(retrieval: RetrievalResult) -> EscalationDecision | None:
     """The human-escalation gate. Below it, the LLM is never called."""
     threshold = settings.rag.similarity_threshold
 
@@ -185,7 +185,7 @@ def run(ticket: TicketIn,
     )
 
     # ---- Optional filing gate (batch-processing behaviour) ----------------
-    filing = _filing_gate(classification)
+    filing = filing_gate(classification)
     if filing is not None:
         _skipped(steps, retrieval_agent.name, filing.reason.value)
         _skipped(steps, ResolutionAgent.name, filing.reason.value)
@@ -200,7 +200,7 @@ def run(ticket: TicketIn,
     )
 
     # ---- Gate 2: does a human need to see this? ---------------------------
-    escalation = _rag_gate(retrieval)
+    escalation = rag_gate(retrieval)
     if escalation is not None:
         _skipped(steps, ResolutionAgent.name, escalation.reason.value)
         return _finish(

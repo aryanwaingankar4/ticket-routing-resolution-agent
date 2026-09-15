@@ -291,7 +291,7 @@ def load_tier1():
     return bundle["vectorizer"], bundle["classifier"]
 
 
-def _build_gemini_client():
+def build_gemini_client():
     from src.agent.config import require_gemini_api_key
 
     try:
@@ -336,7 +336,7 @@ def load_artifacts(require_gemini: bool = False) -> Artifacts:
 
     tier2 = _load_tier2()
     tier1_vectorizer, tier1_classifier = load_tier1()
-    client = _build_gemini_client() if require_gemini else None
+    client = build_gemini_client() if require_gemini else None
 
     return Artifacts(
         embedder=embedder,

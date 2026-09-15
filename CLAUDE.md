@@ -48,7 +48,18 @@ python src/classification/train_tier1.py             # persisted Tier-1 (TF-IDF)
 python src/classification/train_embeddings.py        # production BGE classifier
 python src/rag/build_vector_index.py                 # FAISS index + aligned metadata
 streamlit run src/app/streamlit_app.py               # live demo
+uvicorn src.service.api:app --port 8000              # HTTP service (Phase 3C)
 ```
+
+The service must be started **from the project root** — `src/service/` has no
+`__init__.py`, so `src.service.api` resolves as a namespace package the same way
+`src.experiments.*` does. `GET /health` returns `config_fingerprint()` over the
+wire, which is how you tell a deployment is serving stale artifacts.
+
+**`POST /triage` defaults to `generate_resolution=false`.** The Gemini free tier
+is 500 calls/day and a looping workflow would drain it, so spending quota is
+opt-in. `/agents/resolve` spends quota by definition — it is the only endpoint
+that does.
 
 ### Tests
 
@@ -137,9 +148,21 @@ resolves as an implicit namespace package, so it only works from the project roo
 
 Sequential pipeline with two confidence gates, plus one offline analysis path.
 As of Phase 3B the stages are separated into agents with declared dependencies behind
-an orchestrator, but they still run **in one process, sequentially**. Do not describe
-this as a distributed multi-agent system: no agent runs independently of the others
-yet, and nothing is served over a network. That is Phase 3C.
+an orchestrator; Phase 3C put each agent behind its own HTTP endpoint in
+`src/service/api.py`. **`POST /triage` still orchestrates in-process** — it calls
+`pipeline.run()`, not the endpoints — because golden parity must not depend on a
+running server and network hops would add failure modes to the measured path. So the
+agents are independently *addressable*, not independently *running*. Describe it that
+way; the honest claim is a sequential pipeline with agent boundaries and an HTTP
+surface, not a distributed system.
+
+**The failure boundary is the service's, not the library's.** `/triage` maps an
+`AgentError` to HTTP 200 with an escalation envelope (the ticket needs a human; a 5xx
+would wrongly invite a retry), while anything that is *not* an `AgentError` returns
+500. The library still raises — deliberately, because in a calibration run a
+`RetrievalError` silently becoming an escalation row would corrupt the result quietly.
+`PipelineResult.classification` is required, so an escalation envelope that needs no
+classification is the only shape that avoids inventing a category.
 
 **All inference lives in `src/agent/`** — one implementation, consolidated from what
 were four independent copies:
@@ -157,6 +180,9 @@ src/agent/
 ├── agents.py        the three agents: name + requires + run()
 ├── orchestrator.py  the sequence and BOTH gates; run(TicketIn) -> PipelineResult
 └── pipeline.py      the public façade over orchestrator.run()
+
+src/service/
+└── api.py           FastAPI: per-agent endpoints, /policy/rag-gate, /triage
 ```
 
 `streamlit_app.run_pipeline()`, `test_adversarial_escalation.run_ticket_through_

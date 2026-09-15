@@ -1,13 +1,14 @@
 # Project Status
 
-**Last updated:** 2026-09-14
-**Last commit:** `156f07b` — Phase 3B: agent boundaries and the
-orchestrator
-**Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3B is
+**Last updated:** 2026-09-15
+**Last commit:** `<3C commit>` — Phase 3C: the HTTP service and the agent
+failure boundary
+**Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3C is
 committed locally and waiting on the review gate before it is pushed
-**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phases 3A and 3B
-complete.** Both parity-preserving: no number moved. Production gates
-unchanged. 3A's gate cleared and was pushed (`9320c18`).
+**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phases 3A, 3B and
+3C complete; 3D (n8n + write-up) remains.** Production gates unchanged
+throughout. 3A and 3B cleared their gates and were pushed (`9320c18`,
+`d46037e`).
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -18,7 +19,8 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **92 passed**, offline, ~73s |
+| Test suite | `pytest` | **104 passed**, offline, ~152s |
+| Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint `7538ea7cceb1`, index 4000, Tier-1 4000 rows |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
@@ -300,23 +302,84 @@ Test suite 75 → 92.
 
 ---
 
+### Phase 3C — the HTTP service and the agent failure boundary (`<3C commit>`)
+
+`src/service/api.py`: per-agent endpoints, `/policy/rag-gate`, `/triage`, and
+`/health`. The first phase that adds externally-visible behaviour, so it was
+gated in two halves and **both held**.
+
+*Half 1 — nothing that existed moved.* The library is untouched: goldens exact,
+adversarial 9/9, benchmark 32/45, regression CSV byte-identical.
+
+*Half 2 — the new surface is specified by tests, since no golden covers it.*
+`/triage` reproduces the library's decision for all 9 adversarial tickets and
+15 of the 45; a fault-injected `RetrievalError` returns 200 with an escalation
+envelope; a fault-injected `ValueError` returns 500. Verified against a real
+uvicorn process, not only TestClient: `adv_08` over HTTP returns tier 2,
+`tier1_conf` 0.3183, similarity 0.6124, escalated — the adversarial gate's
+numbers exactly.
+
+**The failure boundary is the service's, not the library's — a correction to
+what this file said last session.** The plan was a new `EscalationReason`, and
+that turned out to be the wrong design: `PipelineResult.classification` is a
+**required** field, so a classification failure cannot produce a
+`PipelineResult` without inventing a category, and fabricating a routing
+decision is the one thing this system is built not to do. Making it optional
+would have pushed `None`-safety onto ~20 dereference sites and traded a caught
+error for an `AttributeError` in the live demo.
+
+So the boundary lives in the API's own response envelope, which needs no
+classification. The library still raises — deliberately: in a calibration run a
+`RetrievalError` silently becoming an escalation row would corrupt the result
+quietly, which is the recurring bug class wearing a new hat. **Only known
+`AgentError`s become escalations; anything else is a 500**, because laundering
+an unknown bug into a plausible response is that same failure shape.
+
+Other decisions worth carrying forward:
+
+- **`/triage` orchestrates in-process**, calling `pipeline.run()` rather than
+  its own endpoints. Golden parity must not depend on a running server. The
+  agents are independently *addressable*, not independently *running* — do not
+  describe this as a distributed system.
+- **`/policy/rag-gate`** returns the escalation decision computed by the tested
+  Python, so 3D's n8n workflow gets a visible IF-branch without ever holding a
+  threshold.
+- **`/triage` defaults to `generate_resolution=false`.** 500 calls/day, and a
+  looping workflow would drain it.
+- **The service loads artifacts one way only** (`require_gemini=False`) and
+  attaches a Gemini client via `dataclasses.replace()`. `load_artifacts` is
+  `lru_cache(maxsize=2)` keyed on that flag, so calling it both ways in one
+  process would load **BGE twice**.
+- Endpoints are sync and serialised by one lock: one ticket at a time, on
+  purpose. This is a research demo, not a throughput exercise.
+
+Two library renames, both pure and behaviour-free, so the service does not
+reach into private names: `orchestrator._rag_gate`/`_filing_gate` →
+`rag_gate`/`filing_gate`, and `artifacts._build_gemini_client` →
+`build_gemini_client`.
+
+Test suite 92 → 104. `httpx` pinned in `requirements.txt` — needed by
+`fastapi.testclient`, previously only a transitive dependency, so a clean clone
+could not have run the suite.
+
+---
+
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean. Phase 3B is committed locally
+**Nothing is mid-flight.** Working tree clean. Phase 3C is committed locally
 and **not pushed** — it is waiting on the review gate.
 
 ---
 
 ## Immediate next step
 
-**The Phase 3B review gate is here.** Confirm the change reads correctly, then
-push. Do not start 3C before it clears.
+**The Phase 3C review gate is here.** Confirm the change reads correctly, then
+push. Do not start 3D before it clears.
 
-**3C is where the agent failure boundary lands.** It was deliberately deferred
-from 3B: agent errors still propagate exactly as they always have, and a
-FastAPI service cannot crash the process on one bad request. Expect a new
-`EscalationReason` for it, and note that it is a real behaviour change on the
-failure path — plan it as such.
+**3D is the last sub-phase**: an n8n workflow over the endpoints (presentation
+only — it must own no decision, which is what `/policy/rag-gate` is for) and
+the README architecture write-up. It is the one sub-phase with no new Python
+behaviour, so its gate is that the demo runs and the write-up is accurate.
 
 Phase 3 was planned with two decisions taken up front:
 
@@ -332,7 +395,7 @@ Remaining sub-phases, each with its own gate:
 | Sub-phase | Scope |
 |---|---|
 | ~~3B~~ | ~~Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`~~ — **done** |
-| 3C | FastAPI service — per-agent endpoints, `/triage`, startup preload, health endpoint reporting `config_fingerprint()`, plus the agent failure boundary deferred from 3B |
+| ~~3C~~ | ~~FastAPI service — per-agent endpoints, `/triage`, health endpoint, plus the agent failure boundary~~ — **done** |
 | 3D | n8n workflow over the endpoints (presentation only) + architecture write-up |
 
 After Phase 3: drift detection → Docker/CI packaging.
