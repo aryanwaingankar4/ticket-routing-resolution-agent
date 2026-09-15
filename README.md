@@ -23,10 +23,17 @@ brief, with an ongoing extension toward an IEEE-style research paper.
    - **Automation-flagging** — separately, clusters *resolved* tickets by
      resolution similarity to surface recurring issues worth turning into
      self-service automation.
+4. **Orchestration Layer** (Phase 3) — the three stages are independent
+   agents with declared dependencies (`src/agent/agents.py`), coordinated by
+   an orchestrator that owns every routing decision
+   (`src/agent/orchestrator.py`), each individually addressable over HTTP
+   (`src/service/api.py`). The agents are independently *addressable*, not
+   independently *running*: `/triage` orchestrates in-process. See "Phase 3 —
+   the agent architecture".
 
 **Tech stack:** Python, scikit-learn, sentence-transformers, FAISS, Gemini
-API (`gemini-flash-lite-latest`, via the `google-genai` SDK), Streamlit,
-pandas/numpy.
+API (`gemini-flash-lite-latest`, via the `google-genai` SDK), FastAPI +
+uvicorn, Streamlit, pandas/numpy.
 
 **Repo:** `aryanwaingankar4/ticket-routing-resolution-agent`
 
@@ -1262,6 +1269,173 @@ their retrieved context),
 draft carries config fingerprint `05f391baf27c`; the builder aborts if a run
 produces more than one.
 
+### Phase 3 — the agent architecture: orchestrator and service
+
+The one phase whose deliverable is architecture rather than a measurement, and
+therefore the one most at risk of quietly changing a published number while
+claiming to be a refactor. So every sub-phase was gated on the same thing:
+**the goldens must not move.** They didn't — `tests/goldens/*.json` reproduce
+exactly (45/45 and 9/9), the adversarial gate stayed 9/9, the 45-ticket
+benchmark stayed 32/45, and `data/adversarial_escalation_results.csv`
+regenerates byte-identical at every step. The test suite grew 69 → 104.
+
+#### 3A — Tier-1 stopped being refitted at startup
+
+Tier-1 (TF-IDF + LogReg) was refitted from `synthetic_tickets.csv` on every
+process start. Fine for a script, wrong for a service: a per-request API must
+not derive a model from raw training data at boot. It is now a persisted
+artifact built by `src/classification/train_tier1.py`.
+
+The honest accounting: fitting costs **1.56s**, loading the persisted bundle
+**0.014s** — a real saving, but small beside BGE's ~60s. Speed is not the
+justification; determinism is. The model became a pinned, fingerprinted object
+instead of something re-derived at each startup from whatever the CSV happened
+to contain.
+
+Persisting a model creates a new place for a stale artifact to hide, which is
+this project's recurring bug class, so the guard shipped in the same change.
+The bundle carries a manifest — dataset sha256, rows fitted, sklearn version,
+vectorizer config — and `artifacts.load_tier1()` refuses a bundle whose
+manifest no longer matches reality. There is deliberately **no refit-on-miss
+fallback**: quietly refitting would paper over a missing or stale artifact and
+leave the cascade running on a model nobody asked for.
+
+The specific trap the manifest guards: **Tier-1 is fitted on the full 4,000
+rows, not the 80/20 split every other script in `src/classification/` uses**,
+because that is what the live demo did and what the goldens were captured
+under. A split fit would shift every Tier-1 confidence and every cascade
+routing decision with it, invisibly. The manifest records rows-fitted against
+rows-available and the loader rejects a mismatch.
+
+3A also found and closed a live instance of the duplication problem:
+`streamlit_app.py` and `test_adversarial_escalation.py` each still fitted
+their *own* Tier-1 and passed it into `pipeline.run()`, so both would have
+bypassed the persisted artifact entirely — three separately-fitted models free
+to diverge, the same shape as the four divergent pipeline copies Phase 0
+removed. Both now load through `artifacts.load_tier1()`.
+`calibrate_conformal.py` and `plot_calibration_curves.py` keep their own fits
+on purpose: they fit on deliberate leave-out subsets and must not use the
+production artifact.
+
+#### 3B — agents with declared dependencies, and an orchestrator that owns routing
+
+Before this, the three stages were free functions with three different
+signatures, each handed the whole `Artifacts` blob and reaching into whatever
+it needed. Nothing declared what a stage actually depended on, so nothing could
+be moved, replaced, or served independently without reading its body.
+
+Three things changed, and the third is the one that mattered later:
+
+1. **Declared dependencies.** Each agent names the `Artifacts` fields it
+   requires, validated at construction — a missing *or misspelled* dependency
+   fails before any routing happens. That declaration is the agent boundary
+   written down, and it is what made 3C's HTTP split mechanical rather than
+   exploratory.
+2. **The orchestrator owns every routing decision.** No agent reads a threshold
+   or knows what runs after it. Both gates became pure functions
+   (`filing_gate`, `rag_gate`) testable without loading a model — an escalation
+   policy that needs BGE and FAISS to test is one nobody tests, and this
+   project's entire claim rests on that policy.
+3. **Per-agent traces.** `PipelineResult.steps` records every agent including
+   the ones that deliberately did not run. A resolution step marked `skipped`
+   is *positive* evidence that the RAG gate held and no LLM call was made; an
+   absent step would be ambiguous. The decision log gained `agent_status` and
+   `agent_latency_ms` alongside it — the per-agent history the planned
+   drift-detection phase will read.
+
+The stage implementations (`classifier.py`, `retriever.py`, `resolver.py`) were
+deliberately **not** touched. They hold the parity-critical logic — the
+L2-normalise before search, the calibrated prompt, the retry ladder — and the
+agents wrap them rather than absorbing them. `pipeline.run()` stayed as a
+façade over `orchestrator.run()`, so all seven call sites were untouched.
+
+#### 3C — the HTTP service, and where the failure boundary belongs
+
+`src/service/api.py` exposes each agent individually, plus `/health`,
+`/policy/rag-gate` and `/triage`:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /health` | `config_fingerprint()` over the wire, plus index size and the Tier-1 manifest — a deployment's stale-artifact detector |
+| `POST /agents/classify` | the classification agent alone |
+| `POST /agents/retrieve` | the retrieval agent alone |
+| `POST /agents/resolve` | the resolution agent alone — the only endpoint that spends Gemini quota |
+| `POST /policy/rag-gate` | the escalation decision for a retrieval result |
+| `POST /triage` | the whole pipeline |
+
+**`/triage` orchestrates in-process.** It calls `pipeline.run()`, not its own
+endpoints. Golden parity must not depend on a running server, and network hops
+would add failure modes to the measured path — the path every number in this
+README was measured on. So the agents are independently *addressable*, not
+independently *running*, and the honest claim is a sequential pipeline with
+agent boundaries and an HTTP surface, not a distributed system.
+
+`/triage` defaults to `generate_resolution=false`. The free tier is 500
+calls/day and a looping workflow would drain it; spending quota should be
+something you asked for.
+
+**The failure boundary ended up in the service, not the library — a reversal
+of the plan, recorded here rather than silently swapped.** The intention was a
+new `EscalationReason` so that any agent failure produced an escalated
+`PipelineResult`. That turned out to be the wrong design:
+`PipelineResult.classification` is a **required** field, so a classification
+failure cannot produce a `PipelineResult` at all without inventing a category —
+and fabricating a routing decision is precisely the thing this system exists
+not to do. Making the field optional would have pushed `None`-safety onto ~20
+dereference sites across the logger, the demo and the experiment scripts,
+trading a caught error for an `AttributeError` in front of an audience.
+
+So the boundary lives in the API's own response envelope, which needs no
+classification, and **the library still raises**. That is also the better
+research answer: in a calibration run, a `RetrievalError` quietly becoming an
+escalation row would corrupt the result with no error — this project's
+recurring bug class wearing a new hat. A service must not crash on one bad
+ticket; an experiment must not continue past one.
+
+The matching rule: **only known `AgentError`s become escalations** (HTTP 200 —
+the ticket needs a human, and a 5xx would wrongly invite a retry). Anything
+else returns 500, because laundering an unexpected bug into a plausible
+"needs a human" response is that same failure shape again. Both branches are
+proven by fault injection in `tests/test_service.py`, and HTTP parity is tested
+directly: `/triage` reproduces the library's decision for all 9 adversarial
+tickets and 15 of the 45. Checked against a real uvicorn process as well as
+`TestClient`, `adv_08` returns tier 2, `tier1_conf` 0.3183, similarity 0.6124,
+escalated — the adversarial gate's numbers exactly.
+
+#### Why the Python orchestrator supersedes the n8n proposal
+
+The "Pending" list below originally scoped this phase as *"likely via n8n
+(wrapping the existing Python pieces as small local API endpoints, then
+building a real n8n workflow with visual conditional routing, e.g. IF
+confidence < threshold → escalate)"*. That plan was changed deliberately, and
+the reasoning is the point:
+
+- **It would have moved the escalation gate out of the test suite.** The RAG
+  similarity threshold (0.67) is a measured, evidence-backed constant with its
+  own calibration history in this README. An `IF confidence < threshold` node
+  in a workflow tool is a *second copy* of that comparison, in a place where
+  neither `pytest`, the goldens, nor the adversarial gate can reach it. This
+  project's recurring bug class is a value that is wrong for its context but
+  internally consistent; creating an untested duplicate of the one gate the
+  whole thesis rests on is the most expensive possible instance of it.
+- **A workflow JSON cannot be regression-tested against the goldens.** Every
+  other routing change in this project was proven safe by reproducing
+  `tests/goldens/*.json` exactly. Orchestration living in n8n would be the
+  first routing logic in the system with no parity net under it.
+- **The gap with Paper 1 closes on the orchestrator existing and being
+  tested, not on which tool draws it.** Paper 1 proposed an
+  escalation/orchestration design and never implemented or empirically tested
+  it; `src/agent/orchestrator.py` is implemented, and its routing is covered by
+  104 tests plus two fixed benchmark sets. Rendering the same logic in a
+  workflow canvas adds presentation, not evidence.
+
+What n8n was genuinely for — a visual, legible routing diagram — survives
+without giving it any authority. **`POST /policy/rag-gate` returns the
+escalation decision computed by the tested Python**, so a workflow tool can
+branch on a boolean it did not compute and holds no threshold of its own. That
+remains an open presentation step; it is explicitly not on the critical path,
+and nothing about the system's behaviour depends on it.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
@@ -1348,10 +1522,30 @@ out-of-domain inputs, and adding negative-class data does not
 automatically fix that if the negative class's own similarity
 distribution doesn't reach into the artifact's threshold range.
 
-**Important distinction:** the current system is a *sequential pipeline*
-with confidence-based decision points — it is **not** yet a true
-multi-agent system (independent agents coordinating via an orchestrator).
-That remains a scoped future extension, not something built yet.
+**Important distinction, updated after Phase 3.** This previously read that
+the system was *"not yet a true multi-agent system"* and that the restructure
+"remains a scoped future extension, not something built yet". That is no
+longer accurate, and the accurate version is narrower than the phrase
+"multi-agent system" usually implies:
+
+- **What exists.** Independent Classification, Retrieval and Resolution agents
+  with declared dependencies, coordinated by an orchestrator that owns every
+  routing decision (`src/agent/agents.py`, `src/agent/orchestrator.py`), each
+  agent individually addressable over HTTP (`src/service/api.py`). This is
+  what closes the gap with Paper 1's proposed-but-never-implemented
+  orchestration design — implemented, and covered by 104 tests plus two fixed
+  benchmark sets.
+- **What does not.** The agents are independently *addressable*, not
+  independently *running*: `/triage` orchestrates in-process, one ticket at a
+  time, because golden parity must not depend on a running server. There is no
+  distributed execution, no message bus, no concurrent or autonomous agents,
+  and no agent that decides anything — the gates belong to the orchestrator
+  alone.
+
+So the honest claim is **a sequential pipeline with real agent boundaries, an
+orchestrator, and an HTTP surface** — not a distributed multi-agent system. The
+restructure is described in full under "Phase 3 — the agent architecture"
+above, including why the original n8n plan was superseded.
 
 ---
 
@@ -1397,6 +1591,16 @@ That remains a scoped future extension, not something built yet.
   evaluated against the real 500-ticket production batch — found both
   tiers to be genuinely underconfident rather than overconfident, a
   safer failure mode for an escalation-gated system
+- **Agent architecture (Phase 3)** — Tier-1 persisted behind a manifest
+  guard instead of refitted at startup; the three stages separated into
+  agents with declared dependencies under an orchestrator that owns every
+  routing decision; a FastAPI service exposing each agent, a `/health`
+  endpoint reporting the config fingerprint, `/policy/rag-gate`, and a
+  `/triage` failure boundary that turns a known agent error into an
+  escalation while still returning 500 for an unknown one. All three
+  sub-phases gated on the goldens reproducing exactly; test suite 69 → 104.
+  The original n8n orchestration plan was superseded — see "Phase 3 — the
+  agent architecture" for the reasoning
 - **Conformal prediction (measurement-only)** — hand-rolled split conformal
   over both cascade tiers plus conformal novelty detection for the RAG gate.
   Three results: coverage transfer is a property of the *representation*
@@ -1490,15 +1694,25 @@ That remains a scoped future extension, not something built yet.
    "Phase 2B" refer to these harnesses; the earlier BGE measurement is the
    "BGE clustering re-run" throughout.)
 
-2. **Genuine multi-agent restructure** — independent Classification,
-   Retrieval, and Resolution agents coordinated by a real Orchestrator,
-   likely via n8n (wrapping the existing Python pieces as small local API
-   endpoints, then building a real n8n workflow with visual conditional
-   routing, e.g. IF confidence < threshold → escalate). Directly closes
-   the gap with Paper 1's design, which was proposed but never
-   implemented there either. Deliberately done **last**, once everything
-   above is measured and stable — it's an architecture/presentation step,
-   not a new experiment.
+2. ~~**Genuine multi-agent restructure**~~ — **done in Phase 3, and the n8n
+   half was superseded.** Independent Classification, Retrieval and Resolution
+   agents coordinated by a real orchestrator now exist in Python
+   (`src/agent/agents.py`, `src/agent/orchestrator.py`), each addressable over
+   HTTP (`src/service/api.py`). See "Phase 3 — the agent architecture" above.
+
+   The original scope put the orchestration itself in n8n. That was changed
+   deliberately: an `IF confidence < threshold` node would be a second,
+   untested copy of the calibrated 0.67 gate, living where neither `pytest`,
+   the goldens, nor the adversarial gate can reach it — the most expensive
+   possible instance of this project's recurring bug class. A workflow JSON
+   also cannot be regression-tested against `tests/goldens/*.json`, so it
+   would be the first routing logic here with no parity net under it. The full
+   reasoning is in "Why the Python orchestrator supersedes the n8n proposal".
+
+   **What remains optional:** an n8n workflow purely as a visual figure,
+   branching on `POST /policy/rag-gate`, which returns the decision computed
+   by the tested Python so the workflow holds no threshold of its own. This is
+   presentation, not evidence, and nothing depends on it.
 
 
 ---
@@ -1546,9 +1760,25 @@ ticket-routing-agent/
 │       ├── embeddings_am{571,500,200,100,50}.npy
 │       └── imbalance_sweep_results.csv
 ├── src/
+│   ├── agent/                                          (THE library — all inference)
+│   │   ├── config.py                                   (frozen typed config + provenance)
+│   │   ├── schemas.py                                  (pydantic models for every stage)
+│   │   ├── errors.py                                   (typed exceptions; one Gemini ladder)
+│   │   ├── logging_setup.py                            (structured JSON decision logs)
+│   │   ├── artifacts.py                                (THE loader, three hard guards)
+│   │   ├── classifier.py                               (cascade Tier-1 → Tier-2)
+│   │   ├── retriever.py                                (FAISS retrieval)
+│   │   ├── resolver.py                                 (prompt + Gemini call with retry)
+│   │   ├── conformal.py                                (split conformal, measurement-only)
+│   │   ├── agents.py                                   (the three agents: name + requires + run)
+│   │   ├── orchestrator.py                             (the sequence and BOTH gates)
+│   │   └── pipeline.py                                 (public façade over orchestrator.run)
+│   ├── service/
+│   │   └── api.py                                      (FastAPI: agents, /policy, /triage)
 │   ├── classification/
 │   │   ├── train_baseline_tfidf.py
 │   │   ├── generalization_test.py                     (source of truth for NOVEL_TICKETS)
+│   │   ├── train_tier1.py                              (persisted Tier-1 + manifest guard)
 │   │   ├── train_embeddings.py
 │   │   ├── train_embeddings_comparison.py
 │   │   ├── generalization_test_embeddings.py
@@ -1575,8 +1805,14 @@ ticket-routing-agent/
 │       ├── plot_calibration_curves.py
 │       ├── test_adversarial_escalation.py
 │       └── run_ablation_study.py
-├── models/                                             (gitignored, except joblib artifact)
+├── tests/                                              (pytest suite + golden parity)
+│   ├── conftest.py                                     (read-only benchmark fixtures)
+│   ├── capture_goldens.py                              (regenerate ONLY on purpose)
+│   ├── goldens/*.json                                  (the refactor safety net)
+│   └── test_*.py
+├── models/                                             (gitignored — regenerate, never commit)
 │   ├── ticket_classifier_bge-base-en-v1-5.joblib
+│   ├── tier1_tfidf_logreg.joblib                       (persisted Tier-1 + manifest)
 │   └── distilbert_ticket_classifier/
 ├── .env                                                (gitignored — GEMINI_API_KEY)
 └── README.md                                           (this file)
@@ -1591,18 +1827,48 @@ ticket-routing-agent/
 # 1. Generate the dataset (if not already present)
 python data/generate_dataset.py
 
-# 2. Train the production classifier
+# 2. Train Tier-1 (persisted; the pipeline refuses to load a stale one)
+python src/classification/train_tier1.py
+
+# 3. Train the production classifier (Tier-2)
 python src/classification/train_embeddings.py
 
-# 3. Build the RAG index
+# 4. Build the RAG index
 python src/rag/build_vector_index.py
 
-# 4. Launch the live demo
+# 5a. Launch the live demo
 streamlit run src/app/streamlit_app.py
+
+# 5b. ...or the HTTP service (from the project root)
+uvicorn src.service.api:app --port 8000
 ```
 
 `GEMINI_API_KEY` must be set in a `.env` file at the project root (get a
-free key from https://aistudio.google.com/apikey).
+free key from https://aistudio.google.com/apikey). Classification, retrieval
+and the escalation gate all work without it — only resolution drafting
+needs it.
+
+Run the test suite with `pytest` (104 tests, offline, no quota). Any change to
+a live threshold, embedding model, or retrieval path must also re-confirm 9/9
+on `python src/experiments/test_adversarial_escalation.py` before being
+committed.
+
+### Talking to the service
+
+```powershell
+# Config fingerprint, index size, Tier-1 provenance
+Invoke-RestMethod http://localhost:8000/health
+
+Invoke-RestMethod -Method Post http://localhost:8000/triage `
+  -ContentType 'application/json' `
+  -Body '{"title":"vpn keeps dropping every ten minutes"}'
+```
+
+(`Invoke-RestMethod` rather than `curl`, which on Windows PowerShell is an
+alias for `Invoke-WebRequest` and does not accept `-X` or `-d`.)
+
+`POST /triage` defaults to `generate_resolution=false`, so it spends no Gemini
+quota unless asked. The interactive API docs are at `/docs`.
 
 ### Running the imbalance experiments
 
@@ -1691,11 +1957,23 @@ python src/experiments/test_adversarial_escalation.py
   general silent-stale-cache risk during the BGE swap, and once
   specifically in `test_adversarial_escalation.py`, which had kept its
   own independent hardcoded MiniLM constants un-migrated.
+- **All inference goes through `src/agent/`, and new consumers call
+  `pipeline.run()`** — never a re-implementation of the orchestration. This
+  project once had four independent copies of the classify → retrieve →
+  escalate pipeline and three disagreeing model loaders; one of them was
+  encoding queries with MiniLM against a BGE index and had been for weeks.
+  Artifacts load only through `artifacts.load_artifacts()`.
+- **No agent decides routing.** Agents (`src/agent/agents.py`) declare the
+  artifacts they need and do one thing; every gate lives in
+  `src/agent/orchestrator.py`, where it can be read and tested in one place
+  without loading a model. An escalation policy scattered across the things
+  being orchestrated is one nobody can audit.
 - Calibrated thresholds (RAG similarity **0.67**, cascade confidence 0.50,
-  resolution-clustering 0.80) are fixed, evidence-backed constants in
-  their respective scripts — never re-derived casually or exposed as
+  resolution-clustering 0.80) are fixed, evidence-backed constants defined
+  once in `src/agent/config.py` — never re-derived casually or exposed as
   trivially-overridable CLI flags, since that would undermine the point
-  that these values are measured, not guessed. Any change to a live
+  that these values are measured, not guessed. `config.py` is frozen, and
+  each value carries its evidence in `CALIBRATION_PROVENANCE`. Any change to a live
   threshold must be re-confirmed against the 9-ticket adversarial
   escalation set before being committed.
 - Gemini free-tier rate limits: 15 requests/minute, 500 requests/day
