@@ -1,16 +1,17 @@
 # Project Status
 
 **Last updated:** 2026-09-15
-**Last commit:** `9f893c5` — Phase 3D (docs): document the agent
-architecture, and why n8n was superseded
+**Last commit:** `<plan commit>` — Phase 4 plan: drift detection
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** **Phase 3 complete.** 3A (Tier-1 persistence), 3B (agent
-boundaries + orchestrator), 3C (HTTP service + failure boundary) and 3D (the
-README write-up) are all done, gated and pushed. Production gates unchanged
-throughout — the whole phase moved no number.
+**Current phase:** **Phase 3 complete; Phase 4 (drift detection) is planned
+and approved but NOT started.** No Phase 4 code exists — the section below is
+the plan, not results.
 
-The one deliberate omission: **the n8n workflow was dropped, not deferred by
-accident.** See "Phase 3D" below.
+3A (Tier-1 persistence), 3B (agent boundaries + orchestrator), 3C (HTTP
+service + failure boundary) and 3D (the README write-up) are all done, gated
+and pushed. Production gates unchanged throughout — the whole phase moved no
+number. The one deliberate omission: **the n8n workflow was dropped, not
+deferred by accident.** See "Phase 3D" below.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -401,29 +402,115 @@ before being documented.
 
 ---
 
+## Phase 4 — drift detection (PLANNED, NOT STARTED)
+
+**No code exists for this yet. Everything below is the approved plan.**
+
+### Why, and the framing
+
+The recurring bug class — five documented instances — is a value or artifact
+that is **wrong for its context, internally consistent, and therefore silent**.
+`artifacts.py`'s three guards catch that at *load* time. Drift detection is the
+population-level detector for the same class: an artifact that is wrong but
+still loadable, or a world that has moved away from what the gates were
+calibrated on, shows up as a distribution shift **in the gate's own inputs**
+before it shows up as a visibly wrong answer.
+
+### The prerequisite found while planning: there is no history
+
+`logging_setup.py`, `orchestrator.py` and `schemas.py` all describe decision
+records as "the raw input for drift detection". **They are never persisted.**
+`configure_logging()` attaches only a `StreamHandler(sys.stderr)` — no
+`FileHandler`, no `.jsonl`, no `logs/` — and every evaluation path passes
+`emit_log=False` besides. Doc-ahead-of-code, the same gap the BGE clustering
+re-run closed. Also logged under CLAUDE.md "Known inconsistencies". Making the
+history real is 4A's first task.
+
+### The mechanism
+
+- **Signal A (primary) — retrieval novelty uniformity.** Reuses
+  `conformal.conformal_p_values()` verbatim. Per ticket,
+  `p = conformal_p_values(cal_scores, [-top_similarity])`; under
+  exchangeability `p` is (super)uniform on [0,1], and drift piles mass at low
+  `p`. Window test: exact binomial on `#{p ≤ α}` against α, with a one-sample
+  KS against U[0,1] as a secondary read. **The false-alarm rate is α by
+  construction, not by tuning** — the same property that made conformal
+  novelty detection worth reporting in Phase 1, applied to a window rather
+  than a ticket.
+- **Signal B — the rates the thesis rests on.** Escalation rate, Tier-1 share
+  (a *published* number — if it moves in deployment that is itself a finding),
+  and category mix against the reference mix.
+- **Signal C — config fingerprint, reported separately.** More than one
+  fingerprint in a window, or one differing from the reference, is a
+  **deployment fault, not a distribution shift**; conflating the two would
+  bury it. The recurring bug class, detected after the fact.
+
+**Reference distribution:** the in-domain calibration scores in
+`data/conformal_calibration_bge-base-en-v1-5.json` — the same reference the RAG
+gate was calibrated against. Deliberately **not** a rolling baseline from
+recent logs, which re-centres on whatever is arriving and so cannot see slow
+drift; that would define away the failure mode that matters most.
+
+### Sub-phases, gate between each
+
+**4A — persist the history, and the detector library.** `settings.drift`
+(`enabled` default `False`); an *optional* JSONL sink in `logging_setup.py`,
+opt-in and **default off**, following the `filing_gate_enabled` precedent so no
+script inherits a new side effect; `src/agent/drift.py` as pure functions over
+records returning a `DriftReport` — **no I/O, no models**, so the detector is
+testable without BGE; `tests/test_drift.py`.
+
+**4B — the evaluation (this is the finding).**
+`src/experiments/evaluate_drift_detection.py`, offline, no quota. Windows built
+from the **existing fixed sets only**: null windows resampled in-distribution,
+contaminated windows mixing the 45-ticket benchmark / 45-ticket OOD set /
+adversarial 9 at 0 / 5 / 10 / 25 / 50%. Reports detection rate across
+(window size × contamination) **and** the null false-alarm rate. The useful
+operational output: how many tickets pass before a given contamination level is
+noticed.
+
+### Gate criterion — not purely parity-preserving, so it splits
+
+1. **Nothing that already exists moves.** Drift gates no routing decision;
+   goldens exact, 9/9, benchmark 32/45, regression CSV byte-identical, and a
+   test proving the log sink writes nothing by default.
+2. **The detector ships with its false-alarm rate, or it does not ship.** A
+   detection-rate number alone is a hand-tuned threshold wearing a lab coat,
+   and this project has rejected exactly that twice (the in-distribution split;
+   the 35-ticket calibration set). No operating window or threshold gets named
+   without the null measurement beside it.
+3. **Limitations written down with the result**, not after: selection risk is
+   accumulating on the 45-ticket benchmark (accuracy, conformal coverage,
+   groundedness, now drift); template-generated data makes the null unusually
+   clean, so the measured false-alarm rate is optimistic; and contamination
+   with benchmark/OOD text is a *known, abrupt* shift, so it measures power
+   against out-of-template text rather than the gradual shift a deployed
+   monitor would face. The same dataset wall Phases 1 and 2 hit, from a third
+   direction.
+
+**Out of scope:** any live `/drift` endpoint (a separate decision once
+thresholds are measured), drift *gating* production, retraining triggers,
+input-side embedding drift (MMD — a second detector would need its own
+false-alarm measurement, and Signal A already has one), and Docker/CI.
+
+---
+
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean, everything pushed.
+**Nothing is mid-flight.** Working tree clean, everything pushed. No Phase 4
+code has been written.
 
 ---
 
 ## Immediate next step
 
-**Phase 3 is closed and the agreed five-phase sequence is now exhausted**
-(Phase 0 consolidation → conformal → resolution-quality harness → orchestrator
-→ *drift detection* → *Docker/CI packaging*). Two items remain from that
-original sequence:
+**Begin Phase 4 implementation once the plan above is reviewed and approved —
+resuming tomorrow.** Start with 4A, stop at its gate, and do not roll into 4B.
 
-1. **Drift detection** — the next phase as planned. The groundwork is in place:
-   `logging_setup.py` was written for it, and 3B added per-agent traces
-   (`agent_status`, `agent_latency_ms`) so there is real history to work
-   against rather than starting from zero.
-2. **Docker/CI packaging** — last, and now cheaper than it was: the service is
-   the deployable unit, `/health` reports the config fingerprint, and
-   `requirements.txt` is fully pinned.
-
-Phase 4 has not been planned. Plan it before writing any code, as with every
-phase so far.
+After Phase 4, one item remains from the agreed sequence: **Docker/CI
+packaging** — cheaper now than when it was scoped, since the service is the
+deployable unit, `/health` reports the config fingerprint, and
+`requirements.txt` is fully pinned.
 
 Phase 3 was planned with two decisions taken up front:
 

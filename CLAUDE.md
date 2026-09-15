@@ -22,8 +22,12 @@ file (CLAUDE.md) describes how the project works and does not change often;
 PROJECT_STATUS.md describes where it currently is and changes every session.
 
 The work is organised as numbered phases with an explicit review gate between each —
-finish a phase, report, and stop rather than rolling into the next one. Phases 0
-(pipeline consolidation) and 1 (conformal prediction) are complete and pushed.
+finish a phase, report, and stop rather than rolling into the next one. **Each phase
+also opens with a plan, reviewed before any code is written.** Phases 0 (pipeline
+consolidation), 1 (conformal prediction), 2 (automation-flag validation and resolution
+groundedness) and 3 (Tier-1 persistence, agent boundaries, HTTP service, write-up) are
+complete and pushed. Phase 4 (drift detection) is planned but not started —
+`PROJECT_STATUS.md` carries the plan.
 
 **Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
 the last commit SHA, what moved, and what the next step is. A future session should be
@@ -324,6 +328,13 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## Known inconsistencies
 
+- **Decision logs are not persisted.** `logging_setup.py`, `orchestrator.py` and
+  `schemas.py` all describe these records as "the raw input for drift detection", but
+  `configure_logging()` attaches only a `StreamHandler(sys.stderr)` — there is no
+  `FileHandler`, no `.jsonl`, no `logs/`. Every record emitted so far has evaporated,
+  and every evaluation path passes `emit_log=False` anyway. Doc-ahead-of-code, found
+  while planning Phase 4; making the history real is that phase's first task. Until
+  then, do not assume any decision history exists.
 - `process_ticket_batch.py`'s MiniLM/BGE dimension mismatch is fixed in code, but the
   script has **not** been re-run. `data/category_stores/*.csv` were produced under
   MiniLM and feed the clustering calibration behind the production 0.80 threshold;
