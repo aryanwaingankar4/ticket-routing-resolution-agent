@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-15
-**Last commit:** `<3C commit>` — Phase 3C: the HTTP service and the agent
+**Last commit:** `400eaff` — Phase 3C: the HTTP service and the agent
 failure boundary
 **Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3C is
 committed locally and waiting on the review gate before it is pushed
@@ -302,7 +302,7 @@ Test suite 75 → 92.
 
 ---
 
-### Phase 3C — the HTTP service and the agent failure boundary (`<3C commit>`)
+### Phase 3C — the HTTP service and the agent failure boundary (`400eaff`)
 
 `src/service/api.py`: per-agent endpoints, `/policy/rag-gate`, `/triage`, and
 `/health`. The first phase that adds externally-visible behaviour, so it was
