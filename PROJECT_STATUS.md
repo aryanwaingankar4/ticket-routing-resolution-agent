@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-15
-**Last commit:** `<plan commit>` — Phase 4 plan: drift detection
+**Last commit:** `4086c8a` — Phase 4 plan: drift detection
 **Branch:** `main`, level with `origin/main` (nothing unpushed)
 **Current phase:** **Phase 3 complete; Phase 4 (drift detection) is planned
 and approved but NOT started.** No Phase 4 code exists — the section below is
