@@ -1,14 +1,16 @@
 # Project Status
 
 **Last updated:** 2026-09-15
-**Last commit:** `400eaff` — Phase 3C: the HTTP service and the agent
-failure boundary
-**Branch:** `main`, **ahead of `origin/main` (unpushed)** — Phase 3C is
-committed locally and waiting on the review gate before it is pushed
-**Current phase:** **Phase 3 (multi-agent orchestrator), sub-phases 3A, 3B and
-3C complete; 3D (n8n + write-up) remains.** Production gates unchanged
-throughout. 3A and 3B cleared their gates and were pushed (`9320c18`,
-`d46037e`).
+**Last commit:** `9f893c5` — Phase 3D (docs): document the agent
+architecture, and why n8n was superseded
+**Branch:** `main`, level with `origin/main` (nothing unpushed)
+**Current phase:** **Phase 3 complete.** 3A (Tier-1 persistence), 3B (agent
+boundaries + orchestrator), 3C (HTTP service + failure boundary) and 3D (the
+README write-up) are all done, gated and pushed. Production gates unchanged
+throughout — the whole phase moved no number.
+
+The one deliberate omission: **the n8n workflow was dropped, not deferred by
+accident.** See "Phase 3D" below.
 
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
@@ -364,22 +366,64 @@ could not have run the suite.
 
 ---
 
+### Phase 3D — the README write-up, and n8n dropped (`9f893c5`)
+
+Docs only; no code touched, so the gates are unchanged from `400eaff`.
+
+`README.md` is the lab notebook and had drifted **three phases behind the
+code**: it still said the system was *"not yet a true multi-agent system"* and
+scoped the restructure as future work via n8n, and its structure tree predated
+the Phase 0 consolidation entirely — `src/agent/` was not in it.
+
+Now documented: a full "Phase 3 — the agent architecture" section covering all
+three sub-phases, including the two places the plan changed and why (the
+failure boundary moving to the service; n8n being superseded). The "Important
+distinction" in Research / Novelty now separates **what exists** (agents,
+orchestrator, HTTP surface — closing Paper 1's gap) from **what does not** (no
+distributed execution, no concurrency, no autonomous agents). The agents are
+independently *addressable*, not independently *running*.
+
+**The n8n workflow was dropped deliberately, not deferred.** Orchestration in
+n8n would put an `IF confidence < threshold` node — a second, untested copy of
+the calibrated 0.67 gate — where neither `pytest`, the goldens, nor the
+adversarial gate can reach it. That is the most expensive possible instance of
+this project's recurring bug class, and a workflow JSON cannot be
+regression-tested against `tests/goldens/*.json` either. What n8n was actually
+for survives without authority: `POST /policy/rag-gate` returns the decision
+computed by the tested Python, so a workflow can branch on a boolean it did not
+compute. **An n8n figure remains available as pure presentation if it is ever
+wanted for the paper; nothing depends on it.**
+
+Also fixed: the service examples in "How to Run" use `Invoke-RestMethod`, not
+`curl` — on Windows PowerShell `curl` is an alias for `Invoke-WebRequest` and
+accepts neither `-X` nor `-d`. Both commands were run against a live server
+before being documented.
+
+---
+
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean. Phase 3C is committed locally
-and **not pushed** — it is waiting on the review gate.
+**Nothing is mid-flight.** Working tree clean, everything pushed.
 
 ---
 
 ## Immediate next step
 
-**The Phase 3C review gate is here.** Confirm the change reads correctly, then
-push. Do not start 3D before it clears.
+**Phase 3 is closed and the agreed five-phase sequence is now exhausted**
+(Phase 0 consolidation → conformal → resolution-quality harness → orchestrator
+→ *drift detection* → *Docker/CI packaging*). Two items remain from that
+original sequence:
 
-**3D is the last sub-phase**: an n8n workflow over the endpoints (presentation
-only — it must own no decision, which is what `/policy/rag-gate` is for) and
-the README architecture write-up. It is the one sub-phase with no new Python
-behaviour, so its gate is that the demo runs and the write-up is accurate.
+1. **Drift detection** — the next phase as planned. The groundwork is in place:
+   `logging_setup.py` was written for it, and 3B added per-agent traces
+   (`agent_status`, `agent_latency_ms`) so there is real history to work
+   against rather than starting from zero.
+2. **Docker/CI packaging** — last, and now cheaper than it was: the service is
+   the deployable unit, `/health` reports the config fingerprint, and
+   `requirements.txt` is fully pinned.
+
+Phase 4 has not been planned. Plan it before writing any code, as with every
+phase so far.
 
 Phase 3 was planned with two decisions taken up front:
 
@@ -396,7 +440,7 @@ Remaining sub-phases, each with its own gate:
 |---|---|
 | ~~3B~~ | ~~Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`~~ — **done** |
 | ~~3C~~ | ~~FastAPI service — per-agent endpoints, `/triage`, health endpoint, plus the agent failure boundary~~ — **done** |
-| 3D | n8n workflow over the endpoints (presentation only) + architecture write-up |
+| ~~3D~~ | ~~architecture write-up~~ — **done**; the n8n workflow was **dropped deliberately**, and remains available as optional presentation only |
 
 After Phase 3: drift detection → Docker/CI packaging.
 
