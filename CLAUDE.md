@@ -26,8 +26,9 @@ finish a phase, report, and stop rather than rolling into the next one. **Each p
 also opens with a plan, reviewed before any code is written.** Phases 0 (pipeline
 consolidation), 1 (conformal prediction), 2 (automation-flag validation and resolution
 groundedness) and 3 (Tier-1 persistence, agent boundaries, HTTP service, write-up) are
-complete and pushed. Phase 4 (drift detection) is planned but not started —
-`PROJECT_STATUS.md` carries the plan.
+complete and pushed. Phase 4 (drift detection) is in progress: 4A (history sink +
+detector library) is built and at its gate; 4B (the evaluation) has not started —
+`PROJECT_STATUS.md` carries the state.
 
 **Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
 the last commit SHA, what moved, and what the next step is. A future session should be
@@ -117,6 +118,11 @@ python src/experiments/run_imbalance_sweep.py
 # Conformal prediction (measurement only; offline, no Gemini quota)
 python -m src.experiments.calibrate_conformal
 
+# Phase 4A -- drift reference (offline, no quota). Refuses to overwrite
+# without --force; fatal unless it reproduces the published Phase 1
+# OOD/adversarial detection results exactly.
+python src/experiments/build_drift_reference.py
+
 # Regenerate the deployment-distribution calibration set (~360 Gemini calls,
 # ~30 min). ALWAYS dry-run first -- it costs ~14 calls and catches a bad
 # prompt before the full budget is spent.
@@ -176,8 +182,10 @@ src/agent/
 ├── config.py        frozen typed config + CALIBRATION_PROVENANCE + config_fingerprint()
 ├── schemas.py       pydantic models for every stage; Tier/EscalationReason enums
 ├── errors.py        typed exceptions; ONE Gemini error ladder (was three)
-├── logging_setup.py structured JSON decision logs
-├── artifacts.py     THE loader, with all three hard guards
+├── logging_setup.py structured JSON decision logs; opt-in JSONL sink (off by default)
+├── artifacts.py     THE loader, with all three hard guards; load_drift_reference()
+├── conformal.py     split conformal + conformal p-values (measurement only)
+├── drift.py         drift detector: pure functions over records (measurement only)
 ├── classifier.py    cascade Tier-1 -> Tier-2          (stage implementation)
 ├── retriever.py     FAISS retrieval                    (stage implementation)
 ├── resolver.py      prompt + Gemini call with retry    (stage implementation)
@@ -328,13 +336,19 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## Known inconsistencies
 
-- **Decision logs are not persisted.** `logging_setup.py`, `orchestrator.py` and
-  `schemas.py` all describe these records as "the raw input for drift detection", but
-  `configure_logging()` attaches only a `StreamHandler(sys.stderr)` — there is no
-  `FileHandler`, no `.jsonl`, no `logs/`. Every record emitted so far has evaporated,
-  and every evaluation path passes `emit_log=False` anyway. Doc-ahead-of-code, found
-  while planning Phase 4; making the history real is that phase's first task. Until
-  then, do not assume any decision history exists.
+- **Decision logs can be persisted, but nothing persists them yet.** Phase 4A added
+  `configure_logging(decision_log_path=...)`, a JSONL sink for `pipeline_decision`
+  records only. It is **off by default** and no script, test, service or demo turns it
+  on, so no decision history exists yet — do not assume one. Enabling it (e.g. in
+  `/triage`) is a separate decision with its own gate. The sink refuses a logger level
+  above INFO, which would otherwise record an empty "quiet period".
+- **Drift's "α by construction" is marginal only.** For the single fixed 175-ticket
+  reference, the per-ticket rate of p ≤ α is Beta-distributed around α; the
+  calibration-conditional bound at δ = 0.10 is 0.126 against a nominal 0.10. `drift.py`
+  reports both tests. Never quote a window false-alarm rate that 4B has not measured.
+- **The drift reference escalates 0/175 tickets**, so the escalation-rate test is
+  degenerate against it and reports `None`, not p = 0. In-domain paraphrases never
+  reach the RAG gate; the reference says nothing about a deployed escalation rate.
 - `process_ticket_batch.py`'s MiniLM/BGE dimension mismatch is fixed in code, but the
   script has **not** been re-run. `data/category_stores/*.csv` were produced under
   MiniLM and feed the clustering calibration behind the production 0.80 threshold;

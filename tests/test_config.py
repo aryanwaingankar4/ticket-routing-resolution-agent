@@ -54,10 +54,26 @@ def test_settings_are_frozen():
         settings.cascade.confidence_threshold = 0.9
 
 
+def test_drift_is_measurement_only():
+    """Phase 4A: drift gates nothing and names no alarm threshold yet.
+
+    A window size or alarm threshold appearing here before Phase 4B measures
+    the null false-alarm rate would be a hand-tuned threshold wearing a lab
+    coat, so the absence is pinned too.
+    """
+    assert settings.drift.enabled is False
+    assert settings.drift.alpha == 0.10
+    assert settings.drift.alpha == settings.conformal.alpha
+    fields = set(type(settings.drift).model_fields)
+    assert not {f for f in fields if "window" in f or "threshold" in f}
+    assert "bge-base-en-v1-5" in settings.drift.reference_name
+
+
 @pytest.mark.parametrize("key", [
     "rag.similarity_threshold",
     "cascade.confidence_threshold",
     "clustering.resolution_similarity_threshold",
+    "drift.alpha",
 ])
 def test_every_calibrated_value_has_provenance(key):
     """A measured constant must carry the evidence that produced it."""

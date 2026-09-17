@@ -1,11 +1,13 @@
 # Project Status
 
-**Last updated:** 2026-09-15
-**Last commit:** `4086c8a` — Phase 4 plan: drift detection
-**Branch:** `main`, level with `origin/main` (nothing unpushed)
-**Current phase:** **Phase 3 complete; Phase 4 (drift detection) is planned
-and approved but NOT started.** No Phase 4 code exists — the section below is
-the plan, not results.
+**Last updated:** 2026-09-17
+**Last commit:** see "Phase 4A" below — committed to `main`, **not pushed**
+**Branch:** `main`, ahead of `origin/main` by the 4A commits (unpushed until
+the 4A gate is reviewed)
+**Current phase:** **Phase 4A (decision-history sink + drift detector
+library) is built and AT ITS GATE, awaiting review.** The Phase 4 plan and the
+4A implementation plan were both approved on 2026-09-17. 4B (the evaluation)
+has not started.
 
 3A (Tier-1 persistence), 3B (agent boundaries + orchestrator), 3C (HTTP
 service + failure boundary) and 3D (the README write-up) are all done, gated
@@ -22,8 +24,9 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **104 passed**, offline, ~152s |
-| Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint `7538ea7cceb1`, index 4000, Tier-1 4000 rows |
+| Test suite | `pytest` | **142 passed** (104 + 38 from 4A), 0 failed/skipped, offline, ~108s |
+| Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`830c211b1fe9`** (was `7538ea7cceb1`; changed by adding `settings.drift`), index 4000, Tier-1 4000 rows |
+| Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
@@ -402,9 +405,72 @@ before being documented.
 
 ---
 
-## Phase 4 — drift detection (PLANNED, NOT STARTED)
+## Phase 4 — drift detection (4A AT GATE; 4B NOT STARTED)
 
-**No code exists for this yet. Everything below is the approved plan.**
+### Phase 4A — history sink + detector library (built, awaiting gate review)
+
+**Gate criterion 1 held — nothing that existed moved.** Re-run after the
+change, not quoted: pytest 142/142 (golden parity 45/45 and 9/9 exact inside
+it), adversarial gate 9/9 with `data/adversarial_escalation_results.csv`
+byte-identical, ablation baseline 32/45 = 71.11% with
+`data/ablation_baseline_results.csv` byte-identical. No `logs/`, `.jsonl` or
+`.npy` appeared anywhere after the full suite, the gate and the ablation run.
+
+What landed:
+
+- **`settings.drift`** — `enabled=False`, `alpha=0.10`,
+  `conditional_delta=0.10`, the reference filename. **No window size and no
+  alarm threshold**, and `test_config.py` pins their absence.
+- **Opt-in JSONL sink** — `configure_logging(decision_log_path=...)`, receives
+  `pipeline_decision` records only, carries `schema_version: 1`. Off by
+  default, and **nothing in the project enables it**. It refuses a logger
+  level above INFO, before changing anything, because a starved sink records
+  an empty history that reads as a quiet period.
+- **`src/agent/drift.py`** — pure (no I/O, no models). Signal A: conformal
+  p-values via `conformal_p_values()` verbatim, with a marginal *and* a
+  calibration-conditional binomial, plus KS. Signal B: escalation rate, Tier-1
+  share, category mix. Signal C: fingerprint counts, in their own field. The
+  report carries statistics only, no alarms.
+- **`load_drift_reference()`** in `artifacts.py` — refuses a reference built
+  against a different embedding model, dimension, index size or FAISS file
+  hash. Deliberately not a full-fingerprint check, which would fire on every
+  unrelated config edit.
+- **`src/experiments/build_drift_reference.py`** →
+  `data/drift_reference_bge-base-en-v1-5.json`. Refuses to overwrite without
+  `--force`.
+- `scipy==1.18.0` pinned (was only transitive). Test suite 104 → 142.
+
+**Four findings from building it, all written down with the result:**
+
+1. **The planned reference did not exist as data.** The plan named the scores
+   in `conformal_calibration_bge-base-en-v1-5.json`; that file holds
+   classification fits only, and `calibrate_conformal.py` discards the 175
+   similarities. Doc-ahead-of-code, again. Built as a separate artifact rather
+   than by re-running the Phase 1 script over its published outputs.
+2. **"False-alarm rate is α by construction" was overstated in the plan.** It
+   holds marginally over calibration draws, not for our one fixed n=175
+   reference, where the per-ticket rate is Beta(17, 159)-distributed. The
+   exact marginal rate is 17/176 = 0.0966; the conditional upper bound at
+   δ=0.10 is **0.126**. At a ~200-ticket window that gap is as large as the
+   window's own sampling noise. Both tests ship; 4B measures both null rates.
+3. **The first independent-derivation check could not fail.** It compared the
+   recomputed in-domain false-escalation rate to the published one, but a set
+   scored against itself gives a rate fixed by n and ties alone, so any 175
+   distinct numbers pass. It was caught because self-inclusive and non-self
+   scores "reproduced" identically. Replaced with the published OOD variant
+   rate, OOD seed rate and adversarial flag count, which depend on the scores'
+   positions and do differ between the two score sets at α=0.01 (8 vs 6
+   adversarial flagged). **Caveat:** at α ≥ 0.05 most of those columns
+   saturate (1.0, 9/9), so the α=0.01 rows carry most of the check's power.
+4. **The reference escalates 0/175 tickets.** In-domain paraphrases never
+   reach the RAG gate, so a binomial against rate 0 returns p = 0 on the first
+   escalation. The detector reports that test as `degenerate_reference` with a
+   `None` p-value. Consequence for the thesis: this reference says nothing
+   about a deployed escalation rate. Reference Tier-1 share is 23/175 = 13.1%;
+   the predicted category mix is uneven (Database 43, Infrastructure 11)
+   although the true labels are 25 each.
+
+### The original Phase 4 plan (approved; corrections from 4A noted inline)
 
 ### Why, and the framing
 
@@ -436,7 +502,8 @@ history real is 4A's first task.
   KS against U[0,1] as a secondary read. **The false-alarm rate is α by
   construction, not by tuning** — the same property that made conformal
   novelty detection worth reporting in Phase 1, applied to a window rather
-  than a ticket.
+  than a ticket. **[Corrected in 4A: marginally only. For the one fixed
+  reference the conditional bound is 0.126 at α=0.10; see finding 2.]**
 - **Signal B — the rates the thesis rests on.** Escalation rate, Tier-1 share
   (a *published* number — if it moves in deployment that is itself a finding),
   and category mix against the reference mix.
@@ -449,7 +516,9 @@ history real is 4A's first task.
 `data/conformal_calibration_bge-base-en-v1-5.json` — the same reference the RAG
 gate was calibrated against. Deliberately **not** a rolling baseline from
 recent logs, which re-centres on whatever is arriving and so cannot see slow
-drift; that would define away the failure mode that matters most.
+drift; that would define away the failure mode that matters most. **[Corrected
+in 4A: those scores were never stored. The reference is the same 175 tickets,
+rebuilt into `data/drift_reference_bge-base-en-v1-5.json`; see finding 1.]**
 
 ### Sub-phases, gate between each
 
@@ -497,39 +566,27 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ## In progress
 
-**Nothing is mid-flight.** Working tree clean, everything pushed. No Phase 4
-code has been written.
+**Nothing is mid-flight.** 4A is committed to `main` and **not pushed**,
+waiting on its gate review. No 4B code exists.
 
 ---
 
 ## Immediate next step
 
-**Begin Phase 4 implementation once the plan above is reviewed and approved —
-resuming tomorrow.** Start with 4A, stop at its gate, and do not roll into 4B.
+**Review the 4A gate.** If it clears: push, then open 4B with a plan in plan
+mode before any code. 4B should be planned knowing the four 4A findings above:
+measure the null false-alarm rate for **both** the marginal and conditional
+Signal A tests, treat the escalation-rate test as unavailable on this
+reference, and note that the α=0.01 rows carry most of the reference check's
+power.
+
+Two decisions deliberately left for later, each needing its own gate: turning
+the sink on anywhere (e.g. `/triage`), and any `/drift` endpoint.
 
 After Phase 4, one item remains from the agreed sequence: **Docker/CI
 packaging** — cheaper now than when it was scoped, since the service is the
 deployable unit, `/health` reports the config fingerprint, and
 `requirements.txt` is fully pinned.
-
-Phase 3 was planned with two decisions taken up front:
-
-- **Orchestration logic stays in Python.** Agents become independent modules
-  behind a typed contract with FastAPI as transport; n8n may wrap the
-  endpoints later for the demo but owns no decision, because the escalation
-  gate must stay inside pytest and the goldens.
-- **Phase 3 is parity-preserving architecture, not a new experiment.** Success
-  is that no number moves. Any new claim needs its own evidence and gate.
-
-Remaining sub-phases, each with its own gate:
-
-| Sub-phase | Scope |
-|---|---|
-| ~~3B~~ | ~~Classification / Retrieval / Resolution behind a typed contract, plus `orchestrator.py`~~ — **done** |
-| ~~3C~~ | ~~FastAPI service — per-agent endpoints, `/triage`, health endpoint, plus the agent failure boundary~~ — **done** |
-| ~~3D~~ | ~~architecture write-up~~ — **done**; the n8n workflow was **dropped deliberately**, and remains available as optional presentation only |
-
-After Phase 3: drift detection → Docker/CI packaging.
 
 ---
 

@@ -185,6 +185,34 @@ class ConformalConfig(_Frozen):
         return DATA_DIR / self.artifact_name
 
 
+class DriftConfig(_Frozen):
+    """Drift detection over persisted decision records -- MEASUREMENT ONLY.
+
+    `enabled` defaults to False and gates nothing: no routing decision reads
+    any value here. The detector (src/agent/drift.py) is pure functions over
+    records; its evaluation is Phase 4B.
+
+    Deliberately absent: a window size and an alarm threshold. Naming either
+    before the null false-alarm rate is measured would be a hand-tuned
+    threshold wearing a lab coat -- exactly what the Phase 4 gate forbids.
+
+    `alpha` is the per-ticket novelty level for Signal A. The window false-
+    alarm rate equals alpha only MARGINALLY over calibration draws; for the
+    single fixed n=175 reference it is itself random around alpha. So the
+    detector also reports a calibration-conditional test against an upper
+    bound alpha' held with confidence 1 - `conditional_delta`.
+    """
+
+    enabled: bool = False
+    alpha: float = 0.10
+    conditional_delta: float = 0.10
+    reference_name: str = "drift_reference_bge-base-en-v1-5.json"
+
+    @property
+    def reference_path(self) -> Path:
+        return DATA_DIR / self.reference_name
+
+
 class Settings(_Frozen):
     models: ModelsConfig = ModelsConfig()
     cascade: CascadeConfig = CascadeConfig()
@@ -192,6 +220,7 @@ class Settings(_Frozen):
     clustering: ClusteringConfig = ClusteringConfig()
     gemini: GeminiConfig = GeminiConfig()
     conformal: ConformalConfig = ConformalConfig()
+    drift: DriftConfig = DriftConfig()
 
     seed: int = 42
 
@@ -232,6 +261,14 @@ CALIBRATION_PROVENANCE: dict[str, str] = {
         "but NOT for Tier-1 (TF-IDF): benchmark coverage gaps of -0.011 and "
         "-0.233 respectively at this alpha, against a 2sd noise band of "
         "0.045. See README 'Conformal Prediction'."
+    ),
+    "drift.alpha": (
+        "0.10 -- nominal per-ticket novelty level for drift Signal A, chosen "
+        "to match conformal.alpha. MEASUREMENT ONLY; drift gates nothing "
+        "(settings.drift.enabled is False). The window false-alarm rate is "
+        "alpha only marginally over calibration draws, not conditionally on "
+        "the fixed 175-ticket reference, so no operating point is claimed "
+        "until Phase 4B measures the null false-alarm rate."
     ),
     "models.embedding_dim": (
         "768 -- BAAI/bge-base-en-v1.5. Asserted at load time against both the "

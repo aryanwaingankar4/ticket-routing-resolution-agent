@@ -291,6 +291,61 @@ def load_tier1():
     return bundle["vectorizer"], bundle["classifier"]
 
 
+def load_drift_reference(artifacts: Artifacts | None = None):
+    """Load the drift reference and verify it matches the live encoder/index.
+
+    Drift Signal A compares live top-1 similarities against similarities
+    measured when the reference was built. Against a different encoder or a
+    rebuilt index those numbers are not comparable, and every p-value would
+    be wrong with no error -- so the reference carries the embedding model,
+    dimension, index size and index file hash, and all are checked here.
+
+    Pass `artifacts` to also check index.ntotal against the loaded index.
+    Without it, the index file hash still covers a rebuild.
+    """
+    from pydantic import ValidationError
+
+    from src.agent.drift import DriftReference
+    # A generic chunked file hash despite the name; reused rather than
+    # re-implemented so there is one definition of "this file's hash".
+    from src.classification.train_tier1 import dataset_sha256 as file_sha256
+
+    path = settings.drift.reference_path
+    rebuild = (
+        "  Build it from the project root with:\n"
+        "      python src/experiments/build_drift_reference.py"
+    )
+    if not path.is_file():
+        raise ArtifactError(
+            f"Drift reference not found:\n    - {path}\n\n" + rebuild
+        )
+
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            reference = DriftReference.model_validate(json.load(fh))
+    except (ValueError, ValidationError) as exc:
+        raise ArtifactError(
+            f"Drift reference at {path} is unreadable or malformed\n"
+            f"  ({type(exc).__name__}: {exc})\n" + rebuild
+        ) from exc
+
+    index_path = settings.models.faiss_index_path
+    if not index_path.is_file():
+        raise ArtifactError(
+            f"FAISS index not found:\n    - {index_path}\n"
+            "  The drift reference cannot be verified without it.\n"
+            "  Build it with:  python src/rag/build_vector_index.py"
+        )
+
+    reference.check_compatible(
+        embedding_model=settings.models.embedding_model,
+        embedding_dim=settings.models.embedding_dim,
+        index_ntotal=None if artifacts is None else artifacts.index.ntotal,
+        index_sha256=file_sha256(index_path),
+    )
+    return reference
+
+
 def build_gemini_client():
     from src.agent.config import require_gemini_api_key
 

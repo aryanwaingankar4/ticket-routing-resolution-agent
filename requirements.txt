@@ -10,6 +10,11 @@ torch==2.13.0
 scikit-learn==1.9.0
 faiss-cpu==1.14.3
 joblib==1.5.3
+# Used directly by src/agent/drift.py (exact binomial, KS, chi-square, Beta
+# quantile). Previously only a transitive dependency of scikit-learn, so a
+# clean clone could have drifted to a version nobody tested -- pinned for the
+# same reason httpx is.
+scipy==1.18.0
 
 # --- Data ------------------------------------------------------------------
 pandas==3.0.5

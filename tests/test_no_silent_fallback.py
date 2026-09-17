@@ -122,6 +122,8 @@ def test_agent_package_declares_no_local_thresholds():
     "conformal",
     # Phase 3B.
     "agents", "orchestrator",
+    # Phase 4A.
+    "drift",
 ])
 def test_agent_modules_import_without_side_effects(module_name):
     """Importing the library must not load models, read .env, or print.
