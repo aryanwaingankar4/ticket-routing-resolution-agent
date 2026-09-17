@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-17
-**Last commit:** see "Phase 4A" below — committed to `main`, **not pushed**
+**Last commit:** `5c077dd` — Phase 4A: decision-history sink + drift detector (committed, **not pushed**)
 **Branch:** `main`, ahead of `origin/main` by the 4A commits (unpushed until
 the 4A gate is reviewed)
 **Current phase:** **Phase 4A (decision-history sink + drift detector
@@ -407,7 +407,7 @@ before being documented.
 
 ## Phase 4 — drift detection (4A AT GATE; 4B NOT STARTED)
 
-### Phase 4A — history sink + detector library (built, awaiting gate review)
+### Phase 4A — history sink + detector library (`5c077dd`, awaiting gate review)
 
 **Gate criterion 1 held — nothing that existed moved.** Re-run after the
 change, not quoted: pytest 142/142 (golden parity 45/45 and 9/9 exact inside
