@@ -1,16 +1,16 @@
 # Project Status
 
 **Last updated:** 2026-09-20
-**Last pushed commit:** `6672494` — Name the cross-phase finding: the
-calibration/reference distribution is the binding constraint. Phase 4B-1
-(`8869f0c`) cleared its gate and **is pushed**.
-**Branch:** `main`. The Phase 5A commit sits on top of `6672494`, committed and
-**not pushed**, waiting on its gate review.
-**Current phase:** **Phase 5A (the conformal template-grouping correction) is
-complete and AT ITS GATE, awaiting review.** It corrected a published
-diagnostic: Finding 2's template counts were computed with a grouping key that
-omitted `category`. The conclusion survived and no coverage number moved.
-Phase 4B-1's verdict stands as **measured, not shipped**.
+**Last pushed commit:** `cdac8f6` — Phase 5A: correct the conformal
+template-grouping diagnostic. Its gate was cleared and it **is pushed**, as are
+Phase 4B-1 (`8869f0c`) and the named-finding write-up (`6672494`).
+**Branch:** `main`, clean and level with `origin/main` — nothing unpushed.
+**Current phase:** **Between sub-phases. Phase 5A is done, gated and pushed;
+Phase 5B has not started and its scope is not yet set** (see "Immediate next
+step"). 5A corrected a published diagnostic: Finding 2's template counts were
+computed with a grouping key that omitted `category`. The conclusion survived,
+no coverage number moved, and production gates never changed. Phase 4B-1's
+verdict stands as **measured, not shipped**.
 
 **Two doc corrections were made during the 4B-1 session**, both places where
 this file contradicted git: it said `5c077dd` was unpushed (it was not) and that
@@ -454,7 +454,7 @@ before being documented.
 
 ---
 
-## Phase 5A — the conformal template-grouping correction (committed, not pushed, awaiting gate review)
+## Phase 5A — the conformal template-grouping correction (`cdac8f6`, gated and pushed)
 
 Planned and approved 2026-09-20 after the error was found while auditing the
 project's own docs. It **changed a published number**, which is why it was given
@@ -740,21 +740,31 @@ waiting on its gate review. Phases 0–4 are all pushed.
 
 ## Immediate next step
 
-**Review the 5A gate.** If it clears: push, then open the next sub-phase of the
-publication-readiness programme (5B onward) with a plan in plan mode before any
-code.
+**Phase 5B — scope to be agreed, then planned in plan mode before any code.**
+5A closed the correction that 4B-1's audit turned up, so nothing is
+outstanding; 5B is the next sub-phase of the publication-readiness programme
+(Phases 5–9, the paper as the deliverable) and **its content is a decision for
+the start of the next session, not something this file should presume.**
 
-Carry forward into the write-up phases:
+The candidates already on the record, any of which 5B could take:
 
-- The **named finding** above is the paper's spine; 9A should build on it rather
-  than re-deriving it, and must keep Phase 2A as a *related* corpus limitation
-  rather than a third instance.
-- **4B-2/4B-3** remain if drift is taken further: a held-out in-domain set is
-  required before any Signal A power number is quoted as final, and a
-  deployment-traffic reference before any monitor could run.
-- Two decisions still deliberately deferred, each needing its own gate: turning
-  the decision-log sink on anywhere (e.g. `/triage`), and any `/drift` endpoint.
-- **Docker/CI packaging** is the last item from the original agreed sequence.
+- **4B-2/4B-3 — a held-out in-domain set.** Required before any Signal A power
+  number is quoted as final, and a deployment-traffic reference is required
+  before a drift monitor could run at all. This is the item 4B-1's own
+  limitations name first.
+- **Re-run the Phase 2 harnesses on deployment-distribution data.** Both are
+  built, guarded and need no code changes; 2A could not measure clustering
+  precision on template data, and 2B's groundedness rests on 33 drafts.
+- **Docker/CI packaging** — the last item from the original agreed sequence, and
+  cheaper now: the service is the deployable unit, `/health` reports the config
+  fingerprint, and `requirements.txt` is fully pinned.
+- **Start the write-up (9A).** The **named finding** above is the paper's spine;
+  9A should build on it rather than re-derive it, and must keep Phase 2A as a
+  *related* corpus limitation rather than a third instance of the mechanism.
+
+Two decisions remain deliberately deferred, each needing its own gate: turning
+the decision-log sink on anywhere (e.g. in `/triage`), and any `/drift`
+endpoint.
 
 ---
 
