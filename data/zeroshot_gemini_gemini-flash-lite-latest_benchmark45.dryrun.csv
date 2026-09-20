@@ -1,0 +1,4 @@
+index,ticket_id,text,expected,predicted,parsed_ok,correct,elapsed_s,source,raw_response
+0,b45_00,I got a new laptop and now the system keeps saying my username or password is wrong even though I'm sure it's right. Can someone reset me so I can get back in?,Access Management,Access Management,True,True,1.0107,live,"{""category"": ""Access Management""}"
+1,b45_01,My manager said I should be able to see the finance shared folder but it just says I'm not allowed. Can you give me permission to open it?,Access Management,Access Management,True,True,0.8049,live,"{""category"": ""Access Management""}"
+2,b45_02,The wifi in the third floor meeting room keeps dropping every few minutes so we can't run our video calls. Everyone else in the building seems fine.,Network,Network,True,True,0.8182,live,"{""category"": ""Network""}"

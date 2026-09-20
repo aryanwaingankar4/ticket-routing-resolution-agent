@@ -113,8 +113,9 @@ VALID_MODES = ("baseline", "no-cascade", "no-rag", "tier2-only")
 # Evaluation sets. benchmark45 is the historical default and keeps the
 # historical output filenames.
 DEFAULT_EVAL_SET = "benchmark45"
-VALID_SETS = (DEFAULT_EVAL_SET, "deployment175")
-EVAL_SET_SIZES = {DEFAULT_EVAL_SET: 45, "deployment175": 175}
+VALID_SETS = (DEFAULT_EVAL_SET, "benchmark14", "deployment175")
+EVAL_SET_SIZES = {DEFAULT_EVAL_SET: 45, "benchmark14": 14,
+                  "deployment175": 175}
 
 # tier2-only is expressed as a cascade threshold that NO Tier-1 confidence can
 # reach, so every ticket escalates to Tier-2 and the rest of the path is
@@ -332,10 +333,45 @@ def load_deployment175_set():
     return list(data)
 
 
+def load_benchmark14_set():
+    """The original 14-ticket generalization benchmark (READ-ONLY).
+
+    Its source of truth is NOVEL_TICKETS in
+    src/classification/generalization_test.py -- imported, never copied, so it
+    cannot drift from the set every other comparison in the project uses.
+    """
+    try:
+        from src.classification.generalization_test import NOVEL_TICKETS
+    except Exception as exc:
+        _fatal(
+            "Failed to import NOVEL_TICKETS from "
+            "src/classification/generalization_test.py: " + repr(exc)
+        )
+
+    expected_n = EVAL_SET_SIZES["benchmark14"]
+    if len(NOVEL_TICKETS) != expected_n:
+        _fatal(
+            "NOVEL_TICKETS must contain EXACTLY {e} tickets; found {f}. This "
+            "benchmark is read-only and must not have changed.".format(
+                e=expected_n, f=len(NOVEL_TICKETS)
+            )
+        )
+    for i, rec in enumerate(NOVEL_TICKETS):
+        for k in ("text", "expected"):
+            if k not in rec or not str(rec[k]).strip():
+                _fatal(
+                    "NOVEL_TICKETS[{i}] has an empty or missing "
+                    "'{k}'.".format(i=i, k=k)
+                )
+    return [dict(r) for r in NOVEL_TICKETS]
+
+
 def load_eval_set(funcs, eval_set):
     """Dispatch to the right evaluation set, validated by its own loader."""
     if eval_set == DEFAULT_EVAL_SET:
         return funcs["load_expanded_set"](EXPANDED_JSON_PATH)
+    if eval_set == "benchmark14":
+        return load_benchmark14_set()
     if eval_set == "deployment175":
         return load_deployment175_set()
     _fatal("Unknown evaluation set: " + repr(eval_set))

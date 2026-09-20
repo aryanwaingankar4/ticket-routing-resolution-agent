@@ -1,0 +1,10 @@
+{
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "eval_set": "benchmark14",
+ "ticket_id": "b14_02",
+ "prompt_sha256": "6902f2625c2cbc3f483dbdad9e5d8eba81d3934e49946f198806126eb8249091",
+ "raw": "{\"category\": \"Network\"}",
+ "elapsed_s": 0.7958,
+ "timestamp": "2026-09-21T02:45:19"
+}

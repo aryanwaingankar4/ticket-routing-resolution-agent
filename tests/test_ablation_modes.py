@@ -164,9 +164,20 @@ def test_other_sets_get_their_own_filenames(tmp_path, monkeypatch):
 
 
 def test_modes_and_sets_are_registered():
+    # benchmark14 was added in Phase 5C, so the zero-shot baselines have a
+    # Tier-2-only reference to be paired against on that set too.
     assert "tier2-only" in abl.VALID_MODES
-    assert set(abl.VALID_SETS) == {"benchmark45", "deployment175"}
+    assert set(abl.VALID_SETS) == {"benchmark45", "benchmark14",
+                                   "deployment175"}
     assert abl.DEFAULT_EVAL_SET == "benchmark45"
+    assert abl.EVAL_SET_SIZES["benchmark14"] == 14
+
+
+def test_benchmark14_loads_from_its_single_source_of_truth():
+    """Imported from generalization_test.NOVEL_TICKETS, never copied."""
+    records = abl.load_benchmark14_set()
+    assert len(records) == 14
+    assert all(r["text"].strip() and r["expected"].strip() for r in records)
 
 
 # --------------------------------------------------------------------------

@@ -45,8 +45,9 @@ if PROJECT_ROOT not in sys.path:
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 
 DEFAULT_EVAL_SET = "benchmark45"
-VALID_SETS = (DEFAULT_EVAL_SET, "deployment175")
-EVAL_SET_SIZES = {DEFAULT_EVAL_SET: 45, "deployment175": 175}
+VALID_SETS = (DEFAULT_EVAL_SET, "benchmark14", "deployment175")
+EVAL_SET_SIZES = {DEFAULT_EVAL_SET: 45, "benchmark14": 14,
+                  "deployment175": 175}
 
 
 def _banner(text):
@@ -215,24 +216,73 @@ def pair_rows(cascade_rows, tier2_rows):
     return pairs
 
 
-def analyse(pairs, binomtest):
-    n = len(pairs)
-    both_right = both_wrong = 0
-    b_rows = []   # cascade right, tier2-only wrong
-    c_rows = []   # cascade wrong, tier2-only right
+def mcnemar_from_pairs(pairs, binomtest):
+    """The generic paired comparison: split pairs into the 2x2 cells and run an
+    EXACT McNemar test on the discordant ones.
 
-    for casc, t2 in pairs:
-        cr, tr = casc["correct"], t2["correct"]
-        if cr and tr:
+    Shared by Phase 5B (cascade vs Tier-2-only) and Phase 5C (zero-shot LLM vs
+    Tier-2-only). Each caller adds its own structural checks on top; the test
+    itself must have exactly one implementation, because two would eventually
+    disagree and the disagreement would be invisible.
+
+    `pairs` is [(left, right)] where each side has a boolean "correct".
+    b = left right / right wrong; c = the reverse.
+    """
+    both_right = both_wrong = 0
+    b_rows, c_rows = [], []
+
+    for left, right in pairs:
+        lr, rr = left["correct"], right["correct"]
+        if lr and rr:
             both_right += 1
-        elif not cr and not tr:
+        elif not lr and not rr:
             both_wrong += 1
-        elif cr and not tr:
-            b_rows.append((casc, t2))
+        elif lr and not rr:
+            b_rows.append((left, right))
         else:
-            c_rows.append((casc, t2))
+            c_rows.append((left, right))
 
     b, c = len(b_rows), len(c_rows)
+    n_discordant = b + c
+
+    if n_discordant == 0:
+        p_value = 1.0
+        test_note = (
+            "No discordant pairs: the two configurations made identical "
+            "predictions on every ticket. McNemar is undefined and reported "
+            "as p = 1.0."
+        )
+    else:
+        p_value = float(binomtest(b, n_discordant, 0.5).pvalue)
+        test_note = (
+            "Exact McNemar: two-sided binomial on {d} discordant pair(s), "
+            "b={b} (left right / right wrong), c={c} (the reverse).".format(
+                d=n_discordant, b=b, c=c)
+        )
+
+    return {
+        "n": len(pairs),
+        "both_right": both_right,
+        "both_wrong": both_wrong,
+        "b": b,
+        "c": c,
+        "b_rows": b_rows,
+        "c_rows": c_rows,
+        "n_discordant": n_discordant,
+        "p_value": p_value,
+        "test_note": test_note,
+        "left_correct": both_right + b,
+        "right_correct": both_right + c,
+    }
+
+
+def analyse(pairs, binomtest):
+    """Cascade vs Tier-2-only, with the cascade-specific structural check."""
+    core = mcnemar_from_pairs(pairs, binomtest)
+    n = core["n"]
+    both_right, both_wrong = core["both_right"], core["both_wrong"]
+    b_rows, c_rows = core["b_rows"], core["c_rows"]
+    b, c = core["b"], core["c"]
 
     # STRUCTURAL CHECK. On any ticket the cascade escalated, both runs used the
     # SAME Tier-2 prediction, so they cannot disagree. Every discordant pair
@@ -252,21 +302,10 @@ def analyse(pairs, binomtest):
             )
         )
 
-    n_discordant = b + c
-    if n_discordant == 0:
-        p_value = 1.0
-        test_note = (
-            "No discordant pairs: the two configurations made identical "
-            "predictions on every ticket. McNemar is undefined and reported "
-            "as p = 1.0."
-        )
-    else:
-        p_value = float(binomtest(b, n_discordant, 0.5).pvalue)
-        test_note = (
-            "Exact McNemar: two-sided binomial on {d} discordant pair(s), "
-            "b={b} (cascade right / Tier-2-only wrong), c={c} (the "
-            "reverse).".format(d=n_discordant, b=b, c=c)
-        )
+    p_value = core["p_value"]
+    test_note = core["test_note"].replace(
+        "b={b} (left right / right wrong)".format(b=b),
+        "b={b} (cascade right / Tier-2-only wrong)".format(b=b))
 
     n_tier1 = sum(1 for casc, _ in pairs if casc["tier_used"] == 1)
     tier1_correct = sum(

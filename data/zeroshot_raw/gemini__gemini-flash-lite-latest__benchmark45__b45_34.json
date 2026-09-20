@@ -1,0 +1,10 @@
+{
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_34",
+ "prompt_sha256": "21b219d8c0c2ce891082cdfa07ed88a2a2f0e0ff39d4c639e2e7395db9b3be80",
+ "raw": "{\n  \"category\": \"Access Management\"\n}",
+ "elapsed_s": 0.6929,
+ "timestamp": "2026-09-21T02:44:14"
+}

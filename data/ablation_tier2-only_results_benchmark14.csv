@@ -1,0 +1,15 @@
+index,text,expected,predicted,tier1_conf,tier_used,correct
+0,I got a new laptop and now the system keeps saying my username or password is wrong even though I'm sure it's right. Can someone reset me so I can get back in?,Access Management,Access Management,0.454704,2,True
+1,My manager said I should be able to see the finance shared folder but it just says I'm not allowed. Can you give me permission to open it?,Access Management,Storage,0.245726,2,False
+2,The wifi in the third floor meeting room keeps dropping every few minutes so we can't run our video calls. Everyone else in the building seems fine.,Network,Network,0.345098,2,True
+3,Pages take forever to load today and sometimes just time out. My colleague next to me has the same slowness on her machine too.,Network,Application,0.265649,2,False
+4,I keep getting a message that there's no room left to save my files and I can't download the report I need. It says the drive is full.,Storage,Storage,0.38755,2,True
+5,I tried to save my presentation but it won't let me because it says I've run out of space in my folder. How do I free some up?,Storage,Storage,0.367847,2,True
+6,When I try to pull up last month's customer records the whole thing just spins and then shows an error about not being able to reach the records system.,Database,Database,0.929638,2,True
+7,The report tool says it can't find the numbers it needs and mentions something about a broken connection to where the data is kept.,Database,Database,0.737856,2,True
+8,"I got a weird email pretending to be from HR asking me to type in my password on a link, and I think I might have clicked it by mistake. What should I do?",Security,Security,0.432072,2,True
+9,My antivirus popped up a warning that something suspicious was blocked and now I'm worried my computer has a virus on it.,Security,Security,0.246595,2,True
+10,Every time I open the expense program it freezes on the loading screen and then closes itself. I've tried restarting but it keeps crashing.,Application,Application,0.191177,2,True
+11,The invoicing software gives me an error and shuts down whenever I click the print button. Nothing prints at all.,Application,Database,0.759935,2,False
+12,None of the company websites are working for anyone in the office this morning - it looks like one of the main servers might be down.,Infrastructure,Database,0.266765,2,False
+13,The whole team can't reach any of our internal tools and someone said a machine in the server room overheated and shut off overnight.,Infrastructure,Infrastructure,0.193742,2,True

@@ -1,0 +1,10 @@
+{
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_30",
+ "prompt_sha256": "e4977ea8788f113dd3190f770638047f1be512ac7a5abebbaffc064d8472aec3",
+ "raw": "{\"category\": \"Security\"}",
+ "elapsed_s": 0.8201,
+ "timestamp": "2026-09-21T02:43:53"
+}

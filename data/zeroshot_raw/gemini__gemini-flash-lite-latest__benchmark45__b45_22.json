@@ -1,0 +1,10 @@
+{
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_22",
+ "prompt_sha256": "fee9b38ca9f66799dd5c98743151d99290651a48e6844f2e5c08e0d815bfc9da",
+ "raw": "{\"category\": \"Storage\"}",
+ "elapsed_s": 0.8184,
+ "timestamp": "2026-09-21T02:43:11"
+}

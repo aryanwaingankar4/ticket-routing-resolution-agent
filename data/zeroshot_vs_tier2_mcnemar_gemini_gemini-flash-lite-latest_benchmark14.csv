@@ -1,0 +1,5 @@
+ticket_id,text,expected,zeroshot_predicted,zeroshot_correct,tier2only_predicted,tier2only_correct,direction
+b14_01,My manager said I should be able to see the finance shared folder but it just says I'm not allowed. Can you give me permission to open it?,Access Management,Access Management,True,Storage,False,zeroshot_right_tier2_wrong
+b14_03,Pages take forever to load today and sometimes just time out. My colleague next to me has the same slowness on her machine too.,Network,Network,True,Application,False,zeroshot_right_tier2_wrong
+b14_11,The invoicing software gives me an error and shuts down whenever I click the print button. Nothing prints at all.,Application,Application,True,Database,False,zeroshot_right_tier2_wrong
+b14_12,None of the company websites are working for anyone in the office this morning - it looks like one of the main servers might be down.,Infrastructure,Infrastructure,True,Database,False,zeroshot_right_tier2_wrong
