@@ -1,16 +1,18 @@
 # Project Status
 
 **Last updated:** 2026-09-20
-**Last pushed commit:** `cdac8f6` — Phase 5A: correct the conformal
-template-grouping diagnostic. Its gate was cleared and it **is pushed**, as are
-Phase 4B-1 (`8869f0c`) and the named-finding write-up (`6672494`).
+**Last pushed commit:** `483dcdb` — Record the agreed Phase 5–9
+publication-readiness programme (docs only). The last commit to move code or a
+result is `cdac8f6`, Phase 5A; `8869f0c` (Phase 4B-1) and `6672494` (the named
+finding) are also pushed.
 **Branch:** `main`, clean and level with `origin/main` — nothing unpushed.
-**Current phase:** **Between sub-phases. Phase 5A is done, gated and pushed;
-Phase 5B has not started and its scope is not yet set** (see "Immediate next
-step"). 5A corrected a published diagnostic: Finding 2's template counts were
-computed with a grouping key that omitted `category`. The conclusion survived,
-no coverage number moved, and production gates never changed. Phase 4B-1's
-verdict stands as **measured, not shipped**.
+**Current phase:** **Between sub-phases. Phase 5A is done, gated and pushed.
+Phase 5B (the honest ablation) is next, its scope agreed and recorded** under
+"Immediate next step"; no 5B code exists and it opens in plan mode. 5A corrected
+a published diagnostic: Finding 2's template counts were computed with a
+grouping key that omitted `category`. The conclusion survived, no coverage
+number moved, and production gates never changed. Phase 4B-1's verdict stands as
+**measured, not shipped**.
 
 **Two doc corrections were made during the 4B-1 session**, both places where
 this file contradicted git: it said `5c077dd` was unpushed (it was not) and that
