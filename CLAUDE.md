@@ -167,6 +167,13 @@ python src/experiments/run_imbalance_sweep.py
 # Conformal prediction (measurement only; offline, no Gemini quota)
 python -m src.experiments.calibrate_conformal
 
+# Phase 6A -- conformal deferral vs a confidence threshold. Risk-coverage
+# curves, AURC, and the real alpha-indexed conformal operating points.
+# Offline, no quota. Refuses to overwrite its outputs without --force.
+# Fatal if any curve's coverage-1.0 endpoint disagrees with the published
+# accuracy (16/45, 33/45, 91/175, 132/175).
+python src/experiments/compare_deferral_rules.py
+
 # Phase 4A -- drift reference (offline, no quota). Refuses to overwrite
 # without --force; fatal unless it reproduces the published Phase 1
 # OOD/adversarial detection results exactly.
@@ -484,6 +491,16 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   here, never a scaling tool, unless a human-labelled subset large enough to read every
   disagreement says otherwise. An aggregate agreement score will not reveal this.
 
+- **Conformal deferral was measured in 6A and is NOT better than the 0.50
+  confidence gate** — but the honest claim is "no evidence either way on the
+  gated axis", not "conformal is worse". All 12 comparisons returned no signal
+  at the live gate's *measured* operating coverage (8.9% of the benchmark,
+  18.9% of the deployment set), and **3 of 4 configurations are degenerate
+  there** — every rule accepts the same tickets, so the test has no resolution.
+  AURC showed effects in 3 of 12 that **contradict across sets** and favour
+  *margin*, not conformal. **Never quote an AURC win as a reason to promote**:
+  this project gates on risk at the operating coverage, and AURC averages over
+  coverages the system never runs at.
 - **A local model must never be measured while swapping.** `OllamaBackend`
   refuses to start below a per-model RAM floor (`MODEL_RAM_FLOOR_MB`), because a
   swapping model yields a latency number that is meaningless *and* plausible.

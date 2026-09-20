@@ -1,15 +1,15 @@
 # Project Status
 
 **Last updated:** 2026-09-21
-**Last commit to move code or a result:** `4793785` — Phase 5C part 2 (the
-local Qwen2.5-3B baseline, the summary harness, and the 5C write-up covering
-both arms). **Gate cleared and PUSHED on 2026-09-21.** Phase 5B
-was gate-cleared and pushed in `bf94e63` + `be1f7c0`; 5C part 1 in `d39e197`.
-**Branch:** `main`, level with `origin/main`, working tree clean.
-**Current phase:** **Phase 5C — COMPLETE, GATED and PUSHED.** Both arms are
-measured, the gate was re-run clean (pytest 246, adversarial 9/9 with its CSV
-byte-identical, goldens 45/45 and 9/9, ablation 32/45), and the write-up covers
-both arms together. **Next: Phase 6A, which opens in plan mode.**
+**Last commit to move code or a result:** `PENDING_SHA` — Phase 6A (conformal
+deferral vs a confidence threshold). **Committed but NOT pushed — held for the
+gate review.** Phase 5C was gate-cleared and pushed on 2026-09-21 (`4793785`,
+`1200451`, `a8557df`).
+**Branch:** `main`, ahead of `origin/main`, working tree clean.
+**Current phase:** **Phase 6A — COMPLETE, awaiting gate review.** Verdict:
+**do not promote conformal to the live deferral gate** — and the honest form is
+"no evidence either way on the gated axis", not "conformal is worse". Nothing
+promoted; `settings.conformal.enabled` stays `False`. **Next: Phase 6B.**
 
 Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
@@ -46,7 +46,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **246 passed** (214 + 32 from 5C part 2), 0 failed/skipped, offline, ~165s |
+| Test suite | `pytest` | **261 passed** (246 + 15 from 6A), 0 failed/skipped, offline, ~80s |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -60,6 +60,7 @@ first. Everything between is the record of what has already landed.
 | Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
 | Zero-shot Gemini (5C) | `run_zeroshot_baselines.py --backend gemini` | **40/45** and **14/14**, 0 unparseable, median 0.81 s |
 | Zero-shot Qwen2.5-3B (5C) | `run_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct` | **34/45** and **12/14**, 0 unparseable, median 6.98 s (CPU) |
+| Deferral rules (6A) | `compare_deferral_rules.py` | **no signal on the gated axis in all 12 comparisons**; 3 of 4 configurations degenerate at the live gate |
 | Prompt identity across the two 5C arms | `summarize_zeroshot_baselines.py --prompt-check-against` | **59/59 byte-identical** (sha256), both directions |
 
 Production gates are unchanged and remain the calibrated values: cascade
@@ -1007,6 +1008,104 @@ with 6C.
 ---
 
 
+## Phase 6A — conformal deferral vs a confidence threshold (COMPLETE, awaiting gate)
+
+**Committed, not pushed.** Measurement only; `settings.conformal.enabled` stays
+`False` and nothing was promoted.
+
+### The verdict
+
+**Do not promote conformal to the live deferral gate.** The honest form is
+**"no evidence it defers better on the axis this project gates on"**, NOT
+"conformal is worse".
+
+### Why the rules are comparable at all
+
+Each deferral rule reduces to a scalar ranking: confidence ranks by `p1`,
+**LAC-conformal ranks by `p2`**, APS by `p1+p2`. So LAC-conformal deferral ranks
+by the *second*-largest probability where confidence ranks by the largest —
+genuinely different orderings. Two consequences: the comparison is
+**calibration-free** (q cancels, so Phase 1's contamination does not reach it),
+and **"defer unless singleton" is not monotone in alpha** because an *empty* set
+is also a deferral. `tests/test_deferral_rules.py` brute-forces real sets through
+`conformal.predict_sets()` over a grid of quantiles to prove the reduction,
+rather than trusting the algebra.
+
+### Result 1 — no signal on the gated axis, and 3 of 4 cases cannot resolve it
+
+Live 0.50 gate operating coverage, **measured**: Tier-1 answers **8.9% (4/45)**
+of the benchmark and **18.9% (34/175)** of the deployment set.
+
+All 12 comparisons return "no signal on the gated axis" — no bootstrap interval
+excludes zero. More importantly:
+
+| Tier / set | Risk at live gate, ALL four rules | Measurable? |
+|---|---|---|
+| tier1 / benchmark45 | 0.500 (2 errors in 4 accepted) | **No — degenerate** |
+| tier2 / benchmark45 | 0.000 | **No — degenerate** |
+| tier2 / deployment175 | 0.000 | **No — degenerate** |
+| tier1 / deployment175 | 0.147–0.206 (n=34) | Yes |
+
+**In 3 of 4 configurations every rule accepts the same tickets at that coverage**,
+so the test has no resolution. The script detects and records this, the same way
+4B-1 reports its degenerate escalation-rate test as `None` rather than p = 0.
+
+### Result 2 — AURC manufactures findings the gated axis does not support
+
+Significant in **3 of 12**, contradicting each other: margin is *better* on
+tier2/benchmark45 (−0.0207, CI [−0.0477, −0.0006]) and *worse* on
+tier1/deployment175 (+0.0121, CI [0.0003, 0.0249]); LAC is *worse* on
+tier1/deployment175 (+0.0556, CI [0.0242, 0.0899]). **The cost-asymmetry failure
+caught in the act** — an ungated average produces three publishable-looking
+effects where the gated axis shows nothing, and they favour *margin*, not
+conformal.
+
+### Result 3 — where conformal can actually be operated
+
+Singleton rate (the fraction auto-routed), from Phase 1's published calibration:
+Tier-2 LAC runs 4.0% / 18.3% / 34.3% / 78.9% at alpha = 0.01 / 0.05 / 0.10 /
+0.20; APS is far more conservative at every alpha (0.0% / 4.6% / 8.6% / 16.6%).
+**alpha=0.01 auto-routes essentially nothing**, so the tightest guarantee is
+operationally useless here. **APS at alpha=0.20 returns 13.7% EMPTY sets** on the
+deployment set — the predicted non-monotonicity, measured.
+
+### Limitations, recorded beside the result
+
+- **The primary metric is degenerate in 3 of 4 configurations.** At 8.9%
+  coverage on n=45 the gate accepts **4 tickets**. That is a statement about the
+  evaluation sets and the gate's very low operating coverage, not about the rules.
+- n=45 resolves almost nothing (one ticket = 2.2 points); bootstrap intervals
+  there are wide.
+- **deployment175 is now multiply used** — Phase 1 Finding 4, Phase 5B, and now
+  6A — which weakens it further as independent evidence.
+- The operating-point overlay uses Phase 1's calibration, fitted on the
+  contaminated in-domain 175. The fingerprint is checked; the contamination is not
+  repaired.
+- **The secondary coverage grid was extended downward after the first run**, once
+  the live gate measured 8.9%/18.9% and the original (50/70/80/90%) grid turned
+  out not to span the operating point. The **primary** metric — risk at the
+  measured operating coverage — was pre-registered and unchanged, and is what the
+  verdict rule reads.
+
+### What would actually answer the question
+
+A held-out set large enough that the live gate's ~10–20% operating coverage
+contains more than a handful of tickets. At n=45 that region is 4 tickets. This
+is the same constraint the named finding describes, arriving a fourth time.
+
+### Gate — RE-RUN, not quoted
+
+| Check | Result |
+|---|---|
+| `pytest` | **261 passed**, 0 failed, ~80s (246 + 15 from 6A) |
+| Adversarial escalation | **9/9 PASS**, CSV byte-identical |
+| Golden parity | **45/45 and 9/9** exact |
+| Ablation baseline | **32/45 = 71.11%**, 9/9 escalations |
+| Published result CSVs | none modified |
+| Stray `.npy` | none |
+
+---
+
 ## The agreed Phase 5–9 programme
 
 Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
@@ -1035,7 +1134,7 @@ calls**; dry-run first and cache every raw response.
 
 | Sub-phase | Scope |
 |---|---|
-| **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC |
+| **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE, awaiting gate** |
 | **6B** | Weighted conformal under shift, with a domain-classifier density ratio |
 | **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
 
@@ -1115,12 +1214,19 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 6A — conformal deferral vs a confidence threshold** (risk–coverage
-curves and AURC). Offline, **no Gemini quota**, measurement only:
-`settings.conformal.enabled` stays `False` whatever the result shows. Opens in
-plan mode like every other sub-phase.
+**Review the Phase 6A gate.** The phase is complete and committed; nothing is
+pushed until "gate cleared". Its gate table is under "Phase 6A" above — all
+checks were re-run, not quoted.
 
-5C is gated and pushed; its gate table is under "Phase 5C" above.
+Once cleared: **Phase 6B — weighted conformal under shift**, with a
+domain-classifier density ratio. Offline, no Gemini quota, measurement only.
+It is the direct successor to the named finding: it tests whether reweighting
+can do what distribution matching could not. Opens in plan mode.
+
+**Carry into 6B:** 6A's binding constraint was that the live gate's operating
+coverage (~10–20%) contains only a handful of tickets on either evaluation set,
+so the gated axis was unmeasurable in 3 of 4 configurations. 6B should say up
+front what it will do when its own primary metric has no resolution.
 
 **Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
 and a re-score costs nothing. **5C must not share a day with 6C.**

@@ -2086,6 +2086,182 @@ Results:
 the four `zeroshot_vs_*_mcnemar_*.csv` reports and the four
 `zeroshot_summary_*.csv` files.
 
+### Phase 6A - conformal deferral vs a confidence threshold
+
+**Measurement only. `settings.conformal.enabled` stays `False`** - and the result
+below is not an argument to change that. Cascade 0.50, RAG 0.67, clustering 0.80
+unchanged; no artifact, benchmark or golden touched.
+
+#### The question Phase 1 could not answer
+
+Phase 1 measured whether conformal's *coverage guarantee* holds. That is not the
+operational question. The live cascade defers on a raw confidence threshold, and
+the open question was whether conformal should replace it - which coverage
+cannot settle, because coverage says whether the guarantee holds, not whether
+the rule **defers on the right tickets**.
+
+#### The rules reduce to rankings, and the reduction is proven, not asserted
+
+A deferral rule is a scalar score plus a threshold, so a risk-coverage curve
+depends only on the *ordering* the score induces. Working the sets out against
+`src/agent/conformal.py`:
+
+| Rule | Prediction set | Singleton while | Ranks by |
+|---|---|---|---|
+| Confidence (incumbent) | - | `p1 >= tau` | **p1** |
+| LAC conformal | `{y : p(y) >= 1-q}` | `p2 < 1-q <= p1` | **p2** |
+| APS conformal | `{y : cum(y) <= q}` | `p1 <= q < p1+p2` | **p1+p2** |
+
+**LAC-conformal deferral ranks by the second-largest probability where
+confidence ranks by the largest** - genuinely different orderings, so this is a
+real comparison and not a re-parameterisation. Two consequences: the ranking
+comparison is **calibration-free** (q cancels, so it is not exposed to Phase 1's
+contamination), and **"defer unless singleton" is not monotone in alpha**,
+because both scores admit an *empty* set, which is also a deferral.
+
+`tests/test_deferral_rules.py` does not check this algebra against itself: it
+brute-forces real sets through `conformal.predict_sets()` over a grid of
+quantiles and asserts the scalar rule says accept **iff** the real set is a
+singleton. If the derivation were wrong, every number below would be wrong while
+staying perfectly self-consistent - this project's recurring bug class.
+
+**The control that would otherwise be missing:** **margin (p1 - p2)**, the
+standard selective-prediction baseline. Confidence alone is a weak opponent, and
+conformal beating only that would repeat Phase 5B's mistake.
+
+#### Result 1 - on the axis that matters, there is no signal anywhere
+
+The live 0.50 gate's operating coverage was **measured, not assumed**: Tier-1
+answers **8.9% (4/45)** of the benchmark and **18.9% (34/175)** of the deployment
+set. Risk at that coverage is the pre-registered primary metric.
+
+**All 12 comparisons (3 challengers x 2 tiers x 2 sets) return "no signal on the
+gated axis".** Not one paired-bootstrap interval excludes zero.
+
+But the stronger statement is about *why*, and it is not "the rules are equal":
+
+| Tier / set | Risk at the live gate, all four rules | Gated axis measurable? |
+|---|---|---|
+| tier1 / benchmark45 | 0.500 (2 errors in 4 accepted) | **No - degenerate** |
+| tier2 / benchmark45 | 0.000 | **No - degenerate** |
+| tier2 / deployment175 | 0.000 | **No - degenerate** |
+| tier1 / deployment175 | 0.147-0.206 (n=34) | Yes |
+
+**In three of four configurations every rule accepts essentially the same
+tickets at the live gate's coverage, so the test has no resolution at all.** The
+script detects and records this rather than leaving it to a reader - the same
+treatment Phase 4B-1 gave its degenerate escalation-rate test, which reports
+`None` rather than p = 0. Only `tier1/deployment175` provides a real test, and
+there the differences are inside noise.
+
+#### Result 2 - AURC manufactures findings the gated axis does not support
+
+AURC shows a significant effect in **3 of 12** comparisons - and they contradict
+each other:
+
+| Comparison | dAURC vs confidence | 95% bootstrap CI | Reading |
+|---|---:|---|---|
+| margin, tier2 / benchmark45 | **-0.0207** | [-0.0477, -0.0006] | margin *better* |
+| margin, tier1 / deployment175 | **+0.0121** | [0.0003, 0.0249] | margin *worse* |
+| lac, tier1 / deployment175 | **+0.0556** | [0.0242, 0.0899] | conformal *worse* |
+
+Margin "wins" on one set and "loses" on the other. **This is the cost-asymmetry
+failure caught in the act**: an ungated average produces three
+publishable-looking effects, in inconsistent directions, where the axis the
+project actually gates on shows nothing. It is the same shape as the
+resolution-clustering promotion rule that would have rewarded whichever
+configuration merged more.
+
+Full AURC table (oracle in brackets - lower is better):
+
+| Tier / set | confidence | margin | lac | aps | (oracle) |
+|---|---:|---:|---:|---:|---:|
+| tier1 / benchmark45 | 0.5339 | 0.5452 | 0.5935 | 0.5355 | (0.2830) |
+| tier2 / benchmark45 | 0.1625 | 0.1421 | **0.1209** | 0.1903 | (0.0401) |
+| tier1 / deployment175 | 0.2919 | 0.3039 | 0.3473 | **0.2900** | (0.1408) |
+| tier2 / deployment175 | 0.1026 | **0.1006** | 0.1059 | 0.1157 | (0.0332) |
+
+LAC has the best AURC on tier2/benchmark45 (0.1209 vs 0.1625) but its interval
+[-0.1003, 0.0031] includes zero, and it is the **worst** rule on both Tier-1
+configurations. No rule wins consistently across both tiers and both sets.
+
+#### Result 3 - where conformal can actually be operated
+
+The curves above are calibration-free rankings. These are the points the real
+procedure lands on, using the published Phase 1 calibration (clean, marginal).
+The figure is the singleton rate, i.e. the fraction auto-routed:
+
+| Tier / set | Score | a=0.01 | a=0.05 | a=0.10 | a=0.20 |
+|---|---|---:|---:|---:|---:|
+| tier2 / deployment175 | LAC | 4.0% | 18.3% | 34.3% | 78.9% |
+| tier2 / deployment175 | APS | 0.0% | 4.6% | 8.6% | 16.6% |
+| tier1 / deployment175 | LAC | 1.1% | 6.9% | 14.3% | 20.6% |
+
+Two things follow. **alpha=0.01 auto-routes essentially nothing** (0-4%), so the
+tightest guarantee is operationally useless here. And **APS is far more
+conservative than LAC at every alpha**, which matters because APS is the variant
+Phase 1 preferred for adaptivity. At the one place conformal lands near the live
+gate's coverage - Tier-2 LAC at alpha=0.05, 18.3% - its risk among singletons is
+0.000, but so is the incumbent's at that coverage, which is precisely the
+degeneracy above.
+
+**The non-monotonicity is real and measured:** APS at alpha=0.20 returns **13.7%
+empty sets** on deployment175 and 13.3% on the benchmark. Empty sets are
+deferrals, so the singleton rate is *not* monotone in alpha, and any future
+promotion must treat "defer unless singleton" as a two-sided condition rather
+than a threshold.
+
+#### Verdict
+
+**Do not promote conformal to the live deferral gate**, and note that this is
+*not* a finding that conformal is worse. The honest statement is: **there is no
+evidence it defers better on the axis this project gates on, and in three of four
+configurations the data cannot answer the question at that operating point at
+all.** The only statistically significant effects belong to a simpler baseline
+(margin), point in opposite directions on the two sets, and are on a metric the
+project has decided not to gate on.
+
+#### Limitations, beside the numbers
+
+- **The primary metric is degenerate in 3 of 4 configurations.** At 8.9% coverage
+  on n=45 the gate accepts **4 tickets**; no comparison can resolve anything
+  there. That is a statement about the evaluation sets' size and the gate's very
+  low operating coverage, not about the rules.
+- **n=45 resolves almost nothing.** A single ticket is 2.2 points.
+- **deployment175 is Gemini-generated deployment-register text, not production
+  traffic**, and it is now *multiply* used - Phase 1 Finding 4's conformal
+  calibration, Phase 5B's ablation, and now this. Each additional use weakens it
+  further as independent evidence.
+- **The operating-point overlay uses Phase 1's calibration**, which was fitted on
+  the contaminated in-domain 175. The config fingerprint is checked before the
+  overlay is drawn, but contamination is a property of that set and is not
+  repaired here.
+- **The secondary coverage grid was extended downward after the first run**, once
+  the live gate was measured at 8.9%/18.9% and the original (50/70/80/90%) grid
+  turned out not to span the operating point at all. The **primary** metric -
+  risk at the measured operating coverage - was pre-registered and is unchanged,
+  and it is what the verdict rule reads.
+- **Bootstrap intervals at n=45 are wide**, and a paired bootstrap over 45 points
+  resamples a small number of distinct tickets many times.
+
+#### Gate - re-run, not quoted
+
+`pytest` **261 passed** (246 + 15 from 6A), adversarial escalation **9/9 PASS**
+with its CSV byte-identical, golden parity **45/45 and 9/9**, ablation baseline
+**32/45 = 71.11%** with 9/9 escalations, no published result CSV modified, no
+stray `.npy`.
+
+**Guard that fired correctly:** every curve's coverage-1.0 endpoint is asserted
+against the published accuracy (16/45, 33/45, 91/175, 132/175) and is **fatal**
+on mismatch - the independent recount that would catch probabilities which are
+not the ones the published results came from.
+
+Script: `src/experiments/compare_deferral_rules.py`. Results:
+[`deferral_rule_summary.csv`](data/deferral_rule_summary.csv),
+[`deferral_risk_coverage.csv`](data/deferral_risk_coverage.csv),
+[`deferral_conformal_operating_points.csv`](data/deferral_conformal_operating_points.csv),
+plus four `deferral_risk_coverage_{tier}_{set}.png` figures.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
