@@ -2,8 +2,8 @@
 
 **Last updated:** 2026-09-20
 **Last pushed commit:** `33ca2b8` — Refresh PROJECT_STATUS.md header (docs
-only). **Phase 5B is committed on top of that and NOT pushed**, awaiting its
-gate review; see "In progress".
+only). **Phase 5B (`2a744ed`) is committed on top of that and NOT pushed**,
+awaiting its gate review; see "In progress".
 **Branch:** `main`. Phases 0–5A are pushed; 5B is committed and held.
 **Current phase:** **Phase 5B (the honest ablation) is complete, gated, and
 committed — awaiting gate review.** It changed what a published claim *means*
