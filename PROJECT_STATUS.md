@@ -1,12 +1,19 @@
 # Project Status
 
-**Last updated:** 2026-09-20
-**Last pushed commit:** `33ca2b8` — Refresh PROJECT_STATUS.md header (docs
-only). **Phase 5B (`2a744ed`) is committed on top of that and NOT pushed**,
-awaiting its gate review; see "In progress".
-**Branch:** `main`. Phases 0–5A are pushed; 5B is committed and held.
-**Current phase:** **Phase 5B (the honest ablation) is complete, gated, and
-committed — awaiting gate review.** It changed what a published claim *means*
+**Last updated:** 2026-09-21
+**Last commit to move code or a result:** `d39e197` — Phase 5C part 1 (the
+zero-shot harness and the Gemini baseline), followed by this docs-only interim
+update. **Everything is pushed; `main` is level with `origin/main` and the
+working tree is clean.** Phase 5B was gate-cleared and pushed in `bf94e63` +
+`be1f7c0`.
+**Branch:** `main`, clean, fully pushed.
+**Current phase:** **Phase 5C — IN PROGRESS, NOT GATED.** Part 1 (the Gemini
+zero-shot baseline) is done and pushed; **part 2 (the local non-Gemini
+baseline) has not started** and is blocked on free RAM. See "In progress". The
+phase's write-up, `CLAUDE.md` update and gate are all deliberately deferred
+until both baselines exist — writing up half a phase would mean rewriting it.
+
+Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
 cascade" is baseline minus Tier-1-only, i.e. the BGE-vs-TF-IDF representation
 gap, not the value of cascading. Against the control that was missing
@@ -847,8 +854,86 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ## In progress
 
-**Nothing is mid-flight.** Phase 5B is committed to `main` and **not pushed**,
-waiting on its gate review. Phases 0–5A are all pushed.
+**Phase 5C is mid-flight.** It is **IN PROGRESS and NOT GATED** — do not treat
+its numbers as gated results yet.
+
+### Part 1 — the Gemini zero-shot baseline: DONE and pushed (`d39e197`)
+
+**Zero-shot Gemini beats the trained classifier on both fixed benchmarks, and
+on the 45 the difference is statistically distinguishable:**
+
+| Set | Zero-shot Gemini | Trained Tier-2 (BGE+LogReg) | Δ | Exact McNemar |
+|---|---:|---:|---:|---:|
+| benchmark45 | **40/45 (88.89%)** | 33/45 (73.33%) | **+7** | b=8, c=1, **p = 0.0391 — significant at α=0.05** |
+| benchmark14 | **14/14 (100%)** | 10/14 (71.43%) | +4 | b=4, c=0, p = 0.125 — not significant, n too small |
+
+- **0 unparseable answers out of 59.** The parser refuses near-misses
+  ("Networking") rather than coercing them, so this is a real 0.
+- Median **0.81 s per ticket** against Tier-2's measured **0.156 s** (Phase
+  5B) — the LLM is ~5× slower per ticket and needs a network round trip.
+- **59 live Gemini calls spent on 2026-09-21** (3 dry-run + 56), reconciled two
+  ways: the backend's own counter and the count of cached raw-response files
+  both say 59. Against the 500/day cap.
+- Gemini's five misses on the 45 are all symptom-vs-cause cases (a Database
+  fault presenting as an app not saving; an Infrastructure fault presenting as
+  a portal being unreachable). One is the "status page green but the service is
+  down" ticket the README already names as the case every trained model fails.
+- Free side-confirmation: `--mode tier2-only --set benchmark14` reproduced the
+  README's published **10/14** independently.
+
+### THE FRAMING NOTE — agreed, and load-bearing
+
+**5C measures what the training corpus is worth. It is NOT "LLMs beat the
+pipeline", and must never be written up that way.** A zero-shot LLM against a
+classifier trained on 3,200 rows is not like-for-like, in exactly the way Phase
+5B found baseline-vs-Tier-1-only was not. The honest claim is "**zero-shot** LLM
+vs **trained** classifier", and the quantity actually being measured is how much
+the template-generated training data is worth — which points at the same wall as
+the named finding, that the corpus is the binding constraint. The comparison
+script prints this beside every result for exactly this reason.
+
+### Part 2 — the local non-Gemini baseline: NOT STARTED, blocked on RAM
+
+Blocked, not deferred. Two prerequisites, both needing the machine:
+
+1. **Ollama is not installed** — no `ollama` on PATH, nothing in
+   `%LOCALAPPDATA%\Programs\Ollama`. Install with
+   `winget install Ollama.Ollama`.
+2. **RAM.** Measured 2026-09-21: **15.69 GB total but only ~2 GB available**,
+   commit 20.44 / 34.69 GB. No candidate model loads into that. The laptop is
+   being restarted to reclaim it.
+
+**Model plan after the restart: `qwen2.5:3b-instruct` (~2.0 GB download,
+~2.5–3.0 GB RAM, est. 4–10 min for 59 tickets), upgrading to
+`qwen2.5:7b-instruct` (~4.7 GB download, ~5.5–6.5 GB RAM, est. 5–12 min) if the
+post-restart headroom allows.** Re-read `\Memory\Available MBytes` before
+pulling and refuse to start a run that would swap — a swapping model produces a
+meaningless latency number, and a plausible one.
+
+Hardware for the record: i5-1334U (10 physical / 12 logical, 1.3 GHz base,
+15 W), Intel Iris Xe integrated only, so Ollama runs **CPU-only** here. Disk is
+not a constraint (151 GB free). The prompt turned out to be ~100 tokens, not the
+300–420 originally budgeted, which is why the runtime estimates above are lower
+than the ones in the approved plan.
+
+**One consequence to carry into the write-up if 3B is used:** Qwen2.5-3B ships
+under the *Qwen Research* licence, where Qwen2.5-7B is Apache-2.0. The 7B is
+the cleaner thing to call "freely available" in a paper.
+
+### What part 2 still needs after the model runs
+
+The zero-shot harness already supports it (`--backend ollama`), so no new code
+is expected: run the local baseline on both sets, run
+`compare_zeroshot_vs_tier2.py --backend ollama` for each, compare the two
+zero-shot models to each other, then the write-up, `PROJECT_STATUS.md`,
+`CLAUDE.md` and the gate.
+
+### 5C gate — NOT yet run
+
+The full suite currently passes at **214** (169 + 45 from 5C), but the phase's
+gate (adversarial 9/9 with its CSV byte-identical, goldens 45/45 and 9/9,
+ablation baseline 32/45) has **not** been re-run for 5C and must be before the
+phase is declared done.
 
 ---
 
@@ -864,7 +949,7 @@ Everything in Phases 5–9 is **measurement only**.
 |---|---|---|
 | **5A** | Conformal template-grouping correction | **DONE** (`cdac8f6`) |
 | **5B** | Honest ablation | **DONE** — committed, awaiting gate |
-| **5C** | **Zero-shot LLM classification baselines** | **NEXT** |
+| **5C** | **Zero-shot LLM classification baselines** | **IN PROGRESS** — part 1 done (`d39e197`), part 2 blocked on RAM |
 
 **5B — honest ablation. DONE** (see "Phase 5B" above). The like-for-like check
 cleared — 33/45 and 32/45 came from the same bit-identical classifier, so there
@@ -960,23 +1045,22 @@ endpoint.
 
 ## Immediate next step
 
-**Review the Phase 5B gate** (committed, unpushed). Then **Phase 5C — zero-shot
-LLM classification baselines.** Open it in plan mode before any code.
+**Finish Phase 5C part 2 — the local non-Gemini baseline.** Full detail under
+"In progress"; the short version:
 
-5C's scope, as agreed:
+1. `winget install Ollama.Ollama`.
+2. Check free RAM. Then `ollama pull qwen2.5:3b-instruct`, or
+   `qwen2.5:7b-instruct` if there is ~6.5 GB of headroom.
+3. `python src/experiments/run_zeroshot_baselines.py --backend ollama --set both`
+   — local, **zero Gemini quota**.
+4. `python src/experiments/compare_zeroshot_vs_tier2.py --backend ollama --set benchmark45`
+   and `--set benchmark14`.
+5. Write up both baselines together, with the framing note above, then
+   `PROJECT_STATUS.md`, `CLAUDE.md`, re-run the gate, commit, hold the push.
 
-1. **Gemini zero-shot classification** on the 45-ticket benchmark, so the
-   trained classifiers have an LLM baseline to be compared against rather than
-   only each other. **~60 Gemini calls.**
-2. **One free non-Gemini model run locally through Ollama**, so the comparison
-   is not single-vendor.
-3. Dry-run first (`--limit 3`), `call_delay_sec >= 4.5`, and **cache every raw
-   response to disk** so a re-score never re-spends quota.
-4. **Never on the same day as 6C**, the other quota-spending sub-phase.
-
-5B's result sharpens what 5C is for: with the cascade reduced to a latency
-optimisation, the accuracy claim now rests on Tier-2 alone, and a zero-shot LLM
-baseline is the obvious thing a reviewer will ask it to beat.
+**Do not spend more Gemini quota on 5C** — part 1's 59 responses are cached on
+disk and a re-score costs nothing. 5C has already used 59 of the 500/day cap on
+2026-09-21, and **5C must not share a day with 6C**.
 
 ---
 
