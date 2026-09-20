@@ -114,10 +114,13 @@ against goldens captured *before* any code moved (45/45 and 9/9 exact).
 - **Fixed** `process_ticket_batch.py` encoding with MiniLM against a BGE index
 - **Corrected a published result**: the ablation study had been measuring the
   entire pre-BGE pipeline. 68.89% → 71.11%; the baseline-minus-Tier-1-only gap
-  33.3 → 35.6 points. **That gap is not "the cascade gain"** — it is the
-  BGE-vs-TF-IDF representation gap, because the no-cascade arm is TF-IDF
-  answering everything. Relabelled in Phase 5B, which added the missing
-  Tier-2-only control; the arithmetic is unchanged.
+  33.3 → 35.6 points. **That gap is not "the cascade gain" and must never be
+  quoted as one** — it is the BGE-vs-TF-IDF representation gap, because the
+  no-cascade arm is TF-IDF answering everything. Phase 5B added the missing
+  Tier-2-only control and the cascade turns out to be **−1 ticket against
+  Tier-2 alone on both evaluation sets, at exact McNemar p = 1.000**; what it
+  buys is 8–18% of per-ticket latency, not accuracy. The arithmetic above is
+  unchanged — only the claim it was attached to.
 
 ### Phase 1 — conformal prediction (`148ad8b`, `bcb21c8`)
 

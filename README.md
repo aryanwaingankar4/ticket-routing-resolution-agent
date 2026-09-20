@@ -1821,6 +1821,18 @@ deployment-set discordances have the same shape — Tier-1 confidently answering
 **Database** on a Security ticket and on another VPN ticket. Tier-1's
 confident errors are not scattered; they collapse toward one class.
 
+**This is Finding 1's mechanism showing up as a routing error.** Three of the
+four discordant tickets across both sets are Tier-1 assigning **Database** to a
+Network or Security ticket at 0.51–0.57 confidence — lexical overconfidence on
+out-of-template phrasing. That is the same failure Finding 1 measures as
+coverage collapse: TF-IDF scores are built from surface vocabulary, so text
+phrased outside the training templates lands in a region where its confidence
+is no longer calibrated. Finding 1 sees it as a 23.3-point conformal coverage
+loss for Tier-1 against BGE's 1.1; here it is four tickets the cascade kept and
+should not have. Same cause, two instruments — which is why raising the cascade
+threshold would not fix it, and why the gate that matters is the one measured
+against a calibration set rather than tuned by hand.
+
 #### Result 3 — latency, measured warm rather than inferred from a fit
 
 The cascade's efficiency claim previously rested on Phase 3A's **1.56 s to fit
