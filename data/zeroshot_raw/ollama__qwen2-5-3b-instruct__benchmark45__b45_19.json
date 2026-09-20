@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_19",
+ "prompt_sha256": "5d3b213221caec7ca318e98ee281e39f6967d3e90ad33d547f1ec658508aeb3e",
+ "raw": "{\"category\": \"Application\"}",
+ "elapsed_s": 7.0397,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:30:21"
+}

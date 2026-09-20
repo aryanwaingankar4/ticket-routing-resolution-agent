@@ -1,0 +1,3 @@
+ticket_id,text,expected,zeroshot_predicted,zeroshot_correct,other_predicted,other_correct,direction
+b14_06,When I try to pull up last month's customer records the whole thing just spins and then shows an error about not being able to reach the records system.,Database,Application,False,Database,True,zeroshot_wrong_gemini_right
+b14_07,The report tool says it can't find the numbers it needs and mentions something about a broken connection to where the data is kept.,Database,Network,False,Database,True,zeroshot_wrong_gemini_right

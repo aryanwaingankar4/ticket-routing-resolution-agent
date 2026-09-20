@@ -40,6 +40,7 @@ import csv
 import json
 import time
 import errno
+import ctypes
 import hashlib
 import argparse
 import traceback
@@ -83,6 +84,17 @@ DEFAULT_OLLAMA_MODEL = "qwen2.5:7b-instruct"
 OLLAMA_NUM_PREDICT = 48
 OLLAMA_TIMEOUT_SEC = 300
 
+# Minimum free physical RAM (MB) before a local model is allowed to run. A
+# model that swaps produces a latency number that is meaningless AND plausible,
+# which is exactly this project's recurring bug shape -- so the run aborts
+# rather than silently measuring the page file. Floors are the resident weights
+# plus ~0.7 GB of working margin.
+MODEL_RAM_FLOOR_MB = {
+    "qwen2.5:3b-instruct": 3277,   # ~2.5 GB weights + margin
+    "qwen2.5:7b-instruct": 6656,   # ~5.9 GB weights + margin
+}
+DEFAULT_RAM_FLOOR_MB = 3277
+
 
 def _banner(text):
     rule = "=" * 70
@@ -105,6 +117,83 @@ def _slug(text):
         elif keep and keep[-1] != "-":
             keep.append("-")
     return "".join(keep).strip("-") or "unknown"
+
+
+# --------------------------------------------------------------------------
+# Memory preflight -- refuse to measure a swapping model
+# --------------------------------------------------------------------------
+class _MEMORYSTATUSEX(ctypes.Structure):
+    _fields_ = [
+        ("dwLength", ctypes.c_ulong),
+        ("dwMemoryLoad", ctypes.c_ulong),
+        ("ullTotalPhys", ctypes.c_ulonglong),
+        ("ullAvailPhys", ctypes.c_ulonglong),
+        ("ullTotalPageFile", ctypes.c_ulonglong),
+        ("ullAvailPageFile", ctypes.c_ulonglong),
+        ("ullTotalVirtual", ctypes.c_ulonglong),
+        ("ullAvailVirtual", ctypes.c_ulonglong),
+        ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
+    ]
+
+
+def available_ram_mb():
+    """Free physical RAM in MB, or None if it cannot be read.
+
+    ctypes + GlobalMemoryStatusEx is stdlib and exact, so this adds no
+    dependency -- psutil is deliberately not in requirements.txt.
+    """
+    try:
+        status = _MEMORYSTATUSEX()
+        status.dwLength = ctypes.sizeof(_MEMORYSTATUSEX)
+        ok = ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status))
+        if not ok:
+            return None
+        return int(status.ullAvailPhys // (1024 * 1024))
+    except Exception:  # noqa: BLE001 -- non-Windows, or the call is unavailable
+        return None
+
+
+def require_free_ram(model, allow_low_ram=False):
+    """Abort unless there is headroom for `model`. Returns the reading in MB.
+
+    Never silently proceeds: an unreadable value is itself fatal, because
+    "could not check" and "checked and it was fine" must not look the same.
+    """
+    floor = MODEL_RAM_FLOOR_MB.get(model, DEFAULT_RAM_FLOOR_MB)
+    avail = available_ram_mb()
+
+    if avail is None:
+        if allow_low_ram:
+            print("  WARNING: free RAM could not be read; --allow-low-ram "
+                  "given, proceeding anyway.")
+            return None
+        _fatal(
+            "Could not read free physical memory, so the {m} run cannot be "
+            "shown to fit in RAM.\n"
+            "  A swapping model produces a meaningless latency number and a "
+            "plausible one.\n"
+            "  Pass --allow-low-ram to run anyway (the result is then marked "
+            "as unfit for timing).".format(m=model)
+        )
+
+    print("  free RAM : {a} MB (floor for {m} is {f} MB)".format(
+        a=avail, m=model, f=floor))
+
+    if avail < floor:
+        if allow_low_ram:
+            print("  WARNING: {a} MB is below the {f} MB floor. "
+                  "--allow-low-ram given, proceeding -- LATENCY FROM THIS RUN "
+                  "IS NOT TRUSTWORTHY.".format(a=avail, f=floor))
+            return avail
+        _fatal(
+            "Not enough free RAM for {m}: {a} MB available, {f} MB needed.\n"
+            "  Refusing to start rather than swap -- a swapping model gives a "
+            "meaningless latency number that still looks plausible.\n"
+            "  Close some applications and re-run, or pass --allow-low-ram to "
+            "accept an untrustworthy timing.".format(
+                m=model, a=avail, f=floor)
+        )
+    return avail
 
 
 # --------------------------------------------------------------------------
@@ -275,6 +364,11 @@ def parse_response(raw):
 class GeminiBackend:
     name = "gemini"
     spends_quota = True
+    # Part of the shared backend interface; hosted inference has no local
+    # weights to identify and no local memory to run short of.
+    model_digest = None
+    allow_low_ram = False
+    free_ram_mb = None
 
     def __init__(self):
         from src.agent.artifacts import build_gemini_client
@@ -339,10 +433,13 @@ class OllamaBackend:
     name = "ollama"
     spends_quota = False
 
-    def __init__(self, model):
+    def __init__(self, model, allow_low_ram=False):
         self.model = model
         self.calls = 0
+        self.model_digest = None
+        self.allow_low_ram = bool(allow_low_ram)
         self._check_server()
+        self.free_ram_mb = require_free_ram(self.model, self.allow_low_ram)
 
     def _check_server(self):
         try:
@@ -359,18 +456,26 @@ class OllamaBackend:
         except Exception as exc:  # noqa: BLE001
             _fatal("Unexpected error talking to Ollama: " + repr(exc))
 
-        available = [m.get("name", "") for m in tags.get("models", [])]
-        # Ollama reports "qwen2.5:7b-instruct" but a bare "qwen2.5:7b" style
-        # tag should still match what the user pulled.
-        if not any(a == self.model or a.startswith(self.model.split(":")[0])
-                   for a in available):
+        entries = tags.get("models", []) or []
+        available = [m.get("name", "") for m in entries]
+        # EXACT match, plus Ollama's ":latest" convention. A prefix match was
+        # tried first and is wrong: asking for qwen2.5:7b-instruct with only
+        # qwen2.5:3b-instruct pulled passed a guard that claims to have
+        # verified the model is installed. That is this project's recurring
+        # shape -- a check that is internally consistent and wrong for its
+        # context -- so the guard must be exact.
+        wanted = (self.model, self.model + ":latest")
+        match = next((m for m in entries if m.get("name", "") in wanted), None)
+        if match is None:
             _fatal(
-                "Ollama is running but has no model matching {m!r}.\n"
+                "Ollama is running but has no model named exactly {m!r}.\n"
                 "  Installed: {a}\n"
                 "  Pull it with:  ollama pull {m}".format(
                     m=self.model, a=available or "(none)"
                 )
             )
+        # Record WHICH weights answered, not just the tag that was asked for.
+        self.model_digest = match.get("digest")
 
     def generate(self, prompt):
         payload = json.dumps({
@@ -482,11 +587,15 @@ def run_one_set(backend, eval_set, limit, dry_run):
             write_cache(path, {
                 "backend": backend.name,
                 "model": backend.model,
+                "model_digest": backend.model_digest,
                 "eval_set": eval_set,
                 "ticket_id": rec["id"],
                 "prompt_sha256": phash,
                 "raw": raw,
                 "elapsed_s": round(elapsed, 4),
+                # Stamped so a swapped run can never later be mistaken for a
+                # clean latency measurement.
+                "low_ram_override": bool(backend.allow_low_ram),
                 "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
             })
 
@@ -577,6 +686,11 @@ def parse_args(argv):
                              "results go to *.dryrun.csv.")
     parser.add_argument("--force", action="store_true",
                         help="Overwrite an existing result CSV.")
+    parser.add_argument("--allow-low-ram", action="store_true",
+                        help="Run a local model even without the RAM headroom "
+                             "to avoid swapping. The timing from such a run is "
+                             "NOT trustworthy and every cached response is "
+                             "stamped low_ram_override=true.")
     return parser.parse_args(argv)
 
 
@@ -602,9 +716,11 @@ def main(argv=None):
               "response cached before parsing".format(
                   n=planned, d=GEMINI_CALL_DELAY_SEC))
     else:
-        backend = OllamaBackend(args.model or DEFAULT_OLLAMA_MODEL)
+        backend = OllamaBackend(args.model or DEFAULT_OLLAMA_MODEL,
+                                allow_low_ram=args.allow_low_ram)
         sets = EVAL_SETS if args.eval_set == "both" else (args.eval_set,)
         print("model   : " + backend.model + "   (local, no quota)")
+        print("digest  : " + str(backend.model_digest))
 
     summaries = []
     for eval_set in sets:

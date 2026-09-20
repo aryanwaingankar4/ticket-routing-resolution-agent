@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark14",
+ "ticket_id": "b14_03",
+ "prompt_sha256": "9513959567a945d68d5d21ae13eb584a823fc305e712905bdc6d66e0f0a9e52a",
+ "raw": "{\"category\": \"Network\"}",
+ "elapsed_s": 2.7664,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:33:37"
+}

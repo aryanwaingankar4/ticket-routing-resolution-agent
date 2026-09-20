@@ -1918,6 +1918,174 @@ Scripts: `src/experiments/run_ablation_study.py` (`--mode tier2-only`,
 [`inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv`](data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv),
 plus the three `*_deployment175.csv` ablation files.
 
+### Phase 5C — zero-shot LLM baselines: what the training corpus is actually worth
+
+**Measurement only. No production threshold, artifact, benchmark or golden
+changed.** Cascade stays 0.50, RAG 0.67, clustering 0.80;
+`settings.conformal.enabled` and `settings.drift.enabled` stay `False`.
+
+#### The question
+
+Phase 5B left the project's accuracy claim resting on Tier-2 alone (BGE +
+LogReg, 33/45). That number had never been compared against the baseline any
+reviewer raises first: **just ask an LLM.** Phase 5C runs that comparison on
+both fixed benchmarks, with two independently-vendored models so the answer
+cannot be an artifact of one provider.
+
+**One prompt, two backends.** `build_prompt()` in
+`run_zeroshot_baselines.py` is backend-agnostic, so both arms receive
+byte-identical text by construction. That is not taken on trust: the
+`prompt_sha256` recorded in each arm's cached raw response was compared ticket
+by ticket, and **all 59 matched in both directions**. A script per vendor is
+how two baselines quietly stop being comparable — the same failure 5B found in
+the ablation.
+
+**The parser never coerces.** A near-miss like "Networking" is recorded as
+unparseable rather than mapped onto "Network", so an unparseable rate is a real
+measurement and not an artefact of being strict.
+
+#### Result 1 — both zero-shot LLMs match or beat the trained classifier
+
+| Model | benchmark45 | 95% Wilson | benchmark14 | 95% Wilson | Unparseable |
+|---|---:|---|---:|---|---:|
+| Zero-shot Gemini (`gemini-flash-lite-latest`) | **40/45 (88.89%)** | [76.50%, 95.16%] | **14/14 (100%)** | [78.47%, 100%] | 0/59 |
+| Zero-shot Qwen2.5-3B-Instruct (local, CPU) | **34/45 (75.56%)** | [61.33%, 85.76%] | **12/14 (85.71%)** | [60.06%, 95.99%] | 0/59 |
+| Trained Tier-2 (BGE + LogReg, 3,200 rows) | 33/45 (73.33%) | — | 10/14 (71.43%) | — | n/a |
+
+Paired, as exact McNemar on the discordant pairs:
+
+| Comparison | Set | b / c | Δ | Exact McNemar |
+|---|---|---|---:|---|
+| Gemini vs Tier-2 | benchmark45 | 8 / 1 | +7 | **p = 0.0391 — distinguishable** |
+| Gemini vs Tier-2 | benchmark14 | 4 / 0 | +4 | p = 0.125 |
+| Qwen-3B vs Tier-2 | benchmark45 | 7 / 6 | +1 | p = 1.000 |
+| Qwen-3B vs Tier-2 | benchmark14 | 4 / 2 | +2 | p = 0.688 |
+| Qwen-3B vs Gemini | benchmark45 | 1 / 7 | −6 | p = 0.0703 |
+| Qwen-3B vs Gemini | benchmark14 | 0 / 2 | −2 | p = 0.500 |
+
+**The honest readings, which differ by pair.** Gemini is distinguishably better
+than the trained classifier on the 45. Qwen-3B is **indistinguishable from** it
+— +1 and +2 tickets at p = 1.000 and p = 0.688 — which is *not* the same as
+"better", and must not be written as if it were. Qwen-3B is 6 tickets below
+Gemini on the 45 at p = 0.070: suggestive, not significant at α = 0.05.
+
+**What survives all of it:** a 3B model running on a laptop CPU, with no
+training on this corpus at all, is not beaten by a classifier fitted on 3,200
+of its rows. **That direction holds for both vendors**, which is what part 2
+was for.
+
+#### Result 2 — Qwen-3B's deficit is one category, not a diffuse weakness
+
+Per-category recall on the 45, from the confusion matrices:
+
+| Category | Support | Gemini recall | Qwen-3B recall |
+|---|---:|---:|---:|
+| Database | 5 | 60% | **0%** |
+| Infrastructure | 6 | 50% | 50% |
+| Security | 6 | 100% | 83% |
+| Storage | 7 | 100% | 86% |
+| Access Management | 7 | 100% | 86% |
+| Application | 7 | 100% | 100% |
+| Network | 7 | 100% | 100% |
+
+**Qwen-3B never emits "Database" once in 59 tickets.** All five Database
+tickets on the 45 go to Application (4) or Network (1), and both on the 14 go
+elsewhere. That single category accounts for **3 of the 6 tickets** separating
+it from Gemini. Its Application precision is correspondingly 47% — Application
+is where the misroutes land.
+
+**Both LLMs fail Infrastructure at exactly 50%**, independently. That is the
+symptom-vs-cause family the README already names, including the "status page
+green but the service is down" ticket every trained model also misses. A
+failure both vendors and the trained classifier share is a property of the
+*tickets*, not of any model.
+
+#### Result 3 — latency, and what it costs to buy those tickets
+
+| System | Median per ticket | vs Tier-2 |
+|---|---:|---:|
+| Trained Tier-2 (BGE + LogReg), warm, batch 1 | **0.156 s** (Phase 5B) | 1× |
+| Zero-shot Gemini, hosted | 0.81 s | 5.2× |
+| Zero-shot Qwen2.5-3B, local CPU | 6.98 s | 44.7× |
+
+The accuracy the LLMs buy is not free, and the local arm is not free of a
+network round trip by being free of a vendor.
+
+#### Limitations, beside the numbers
+
+- **3B is a floor for the non-Gemini family, not a fair ceiling.** Qwen-3B was
+  chosen because it fits the available RAM, not because it is the best
+  open-weight model. Its 6-ticket gap to Gemini on the 45 **cannot be
+  attributed** — this run cannot separate *"the model is too small"* from
+  *"Gemini benefits from having authored the evaluation data"*. Both are live,
+  and nothing here distinguishes them. Do not write the gap as evidence of
+  either.
+- **The benchmark is Gemini-generated.** `novel_tickets_expanded.json` was
+  produced by Gemini and human-label-reviewed, so the Gemini arm is being scored
+  on text from its own model family. This is precisely why part 2 exists: **the
+  Qwen arm is a partial control for that confound**, and the
+  "zero-shot ≥ trained classifier" direction survives removing the authorship
+  advantage. Gemini's *additional* margin over Qwen does not.
+- **Both sets are small.** At n=45 a single ticket is 2.2 points, and the
+  Wilson intervals above overlap heavily. n=14 resolves almost nothing — its
+  100% carries a lower bound of 78.5%.
+- **Zero-shot vs trained is not like-for-like**, in exactly the way 5B found
+  baseline-vs-Tier-1-only was not. Few-shot prompting was deliberately out of
+  scope, as was any fine-tuning of either LLM.
+- **The latency comparison is not hardware-matched.** Qwen ran CPU-only on an
+  i5-1334U with integrated graphics; Gemini ran on hosted accelerators. Both
+  arms pinned temperature 0 and constrained decoding to JSON, but Ollama
+  additionally fixed `seed=42` and capped output at 48 tokens.
+- **Licensing.** Qwen2.5-3B ships under the *Qwen Research* licence, not
+  Apache-2.0 (the 7B is). If the paper describes this baseline as "freely
+  available", that wording needs checking against the licence first.
+
+#### What this measures — the framing that governs the whole phase
+
+**5C measures what a 3,200-row, template-generated training corpus is worth on
+out-of-template phrasing. It is not "LLMs beat the pipeline".** A zero-shot LLM
+against a classifier trained on 3,200 rows is not a method comparison; the
+quantity actually being estimated is how much that training data buys. The
+answer here is: **on out-of-template text, not more than a 3B model already
+knows without it.**
+
+This is the **third independent view of the named finding** below, and the
+first from the *training* side rather than the calibration/reference side. The
+mechanism is the same register mismatch: the corpus is template-generated, the
+benchmarks are not, and the advantage the corpus confers does not survive the
+crossing. Phase 1 found it for a coverage *guarantee*, Phase 4B-1 for a
+*monitor*, and 5C now for *accuracy itself*. (Phase 2A remains a **related but
+distinct** corpus limitation — training-data redundancy limiting what can be
+evaluated — and is still not an instance of this mechanism.)
+
+#### Gate — re-run, not quoted
+
+`pytest` **246 passed** (214 + 32 new), adversarial escalation **9/9 PASS**
+with `adversarial_escalation_results.csv` byte-identical, golden parity
+**45/45 and 9/9** exact, ablation baseline **32/45 = 71.11%** with 9/9
+escalations, no published result CSV modified, and no `.npy` anywhere after
+the full run.
+
+**Parity check on the edited comparison script:** `compare_zeroshot_vs_tier2.py`
+gained an `--against zeroshot` mode, and both already-committed Gemini
+comparison CSVs were regenerated with `--force` and verified **byte-identical**
+before any local-model time was spent. One trap caught doing it: part 1 wrote
+`tier2` in the `direction` column but `tier2only` in the field names, so
+deriving one from the other would have silently rewritten both files.
+
+**Quota:** part 1 spent 59 Gemini calls (2026-09-21), reconciled two ways.
+**Part 2 spent zero** — Ollama is local, and part 1's 59 responses were re-read
+from cache.
+
+Scripts: `src/experiments/run_zeroshot_baselines.py` (`--backend ollama`,
+`--allow-low-ram`), `src/experiments/compare_zeroshot_vs_tier2.py`
+(`--against zeroshot`), `src/experiments/summarize_zeroshot_baselines.py`.
+Results:
+[`zeroshot_ollama_qwen2-5-3b-instruct_benchmark45.csv`](data/zeroshot_ollama_qwen2-5-3b-instruct_benchmark45.csv),
+[`zeroshot_ollama_qwen2-5-3b-instruct_benchmark14.csv`](data/zeroshot_ollama_qwen2-5-3b-instruct_benchmark14.csv),
+the four `zeroshot_vs_*_mcnemar_*.csv` reports and the four
+`zeroshot_summary_*.csv` files.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
@@ -2007,9 +2175,16 @@ distribution doesn't reach into the artifact's threshold range.
 ### Named finding — the calibration/reference distribution, not the test or method, is the binding constraint
 
 This is the project's strongest cross-phase result, and it is named here because
-two phases reached it independently, from opposite directions, through the same
-mechanism: **a register mismatch between the calibration/reference data and the
-data the system actually sees.** Neither phase was designed to test it.
+**three** phases reached it independently, from different directions, through
+the same mechanism: **a register mismatch between the data the system was built
+from and the data it actually sees.** None of the three was designed to test it.
+
+*(Scope widened after Phase 5C. This finding was first stated over the
+**calibration/reference** distribution alone. 5C reached the same wall from the
+**training** distribution, so the mechanism is broader than the original wording
+allowed — the heading is kept for continuity, but the claim the paper should
+make is the wider one. **Phase 9A must decide the final wording**; the two
+original instances are unchanged and are not weakened by the addition.)*
 
 - **The coverage side — Phase 1, Finding 4.** A deployment-distribution
   calibration set, built to the same size and class balance as the in-domain one
@@ -2026,12 +2201,19 @@ data the system actually sees.** Neither phase was designed to test it.
   continuously, and **no choice of test, α or window size fixes it** — the
   conditional binomial's own null false-alarm rate is a clean 0.009–0.023 on
   exchangeable data at the very same operating points.
+- **The accuracy side — Phase 5C, the zero-shot baselines.** A classifier
+  trained on 3,200 rows of the corpus is **indistinguishable from a 3B
+  open-weight model that never saw it** (34/45 vs 33/45, exact McNemar
+  p = 1.000) and distinguishably *worse* than zero-shot Gemini (40/45,
+  p = 0.0391), on out-of-template benchmark phrasing. The training data's
+  advantage does not survive the crossing either.
 
-The two results are not a repeat of one measurement. One is about whether a
-finite-sample *guarantee* survives deployment; the other is about whether a
-*monitor* can run without false alarms. Both fail for the same reason and are
-fixed by the same thing — a reference drawn from the deployment distribution —
-which is what makes the constraint a property of the data rather than of either
+The three results are not a repeat of one measurement. One is about whether a
+finite-sample *guarantee* survives deployment; the second about whether a
+*monitor* can run without false alarms; the third about whether *accuracy*
+bought with training data transfers at all. All three fail for the same reason
+and are fixed by the same thing — data drawn from the deployment distribution —
+which is what makes the constraint a property of the corpus rather than of any
 method. The practical form of the claim: **in this system, every attempt to
 improve a test, a threshold or a statistic hit a ceiling set by what the
 calibration data was made of.**
@@ -2043,10 +2225,12 @@ need different fixes, and clustering precision is unmeasurable on this corpus at
 all. That is redundancy in the *training* data limiting what can be evaluated —
 not a calibration/reference register mismatch. It belongs beside this finding as
 a second, independent reason the synthetic corpus constrains the conclusions, and
-it should not be presented as a third instance of the same mechanism.
+it should not be presented as an instance of the same mechanism. Phase 5C, by
+contrast, **is** one: it is a register mismatch, not a redundancy problem.
 
-*(Recorded for the write-up phase. No new experiment was run for it — it is a
-reframing of two results already measured and published above.)*
+*(Recorded for the write-up phase. No new experiment was run for the finding
+itself — it is a reframing of three results already measured and published
+above.)*
 
 **Important distinction, updated after Phase 3.** This previously read that
 the system was *"not yet a true multi-agent system"* and that the restructure

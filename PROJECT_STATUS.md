@@ -1,17 +1,15 @@
 # Project Status
 
 **Last updated:** 2026-09-21
-**Last commit to move code or a result:** `d39e197` — Phase 5C part 1 (the
-zero-shot harness and the Gemini baseline), followed by this docs-only interim
-update. **Everything is pushed; `main` is level with `origin/main` and the
-working tree is clean.** Phase 5B was gate-cleared and pushed in `bf94e63` +
-`be1f7c0`.
-**Branch:** `main`, clean, fully pushed.
-**Current phase:** **Phase 5C — IN PROGRESS, NOT GATED.** Part 1 (the Gemini
-zero-shot baseline) is done and pushed; **part 2 (the local non-Gemini
-baseline) has not started** and is blocked on free RAM. See "In progress". The
-phase's write-up, `CLAUDE.md` update and gate are all deliberately deferred
-until both baselines exist — writing up half a phase would mean rewriting it.
+**Last commit to move code or a result:** `PENDING_SHA` — Phase 5C part 2 (the
+local Qwen2.5-3B baseline, the summary harness, and the 5C write-up covering
+both arms). **Committed but NOT pushed — held for the gate review.** Phase 5B
+was gate-cleared and pushed in `bf94e63` + `be1f7c0`; 5C part 1 in `d39e197`.
+**Branch:** `main`, one commit ahead of `origin/main`.
+**Current phase:** **Phase 5C — COMPLETE, awaiting gate review.** Both arms are
+measured, the gate was re-run clean (pytest 246, adversarial 9/9 with its CSV
+byte-identical, goldens 45/45 and 9/9, ablation 32/45), and the write-up covers
+both arms together. Nothing is pushed until the gate clears.
 
 Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
@@ -48,7 +46,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **169 passed** (153 + 16 from 5B), 0 failed/skipped, offline, ~75s |
+| Test suite | `pytest` | **246 passed** (214 + 32 from 5C part 2), 0 failed/skipped, offline, ~165s |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -60,6 +58,9 @@ first. Everything between is the record of what has already landed.
 | Warm inference latency | `measure_inference_latency.py` | Tier-1 **1.04 ms** vs Tier-2 **156.40 ms** median (151×) |
 | Phase 2A pilot | `score_flag_validation_set.py --pilot` | **0/12 false merges**, STOP verdict |
 | Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
+| Zero-shot Gemini (5C) | `run_zeroshot_baselines.py --backend gemini` | **40/45** and **14/14**, 0 unparseable, median 0.81 s |
+| Zero-shot Qwen2.5-3B (5C) | `run_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct` | **34/45** and **12/14**, 0 unparseable, median 6.98 s (CPU) |
+| Prompt identity across the two 5C arms | `summarize_zeroshot_baselines.py --prompt-check-against` | **59/59 byte-identical** (sha256), both directions |
 
 Production gates are unchanged and remain the calibrated values: cascade
 **0.50**, RAG similarity **0.67**, resolution clustering **0.80**.
@@ -70,9 +71,16 @@ Production gates are unchanged and remain the calibrated values: cascade
 
 **"The calibration/reference distribution, not the test or method, is the
 binding constraint."** Approved as a named finding on 2026-09-20. **No new
-experiment** — it is a reframing of two results already measured and published.
+experiment** — it is a reframing of results already measured and published.
 
-Its evidence is two phases reaching the same conclusion independently, through
+**SCOPE WIDENED BY PHASE 5C (2026-09-21).** The finding was first stated over
+the *calibration/reference* distribution alone. 5C reached the same wall from
+the *training* distribution, so the mechanism is broader than the original
+wording. The heading is kept for continuity and the README carries a scope note
+beside it — **Phase 9A must settle the final wording.** The two original
+instances are unchanged and are not weakened by the addition.
+
+Its evidence is three phases reaching the same conclusion independently, through
 the same register-mismatch mechanism:
 
 1. **Coverage side — Phase 1, Finding 4.** A deployment-distribution
@@ -85,18 +93,25 @@ the same register-mismatch mechanism:
    0.646 for α = 0.01/0.05/0.10/0.20, versus nulls of 0.006/0.046/0.097/0.199 —
    4–7×. No test, α or window fixes it; the conditional binomial's null is a
    clean 0.009–0.023 at those same operating points.
+3. **Accuracy side — Phase 5C, the zero-shot baselines.** A classifier trained
+   on 3,200 corpus rows is **indistinguishable from a 3B open-weight model that
+   never saw it** (34/45 vs 33/45, exact McNemar p = 1.000) and distinguishably
+   worse than zero-shot Gemini (40/45, p = 0.0391) on out-of-template phrasing.
+   The training data's advantage does not survive the crossing either.
 
-One is about whether a finite-sample guarantee survives deployment, the other
-about whether a monitor can run without false alarms. Both fail for the same
+One is about whether a finite-sample guarantee survives deployment, the second
+about whether a monitor can run without false alarms, the third about whether
+accuracy bought with training data transfers at all. All three fail for the same
 reason and are repaired by the same thing, which is what makes the constraint a
-property of the data rather than of either method.
+property of the corpus rather than of any method.
 
-**Phase 2A is explicitly NOT a third instance.** It is a **related dataset
+**Phase 2A is still NOT an instance.** It is a **related dataset
 limitation** — template redundancy, where the templates *are* the fix classes,
 so clustering precision is unmeasurable on this corpus. That is training-data
 redundancy limiting what can be evaluated, not a calibration/reference register
 mismatch. Present it alongside as a second, independent corpus constraint; do
-not fold it into the named finding.
+not fold it into the named finding. **Phase 5C, by contrast, IS an instance** —
+it is a register mismatch, not a redundancy problem.
 
 Written up in README "Named finding — the calibration/reference distribution,
 not the test or method, is the binding constraint".
@@ -530,7 +545,7 @@ class now stands at six.
 
 ---
 
-## Phase 5B — the honest ablation (committed, NOT pushed, awaiting gate)
+## Phase 5B — the honest ablation (gated and pushed in `2a744ed`, `bf94e63`, `be1f7c0`)
 
 Planned and approved 2026-09-20. **Measurement only**: no production threshold,
 artifact, benchmark or golden changed, and all three published ablation CSVs
@@ -852,90 +867,118 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ---
 
-## In progress
+## Phase 5C — zero-shot LLM baselines (COMPLETE, awaiting gate review)
 
-**Phase 5C is mid-flight.** It is **IN PROGRESS and NOT GATED** — do not treat
-its numbers as gated results yet.
+Both arms are done. **Committed, not pushed** — held for the gate review.
 
-### Part 1 — the Gemini zero-shot baseline: DONE and pushed (`d39e197`)
+### The result
 
-**Zero-shot Gemini beats the trained classifier on both fixed benchmarks, and
-on the 45 the difference is statistically distinguishable:**
+| Model | benchmark45 | 95% Wilson | benchmark14 | 95% Wilson | Unparseable |
+|---|---:|---|---:|---|---:|
+| Zero-shot Gemini (`gemini-flash-lite-latest`) | **40/45 (88.89%)** | [76.50%, 95.16%] | **14/14 (100%)** | [78.47%, 100%] | 0/59 |
+| Zero-shot Qwen2.5-3B-Instruct (local, CPU) | **34/45 (75.56%)** | [61.33%, 85.76%] | **12/14 (85.71%)** | [60.06%, 95.99%] | 0/59 |
+| Trained Tier-2 (BGE + LogReg) | 33/45 (73.33%) | — | 10/14 (71.43%) | — | n/a |
 
-| Set | Zero-shot Gemini | Trained Tier-2 (BGE+LogReg) | Δ | Exact McNemar |
-|---|---:|---:|---:|---:|
-| benchmark45 | **40/45 (88.89%)** | 33/45 (73.33%) | **+7** | b=8, c=1, **p = 0.0391 — significant at α=0.05** |
-| benchmark14 | **14/14 (100%)** | 10/14 (71.43%) | +4 | b=4, c=0, p = 0.125 — not significant, n too small |
+Paired exact McNemar, all six comparisons:
 
-- **0 unparseable answers out of 59.** The parser refuses near-misses
-  ("Networking") rather than coercing them, so this is a real 0.
-- Median **0.81 s per ticket** against Tier-2's measured **0.156 s** (Phase
-  5B) — the LLM is ~5× slower per ticket and needs a network round trip.
-- **59 live Gemini calls spent on 2026-09-21** (3 dry-run + 56), reconciled two
-  ways: the backend's own counter and the count of cached raw-response files
-  both say 59. Against the 500/day cap.
-- Gemini's five misses on the 45 are all symptom-vs-cause cases (a Database
-  fault presenting as an app not saving; an Infrastructure fault presenting as
-  a portal being unreachable). One is the "status page green but the service is
-  down" ticket the README already names as the case every trained model fails.
-- Free side-confirmation: `--mode tier2-only --set benchmark14` reproduced the
-  README's published **10/14** independently.
+| Comparison | Set | b / c | Δ | p |
+|---|---|---|---:|---|
+| Gemini vs Tier-2 | benchmark45 | 8 / 1 | +7 | **0.0391 — distinguishable** |
+| Gemini vs Tier-2 | benchmark14 | 4 / 0 | +4 | 0.125 |
+| Qwen-3B vs Tier-2 | benchmark45 | 7 / 6 | +1 | 1.000 |
+| Qwen-3B vs Tier-2 | benchmark14 | 4 / 2 | +2 | 0.688 |
+| Qwen-3B vs Gemini | benchmark45 | 1 / 7 | −6 | 0.0703 |
+| Qwen-3B vs Gemini | benchmark14 | 0 / 2 | −2 | 0.500 |
+
+**Read each pair separately.** Gemini is distinguishably better than the trained
+classifier on the 45. **Qwen-3B is indistinguishable from it** — that is not
+"better". Qwen is 6 below Gemini at p = 0.070, which is not significant.
+
+**Qwen-3B never emits "Database" once in 59 tickets** (0/5 and 0/2 recall); the
+misroutes land in Application, whose precision drops to 47%. That one category
+is 3 of the 6 tickets separating it from Gemini. **Both LLMs fail Infrastructure
+at exactly 50%** — a failure shared by both vendors and the trained classifier
+is a property of the tickets, not of any model.
+
+Latency: Tier-2 **0.156 s**, Gemini **0.81 s** (5.2×), Qwen-3B CPU **6.98 s**
+(44.7×).
 
 ### THE FRAMING NOTE — agreed, and load-bearing
 
-**5C measures what the training corpus is worth. It is NOT "LLMs beat the
-pipeline", and must never be written up that way.** A zero-shot LLM against a
-classifier trained on 3,200 rows is not like-for-like, in exactly the way Phase
-5B found baseline-vs-Tier-1-only was not. The honest claim is "**zero-shot** LLM
-vs **trained** classifier", and the quantity actually being measured is how much
-the template-generated training data is worth — which points at the same wall as
-the named finding, that the corpus is the binding constraint. The comparison
-script prints this beside every result for exactly this reason.
+**5C measures what a 3,200-row template-generated corpus is worth on
+out-of-template phrasing. It is NOT "LLMs beat the pipeline"** and must never
+be written up that way. Zero-shot LLM vs *trained* classifier is not
+like-for-like, in exactly the way 5B found baseline-vs-Tier-1-only was not.
 
-### Part 2 — the local non-Gemini baseline: NOT STARTED, blocked on RAM
+**5C is the third independent view of the named finding**, and the first from
+the *training* side rather than the calibration/reference side. This widened the
+finding's scope — see "Named finding" above; **Phase 9A must settle the final
+wording.**
 
-Blocked, not deferred. Two prerequisites, both needing the machine:
+### Limitations, recorded beside the result
 
-1. **Ollama is not installed** — no `ollama` on PATH, nothing in
-   `%LOCALAPPDATA%\Programs\Ollama`. Install with
-   `winget install Ollama.Ollama`.
-2. **RAM.** Measured 2026-09-21: **15.69 GB total but only ~2 GB available**,
-   commit 20.44 / 34.69 GB. No candidate model loads into that. The laptop is
-   being restarted to reclaim it.
+- **3B is a floor for the non-Gemini family, not a fair ceiling.** It was chosen
+  to fit available RAM. Its 6-ticket gap to Gemini **cannot be attributed**:
+  this run cannot separate *"model too small"* from *"Gemini authored the
+  evaluation data"*. Do not write the gap as evidence of either.
+- **The 45-ticket benchmark is Gemini-generated** (human-label-reviewed), so the
+  Gemini arm is scored on text from its own family. **The Qwen arm is the
+  partial control** — the "zero-shot ≥ trained" direction survives removing the
+  authorship advantage; Gemini's extra margin does not.
+- Both sets are small; the Wilson intervals overlap heavily and n=14 resolves
+  almost nothing.
+- Latency is **not** hardware-matched: Qwen CPU-only on an i5-1334U vs Gemini on
+  hosted accelerators. Both pinned temperature 0 and JSON-constrained decoding;
+  Ollama additionally fixed seed 42 and capped output at 48 tokens.
+- **Qwen2.5-3B is under the *Qwen Research* licence**, not Apache-2.0 (the 7B
+  is). Check that before calling it "freely available" in the paper.
 
-**Model plan after the restart: `qwen2.5:3b-instruct` (~2.0 GB download,
-~2.5–3.0 GB RAM, est. 4–10 min for 59 tickets), upgrading to
-`qwen2.5:7b-instruct` (~4.7 GB download, ~5.5–6.5 GB RAM, est. 5–12 min) if the
-post-restart headroom allows.** Re-read `\Memory\Available MBytes` before
-pulling and refuse to start a run that would swap — a swapping model produces a
-meaningless latency number, and a plausible one.
+### What was built
 
-Hardware for the record: i5-1334U (10 physical / 12 logical, 1.3 GHz base,
-15 W), Intel Iris Xe integrated only, so Ollama runs **CPU-only** here. Disk is
-not a constraint (151 GB free). The prompt turned out to be ~100 tokens, not the
-300–420 originally budgeted, which is why the runtime estimates above are lower
-than the ones in the approved plan.
+- `run_zeroshot_baselines.py`: RAM preflight (`MODEL_RAM_FLOOR_MB`, aborts
+  rather than swap; `--allow-low-ram` stamps every response), **exact** Ollama
+  model matching (the old prefix match passed a guard that claimed to verify the
+  model was installed), and `model_digest` recorded per response.
+- `compare_zeroshot_vs_tier2.py`: `--against zeroshot` for model-vs-model,
+  reusing `pair_by_index` and `mcnemar_from_pairs` — no second McNemar.
+- `summarize_zeroshot_baselines.py` (new): Wilson CIs, dual unparseable
+  accounting, per-category confusion, live-rows-only latency, and the
+  prompt-identity proof.
+- `tests/test_zeroshot_summary.py` (new): 32 tests, including every Wilson
+  interval checked against `scipy`'s `proportion_ci(method="wilson")`.
 
-**One consequence to carry into the write-up if 3B is used:** Qwen2.5-3B ships
-under the *Qwen Research* licence, where Qwen2.5-7B is Apache-2.0. The 7B is
-the cleaner thing to call "freely available" in a paper.
+### Verifications (rule 6 — second independent derivations)
 
-### What part 2 still needs after the model runs
+- **Prompt identity: 59/59 byte-identical** by sha256, checked in both
+  directions. `build_prompt()` being shared is the guarantee; this is the proof.
+- **Call accounting:** 59 cached Ollama response files vs 42 + 14 live + 3
+  dry-run = 59.
+- **Both committed Gemini comparison CSVs regenerated byte-identical** after the
+  compare-script edit, verified before any local-model time was spent. Part 1
+  wrote `tier2` in the `direction` column but `tier2only` in the field names, so
+  deriving one from the other would have silently rewritten both.
+- **Confusion diagonal** is recomputed against the headline count and is fatal
+  on disagreement.
 
-The zero-shot harness already supports it (`--backend ollama`), so no new code
-is expected: run the local baseline on both sets, run
-`compare_zeroshot_vs_tier2.py --backend ollama` for each, compare the two
-zero-shot models to each other, then the write-up, `PROJECT_STATUS.md`,
-`CLAUDE.md` and the gate.
+### Quota
 
-### 5C gate — NOT yet run
+Part 1 spent **59 Gemini calls** (2026-09-21). **Part 2 spent zero** — Ollama is
+local and part 1's responses were re-read from cache. 5C must not share a day
+with 6C.
 
-The full suite currently passes at **214** (169 + 45 from 5C), but the phase's
-gate (adversarial 9/9 with its CSV byte-identical, goldens 45/45 and 9/9,
-ablation baseline 32/45) has **not** been re-run for 5C and must be before the
-phase is declared done.
+### 5C gate — RE-RUN, not quoted
+
+| Check | Result |
+|---|---|
+| `pytest` | **246 passed**, 0 failed, ~165s |
+| Adversarial escalation | **9/9 PASS**, CSV byte-identical |
+| Golden parity | **45/45 and 9/9** exact (4 tests) |
+| Ablation baseline | **32/45 = 71.11%**, 9/9 escalations |
+| Published result CSVs | none modified (`git status` on `data/` clean) |
+| Stray `.npy` | none |
 
 ---
+
 
 ## The agreed Phase 5–9 programme
 
@@ -948,8 +991,8 @@ Everything in Phases 5–9 is **measurement only**.
 | Sub-phase | Scope | State |
 |---|---|---|
 | **5A** | Conformal template-grouping correction | **DONE** (`cdac8f6`) |
-| **5B** | Honest ablation | **DONE** — committed, awaiting gate |
-| **5C** | **Zero-shot LLM classification baselines** | **IN PROGRESS** — part 1 done (`d39e197`), part 2 blocked on RAM |
+| **5B** | Honest ablation | **DONE** (`2a744ed`, gated and pushed) |
+| **5C** | **Zero-shot LLM classification baselines** | **DONE** — both arms complete, awaiting gate review |
 
 **5B — honest ablation. DONE** (see "Phase 5B" above). The like-for-like check
 cleared — 33/45 and 32/45 came from the same bit-identical classifier, so there
@@ -1045,22 +1088,21 @@ endpoint.
 
 ## Immediate next step
 
-**Finish Phase 5C part 2 — the local non-Gemini baseline.** Full detail under
-"In progress"; the short version:
+**Review the Phase 5C gate.** The phase is complete and committed; nothing is
+pushed until "gate cleared". The gate table is under "Phase 5C" above — all
+checks were re-run, not quoted.
 
-1. `winget install Ollama.Ollama`.
-2. Check free RAM. Then `ollama pull qwen2.5:3b-instruct`, or
-   `qwen2.5:7b-instruct` if there is ~6.5 GB of headroom.
-3. `python src/experiments/run_zeroshot_baselines.py --backend ollama --set both`
-   — local, **zero Gemini quota**.
-4. `python src/experiments/compare_zeroshot_vs_tier2.py --backend ollama --set benchmark45`
-   and `--set benchmark14`.
-5. Write up both baselines together, with the framing note above, then
-   `PROJECT_STATUS.md`, `CLAUDE.md`, re-run the gate, commit, hold the push.
+Once cleared, the next sub-phase is **6A — conformal deferral vs a confidence
+threshold** (risk–coverage curves and AURC). Offline, no Gemini quota, and it
+opens in plan mode like every other sub-phase.
 
-**Do not spend more Gemini quota on 5C** — part 1's 59 responses are cached on
-disk and a re-score costs nothing. 5C has already used 59 of the 500/day cap on
-2026-09-21, and **5C must not share a day with 6C**.
+**Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
+and a re-score costs nothing. **5C must not share a day with 6C.**
+
+**One item carried forward for Phase 9A:** 5C widened the named finding from the
+calibration/reference distribution to the training distribution as well. The
+README heading was kept for continuity and a scope note added beside it; **9A
+must settle the final wording.**
 
 ---
 

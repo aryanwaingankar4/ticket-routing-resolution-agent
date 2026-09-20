@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark14",
+ "ticket_id": "b14_12",
+ "prompt_sha256": "b2c11ecbdb58c0b0aecbb4a10d80d4df61166ea37a4d6472b0357de07c303633",
+ "raw": "{\"category\": \"Infrastructure\"}",
+ "elapsed_s": 2.7429,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:34:26"
+}

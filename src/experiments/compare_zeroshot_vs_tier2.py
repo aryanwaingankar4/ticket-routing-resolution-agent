@@ -108,6 +108,17 @@ def load_zeroshot_rows(backend, model, eval_set):
     return rows, path
 
 
+def _pred_str(row):
+    """Display a prediction, marking an unparseable LLM answer as such.
+
+    Trained-classifier rows have no 'parsed_ok' field because a classifier
+    always emits one of its own classes; only an LLM arm can fail to answer.
+    """
+    if "parsed_ok" in row and not row["parsed_ok"]:
+        return "UNPARSEABLE"
+    return row["predicted"]
+
+
 def pair_by_index(zs_rows, t2_rows):
     """Pair on index, then prove the pairing on the ticket text and label."""
     if len(zs_rows) != len(t2_rows):
@@ -135,35 +146,44 @@ def pair_by_index(zs_rows, t2_rows):
     return pairs
 
 
-def write_report(res, backend, model, eval_set, force):
-    out_path = os.path.join(
-        DATA_DIR,
-        "zeroshot_vs_tier2_mcnemar_{b}_{m}_{s}.csv".format(
-            b=backend, m=_slug(model), s=eval_set),
-    )
+def write_report(res, out_path, left_prefix, right_prefix, force,
+                 direction_left=None, direction_right=None):
+    """Write the discordant pairs.
+
+    The column prefixes are parameters so that the zero-shot-vs-zero-shot mode
+    does not have to rename the tier2 mode's columns. The tier2 mode's
+    fieldnames and direction labels are unchanged from Phase 5C part 1, so its
+    two committed CSVs must regenerate byte-identical.
+    """
     if os.path.isfile(out_path) and not force:
         _fatal(
             "Refusing to overwrite an existing result:\n  {p}\n"
             "Pass --force if you mean to replace it.".format(p=out_path)
         )
-    fieldnames = ["ticket_id", "text", "expected", "zeroshot_predicted",
-                  "zeroshot_correct", "tier2only_predicted",
-                  "tier2only_correct", "direction"]
+    # The direction label is named separately from the column prefix because
+    # part 1 wrote "tier2" in the label but "tier2only" in the columns. Deriving
+    # one from the other would silently rewrite two committed result files.
+    dir_l = direction_left or left_prefix
+    dir_r = direction_right or right_prefix
+
+    fieldnames = ["ticket_id", "text", "expected",
+                  left_prefix + "_predicted", left_prefix + "_correct",
+                  right_prefix + "_predicted", right_prefix + "_correct",
+                  "direction"]
     rows = []
     for direction, bucket in (
-        ("zeroshot_right_tier2_wrong", res["b_rows"]),
-        ("zeroshot_wrong_tier2_right", res["c_rows"]),
+        ("{l}_right_{r}_wrong".format(l=dir_l, r=dir_r), res["b_rows"]),
+        ("{l}_wrong_{r}_right".format(l=dir_l, r=dir_r), res["c_rows"]),
     ):
         for z, t2 in bucket:
             rows.append({
                 "ticket_id": z["ticket_id"],
                 "text": z["text"],
                 "expected": z["expected"],
-                "zeroshot_predicted": z["predicted"] if z["parsed_ok"]
-                else "UNPARSEABLE",
-                "zeroshot_correct": z["correct"],
-                "tier2only_predicted": t2["predicted"],
-                "tier2only_correct": t2["correct"],
+                left_prefix + "_predicted": _pred_str(z),
+                left_prefix + "_correct": z["correct"],
+                right_prefix + "_predicted": _pred_str(t2),
+                right_prefix + "_correct": t2["correct"],
                 "direction": direction,
             })
     try:
@@ -188,6 +208,16 @@ def parse_args(argv):
                         choices=VALID_SETS)
     parser.add_argument("--model", default=None,
                         help="Model tag as it appears in the result filename.")
+    parser.add_argument("--against", default="tier2",
+                        choices=("tier2", "zeroshot"),
+                        help="What to compare against: the trained Tier-2 "
+                             "classifier (default), or a second zero-shot "
+                             "model given by --other-backend/--other-model.")
+    parser.add_argument("--other-backend", default=None,
+                        choices=("gemini", "ollama"),
+                        help="Right-hand backend when --against zeroshot.")
+    parser.add_argument("--other-model", default=None,
+                        help="Right-hand model tag when --against zeroshot.")
     parser.add_argument("--force", action="store_true")
     return parser.parse_args(argv)
 
@@ -199,13 +229,45 @@ def main(argv=None):
     binomtest = _import_scipy()
     eval_set = args.eval_set
 
-    _banner("Zero-shot {b} ({m})  vs  trained Tier-2  --  {s}".format(
-        b=args.backend, m=model, s=eval_set))
-
     zs_rows, zs_path = load_zeroshot_rows(args.backend, model, eval_set)
-    t2_rows, t2_path = load_classification_rows("tier2-only", eval_set)
-    print("zero-shot  : " + zs_path)
-    print("tier2-only : " + t2_path)
+
+    if args.against == "tier2":
+        right_name = "trained Tier-2 (BGE+LogReg)"
+        right_short = "tier2"
+        right_prefix = "tier2only"
+        t2_rows, t2_path = load_classification_rows("tier2-only", eval_set)
+        out_path = os.path.join(
+            DATA_DIR,
+            "zeroshot_vs_tier2_mcnemar_{b}_{m}_{s}.csv".format(
+                b=args.backend, m=_slug(model), s=eval_set),
+        )
+    else:
+        if not args.other_backend:
+            _fatal("--against zeroshot requires --other-backend "
+                   "(and normally --other-model).")
+        other_model = args.other_model or (
+            DEFAULT_GEMINI_MODEL if args.other_backend == "gemini"
+            else DEFAULT_OLLAMA_MODEL)
+        if (args.other_backend, other_model) == (args.backend, model):
+            _fatal("--against zeroshot was given the same backend and model "
+                   "on both sides; that comparison is degenerate.")
+        right_name = "zero-shot {b} ({m})".format(b=args.other_backend,
+                                                  m=other_model)
+        right_short = args.other_backend
+        right_prefix = "other"
+        t2_rows, t2_path = load_zeroshot_rows(args.other_backend, other_model,
+                                              eval_set)
+        out_path = os.path.join(
+            DATA_DIR,
+            "zeroshot_vs_zeroshot_mcnemar_{lb}_{lm}_vs_{rb}_{rm}_{s}.csv".format(
+                lb=args.backend, lm=_slug(model), rb=args.other_backend,
+                rm=_slug(other_model), s=eval_set),
+        )
+
+    _banner("Zero-shot {b} ({m})  vs  {r}  --  {s}".format(
+        b=args.backend, m=model, r=right_name, s=eval_set))
+    print("left  : " + zs_path)
+    print("right : " + t2_path)
     print("")
 
     pairs = pair_by_index(zs_rows, t2_rows)
@@ -219,21 +281,23 @@ def main(argv=None):
     print("Zero-shot {b:<8}            : {c}/{n} = {a:.2%}".format(
         b=args.backend, c=res["left_correct"], n=n,
         a=res["left_correct"] / n))
-    print("Trained Tier-2 (BGE+LogReg) : {c}/{n} = {a:.2%}".format(
-        c=res["right_correct"], n=n, a=res["right_correct"] / n))
+    print("{r:<27} : {c}/{n} = {a:.2%}".format(
+        r=right_name, c=res["right_correct"], n=n,
+        a=res["right_correct"] / n))
     delta = res["left_correct"] - res["right_correct"]
     print("Difference                  : {d:+d} ticket(s), {p:+.2f} points"
           .format(d=delta, p=delta / n * 100.0))
     print("")
     print("Paired 2x2 contingency:")
-    print("                        tier2 right      tier2 wrong")
+    print("                    {r:>13} right  {r:>13} wrong".format(
+        r=right_short))
     print("  zero-shot right     {a:>13d}    {b:>13d}".format(
         a=res["both_right"], b=res["b"]))
     print("  zero-shot wrong     {c:>13d}    {d:>13d}".format(
         c=res["c"], d=res["both_wrong"]))
     print("")
     print(res["test_note"].replace("left", "zero-shot").replace(
-        "right wrong", "Tier-2 wrong"))
+        "right wrong", right_name + " wrong"))
     print("Exact McNemar p = {p:.6f}".format(p=res["p_value"]))
     if res["p_value"] <= 0.05:
         print("  => Distinguishable at alpha=0.05.")
@@ -248,19 +312,20 @@ def main(argv=None):
     print("")
     _banner("DISCORDANT TICKETS ({d})".format(d=res["n_discordant"]))
     for label, bucket in (
-        ("ZERO-SHOT RIGHT, Tier-2 wrong", res["b_rows"]),
-        ("ZERO-SHOT WRONG, Tier-2 right", res["c_rows"]),
+        ("ZERO-SHOT RIGHT, {r} wrong".format(r=right_short), res["b_rows"]),
+        ("ZERO-SHOT WRONG, {r} right".format(r=right_short), res["c_rows"]),
     ):
         for z, t2 in bucket:
             print("")
             print("[{lab}]  {i}".format(lab=label, i=z["ticket_id"]))
             print("  expected   : " + z["expected"])
-            print("  zero-shot  : " + (z["predicted"] if z["parsed_ok"]
-                                       else "UNPARSEABLE"))
-            print("  tier2-only : " + t2["predicted"])
+            print("  zero-shot  : " + _pred_str(z))
+            print("  {r:<10} : ".format(r=right_short) + _pred_str(t2))
             print("  text       : " + z["text"])
 
-    out_path = write_report(res, args.backend, model, eval_set, args.force)
+    out_path = write_report(res, out_path, "zeroshot", right_prefix,
+                            args.force, direction_left="zeroshot",
+                            direction_right=right_short)
     print("")
     print("Report written: " + out_path)
     print("")

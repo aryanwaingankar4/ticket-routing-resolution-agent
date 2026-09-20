@@ -1,0 +1,95 @@
+metric,category,value
+n,,45
+n_correct,,34
+n_unparseable,,0
+accuracy_unparseable_wrong,,0.755556
+accuracy_unparseable_wrong_ci_low,,0.613266
+accuracy_unparseable_wrong_ci_high,,0.857645
+n_parsed,,45
+n_correct_parsed,,34
+accuracy_unparseable_excluded,,0.755556
+accuracy_unparseable_excluded_ci_low,,0.613266
+accuracy_unparseable_excluded_ci_high,,0.857645
+latency_n_live,,42
+latency_median_s,,6.9765
+latency_p90_s,,8.0167
+latency_min_s,,6.4480
+latency_max_s,,9.5669
+prompt_identity_verified_vs_gemini,,45
+support,Infrastructure,6
+recall,Infrastructure,0.500000
+precision,Infrastructure,1.000000
+support,Application,7
+recall,Application,1.000000
+precision,Application,0.466667
+support,Security,6
+recall,Security,0.833333
+precision,Security,1.000000
+support,Database,5
+recall,Database,0.000000
+precision,Database,nan
+support,Storage,7
+recall,Storage,0.857143
+precision,Storage,0.857143
+support,Network,7
+recall,Network,1.000000
+precision,Network,0.875000
+support,Access Management,7
+recall,Access Management,0.857143
+precision,Access Management,0.857143
+confusion,Infrastructure->Infrastructure,3
+confusion,Infrastructure->Application,3
+confusion,Infrastructure->Security,0
+confusion,Infrastructure->Database,0
+confusion,Infrastructure->Storage,0
+confusion,Infrastructure->Network,0
+confusion,Infrastructure->Access Management,0
+confusion,Infrastructure->UNPARSEABLE,0
+confusion,Application->Infrastructure,0
+confusion,Application->Application,7
+confusion,Application->Security,0
+confusion,Application->Database,0
+confusion,Application->Storage,0
+confusion,Application->Network,0
+confusion,Application->Access Management,0
+confusion,Application->UNPARSEABLE,0
+confusion,Security->Infrastructure,0
+confusion,Security->Application,0
+confusion,Security->Security,5
+confusion,Security->Database,0
+confusion,Security->Storage,1
+confusion,Security->Network,0
+confusion,Security->Access Management,0
+confusion,Security->UNPARSEABLE,0
+confusion,Database->Infrastructure,0
+confusion,Database->Application,4
+confusion,Database->Security,0
+confusion,Database->Database,0
+confusion,Database->Storage,0
+confusion,Database->Network,1
+confusion,Database->Access Management,0
+confusion,Database->UNPARSEABLE,0
+confusion,Storage->Infrastructure,0
+confusion,Storage->Application,0
+confusion,Storage->Security,0
+confusion,Storage->Database,0
+confusion,Storage->Storage,6
+confusion,Storage->Network,0
+confusion,Storage->Access Management,1
+confusion,Storage->UNPARSEABLE,0
+confusion,Network->Infrastructure,0
+confusion,Network->Application,0
+confusion,Network->Security,0
+confusion,Network->Database,0
+confusion,Network->Storage,0
+confusion,Network->Network,7
+confusion,Network->Access Management,0
+confusion,Network->UNPARSEABLE,0
+confusion,Access Management->Infrastructure,0
+confusion,Access Management->Application,1
+confusion,Access Management->Security,0
+confusion,Access Management->Database,0
+confusion,Access Management->Storage,0
+confusion,Access Management->Network,0
+confusion,Access Management->Access Management,6
+confusion,Access Management->UNPARSEABLE,0

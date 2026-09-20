@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark14",
+ "ticket_id": "b14_08",
+ "prompt_sha256": "f143133423778c4ad3113e48ed63823fc905f18a58b46a417378732167e6d23b",
+ "raw": "{\"category\": \"Security\"}",
+ "elapsed_s": 6.5785,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:34:05"
+}

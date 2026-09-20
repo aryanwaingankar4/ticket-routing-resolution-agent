@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_26",
+ "prompt_sha256": "5e1722e8c84c7a3810889ff6b0ec479966d3e3938815f6ecd7304d337f4a777b",
+ "raw": "{\"category\": \"Access Management\"}",
+ "elapsed_s": 6.9537,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:31:10"
+}

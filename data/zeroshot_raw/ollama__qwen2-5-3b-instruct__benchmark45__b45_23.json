@@ -1,0 +1,12 @@
+{
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "eval_set": "benchmark45",
+ "ticket_id": "b45_23",
+ "prompt_sha256": "35240b082a9456b60b2632fc5fd268fec4442d7f2b574627a9743d0402304814",
+ "raw": "{\"category\": \"Storage\"}",
+ "elapsed_s": 7.011,
+ "low_ram_override": false,
+ "timestamp": "2026-09-21T04:30:48"
+}

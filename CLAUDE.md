@@ -29,8 +29,10 @@ groundedness) and 3 (Tier-1 persistence, agent boundaries, HTTP service, write-u
 complete and pushed. So are Phase 4A (history sink + detector library), Phase
 4B-1 (the drift evaluation — verdict **measured, not shipped**: an eligible
 operating point exists at Signal A's calibration-conditional binomial, α=0.05,
-W=100–200, and nothing was promoted into config) and Phase 5A (the conformal
-template-grouping correction). The work now follows the agreed **Phase 5–9
+W=100–200, and nothing was promoted into config), Phase 5A (the conformal
+template-grouping correction), Phase 5B (the honest ablation — the cascade is a
+latency optimisation, not an accuracy gain) and Phase 5C (zero-shot LLM
+classification baselines, Gemini and a local Qwen2.5-3B). The work now follows the agreed **Phase 5–9
 publication-readiness programme**, which is recorded in `PROJECT_STATUS.md`
 along with the current state — read it first.
 
@@ -120,6 +122,35 @@ python src/experiments/run_ablation_study.py --mode tier2-only --set deployment1
 python src/experiments/compare_cascade_vs_tier2.py                  # exact McNemar
 python src/experiments/compare_cascade_vs_tier2.py --set deployment175
 python src/experiments/measure_inference_latency.py                 # warm, batch size 1
+
+# Phase 5C -- zero-shot LLM baselines. TWO BACKENDS, ONE PROMPT: build_prompt()
+# is backend-agnostic, so both arms get byte-identical text by construction.
+# Gemini SPENDS QUOTA (59 calls for both sets) -- always --limit 3 first. Every
+# raw response is cached under data/zeroshot_raw/ keyed by prompt hash, so a
+# re-score costs nothing and editing the prompt invalidates old answers.
+python src/experiments/run_zeroshot_baselines.py --backend gemini --limit 3
+python src/experiments/run_zeroshot_baselines.py --backend gemini --set both
+
+# Ollama is local and free. --model is REQUIRED in practice: the default is
+# still the 7B, and 5C's published arm is the 3B. The run aborts rather than
+# swap; --allow-low-ram overrides and stamps every response low_ram_override.
+python src/experiments/run_zeroshot_baselines.py --backend ollama \
+    --model qwen2.5:3b-instruct --set both
+
+# Paired exact McNemar. --against tier2 (default) is vs the trained classifier;
+# --against zeroshot compares the two zero-shot arms to each other.
+python src/experiments/compare_zeroshot_vs_tier2.py --backend gemini --set benchmark45
+python src/experiments/compare_zeroshot_vs_tier2.py --backend ollama \
+    --model qwen2.5:3b-instruct --set benchmark45
+python src/experiments/compare_zeroshot_vs_tier2.py --backend ollama \
+    --model qwen2.5:3b-instruct --set benchmark45 \
+    --against zeroshot --other-backend gemini
+
+# Wilson CIs, dual unparseable accounting, per-category confusion, latency.
+# --prompt-check-against PROVES the two arms saw the same prompt, ticket by
+# ticket, from the cached prompt hashes -- offline, no quota.
+python src/experiments/summarize_zeroshot_baselines.py --backend ollama \
+    --model qwen2.5:3b-instruct --set both --prompt-check-against gemini
 
 # RAG similarity threshold calibration (measurement only; does not edit production)
 python src\classification\generate_ood_calibration_set.py     # ~3.5 min, ~45 Gemini calls
@@ -351,6 +382,16 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   warm, batch size 1). **Never quote the +35.6 points as the value of
   cascading** — that is baseline minus Tier-1-only, i.e. the BGE-vs-TF-IDF
   representation gap.
+- **Never write 5C as "LLMs beat the pipeline."** It is **zero-shot LLM vs
+  trained classifier**, which is not like-for-like, and what it measures is
+  what a 3,200-row template-generated corpus is worth on out-of-template
+  phrasing. The readings differ by pair and must not be merged: Gemini is
+  distinguishably better than Tier-2 on the 45 (40/45 vs 33/45, p = 0.0391);
+  **Qwen2.5-3B is indistinguishable from it** (34/45, p = 1.000) — which is not
+  "better"; Qwen is 6 tickets below Gemini at p = 0.070, which is not
+  significant. The benchmark is Gemini-generated, so **the Qwen arm is the
+  partial control for authorship** and Gemini's extra margin cannot be
+  attributed to capability over authorship.
 - **In-distribution accuracy is uninformative here.** Template-generated data makes
   every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.
@@ -442,6 +483,17 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   *appropriateness* for *support*, in both directions. A judge is an object of study
   here, never a scaling tool, unless a human-labelled subset large enough to read every
   disagreement says otherwise. An aggregate agreement score will not reveal this.
+
+- **A local model must never be measured while swapping.** `OllamaBackend`
+  refuses to start below a per-model RAM floor (`MODEL_RAM_FLOOR_MB`), because a
+  swapping model yields a latency number that is meaningless *and* plausible.
+  `--allow-low-ram` overrides it and stamps `low_ram_override: true` into every
+  cached response, so such a run can never later be mistaken for a clean
+  timing. An unreadable memory value is fatal too — "could not check" must not
+  look like "checked and it was fine".
+- **Latency is computed from live rows only.** A cached response carries the
+  *original* run's `elapsed_s`, so mixing cached and live rows would report a
+  number describing no run that ever happened.
 
 ## The recurring bug class
 
