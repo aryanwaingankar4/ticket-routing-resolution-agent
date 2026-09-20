@@ -3,13 +3,13 @@
 **Last updated:** 2026-09-21
 **Last commit to move code or a result:** `4793785` — Phase 5C part 2 (the
 local Qwen2.5-3B baseline, the summary harness, and the 5C write-up covering
-both arms). **Committed but NOT pushed — held for the gate review.** Phase 5B
+both arms). **Gate cleared and PUSHED on 2026-09-21.** Phase 5B
 was gate-cleared and pushed in `bf94e63` + `be1f7c0`; 5C part 1 in `d39e197`.
-**Branch:** `main`, two commits ahead of `origin/main` (`4793785` + this SHA refresh), working tree clean.
-**Current phase:** **Phase 5C — COMPLETE, awaiting gate review.** Both arms are
+**Branch:** `main`, level with `origin/main`, working tree clean.
+**Current phase:** **Phase 5C — COMPLETE, GATED and PUSHED.** Both arms are
 measured, the gate was re-run clean (pytest 246, adversarial 9/9 with its CSV
 byte-identical, goldens 45/45 and 9/9, ablation 32/45), and the write-up covers
-both arms together. Nothing is pushed until the gate clears.
+both arms together. **Next: Phase 6A, which opens in plan mode.**
 
 Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
@@ -115,6 +115,33 @@ it is a register mismatch, not a redundancy problem.
 
 Written up in README "Named finding — the calibration/reference distribution,
 not the test or method, is the binding constraint".
+
+### Aryan's steer for 9A, recorded 2026-09-21 — DO NOT ACT ON IT YET
+
+Given after the 5C gate cleared, as direction for the write-up phase. **Nothing
+was rewritten on the strength of it; the final wording is 9A's call, made with
+the full results in view.** Recorded here verbatim in substance so it survives
+to the phase that owes the decision:
+
+- Name the general finding as **"the data distribution a component is fitted or
+  calibrated on is the binding constraint, not the method"**.
+- Put **three scoped instances underneath it**: the *calibration/reference
+  distribution* (Phase 1 Finding 4; Phase 4B-1) and the *training distribution*
+  (Phase 5C).
+- **Phase 2A stays a related dataset limitation, not an instance.**
+
+Two things he asked to survive into the paper from 5C specifically:
+
+1. **The 5C headline is NOT "Gemini beats the pipeline."** It is: *a 3B model on
+   a laptop CPU with no training on this corpus is not beaten by a classifier
+   fitted on 3,200 of its rows, and that holds across two vendors.*
+2. **Keep both per-category findings.** Qwen's zero Database predictions (0/5
+   and 0/2 recall, misroutes into Application), and the **shared 50%
+   Infrastructure failure across both LLMs and the trained classifier** — the
+   second being evidence that the hard cases are properties of the *tickets*.
+   **Cross-reference that to the Infrastructure benchmark-scope bug** (the
+   generation prompt that left "Infrastructure" unanchored and produced 5
+   mislabeled tickets, README "Benchmark scope anchor").
 
 ---
 
@@ -867,9 +894,9 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ---
 
-## Phase 5C — zero-shot LLM baselines (COMPLETE, awaiting gate review)
+## Phase 5C — zero-shot LLM baselines (COMPLETE, gated and pushed in `4793785`)
 
-Both arms are done. **Committed, not pushed** — held for the gate review.
+Both arms are done, the gate was re-run clean, and the phase is pushed.
 
 ### The result
 
@@ -992,7 +1019,7 @@ Everything in Phases 5–9 is **measurement only**.
 |---|---|---|
 | **5A** | Conformal template-grouping correction | **DONE** (`cdac8f6`) |
 | **5B** | Honest ablation | **DONE** (`2a744ed`, gated and pushed) |
-| **5C** | **Zero-shot LLM classification baselines** | **DONE** — both arms complete, awaiting gate review |
+| **5C** | **Zero-shot LLM classification baselines** | **DONE** (`4793785`, gated and pushed) |
 
 **5B — honest ablation. DONE** (see "Phase 5B" above). The like-for-like check
 cleared — 33/45 and 32/45 came from the same bit-identical classifier, so there
@@ -1088,13 +1115,12 @@ endpoint.
 
 ## Immediate next step
 
-**Review the Phase 5C gate.** The phase is complete and committed; nothing is
-pushed until "gate cleared". The gate table is under "Phase 5C" above — all
-checks were re-run, not quoted.
+**Phase 6A — conformal deferral vs a confidence threshold** (risk–coverage
+curves and AURC). Offline, **no Gemini quota**, measurement only:
+`settings.conformal.enabled` stays `False` whatever the result shows. Opens in
+plan mode like every other sub-phase.
 
-Once cleared, the next sub-phase is **6A — conformal deferral vs a confidence
-threshold** (risk–coverage curves and AURC). Offline, no Gemini quota, and it
-opens in plan mode like every other sub-phase.
+5C is gated and pushed; its gate table is under "Phase 5C" above.
 
 **Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
 and a re-score costs nothing. **5C must not share a day with 6C.**
