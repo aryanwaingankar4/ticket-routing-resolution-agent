@@ -26,9 +26,12 @@ finish a phase, report, and stop rather than rolling into the next one. **Each p
 also opens with a plan, reviewed before any code is written.** Phases 0 (pipeline
 consolidation), 1 (conformal prediction), 2 (automation-flag validation and resolution
 groundedness) and 3 (Tier-1 persistence, agent boundaries, HTTP service, write-up) are
-complete and pushed. Phase 4 (drift detection) is in progress: 4A (history sink +
-detector library) is built and at its gate; 4B (the evaluation) has not started —
-`PROJECT_STATUS.md` carries the state.
+complete and pushed. Phase 4A (history sink + detector library) is complete and
+pushed. Phase 4B-1 (the drift evaluation) is complete, committed and at its gate:
+its verdict is **measured, not shipped** — an eligible operating point exists
+(Signal A calibration-conditional binomial, α=0.05, W=100–200) and nothing was
+promoted into config. Next is 5A, correcting the conformal template-grouping
+diagnostic. `PROJECT_STATUS.md` carries the state.
 
 **Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
 the last commit SHA, what moved, and what the next step is. A future session should be
@@ -122,6 +125,21 @@ python -m src.experiments.calibrate_conformal
 # without --force; fatal unless it reproduces the published Phase 1
 # OOD/adversarial detection results exactly.
 python src/experiments/build_drift_reference.py
+
+# Signal B's reference (Phase 4B). The in-domain reference above escalates
+# 0/175, which makes an escalation-rate test against it degenerate; the
+# deployment-distribution set escalates 39/175 (22.3%). That 22.3% is the
+# rate of Gemini-generated benchmark-register tickets, NOT a measured
+# production escalation rate. Fatal unless the pipeline's decision.escalated
+# count and a direct below-threshold count agree.
+python src/experiments/build_drift_reference.py --source deployment
+
+# Phase 4B -- drift detector evaluation: null false-alarm rate AND power
+# (offline, no quota, ~108s for --smoke). --smoke writes to a temp dir and
+# skips the strict Beta-law assertion, so only the full run's numbers count.
+# Refuses to overwrite data/drift_evaluation_* without --force.
+python src/experiments/evaluate_drift_detection.py --smoke
+python src/experiments/evaluate_drift_detection.py
 
 # Regenerate the deployment-distribution calibration set (~360 Gemini calls,
 # ~30 min). ALWAYS dry-run first -- it costs ~14 calls and catches a bad
@@ -345,7 +363,22 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 - **Drift's "α by construction" is marginal only.** For the single fixed 175-ticket
   reference, the per-ticket rate of p ≤ α is Beta-distributed around α; the
   calibration-conditional bound at δ = 0.10 is 0.126 against a nominal 0.10. `drift.py`
-  reports both tests. Never quote a window false-alarm rate that 4B has not measured.
+  reports both tests. **4B-1 measured what that costs:** the marginal binomial's
+  window false-alarm rate reaches 0.077–0.125 at W=200 against a nominal 0.05, so it
+  is usable only at W ≤ 50; the conditional binomial holds (0.009–0.023) at every
+  window. Quote only a measured rate from `data/drift_evaluation_null.csv`.
+- **Three of the five drift tests must never be used as an alarm.** 4B-1 measured
+  their null false-alarm rates: Signal A's **KS test** (0.077 → 0.33 as the window
+  grows — it reads the p-values' 1/176 discreteness, not drift), Signal B's
+  **one-sample binomial** (0.047 → 0.169, because it treats a 175-ticket estimate as
+  truth; the two-sample Fisher test does not and stays near nominal), and Signal B's
+  **category χ²** (0.12 → 0.46, expected-count conditions violated at n=175 over 7
+  categories). All three stay in the report as descriptive reads only.
+- **A drift monitor on the in-domain reference would alarm continuously.** 4B-1's
+  realistic-traffic arm: deployment-register tickets — legitimate, not drift — flag at
+  0.217/0.429/0.514/0.646 for α = 0.01/0.05/0.10/0.20, 4–7× the null. The binding
+  constraint is what the reference is made of, not the test. Any future drift work
+  needs a deployment-traffic reference first.
 - **The drift reference escalates 0/175 tickets**, so the escalation-rate test is
   degenerate against it and reports `None`, not p = 0. In-domain paraphrases never
   reach the RAG gate; the reference says nothing about a deployed escalation rate.

@@ -67,6 +67,8 @@ def test_drift_is_measurement_only():
     fields = set(type(settings.drift).model_fields)
     assert not {f for f in fields if "window" in f or "threshold" in f}
     assert "bge-base-en-v1-5" in settings.drift.reference_name
+    assert "bge-base-en-v1-5" in settings.drift.rate_reference_name
+    assert "deployment" in settings.drift.rate_reference_name
 
 
 @pytest.mark.parametrize("key", [
@@ -74,6 +76,7 @@ def test_drift_is_measurement_only():
     "cascade.confidence_threshold",
     "clustering.resolution_similarity_threshold",
     "drift.alpha",
+    "drift.rate_reference_name",
 ])
 def test_every_calibrated_value_has_provenance(key):
     """A measured constant must carry the evidence that produced it."""

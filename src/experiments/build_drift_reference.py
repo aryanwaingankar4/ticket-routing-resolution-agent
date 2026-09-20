@@ -42,9 +42,25 @@ TWO INDEPENDENT-DERIVATION CHECKS, BOTH FATAL
    this script embed different text, and live similarities would not be
    comparable to the reference.
 
+SIGNAL B's REFERENCE (Phase 4B): --source deployment
+----------------------------------------------------
+The in-domain reference escalates 0/175, so an escalation-rate test against
+it is degenerate. `--source deployment` builds a second reference from the
+deployment-distribution calibration set, which escalates. Its fatal check is
+different, because the Phase 1 novelty reproduction is specific to the
+in-domain set:
+
+3. The pipeline's escalation count (decision.escalated) must equal a count
+   derived WITHOUT the pipeline's decision: directly measured top-1
+   similarity below settings.rag.similarity_threshold. Escalation counted
+   two ways -- the lesson of the fifth recurring-bug instance, where an
+   eligibility count read the wrong status enum and returned a plausible
+   wrong number.
+
 Run from the project root:
     python src/experiments/build_drift_reference.py
     python src/experiments/build_drift_reference.py --force   # overwrite
+    python src/experiments/build_drift_reference.py --source deployment
 """
 
 from __future__ import annotations
@@ -74,6 +90,8 @@ ensure_utf8_console()
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 CALIBRATION_JSON = os.path.join(DATA_DIR,
                                 "calibration_tickets_paraphrased.json")
+DEPLOYMENT_JSON = os.path.join(DATA_DIR,
+                               "deployment_calibration_tickets.json")
 OOD_JSON = os.path.join(DATA_DIR, "ood_calibration_tickets.json")
 ADVERSARIAL_JSON = os.path.join(DATA_DIR,
                                 "adversarial_escalation_tickets.json")
@@ -176,9 +194,16 @@ def main():
         description="Build the drift-detection reference distribution.")
     parser.add_argument("--force", action="store_true",
                         help="overwrite an existing reference file")
+    parser.add_argument("--source", choices=("in-domain", "deployment"),
+                        default="in-domain",
+                        help="in-domain: Signal A reference (default); "
+                             "deployment: Signal B reference")
     args = parser.parse_args()
+    in_domain = args.source == "in-domain"
+    source_json = CALIBRATION_JSON if in_domain else DEPLOYMENT_JSON
 
-    out_path = settings.drift.reference_path
+    out_path = (settings.drift.reference_path if in_domain
+                else settings.drift.rate_reference_path)
     if out_path.exists() and not args.force:
         _fatal(f"Drift reference already exists:\n    {out_path}\n"
                "  Refusing to overwrite it silently. Re-run with --force if "
@@ -197,7 +222,7 @@ def main():
     except AgentError as exc:
         _fatal(str(exc))
 
-    calibration = _read_json(CALIBRATION_JSON, "Calibration set")
+    calibration = _read_json(source_json, f"{args.source} source set")
     ood = _read_json(OOD_JSON, "OOD calibration set")
     adversarial = _read_json(ADVERSARIAL_JSON, "Adversarial set")
     print(f"  {len(calibration)} calibration tickets, {len(ood)} OOD, "
@@ -208,11 +233,15 @@ def main():
     _banner("STEP 2 - Similarities (Signal A) and pipeline decisions "
             "(Signal B)")
     with_self, non_self = [], []
-    n_self = n_escalated = n_tier1 = 0
+    n_self = n_escalated = n_tier1 = n_below_threshold = 0
+    threshold = settings.rag.similarity_threshold
     categories = Counter()
     for i, rec in enumerate(calibration, 1):
-        top, nonself, is_self = top_similarity(rec["text"], artifacts,
-                                               own_id=rec["id"])
+        # Deployment tickets are not index rows, so there is no self to
+        # exclude and the two scores coincide.
+        top, nonself, is_self = top_similarity(
+            rec["text"], artifacts, own_id=rec["id"] if in_domain else None)
+        n_below_threshold += int(top < threshold)
         with_self.append(top)
         non_self.append(nonself)
         n_self += int(is_self)
@@ -241,14 +270,35 @@ def main():
     print(f"  Tier-1 share:   {n_tier1}/{n} = {n_tier1 / n:.1%}")
     print(f"  predicted mix:  {dict(sorted(categories.items()))}")
 
-    _banner("STEP 3 - Independent check against published Phase 1 "
-            "detection results")
-    # Same retrieval call, same orientation as calibrate_conformal.py STEP 5.
-    ood_sims = [top_similarity(r["text"], artifacts)[0] for r in ood]
-    ood_seeds = [seed_key(r["id"]) for r in ood]
-    adv_sims = [top_similarity(r["text"], artifacts)[0] for r in adversarial]
-    checked = _check_against_published(with_self, non_self, ood_sims,
-                                       ood_seeds, adv_sims)
+    if in_domain:
+        _banner("STEP 3 - Independent check against published Phase 1 "
+                "detection results")
+        # Same retrieval call, same orientation as calibrate_conformal.py
+        # STEP 5.
+        ood_sims = [top_similarity(r["text"], artifacts)[0] for r in ood]
+        ood_seeds = [seed_key(r["id"]) for r in ood]
+        adv_sims = [top_similarity(r["text"], artifacts)[0]
+                    for r in adversarial]
+        checked = _check_against_published(with_self, non_self, ood_sims,
+                                           ood_seeds, adv_sims)
+    else:
+        _banner("STEP 3 - Escalation counted two ways")
+        print(f"  pipeline decision.escalated:            {n_escalated}")
+        print(f"  direct top-1 similarity < {threshold}:     "
+              f"{n_below_threshold}")
+        if n_escalated != n_below_threshold:
+            _fatal(f"Escalation count disagrees: pipeline {n_escalated}, "
+                   f"direct measurement {n_below_threshold}.\n"
+                   "  One of the two derivations is not measuring what it "
+                   "claims. Do not write\n  a Signal B reference until the "
+                   "difference is explained.")
+        if n_escalated in (0, n):
+            _fatal(f"The {args.source} set escalates {n_escalated}/{n}, so "
+                   "an escalation-rate\n  test against it would be "
+                   "degenerate -- the problem this reference exists to fix.")
+        checked = {"escalated_pipeline": n_escalated,
+                   "escalated_direct_below_threshold": n_below_threshold,
+                   "threshold": threshold}
 
     _banner("STEP 4 - Writing the reference")
     from src.agent.drift import REFERENCE_SCHEMA_VERSION, DriftReference
@@ -259,7 +309,7 @@ def main():
         embedding_dim=settings.models.embedding_dim,
         index_ntotal=int(artifacts.index.ntotal),
         index_sha256=dataset_sha256(settings.models.faiss_index_path),
-        source_sha256=dataset_sha256(CALIBRATION_JSON),
+        source_sha256=dataset_sha256(source_json),
         config_fingerprint=config_fingerprint(),
         n=n,
         similarity_scores=non_self,
@@ -268,10 +318,11 @@ def main():
         n_tier1=n_tier1,
         category_counts=dict(sorted(categories.items())),
         provenance={
-            "source": "data/calibration_tickets_paraphrased.json",
+            "source": ("data/" + os.path.basename(source_json)),
             "builder": "src/experiments/build_drift_reference.py",
             "self_retrieval_count": n_self,
-            "reproduced_published_detection_results": checked,
+            ("reproduced_published_detection_results" if in_domain
+             else "escalation_counted_two_ways"): checked,
             "note": ("similarity_scores are non-self top-1; "
                      "similarity_scores_with_self are audit only. "
                      "category_counts are PREDICTED categories, the same "
@@ -290,7 +341,7 @@ def main():
     from src.agent.artifacts import load_drift_reference
 
     try:
-        load_drift_reference(artifacts)
+        load_drift_reference(artifacts, source=args.source)
     except AgentError as exc:
         _fatal("The reference just written fails its own load guard:\n"
                + str(exc))

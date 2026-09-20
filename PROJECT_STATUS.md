@@ -1,13 +1,22 @@
 # Project Status
 
-**Last updated:** 2026-09-17
-**Last commit:** `5c077dd` — Phase 4A: decision-history sink + drift detector (committed, **not pushed**)
-**Branch:** `main`, ahead of `origin/main` by the 4A commits (unpushed until
-the 4A gate is reviewed)
-**Current phase:** **Phase 4A (decision-history sink + drift detector
-library) is built and AT ITS GATE, awaiting review.** The Phase 4 plan and the
-4A implementation plan were both approved on 2026-09-17. 4B (the evaluation)
-has not started.
+**Last updated:** 2026-09-20
+**Last pushed commit:** `b52d4bc` — Refresh PROJECT_STATUS.md with the Phase 4A
+commit SHA. Phase 4A **is pushed**; `git log origin/main..main` was empty at the
+start of this session.
+**Branch:** `main`. The Phase 4B commit sits on top of `b52d4bc`, committed and
+**not pushed**, waiting on its gate review.
+**Current phase:** **Phase 4B-1 (drift detector evaluation) is complete and AT
+ITS GATE, awaiting review.** Planned and approved 2026-09-20 as an
+audit → run → verify → gate of the 4B-1 code that already existed in the working
+tree; no fresh implementation. Verdict: **measured, not shipped** — an eligible
+operating point exists (Signal A calibration-conditional binomial, α=0.05,
+W=100–200) and nothing was promoted into config.
+
+**Two doc corrections this session**, both places where this file contradicted
+git: it said `5c077dd` was unpushed (it was not) and that 4B had not started
+(4B-1 was already written in the tree, unrun and uncommitted). Trust
+`git log` / `git status` over this file when they disagree.
 
 3A (Tier-1 persistence), 3B (agent boundaries + orchestrator), 3C (HTTP
 service + failure boundary) and 3D (the README write-up) are all done, gated
@@ -24,8 +33,9 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **142 passed** (104 + 38 from 4A), 0 failed/skipped, offline, ~108s |
-| Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`830c211b1fe9`** (was `7538ea7cceb1`; changed by adding `settings.drift`), index 4000, Tier-1 4000 rows |
+| Test suite | `pytest` | **150 passed** (142 + 8 from 4B), 0 failed/skipped, offline, ~67s |
+| Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
+| Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
@@ -405,9 +415,77 @@ before being documented.
 
 ---
 
-## Phase 4 — drift detection (4A AT GATE; 4B NOT STARTED)
+## Phase 4 — drift detection (4A DONE + PUSHED; 4B-1 AT ITS GATE)
 
-### Phase 4A — history sink + detector library (`5c077dd`, awaiting gate review)
+### Phase 4B-1 — the evaluation (committed, not pushed, awaiting gate review)
+
+Planned and approved 2026-09-20 as **audit → run → verify → gate** of the 4B-1
+code that already existed uncommitted in the tree. No fresh implementation.
+
+**Audit: no correctness bugs.** Rules 2/4/5/7 clean (no local encoder, no direct
+index read, no local Tier-1 refit, zero Gemini quota, no production threshold
+touched, `settings.drift` still free of any window/alarm field). **Escalation is
+read from `decision.escalated` at every layer** and no status enum appears in the
+drift code, so the fifth bug instance's shape is structurally absent. Every
+load-bearing count has a second derivation and all agree: Signal B's 39
+escalations = an independent below-0.67 count; sink-recorded similarities
+reproduce **all 24** published Phase 1 detection values; benchmark 15/45 +
+adversarial 6/9 = 21 of 54 reproduces the published Phase 2B split. The 175
+in-domain scores are all distinct, which makes 4A's "the split check could not
+fail" literally true. Two limitation lines were added (the realistic-traffic
+arm's bootstrap dependence; single-RNG step-order determinism) — the only
+changes made to the script.
+
+**Null first, as pre-registered. The headline is that two of five tests are
+unusable and a third is window-limited:**
+
+- **Signal A conditional binomial: eligible in all 16 cells** (measured
+  false-alarm 0.0092–0.0226).
+- **Signal A marginal binomial: eligible only at W=25 (α ≤ 0.10) and W=50
+  (α ≤ 0.05)**, reaching 0.077–0.125 at W=200 — 2–2.5× nominal. 4A's finding 2
+  measured: a long window is what resolves the fixed reference's Beta offset.
+- **Signal A KS: never eligible** (0.077 at W=25 → 0.33 at W=200); it reads the
+  p-values' 1/176 discreteness, not drift. Descriptive only, never an alarm.
+- **Signal B one-sample binomial: never eligible** (0.047 → 0.169). **Fisher
+  rescues it** — eligible to W=25 (escalation) and W=100 (Tier-1 share) — because
+  it carries the reference rate's own estimation noise.
+- **Signal B category χ²: never eligible** (0.12 → 0.46); 7 categories against
+  n=175 violates the expected-count conditions. Descriptive only.
+- **25 of 68 operating points eligible.** F2 reproduces on 100,000 draws
+  (marginal 0.0966 vs 0.0965; bound 0.1259 vs realised q90 0.1257; 0.099 above
+  bound vs δ=0.10) and three Signal A implementations agree to <1e-9.
+
+**Power (eligible points only, PROVISIONAL).** Conditional binomial at α=0.05,
+W=100: 0.921 at 10% OOD, 0.980 at 10% adversarial, 0.998 at 25% benchmark. At
+α=0.01, W=100: 0.898 at just 5% OOD. **Signal B is effectively powerless here** —
+`escalation_fisher` needs 50% OOD to reach 0.913 and `tier1_fisher` never
+reaches the 80% target.
+
+**Two findings that decide the verdict:**
+
+1. **The best-powered point rests on one reference ticket.** At α=0.01, l=1, so
+   the threshold *is* the smallest calibration similarity; one leave-one-out drop
+   moves adversarial detection 0.667 → 0.889 and OOD 0.844 → 0.911. At α ≥ 0.05
+   (l ≥ 8) everything is stable. **So the candidate is α=0.05 at W=100–200**, not
+   the strongest cell.
+2. **Realistic traffic reads as drift.** Deployment-register tickets flag at
+   0.217 / 0.429 / 0.514 / 0.646 for α = 0.01 / 0.05 / 0.10 / 0.20 against nulls
+   of 0.006 / 0.046 / 0.097 / 0.199 — 4–7×. A monitor on this reference would
+   alarm continuously on legitimate traffic. Same wall as Phase 1 Finding 4,
+   reached from the monitoring side: the reference's register is the binding
+   constraint, not the test.
+
+**Verdict: measured, not shipped.** `settings.drift.enabled` stays `False`, no
+window size or alarm threshold entered config, and the eligible point is recorded
+as a measurement. Gate criterion 1 held — re-run, not quoted: pytest 150,
+adversarial 9/9 with its CSV byte-identical, goldens 45/45 and 9/9, ablation
+baseline 32/45 = 71.11% with its CSV byte-identical, and no `logs/`, `.jsonl` or
+`.npy` after the full run. Limitations are written beside the numbers in the
+README entry (provisional power; Signal B's 22.3% is a Gemini benchmark-register
+rate, not production; parametric Signal B nulls; abrupt out-of-template
+contamination; 45-ticket selection risk; optimistic null on template data).
+
+### Phase 4A — history sink + detector library (`5c077dd`, gated and pushed)
 
 **Gate criterion 1 held — nothing that existed moved.** Re-run after the
 change, not quoted: pytest 142/142 (golden parity 45/45 and 9/9 exact inside
@@ -566,27 +644,45 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ## In progress
 
-**Nothing is mid-flight.** 4A is committed to `main` and **not pushed**,
-waiting on its gate review. No 4B code exists.
+**Nothing is mid-flight.** Phase 4B-1 is committed to `main` and **not pushed**,
+waiting on its gate review.
 
 ---
 
 ## Immediate next step
 
-**Review the 4A gate.** If it clears: push, then open 4B with a plan in plan
-mode before any code. 4B should be planned knowing the four 4A findings above:
-measure the null false-alarm rate for **both** the marginal and conditional
-Signal A tests, treat the escalation-rate test as unavailable on this
-reference, and note that the α=0.01 rows carry most of the reference check's
-power.
+**Review the 4B-1 gate.** If it clears: push, then open **5A** with a plan in
+plan mode before any code.
 
-Two decisions deliberately left for later, each needing its own gate: turning
-the sink on anywhere (e.g. `/triage`), and any `/drift` endpoint.
+**5A — correct the conformal template-grouping diagnostic.** Found 2026-09-20
+while auditing the project docs. `calibrate_conformal.py` (Step 1b) groups
+templates by `scenario_id` alone, but `scenario_id` is unique only *within* a
+category — `data/generate_dataset.py:634` says so in its own comment. Published
+Finding 2 diagnostic: 12 templates, 11 touched (91.7%), median 430 rows,
+40/4000 surviving template-level exclusion. Correct grouping by
+`(category, scenario_id)`: **66 templates, 62 touched (93.9%), median 62 rows,
+210/4000 surviving.** Finding 2's *conclusion* survives — 210/4000 is still
+destruction rather than de-contamination, and removing one row still leaves ~61
+siblings (~1.6% of a template's evidence, not the published ~0.2%) — and the
+coverage-movement measurement is unaffected because it excludes by row id. But
+the README table, the script's Step 1b and the conformal artifact JSON all carry
+wrong numbers, and this is **the sixth instance of the recurring bug class**: a
+grouping key that is internally consistent but wrong for its context, which
+reached published results. It gets its own sub-phase and gate because it changes
+a published number.
 
-After Phase 4, one item remains from the agreed sequence: **Docker/CI
-packaging** — cheaper now than when it was scoped, since the service is the
-deployable unit, `/health` reports the config fingerprint, and
-`requirements.txt` is fully pinned.
+Then Phases 5–9 of the publication-readiness programme. Two decisions
+deliberately left for later, each needing its own gate: turning the decision-log
+sink on anywhere (e.g. `/triage`), and any `/drift` endpoint. One item also
+remains from the original agreed sequence: **Docker/CI packaging** — cheaper now
+than when it was scoped, since the service is the deployable unit, `/health`
+reports the config fingerprint, and `requirements.txt` is fully pinned.
+
+**If drift is ever taken further, 4B-1 named the blocker:** the binding
+constraint is the reference's register, not the test. A held-out in-domain set
+(4B-2/4B-3) is required before any power number is quoted as final, and a
+deployment-traffic reference is required before any monitor could run without
+alarming continuously.
 
 ---
 

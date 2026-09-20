@@ -207,10 +207,20 @@ class DriftConfig(_Frozen):
     alpha: float = 0.10
     conditional_delta: float = 0.10
     reference_name: str = "drift_reference_bge-base-en-v1-5.json"
+    # Signal B's reference (Phase 4B). The in-domain reference above escalates
+    # 0/175, which makes an escalation-rate test against it degenerate; the
+    # deployment-distribution calibration set escalates 39/175.
+    rate_reference_name: str = (
+        "drift_rate_reference_deployment_bge-base-en-v1-5.json"
+    )
 
     @property
     def reference_path(self) -> Path:
         return DATA_DIR / self.reference_name
+
+    @property
+    def rate_reference_path(self) -> Path:
+        return DATA_DIR / self.rate_reference_name
 
 
 class Settings(_Frozen):
@@ -269,6 +279,16 @@ CALIBRATION_PROVENANCE: dict[str, str] = {
         "alpha only marginally over calibration draws, not conditionally on "
         "the fixed 175-ticket reference, so no operating point is claimed "
         "until Phase 4B measures the null false-alarm rate."
+    ),
+    "drift.rate_reference_name": (
+        "deployment-distribution calibration set (175 tickets, 25/category, "
+        "benchmark register, <0.90 cosine to the 45-ticket benchmark) -- the "
+        "Signal B reference. MEASUREMENT ONLY. Chosen because the in-domain "
+        "Signal A reference escalates 0/175, leaving the escalation test "
+        "degenerate; this set escalates 39/175 (22.3%), counted two ways by "
+        "build_drift_reference.py --source deployment. 22.3% is the rate of "
+        "Gemini-generated benchmark-register tickets, NOT a measured "
+        "production escalation rate."
     ),
     "models.embedding_dim": (
         "768 -- BAAI/bge-base-en-v1.5. Asserted at load time against both the "

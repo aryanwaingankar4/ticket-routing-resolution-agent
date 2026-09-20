@@ -1436,6 +1436,247 @@ branch on a boolean it did not compute and holds no threshold of its own. That
 remains an open presentation step; it is explicitly not on the critical path,
 and nothing about the system's behaviour depends on it.
 
+### Phase 4 — drift detection, and the cost of a fixed reference
+
+The recurring bug class in this project is a value or artifact that is wrong
+for its context, internally consistent, and therefore silent. `artifacts.py`'s
+three guards catch that at *load* time. Drift detection is the population-level
+detector for the same class: a world that has moved away from what the gates
+were calibrated on shows up as a shift **in the gates' own inputs** before it
+shows up as a visibly wrong answer.
+
+Nothing here gates production. `settings.drift.enabled` is `False`, no routing
+decision reads any value in `settings.drift`, and — deliberately — **no window
+size and no alarm threshold exist in config at all**, with a test pinning their
+absence. Naming either before measuring the null false-alarm rate would be a
+hand-tuned threshold wearing a lab coat, which is the thing this project has
+rejected twice already (the in-distribution split; the 35-ticket calibration
+set).
+
+#### 4A — the history that did not exist, and the detector library
+
+Three modules (`logging_setup.py`, `orchestrator.py`, `schemas.py`) described
+decision records as "the raw input for drift detection". **They were never
+persisted** — `configure_logging()` attached only a stderr handler, and every
+evaluation path passed `emit_log=False`. Doc ahead of code, the same gap the BGE
+clustering re-run closed. So 4A added an **opt-in** JSONL sink (default off,
+nothing in the project enables it, and it refuses a logger level above INFO
+because a starved sink records an empty history that reads as a quiet period)
+plus `src/agent/drift.py`: pure functions over records, no I/O and no models, so
+the detector is testable without loading BGE.
+
+Three signals, kept apart on purpose:
+
+- **Signal A (primary) — retrieval novelty.** Each record's top-1 similarity
+  becomes a conformal p-value against the 175-ticket in-domain reference,
+  reusing `conformal.conformal_p_values()` verbatim. Under exchangeability the
+  p-values are super-uniform, so drift piles mass at low p.
+- **Signal B — the rates the thesis rests on:** escalation rate, Tier-1 share
+  (a *published* number — if it moves in deployment, that is itself a finding),
+  and category mix.
+- **Signal C — the config fingerprint**, reported in its own field. A window
+  carrying an unexpected fingerprint is a **deployment fault, not a distribution
+  shift**, and averaging the two together would bury it.
+
+Building it produced four findings, each of which changed what 4B had to
+measure. Two are worth restating here because they are the reason this phase has
+a real result: **"the false-alarm rate is α by construction" was overstated** —
+it holds marginally over calibration draws, not for one fixed n=175 reference,
+where the per-ticket rate is Beta(17,159)-distributed (exact marginal 17/176 =
+0.0966; calibration-conditional bound at δ=0.10 **0.126**) — and **the in-domain
+reference escalates 0/175**, which makes any escalation-rate test against it
+degenerate. The second forced a *second* reference for Signal B, built from the
+deployment-distribution calibration set, which escalates **39/175 (22.3%)**.
+
+#### 4B — audit, null, then power
+
+The evaluation (`src/experiments/evaluate_drift_detection.py`, offline, no
+Gemini quota, seed 42) was audited before it was run, against this project's own
+rules. Worth recording from that audit:
+
+- Records are collected by running each ticket through `pipeline.run()`, writing
+  them through the **real** sink and reading them back through the **real**
+  parser — so the detector is evaluated on exactly what a deployment would
+  persist, not on a re-derivation of it.
+- **Escalation is counted from `decision.escalated` at every layer** (the sink
+  writes `result.decision.escalated`; `DecisionRecord.escalated` reads it with
+  no default). No status enum appears anywhere in the drift code. This is the
+  fifth bug instance's exact shape, and it is structurally absent.
+- Every load-bearing count has a second derivation, and all of them agree:
+  the Signal B reference's 39 escalations equal an independent count of
+  similarities below 0.67; the sink-recorded similarities reproduce **all 24**
+  published Phase 1 detection values (both score variants, four α); and
+  benchmark 15/45 + adversarial 6/9 = **21 of 54** escalating reproduces the
+  independently published Phase 2B eligibility split.
+- The 175 in-domain reference scores are **all distinct**, which is what makes
+  4A's "the planned split check could not fail" claim literally true rather than
+  merely plausible.
+
+**Three deviations from the approved plan, each because a planned null was
+wrong**, all recorded in the output's own `deviations_from_plan` field: the
+1,000-random-splits check could not fail (for distinct scores a split's flag
+count is exactly Beta-binomial whatever the data); the first Signal B null
+bootstrapped windows from the leftover half of each split, which
+anti-correlates pool and reference and inflated every test's false-alarm rate;
+and Signal A's power arm was moved to leave-one-out p-values against 174
+reference tickets for the same reason.
+
+##### The null false-alarm rates (Signal A, 20,000 windows per cell, alarm at p ≤ 0.05)
+
+| W | α | marginal binomial (CI hi) | conditional binomial (CI hi) | KS (CI hi) |
+|---:|---:|---|---|---|
+| 25 | 0.01 | 0.0146 (0.0164) ✔ | **0.0146 (0.0164) ✔** | 0.0773 (0.0811) |
+| 25 | 0.10 | 0.0406 (0.0434) ✔ | **0.0118 (0.0133) ✔** | 0.0794 (0.0832) |
+| 50 | 0.05 | 0.0437 (0.0466) ✔ | **0.0169 (0.0188) ✔** | 0.1090 (0.1134) |
+| 50 | 0.10 | 0.0690 (0.0726) | **0.0173 (0.0192) ✔** | 0.1035 (0.1078) |
+| 100 | 0.01 | 0.0534 (0.0566) | **0.0209 (0.0229) ✔** | 0.1878 (0.1932) |
+| 100 | 0.05 | 0.0795 (0.0834) | **0.0127 (0.0144) ✔** | 0.1804 (0.1858) |
+| 200 | 0.05 | 0.1029 (0.1072) | **0.0170 (0.0189) ✔** | 0.3334 (0.3400) |
+| 200 | 0.10 | 0.1253 (0.1299) | **0.0182 (0.0202) ✔** | 0.3250 (0.3315) |
+
+*(✔ = eligible under the pre-registered rule: the upper end of the 95%
+Clopper–Pearson interval on the measured rate must be ≤ 0.05. Full grid, all
+four α × four window sizes, in* [`drift_evaluation_null.csv`](data/drift_evaluation_null.csv)*.)*
+
+**The marginal test's false-alarm rate is not α, and the gap grows with the
+window.** It is eligible only at W=25 (α ≤ 0.10) and W=50 (α ≤ 0.05); by W=200 it
+runs 0.077–0.125, **two to two-and-a-half times nominal**. This is 4A's second
+finding converted from an argument into a measurement: a long window is
+precisely what resolves the fixed reference's Beta-distributed offset, so the
+marginal null is the one thing a long window cannot be trusted with. The
+calibration-conditional test is eligible in all 16 cells (0.0092–0.0226), which
+is what testing against a 1−δ upper bound should look like.
+
+**The KS test is never eligible, and it too degrades with window size**
+(0.077 at W=25 → 0.33 at W=200). With 175 calibration points the p-values are
+discrete on a 1/176 grid and super-uniform by construction, so a growing window
+lets KS detect the *discreteness* rather than any drift. It stays in the report
+as a descriptive read and must never be used as an alarm.
+
+The F2 arm confirms the machinery underneath, on 100,000 synthetic draws:
+closed-form marginal 0.0966 vs realised mean 0.0965, closed-form bound 0.1259 vs
+realised 90th percentile 0.1257, and 0.099 of references above the bound against
+a nominal δ = 0.10. The bound's conservatism is strongly α-dependent —
+bound/marginal is 2.30 at α=0.01 but 1.20 at α=0.20. Three independent Signal A
+implementations (scalar reference, `drift.novelty_signal`, vectorised matrix)
+agree to under 1e-9 across 300 windows.
+
+##### Signal B: the one-sample binomial is unusable, and Fisher is what rescues it
+
+| W | escalation binomial | escalation Fisher | Tier-1 binomial | Tier-1 Fisher | category χ² |
+|---:|---:|---:|---:|---:|---:|
+| 25 | 0.0470 | **0.0335 ✔** | 0.0498 | **0.0293 ✔** | 0.1187 |
+| 50 | 0.0823 | 0.0432 | 0.0785 | **0.0387 ✔** | 0.1673 |
+| 100 | 0.1165 | 0.0500 | 0.1140 | **0.0403 ✔** | 0.2780 |
+| 200 | 0.1690 | 0.0462 | 0.1698 | 0.0432 | 0.4597 |
+
+The binomial treats the reference rate as truth when it is a 175-ticket
+estimate, and pays for it: **0.047 at W=25 rising to 0.169 at W=200**, three
+times nominal. The two-sample Fisher test, which carries the reference's
+estimation noise, stays near or under nominal at every window and is eligible up
+to W=100 for Tier-1 share. The category χ² test is never eligible (0.12 → 0.46):
+seven categories against a 175-ticket reference violates the expected-count
+conditions outright, so category mix is descriptive only.
+
+**25 of 68 operating points are eligible.**
+
+##### Power, among eligible points only, and provisional
+
+Signal A's conditional binomial detects out-of-template contamination well.
+Representative cells (detection rate, 2,000 windows each):
+
+| W | α | 5% OOD | 10% OOD | 10% adversarial | 25% benchmark |
+|---:|---:|---:|---:|---:|---:|
+| 50 | 0.05 | 0.033 | 0.579 | 0.649 | 1.000 |
+| 100 | 0.01 | **0.898** | 1.000 | 0.986 | 0.989 |
+| 100 | 0.05 | 0.048 | 0.921 | 0.980 | 0.998 |
+| 200 | 0.05 | 0.297 | 0.999 | 1.000 | 1.000 |
+
+**Signal B has essentially no power on this data**, eligible though parts of it
+are: `escalation_fisher` at W=25 reaches 0.913 only at 50% OOD contamination,
+`tier1_fisher` never reaches the 80% target at any window or contamination, and
+benchmark contamination is indistinguishable from its own null. That is a fair
+result rather than a disappointing one — the rates move only when the *gate*
+outcome changes, and benchmark tickets escalate at close to the deployment
+reference's own rate.
+
+##### Two findings that temper the verdict, and belong beside it
+
+**The best-powered operating point is governed by a single reference ticket.**
+At α=0.01 the order statistic is l=1, so the decision threshold *is* the
+smallest calibration similarity. F3's leave-one-out sweep shows exactly one drop
+of 175 moving every detection metric, and moving it a long way: adversarial
+detection 0.667 → 0.889, OOD 0.844 → 0.911, benchmark 0.333 → 0.467. At α ≥ 0.05
+(l = 8 or more) the metrics are stable — the only movement anywhere is
+deployment flag rate at α=0.10, 0.514 → 0.520. **So the defensible candidate is
+α=0.05 at W=100–200, not the strongest-power cell**: measured null 0.0127–0.0170,
+≥80% detection at 10% OOD or adversarial contamination and 25% benchmark, and a
+threshold resting on eight reference tickets rather than one.
+
+**Realistic traffic reads as drift.** The deployment-register tickets — plain
+English, disjoint from the benchmark, not drift by any construction — flag
+against the in-domain reference at:
+
+| α | flagged | rate | marginal null | conditional bound |
+|---:|---:|---:|---:|---:|
+| 0.01 | 38/175 | 0.217 | 0.0057 | 0.0131 |
+| 0.05 | 75/175 | 0.429 | 0.0455 | 0.0663 |
+| 0.10 | 90/175 | 0.514 | 0.0966 | 0.1259 |
+| 0.20 | 113/175 | 0.646 | 0.1989 | 0.2381 |
+
+Four to seven times the null at every level. **A Signal A monitor on this
+reference would alarm continuously on legitimate traffic**, because the
+reference is built from in-domain paraphrases of training rows and the register
+shift alone saturates it. This is the same wall Phase 1's Finding 4 hit from the
+coverage side, reached independently from the monitoring side: the binding
+constraint is what the reference is made of, not the test applied to it.
+
+##### Verdict: measured, not shipped
+
+An eligible operating point exists and is now measured with its false-alarm rate
+beside it — but **nothing was promoted.** `settings.drift.enabled` stays `False`,
+no window size or alarm threshold was added to config, and the α=0.05 / W=100–200
+candidate is recorded as a measurement, not a default. The realistic-traffic
+result is why: a monitor whose false-alarm rate is 0.017 on exchangeable data and
+~0.43 on the actual deployment register is not deployable, and the fix is a
+reference drawn from deployment traffic, not a tuned threshold.
+
+**Limitations, stated with the result rather than after it:**
+
+- **Signal A's power numbers are provisional.** Their in-domain portion reuses
+  the same 175 reference tickets (leave-one-out against 174); a held-out
+  in-domain set is required before any power figure is quoted as final.
+- **The Signal A null is a property of the procedure**, measured on synthetic
+  exchangeable scores at n=175 — not of this project's data. Where the one fixed
+  reference actually sits within that Beta law needs held-out tickets.
+- **Signal B's nulls are parametric**, drawn from the reference rates, so they
+  calibrate the test procedure rather than the data.
+- **Signal B's 22.3% escalation rate is that of Gemini-generated
+  benchmark-register tickets, not a measured production rate**, and its category
+  mix is uneven (Storage 45, Database 41, Infrastructure 13) despite 25/category
+  true labels — the same prediction skew 4A recorded for the in-domain reference.
+- **Contamination is abrupt and out-of-template**, so this measures power against
+  novel text, not the gradual shift a deployed monitor would actually face.
+- **Selection risk is accumulating on the 45-ticket benchmark**, which now
+  carries classification accuracy, conformal coverage, groundedness and drift.
+- **Template-generated data makes the null unusually clean**, so every measured
+  false-alarm rate here is optimistic.
+- The escalation-rate test remains unavailable against the in-domain reference
+  (0/175, degenerate), and the realistic-traffic and power arms both resample
+  from fixed sets, so their windows are not independent draws.
+- One RNG stream (seed 42) is threaded through every step, so these numbers
+  reproduce only while the step order is unchanged.
+
+Gate: nothing that already existed moved — `pytest` 150 passed, adversarial 9/9
+with `data/adversarial_escalation_results.csv` byte-identical, goldens 45/45 and
+9/9 exact, ablation baseline 32/45 = 71.11% with its CSV byte-identical, and no
+`logs/`, `.jsonl` or `.npy` anywhere after the full run. Scripts:
+`src/experiments/build_drift_reference.py` (add `--source deployment` for Signal
+B's reference), `src/experiments/evaluate_drift_detection.py` (`--smoke` first).
+Results: [`drift_evaluation_null.csv`](data/drift_evaluation_null.csv),
+[`drift_evaluation_power.csv`](data/drift_evaluation_power.csv),
+[`drift_evaluation_summary.json`](data/drift_evaluation_summary.json).
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`

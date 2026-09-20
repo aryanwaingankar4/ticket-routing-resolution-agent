@@ -39,7 +39,13 @@ A. Retrieval novelty (primary). Each record's top-1 similarity becomes a
 B. The rates the thesis rests on: escalation rate, Tier-1 share, category
    mix. Reported, NOT claimed as calibrated -- the reference proportions are
    estimated from n=175, and a binomial against an estimated rate ignores
-   that estimation noise.
+   that estimation noise. A two-sample Fisher exact test, which does not
+   ignore it, is reported beside the binomial; Phase 4B measures the null
+   false-alarm rate of both and promotes neither.
+
+   Signal B may use a DIFFERENT reference from Signal A (`rate_reference`).
+   The in-domain reference escalates 0/175, so an escalation test against it
+   is degenerate; the deployment-distribution set escalates 39/175 and is not.
 
 C. Config fingerprint. A window with a fingerprint other than the expected
    one is a DEPLOYMENT FAULT, not a distribution shift, and is reported in
@@ -274,6 +280,10 @@ class RateTest(_Model):
     # is degenerate on it.
     degenerate_reference: bool
     binomial_p_two_sided: float | None
+    # Two-sample: the window's count against the reference's count, so the
+    # reference rate's own estimation noise is accounted for. None under the
+    # same degenerate-reference rule as the binomial.
+    fisher_p_two_sided: float | None
 
 
 class CategoryMixTest(_Model):
@@ -394,14 +404,25 @@ def novelty_signal(similarities: Sequence[float],
     )
 
 
-def _rate_test(count: int, n: int, reference_rate: float) -> RateTest:
-    degenerate = reference_rate in (0.0, 1.0)
+def _fisher_two_sided(count: int, n: int, ref_count: int,
+                      ref_n: int) -> float:
+    from scipy.stats import fisher_exact
+
+    table = [[count, n - count], [ref_count, ref_n - ref_count]]
+    return float(fisher_exact(table, alternative="two-sided").pvalue)
+
+
+def _rate_test(count: int, n: int, ref_count: int, ref_n: int) -> RateTest:
+    reference_rate = ref_count / ref_n
+    degenerate = ref_count in (0, ref_n)
     return RateTest(
         count=count, n=n, observed_rate=count / n,
         reference_rate=reference_rate,
         degenerate_reference=degenerate,
         binomial_p_two_sided=(None if degenerate else
                               _binomial_two_sided(count, n, reference_rate)),
+        fisher_p_two_sided=(None if degenerate else
+                            _fisher_two_sided(count, n, ref_count, ref_n)),
     )
 
 
@@ -461,12 +482,16 @@ def detect(records: Sequence[DecisionRecord],
            reference: DriftReference,
            expected_fingerprint: str,
            alpha: float | None = None,
-           delta: float | None = None) -> DriftReport:
+           delta: float | None = None,
+           rate_reference: DriftReference | None = None) -> DriftReport:
     """Compute every signal over one window of decision records.
 
     `alpha` and `delta` default to settings.drift. `expected_fingerprint` is
     passed in rather than read from config so a caller auditing an old window
     can state what it expected -- and so this function stays pure.
+
+    `reference` scores Signal A. `rate_reference` scores Signal B and
+    defaults to `reference`.
     """
     alpha = settings.drift.alpha if alpha is None else alpha
     delta = settings.drift.conditional_delta if delta is None else delta
@@ -488,13 +513,14 @@ def detect(records: Sequence[DecisionRecord],
                if scored else None)
 
     n = len(records)
+    rate_ref = reference if rate_reference is None else rate_reference
     rates = RateSignals(
         escalation=_rate_test(sum(r.escalated for r in records), n,
-                              reference.escalation_rate),
+                              rate_ref.n_escalated, rate_ref.n),
         tier1_share=_rate_test(sum(r.tier == 1 for r in records), n,
-                               reference.tier1_share),
+                               rate_ref.n_tier1, rate_ref.n),
         category_mix=category_mix_test((r.category for r in records),
-                                       reference),
+                                       rate_ref),
     )
 
     return DriftReport(

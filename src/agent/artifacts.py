@@ -291,8 +291,16 @@ def load_tier1():
     return bundle["vectorizer"], bundle["classifier"]
 
 
-def load_drift_reference(artifacts: Artifacts | None = None):
-    """Load the drift reference and verify it matches the live encoder/index.
+DRIFT_REFERENCE_SOURCES = ("in-domain", "deployment")
+
+
+def load_drift_reference(artifacts: Artifacts | None = None,
+                         source: str = "in-domain"):
+    """Load a drift reference and verify it matches the live encoder/index.
+
+    `source` "in-domain" is Signal A's reference (settings.drift.
+    reference_path); "deployment" is Signal B's (settings.drift.
+    rate_reference_path, Phase 4B). Both carry the same guard.
 
     Drift Signal A compares live top-1 similarities against similarities
     measured when the reference was built. Against a different encoder or a
@@ -310,10 +318,15 @@ def load_drift_reference(artifacts: Artifacts | None = None):
     # re-implemented so there is one definition of "this file's hash".
     from src.classification.train_tier1 import dataset_sha256 as file_sha256
 
-    path = settings.drift.reference_path
+    if source not in DRIFT_REFERENCE_SOURCES:
+        raise ValueError(f"source must be one of {DRIFT_REFERENCE_SOURCES}, "
+                         f"got {source!r}")
+    path = (settings.drift.reference_path if source == "in-domain"
+            else settings.drift.rate_reference_path)
     rebuild = (
         "  Build it from the project root with:\n"
         "      python src/experiments/build_drift_reference.py"
+        + ("" if source == "in-domain" else " --source deployment")
     )
     if not path.is_file():
         raise ArtifactError(

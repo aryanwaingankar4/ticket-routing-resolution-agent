@@ -80,6 +80,25 @@ def test_conditional_bound_exceeds_marginal_and_tightens_with_n():
     assert small - 0.10 > 0.02, "the correction is not negligible at n=175"
 
 
+def test_conditional_bound_is_the_quantile_of_the_realised_rate():
+    """Phase 4B check 1: the Beta law behind the 0.126 bound, by simulation.
+
+    For continuous exchangeable scores the realised false-alarm rate of a
+    fixed calibration set is 1 - U_(n+1-l), which is Beta(l, n+1-l). Its mean
+    must be the marginal rate and its 90th percentile the conditional bound.
+    This verifies the maths and the code, not this project's data.
+    """
+    n, alpha, delta = 175, 0.10, 0.10
+    l = math.floor((n + 1) * alpha)
+    rng = np.random.default_rng(42)
+    cal = np.sort(rng.random((5_000, n)), axis=1)
+    realised = 1.0 - cal[:, n - l]
+    assert abs(realised.mean() - drift.marginal_null_rate(n, alpha)) < 0.002
+    bound = drift.conditional_null_rate_bound(n, alpha, delta)
+    assert abs(bound - 0.1259) < 5e-4
+    assert abs(np.quantile(realised, 1 - delta) - bound) < 0.004
+
+
 def test_conditional_bound_is_zero_when_no_p_value_can_reach_alpha():
     assert drift.conditional_null_rate_bound(50, 0.01, 0.10) == 0.0
 
@@ -166,6 +185,65 @@ def test_zero_reference_rate_is_degenerate_not_p_zero():
                          expected_fingerprint=FP).rates
     assert rates.escalation.degenerate_reference is True
     assert rates.escalation.binomial_p_two_sided is None
+    assert rates.escalation.fisher_p_two_sided is None
+
+
+def _hand_fisher_two_sided(a, b, c, d):
+    """Sum of hypergeometric tables no more probable than the observed one."""
+    row1, col1, total = a + b, a + c, a + b + c + d
+
+    def prob(x):
+        return (math.comb(col1, x) * math.comb(total - col1, row1 - x)
+                / math.comb(total, row1))
+
+    observed = prob(a)
+    lo, hi = max(0, row1 - (total - col1)), min(row1, col1)
+    return sum(prob(x) for x in range(lo, hi + 1)
+               if prob(x) <= observed * (1 + 1e-7))
+
+
+def test_fisher_matches_hand_computation():
+    ref = _reference()  # 35/175 escalated
+    records = ([_record(escalated=True)] * 18
+               + [_record(escalated=False)] * 32)
+    esc = drift.detect(records, ref, expected_fingerprint=FP).rates.escalation
+    assert esc.fisher_p_two_sided == pytest.approx(
+        _hand_fisher_two_sided(18, 32, 35, 140), rel=1e-9)
+
+
+def test_fisher_is_more_conservative_than_binomial_against_estimate():
+    """The binomial treats 35/175 as the true rate; Fisher does not."""
+    ref = _reference()
+    records = ([_record(escalated=True)] * 40
+               + [_record(escalated=False)] * 110)
+    esc = drift.detect(records, ref, expected_fingerprint=FP).rates.escalation
+    assert esc.fisher_p_two_sided > esc.binomial_p_two_sided
+
+
+def test_rate_reference_defaults_to_the_novelty_reference():
+    ref = _reference()
+    records = [_record(escalated=True)] * 5 + [_record()] * 20
+    implicit = drift.detect(records, ref, expected_fingerprint=FP)
+    explicit = drift.detect(records, ref, expected_fingerprint=FP,
+                            rate_reference=ref)
+    assert implicit == explicit
+
+
+def test_rate_reference_scores_signal_b_only():
+    """Signal A must not move when only the rate reference changes."""
+    novelty_ref = _reference(n_escalated=0)
+    rate_ref = _reference(n_escalated=39, n_tier1=33,
+                          similarity_scores=[0.1] * N_REF,
+                          similarity_scores_with_self=[0.1] * N_REF)
+    records = [_record(sim=0.7, escalated=True)] * 10 + [_record()] * 40
+    alone = drift.detect(records, novelty_ref, expected_fingerprint=FP)
+    split = drift.detect(records, novelty_ref, expected_fingerprint=FP,
+                         rate_reference=rate_ref)
+    assert split.novelty == alone.novelty
+    assert alone.rates.escalation.degenerate_reference is True
+    assert split.rates.escalation.degenerate_reference is False
+    assert split.rates.escalation.reference_rate == 39 / 175
+    assert split.rates.tier1_share.reference_rate == 33 / 175
 
 
 def test_category_mix_matching_reference():
@@ -266,3 +344,24 @@ def test_committed_reference_matches_live_artifacts(artifacts):
     reference = load_drift_reference(artifacts)
     assert reference.n == 175
     assert reference.index_ntotal == artifacts.index.ntotal
+
+
+@pytest.mark.slow
+def test_committed_rate_reference_is_non_degenerate_and_live(artifacts):
+    """Phase 4B: Signal B's reference exists so the escalation test is not
+    None. 39/175 was counted two ways when it was built."""
+    from src.agent.artifacts import load_drift_reference
+
+    reference = load_drift_reference(artifacts, source="deployment")
+    assert reference.n == 175
+    assert reference.n_escalated == 39
+    assert 0 < reference.escalation_rate < 1
+    assert reference.provenance["escalation_counted_two_ways"][
+        "escalated_direct_below_threshold"] == 39
+
+
+def test_unknown_reference_source_is_refused():
+    from src.agent.artifacts import load_drift_reference
+
+    with pytest.raises(ValueError, match="source"):
+        load_drift_reference(source="rolling")

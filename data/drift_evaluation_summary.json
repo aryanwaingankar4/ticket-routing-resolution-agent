@@ -1,0 +1,672 @@
+{
+  "config_fingerprint": "9c9a5cbcb53f",
+  "counts": {
+    "beta_draws": 100000,
+    "crosscheck_windows": 300,
+    "null_references": 1000,
+    "null_windows_per_reference": 20,
+    "power_windows": 2000,
+    "rate_null_windows": 4000,
+    "rate_power_windows": 1000
+  },
+  "decision_rule": "An operating point is eligible only if the upper end of the 95% Clopper-Pearson CI on its measured null false-alarm rate is <= 0.05 (and, for Signal B, its p-value is never undefined). Power is reported only among eligible points and never used to pick among ineligible ones.",
+  "detection_target": 0.8,
+  "deviations_from_plan": [
+    "Split check dropped: for distinct scores a random split's flag count is exactly Beta-binomial whatever the data, so it could not fail. The in-domain scores have no ties.",
+    "Signal B null made parametric: bootstrapping windows from a 58-ticket split pool anti-correlates pool and reference and inflated every test's false-alarm rate, Fisher's included.",
+    "Signal A power uses leave-one-out conformal p-values against 174 reference tickets instead of a 117/58 split, for the same reason."
+  ],
+  "eligible_operating_points": [
+    {
+      "alpha": 0.01,
+      "ci_high": 0.016412523005814354,
+      "rate": 0.01465,
+      "signal": "A",
+      "test": "marginal_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.01,
+      "ci_high": 0.016412523005814354,
+      "rate": 0.01465,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.038157920268144616,
+      "rate": 0.0355,
+      "signal": "A",
+      "test": "marginal_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.010568464065288007,
+      "rate": 0.00915,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.1,
+      "ci_high": 0.04342783469856595,
+      "rate": 0.0406,
+      "signal": "A",
+      "test": "marginal_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.1,
+      "ci_high": 0.0133415387777851,
+      "rate": 0.01175,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.2,
+      "ci_high": 0.01163770236201078,
+      "rate": 0.01015,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 25
+    },
+    {
+      "alpha": 0.01,
+      "ci_high": 0.048016417036412976,
+      "rate": 0.04505,
+      "signal": "A",
+      "test": "marginal_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.01,
+      "ci_high": 0.011317314224819823,
+      "rate": 0.00985,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.04662523981490313,
+      "rate": 0.0437,
+      "signal": "A",
+      "test": "marginal_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.018783283062631224,
+      "rate": 0.0169,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.1,
+      "ci_high": 0.019203846955831036,
+      "rate": 0.0173,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.2,
+      "ci_high": 0.013553990646185055,
+      "rate": 0.01195,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 50
+    },
+    {
+      "alpha": 0.01,
+      "ci_high": 0.022926295303009648,
+      "rate": 0.02085,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 100
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.014402748824703947,
+      "rate": 0.01275,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 100
+    },
+    {
+      "alpha": 0.1,
+      "ci_high": 0.019308948655103377,
+      "rate": 0.0174,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 100
+    },
+    {
+      "alpha": 0.2,
+      "ci_high": 0.0169928927374668,
+      "rate": 0.0152,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 100
+    },
+    {
+      "alpha": 0.01,
+      "ci_high": 0.024703323283111853,
+      "rate": 0.02255,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 200
+    },
+    {
+      "alpha": 0.05,
+      "ci_high": 0.01894102427345583,
+      "rate": 0.01705,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 200
+    },
+    {
+      "alpha": 0.1,
+      "ci_high": 0.02020170233356681,
+      "rate": 0.01825,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 200
+    },
+    {
+      "alpha": 0.2,
+      "ci_high": 0.01825721435745609,
+      "rate": 0.0164,
+      "signal": "A",
+      "test": "conditional_binomial",
+      "window": 200
+    },
+    {
+      "alpha": null,
+      "ci_high": 0.03955286574562708,
+      "rate": 0.0335,
+      "signal": "B",
+      "test": "escalation_fisher",
+      "window": 25
+    },
+    {
+      "alpha": null,
+      "ci_high": 0.034953068800975144,
+      "rate": 0.02925,
+      "signal": "B",
+      "test": "tier1_fisher",
+      "window": 25
+    },
+    {
+      "alpha": null,
+      "ci_high": 0.045202381310366524,
+      "rate": 0.03875,
+      "signal": "B",
+      "test": "tier1_fisher",
+      "window": 50
+    },
+    {
+      "alpha": null,
+      "ci_high": 0.04681084007461007,
+      "rate": 0.04025,
+      "signal": "B",
+      "test": "tier1_fisher",
+      "window": 100
+    }
+  ],
+  "f2_beta_law_check": [
+    {
+      "alpha": 0.01,
+      "bound_over_marginal": 2.300574479097612,
+      "conditional_bound_closed_form": 0.013071445903963703,
+      "draws": 100000,
+      "l": 1,
+      "marginal_closed_form": 0.005681818181818182,
+      "realised_mean": 0.005686292572738095,
+      "realised_quantile_1_minus_delta": 0.013096817133664554,
+      "share_of_references_above_bound": 0.1003
+    },
+    {
+      "alpha": 0.05,
+      "bound_over_marginal": 1.459608972573462,
+      "conditional_bound_closed_form": 0.06634586238970282,
+      "draws": 100000,
+      "l": 8,
+      "marginal_closed_form": 0.045454545454545456,
+      "realised_mean": 0.04539220174427917,
+      "realised_quantile_1_minus_delta": 0.06618892190555509,
+      "share_of_references_above_bound": 0.09876
+    },
+    {
+      "alpha": 0.1,
+      "bound_over_marginal": 1.3035286304939149,
+      "conditional_bound_closed_form": 0.12590901544543495,
+      "draws": 100000,
+      "l": 17,
+      "marginal_closed_form": 0.09659090909090909,
+      "realised_mean": 0.09645465424775063,
+      "realised_quantile_1_minus_delta": 0.12572883245102226,
+      "share_of_references_above_bound": 0.09877
+    },
+    {
+      "alpha": 0.2,
+      "bound_over_marginal": 1.1970519797534422,
+      "conditional_bound_closed_form": 0.23805010961005954,
+      "draws": 100000,
+      "l": 35,
+      "marginal_closed_form": 0.19886363636363635,
+      "realised_mean": 0.19882433733984192,
+      "realised_quantile_1_minus_delta": 0.2378591355333031,
+      "share_of_references_above_bound": 0.09903
+    }
+  ],
+  "f3_leave_one_out": {
+    "0.01": {
+      "adversarial_flag_rate": {
+        "drops_that_change_it": 1,
+        "full_reference": 0.6666666666666666,
+        "max": 0.8888888888888888,
+        "min": 0.6666666666666666,
+        "range": 0.2222222222222222
+      },
+      "benchmark_flag_rate": {
+        "drops_that_change_it": 1,
+        "full_reference": 0.3333333333333333,
+        "max": 0.4666666666666667,
+        "min": 0.3333333333333333,
+        "range": 0.13333333333333336
+      },
+      "deployment_flag_rate": {
+        "drops_that_change_it": 1,
+        "full_reference": 0.21714285714285714,
+        "max": 0.3028571428571429,
+        "min": 0.21714285714285714,
+        "range": 0.08571428571428574
+      },
+      "ood_flag_rate": {
+        "drops_that_change_it": 1,
+        "full_reference": 0.8444444444444444,
+        "max": 0.9111111111111111,
+        "min": 0.8444444444444444,
+        "range": 0.06666666666666665
+      },
+      "ood_seed_rate": {
+        "drops_that_change_it": 1,
+        "full_reference": 0.9333333333333333,
+        "max": 1.0,
+        "min": 0.9333333333333333,
+        "range": 0.06666666666666665
+      }
+    },
+    "0.05": {
+      "adversarial_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      },
+      "benchmark_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.6444444444444445,
+        "max": 0.6444444444444445,
+        "min": 0.6444444444444445,
+        "range": 0.0
+      },
+      "deployment_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.42857142857142855,
+        "max": 0.42857142857142855,
+        "min": 0.42857142857142855,
+        "range": 0.0
+      },
+      "ood_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.9555555555555556,
+        "max": 0.9555555555555556,
+        "min": 0.9555555555555556,
+        "range": 0.0
+      },
+      "ood_seed_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      }
+    },
+    "0.1": {
+      "adversarial_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      },
+      "benchmark_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.7111111111111111,
+        "max": 0.7111111111111111,
+        "min": 0.7111111111111111,
+        "range": 0.0
+      },
+      "deployment_flag_rate": {
+        "drops_that_change_it": 17,
+        "full_reference": 0.5142857142857142,
+        "max": 0.52,
+        "min": 0.5142857142857142,
+        "range": 0.005714285714285783
+      },
+      "ood_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.9777777777777777,
+        "max": 0.9777777777777777,
+        "min": 0.9777777777777777,
+        "range": 0.0
+      },
+      "ood_seed_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      }
+    },
+    "0.2": {
+      "adversarial_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      },
+      "benchmark_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.7333333333333333,
+        "max": 0.7333333333333333,
+        "min": 0.7333333333333333,
+        "range": 0.0
+      },
+      "deployment_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 0.6457142857142857,
+        "max": 0.6457142857142857,
+        "min": 0.6457142857142857,
+        "range": 0.0
+      },
+      "ood_flag_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      },
+      "ood_seed_rate": {
+        "drops_that_change_it": 0,
+        "full_reference": 1.0,
+        "max": 1.0,
+        "min": 1.0,
+        "range": 0.0
+      }
+    }
+  },
+  "f3_min_contamination_for_detection": {
+    "A|conditional_binomial|0.01|100|adversarial": 0.1,
+    "A|conditional_binomial|0.01|100|benchmark": 0.25,
+    "A|conditional_binomial|0.01|100|ood": 0.05,
+    "A|conditional_binomial|0.01|200|adversarial": 0.1,
+    "A|conditional_binomial|0.01|200|benchmark": 0.25,
+    "A|conditional_binomial|0.01|200|ood": 0.05,
+    "A|conditional_binomial|0.01|25|adversarial": 0.25,
+    "A|conditional_binomial|0.01|25|benchmark": 0.5,
+    "A|conditional_binomial|0.01|25|ood": 0.25,
+    "A|conditional_binomial|0.01|50|adversarial": 0.1,
+    "A|conditional_binomial|0.01|50|benchmark": 0.25,
+    "A|conditional_binomial|0.01|50|ood": 0.1,
+    "A|conditional_binomial|0.05|100|adversarial": 0.1,
+    "A|conditional_binomial|0.05|100|benchmark": 0.25,
+    "A|conditional_binomial|0.05|100|ood": 0.1,
+    "A|conditional_binomial|0.05|200|adversarial": 0.1,
+    "A|conditional_binomial|0.05|200|benchmark": 0.25,
+    "A|conditional_binomial|0.05|200|ood": 0.1,
+    "A|conditional_binomial|0.05|25|adversarial": 0.25,
+    "A|conditional_binomial|0.05|25|benchmark": 0.5,
+    "A|conditional_binomial|0.05|25|ood": 0.25,
+    "A|conditional_binomial|0.05|50|adversarial": 0.25,
+    "A|conditional_binomial|0.05|50|benchmark": 0.25,
+    "A|conditional_binomial|0.05|50|ood": 0.25,
+    "A|conditional_binomial|0.1|100|adversarial": 0.25,
+    "A|conditional_binomial|0.1|100|benchmark": 0.25,
+    "A|conditional_binomial|0.1|100|ood": 0.25,
+    "A|conditional_binomial|0.1|200|adversarial": 0.1,
+    "A|conditional_binomial|0.1|200|benchmark": 0.25,
+    "A|conditional_binomial|0.1|200|ood": 0.1,
+    "A|conditional_binomial|0.1|25|adversarial": 0.25,
+    "A|conditional_binomial|0.1|25|benchmark": 0.5,
+    "A|conditional_binomial|0.1|25|ood": 0.25,
+    "A|conditional_binomial|0.1|50|adversarial": 0.25,
+    "A|conditional_binomial|0.1|50|benchmark": 0.5,
+    "A|conditional_binomial|0.1|50|ood": 0.25,
+    "A|conditional_binomial|0.2|100|adversarial": 0.25,
+    "A|conditional_binomial|0.2|100|benchmark": 0.5,
+    "A|conditional_binomial|0.2|100|ood": 0.25,
+    "A|conditional_binomial|0.2|200|adversarial": 0.25,
+    "A|conditional_binomial|0.2|200|benchmark": 0.25,
+    "A|conditional_binomial|0.2|200|ood": 0.25,
+    "A|conditional_binomial|0.2|25|adversarial": 0.5,
+    "A|conditional_binomial|0.2|25|benchmark": null,
+    "A|conditional_binomial|0.2|25|ood": 0.5,
+    "A|conditional_binomial|0.2|50|adversarial": 0.25,
+    "A|conditional_binomial|0.2|50|benchmark": 0.5,
+    "A|conditional_binomial|0.2|50|ood": 0.25,
+    "A|ks|0.01|100|adversarial": 0.25,
+    "A|ks|0.01|100|benchmark": 0.25,
+    "A|ks|0.01|100|ood": 0.25,
+    "A|ks|0.01|200|adversarial": 0.1,
+    "A|ks|0.01|200|benchmark": 0.25,
+    "A|ks|0.01|200|ood": 0.25,
+    "A|ks|0.01|25|adversarial": 0.5,
+    "A|ks|0.01|25|benchmark": 0.5,
+    "A|ks|0.01|25|ood": 0.5,
+    "A|ks|0.01|50|adversarial": 0.25,
+    "A|ks|0.01|50|benchmark": 0.5,
+    "A|ks|0.01|50|ood": 0.25,
+    "A|ks|0.05|100|adversarial": 0.25,
+    "A|ks|0.05|100|benchmark": 0.25,
+    "A|ks|0.05|100|ood": 0.25,
+    "A|ks|0.05|200|adversarial": 0.1,
+    "A|ks|0.05|200|benchmark": 0.25,
+    "A|ks|0.05|200|ood": 0.25,
+    "A|ks|0.05|25|adversarial": 0.5,
+    "A|ks|0.05|25|benchmark": 0.5,
+    "A|ks|0.05|25|ood": 0.5,
+    "A|ks|0.05|50|adversarial": 0.25,
+    "A|ks|0.05|50|benchmark": 0.5,
+    "A|ks|0.05|50|ood": 0.25,
+    "A|ks|0.1|100|adversarial": 0.25,
+    "A|ks|0.1|100|benchmark": 0.25,
+    "A|ks|0.1|100|ood": 0.25,
+    "A|ks|0.1|200|adversarial": 0.1,
+    "A|ks|0.1|200|benchmark": 0.25,
+    "A|ks|0.1|200|ood": 0.25,
+    "A|ks|0.1|25|adversarial": 0.5,
+    "A|ks|0.1|25|benchmark": 0.5,
+    "A|ks|0.1|25|ood": 0.5,
+    "A|ks|0.1|50|adversarial": 0.25,
+    "A|ks|0.1|50|benchmark": 0.5,
+    "A|ks|0.1|50|ood": 0.25,
+    "A|ks|0.2|100|adversarial": 0.25,
+    "A|ks|0.2|100|benchmark": 0.25,
+    "A|ks|0.2|100|ood": 0.25,
+    "A|ks|0.2|200|adversarial": 0.1,
+    "A|ks|0.2|200|benchmark": 0.25,
+    "A|ks|0.2|200|ood": 0.25,
+    "A|ks|0.2|25|adversarial": 0.5,
+    "A|ks|0.2|25|benchmark": 0.5,
+    "A|ks|0.2|25|ood": 0.5,
+    "A|ks|0.2|50|adversarial": 0.25,
+    "A|ks|0.2|50|benchmark": 0.5,
+    "A|ks|0.2|50|ood": 0.25,
+    "A|marginal_binomial|0.01|100|adversarial": 0.05,
+    "A|marginal_binomial|0.01|100|benchmark": 0.25,
+    "A|marginal_binomial|0.01|100|ood": 0.05,
+    "A|marginal_binomial|0.01|200|adversarial": 0.05,
+    "A|marginal_binomial|0.01|200|benchmark": 0.1,
+    "A|marginal_binomial|0.01|200|ood": 0.05,
+    "A|marginal_binomial|0.01|25|adversarial": 0.25,
+    "A|marginal_binomial|0.01|25|benchmark": 0.5,
+    "A|marginal_binomial|0.01|25|ood": 0.25,
+    "A|marginal_binomial|0.01|50|adversarial": 0.1,
+    "A|marginal_binomial|0.01|50|benchmark": 0.25,
+    "A|marginal_binomial|0.01|50|ood": 0.1,
+    "A|marginal_binomial|0.05|100|adversarial": 0.1,
+    "A|marginal_binomial|0.05|100|benchmark": 0.1,
+    "A|marginal_binomial|0.05|100|ood": 0.1,
+    "A|marginal_binomial|0.05|200|adversarial": 0.05,
+    "A|marginal_binomial|0.05|200|benchmark": 0.1,
+    "A|marginal_binomial|0.05|200|ood": 0.05,
+    "A|marginal_binomial|0.05|25|adversarial": 0.25,
+    "A|marginal_binomial|0.05|25|benchmark": 0.25,
+    "A|marginal_binomial|0.05|25|ood": 0.25,
+    "A|marginal_binomial|0.05|50|adversarial": 0.1,
+    "A|marginal_binomial|0.05|50|benchmark": 0.25,
+    "A|marginal_binomial|0.05|50|ood": 0.1,
+    "A|marginal_binomial|0.1|100|adversarial": 0.1,
+    "A|marginal_binomial|0.1|100|benchmark": 0.25,
+    "A|marginal_binomial|0.1|100|ood": 0.1,
+    "A|marginal_binomial|0.1|200|adversarial": 0.1,
+    "A|marginal_binomial|0.1|200|benchmark": 0.1,
+    "A|marginal_binomial|0.1|200|ood": 0.1,
+    "A|marginal_binomial|0.1|25|adversarial": 0.25,
+    "A|marginal_binomial|0.1|25|benchmark": 0.5,
+    "A|marginal_binomial|0.1|25|ood": 0.25,
+    "A|marginal_binomial|0.1|50|adversarial": 0.25,
+    "A|marginal_binomial|0.1|50|benchmark": 0.25,
+    "A|marginal_binomial|0.1|50|ood": 0.25,
+    "A|marginal_binomial|0.2|100|adversarial": 0.25,
+    "A|marginal_binomial|0.2|100|benchmark": 0.25,
+    "A|marginal_binomial|0.2|100|ood": 0.25,
+    "A|marginal_binomial|0.2|200|adversarial": 0.1,
+    "A|marginal_binomial|0.2|200|benchmark": 0.25,
+    "A|marginal_binomial|0.2|200|ood": 0.1,
+    "A|marginal_binomial|0.2|25|adversarial": 0.5,
+    "A|marginal_binomial|0.2|25|benchmark": 0.5,
+    "A|marginal_binomial|0.2|25|ood": 0.5,
+    "A|marginal_binomial|0.2|50|adversarial": 0.25,
+    "A|marginal_binomial|0.2|50|benchmark": 0.5,
+    "A|marginal_binomial|0.2|50|ood": 0.25,
+    "B|category_chi_square|None|100|benchmark": null,
+    "B|category_chi_square|None|100|ood": 0.5,
+    "B|category_chi_square|None|200|benchmark": null,
+    "B|category_chi_square|None|200|ood": 0.25,
+    "B|category_chi_square|None|25|benchmark": null,
+    "B|category_chi_square|None|25|ood": null,
+    "B|category_chi_square|None|50|benchmark": null,
+    "B|category_chi_square|None|50|ood": 0.5,
+    "B|escalation_binomial|None|100|benchmark": null,
+    "B|escalation_binomial|None|100|ood": 0.25,
+    "B|escalation_binomial|None|200|benchmark": null,
+    "B|escalation_binomial|None|200|ood": 0.25,
+    "B|escalation_binomial|None|25|benchmark": null,
+    "B|escalation_binomial|None|25|ood": 0.5,
+    "B|escalation_binomial|None|50|benchmark": null,
+    "B|escalation_binomial|None|50|ood": 0.5,
+    "B|escalation_fisher|None|100|benchmark": null,
+    "B|escalation_fisher|None|100|ood": 0.25,
+    "B|escalation_fisher|None|200|benchmark": null,
+    "B|escalation_fisher|None|200|ood": 0.25,
+    "B|escalation_fisher|None|25|benchmark": null,
+    "B|escalation_fisher|None|25|ood": 0.5,
+    "B|escalation_fisher|None|50|benchmark": null,
+    "B|escalation_fisher|None|50|ood": 0.5,
+    "B|tier1_binomial|None|100|benchmark": null,
+    "B|tier1_binomial|None|100|ood": null,
+    "B|tier1_binomial|None|200|benchmark": null,
+    "B|tier1_binomial|None|200|ood": 0.5,
+    "B|tier1_binomial|None|25|benchmark": null,
+    "B|tier1_binomial|None|25|ood": null,
+    "B|tier1_binomial|None|50|benchmark": null,
+    "B|tier1_binomial|None|50|ood": null,
+    "B|tier1_fisher|None|100|benchmark": null,
+    "B|tier1_fisher|None|100|ood": null,
+    "B|tier1_fisher|None|200|benchmark": null,
+    "B|tier1_fisher|None|200|ood": null,
+    "B|tier1_fisher|None|25|benchmark": null,
+    "B|tier1_fisher|None|25|ood": null,
+    "B|tier1_fisher|None|50|benchmark": null,
+    "B|tier1_fisher|None|50|ood": null
+  },
+  "limitations": [
+    "The Signal A null is a property of the procedure under exchangeability, not of this project's data; where the fixed reference sits needs held-out tickets (4B-2/4B-3).",
+    "Signal A power reuses the 175 reference tickets as its in-domain portion, and resamples 9-45 contaminants.",
+    "Signal B nulls depend only on the reference rates, so they calibrate the test procedure, not the data.",
+    "Contamination is abrupt and out-of-template; gradual shift is not measured.",
+    "Selection risk accumulates on the 45-ticket benchmark.",
+    "Template-generated data makes the null unusually clean.",
+    "The Signal B reference rate (22.3%) is that of Gemini-generated benchmark-register tickets, not a production escalation rate.",
+    "The realistic-traffic arm bootstraps its windows from the same 175 deployment p-values with replacement, so those windows are not independent draws from the deployment register either.",
+    "One RNG stream (seed 42) is threaded through every step, so these numbers reproduce only while the step order is unchanged."
+  ],
+  "phase": "4B-1",
+  "realistic_traffic_per_ticket": [
+    {
+      "alpha": 0.01,
+      "conditional_bound": 0.013071445903963703,
+      "flag_rate": 0.21714285714285714,
+      "flagged": 38,
+      "marginal_null_rate": 0.005681818181818182,
+      "n": 175
+    },
+    {
+      "alpha": 0.05,
+      "conditional_bound": 0.06634586238970282,
+      "flag_rate": 0.42857142857142855,
+      "flagged": 75,
+      "marginal_null_rate": 0.045454545454545456,
+      "n": 175
+    },
+    {
+      "alpha": 0.1,
+      "conditional_bound": 0.12590901544543495,
+      "flag_rate": 0.5142857142857142,
+      "flagged": 90,
+      "marginal_null_rate": 0.09659090909090909,
+      "n": 175
+    },
+    {
+      "alpha": 0.2,
+      "conditional_bound": 0.23805010961005954,
+      "flag_rate": 0.6457142857142857,
+      "flagged": 113,
+      "marginal_null_rate": 0.19886363636363635,
+      "n": 175
+    }
+  ],
+  "references": {
+    "signal_a": {
+      "file": "drift_reference_bge-base-en-v1-5.json",
+      "n": 175,
+      "n_escalated": 0,
+      "source_sha256": "5eb61170335ad135cd33b1d80e01bcd21f4cd8a40c5d1d5b88c4a5782c1aec57"
+    },
+    "signal_b": {
+      "file": "drift_rate_reference_deployment_bge-base-en-v1-5.json",
+      "n": 175,
+      "n_escalated": 39,
+      "source_sha256": "2cd45738d71741cb024a4bc1ccab8452df8e15d45fbb1adbfba648bfee837eb5"
+    }
+  },
+  "seed": 42,
+  "signal_a_crosscheck": {
+    "max_abs_p_scalar_vs_library": 0.0,
+    "max_abs_p_vectorised_vs_scalar": 0.0,
+    "windows": 300
+  },
+  "smoke": false,
+  "status": "PROVISIONAL -- Signal A power reuses the 175 reference tickets as its in-domain portion; 4B-3 replaces it with the held-out in-domain set",
+  "window_level": 0.05
+}
