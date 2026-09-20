@@ -1763,6 +1763,50 @@ out-of-domain inputs, and adding negative-class data does not
 automatically fix that if the negative class's own similarity
 distribution doesn't reach into the artifact's threshold range.
 
+### Named finding — the calibration/reference distribution, not the test or method, is the binding constraint
+
+This is the project's strongest cross-phase result, and it is named here because
+two phases reached it independently, from opposite directions, through the same
+mechanism: **a register mismatch between the calibration/reference data and the
+data the system actually sees.** Neither phase was designed to test it.
+
+- **The coverage side — Phase 1, Finding 4.** A deployment-distribution
+  calibration set, built to the same size and class balance as the in-domain one
+  so only the distribution differed, recovered about 38% of Tier-1's conformal
+  coverage shortfall (−0.233 → −0.144 at α=0.10) and left it **six times outside
+  the noise band**. Matching the distribution is *necessary but not sufficient*:
+  where the representation itself fails to transfer, no amount of
+  calibration-set realism repairs the guarantee.
+- **The monitoring side — Phase 4B, the realistic-traffic arm.** Scored against
+  the in-domain reference, deployment-register tickets — legitimate traffic, not
+  drift by any construction — flag at **0.217 / 0.429 / 0.514 / 0.646** for
+  α = 0.01 / 0.05 / 0.10 / 0.20 against nulls of 0.006 / 0.046 / 0.097 / 0.199.
+  Four to seven times the null. A Signal A monitor on that reference would alarm
+  continuously, and **no choice of test, α or window size fixes it** — the
+  conditional binomial's own null false-alarm rate is a clean 0.009–0.023 on
+  exchangeable data at the very same operating points.
+
+The two results are not a repeat of one measurement. One is about whether a
+finite-sample *guarantee* survives deployment; the other is about whether a
+*monitor* can run without false alarms. Both fail for the same reason and are
+fixed by the same thing — a reference drawn from the deployment distribution —
+which is what makes the constraint a property of the data rather than of either
+method. The practical form of the claim: **in this system, every attempt to
+improve a test, a threshold or a statistic hit a ceiling set by what the
+calibration data was made of.**
+
+**What is *not* part of this finding.** Phase 2A's negative result is a
+**related but distinct dataset limitation**: template-generated resolutions make
+the templates *be* the fix classes, so no pair of tickets can look alike and
+need different fixes, and clustering precision is unmeasurable on this corpus at
+all. That is redundancy in the *training* data limiting what can be evaluated —
+not a calibration/reference register mismatch. It belongs beside this finding as
+a second, independent reason the synthetic corpus constrains the conclusions, and
+it should not be presented as a third instance of the same mechanism.
+
+*(Recorded for the write-up phase. No new experiment was run for it — it is a
+reframing of two results already measured and published above.)*
+
 **Important distinction, updated after Phase 3.** This previously read that
 the system was *"not yet a true multi-agent system"* and that the restructure
 "remains a scoped future extension, not something built yet". That is no

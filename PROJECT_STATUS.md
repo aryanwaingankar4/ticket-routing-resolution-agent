@@ -48,6 +48,43 @@ Production gates are unchanged and remain the calibrated values: cascade
 
 ---
 
+## Named finding for the paper (Phase 9A picks this up)
+
+**"The calibration/reference distribution, not the test or method, is the
+binding constraint."** Approved as a named finding on 2026-09-20. **No new
+experiment** — it is a reframing of two results already measured and published.
+
+Its evidence is two phases reaching the same conclusion independently, through
+the same register-mismatch mechanism:
+
+1. **Coverage side — Phase 1, Finding 4.** A deployment-distribution
+   calibration set matched to the in-domain set's size and class balance
+   recovered ~38% of Tier-1's coverage shortfall (−0.233 → −0.144 at α=0.10) and
+   left it six times outside the noise band. Distribution matching is necessary
+   but not sufficient.
+2. **Monitoring side — Phase 4B-1, the realistic-traffic arm.** Deployment-
+   register tickets flag against the in-domain reference at 0.217/0.429/0.514/
+   0.646 for α = 0.01/0.05/0.10/0.20, versus nulls of 0.006/0.046/0.097/0.199 —
+   4–7×. No test, α or window fixes it; the conditional binomial's null is a
+   clean 0.009–0.023 at those same operating points.
+
+One is about whether a finite-sample guarantee survives deployment, the other
+about whether a monitor can run without false alarms. Both fail for the same
+reason and are repaired by the same thing, which is what makes the constraint a
+property of the data rather than of either method.
+
+**Phase 2A is explicitly NOT a third instance.** It is a **related dataset
+limitation** — template redundancy, where the templates *are* the fix classes,
+so clustering precision is unmeasurable on this corpus. That is training-data
+redundancy limiting what can be evaluated, not a calibration/reference register
+mismatch. Present it alongside as a second, independent corpus constraint; do
+not fold it into the named finding.
+
+Written up in README "Named finding — the calibration/reference distribution,
+not the test or method, is the binding constraint".
+
+---
+
 ## What's done
 
 ### Phase 0 — pipeline consolidation (`a3f0b23`)
