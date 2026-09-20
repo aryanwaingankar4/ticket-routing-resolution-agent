@@ -26,12 +26,13 @@ finish a phase, report, and stop rather than rolling into the next one. **Each p
 also opens with a plan, reviewed before any code is written.** Phases 0 (pipeline
 consolidation), 1 (conformal prediction), 2 (automation-flag validation and resolution
 groundedness) and 3 (Tier-1 persistence, agent boundaries, HTTP service, write-up) are
-complete and pushed. Phase 4A (history sink + detector library) is complete and
-pushed. Phase 4B-1 (the drift evaluation) is complete, committed and at its gate:
-its verdict is **measured, not shipped** — an eligible operating point exists
-(Signal A calibration-conditional binomial, α=0.05, W=100–200) and nothing was
-promoted into config. Next is 5A, correcting the conformal template-grouping
-diagnostic. `PROJECT_STATUS.md` carries the state.
+complete and pushed. So are Phase 4A (history sink + detector library), Phase
+4B-1 (the drift evaluation — verdict **measured, not shipped**: an eligible
+operating point exists at Signal A's calibration-conditional binomial, α=0.05,
+W=100–200, and nothing was promoted into config) and Phase 5A (the conformal
+template-grouping correction). The work now follows the agreed **Phase 5–9
+publication-readiness programme**, which is recorded in `PROJECT_STATUS.md`
+along with the current state — read it first.
 
 **Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
 the last commit SHA, what moved, and what the next step is. A future session should be
@@ -359,7 +360,10 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 - **Scripts fail with clear actionable messages, not tracebacks** — the Streamlit demo
   may run live in front of an audience.
 - **Gemini free tier is 15 req/min, 500/day.** Keep `GEMINI_CALL_DELAY_SEC` at 4s or
-  above in any batch-calling script.
+  above in any batch-calling script, dry-run before spending the full budget, and
+  cache every raw response to disk so a crash or a re-scoring never re-spends
+  quota. **Never run two quota-spending sub-phases on the same day** — the daily
+  cap would risk a partial result mid-experiment.
 - **Before committing, check for stray embedding caches:**
   `git status | Select-String "\.npy"`
 

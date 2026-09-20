@@ -26,6 +26,11 @@ deferred by accident.** See "Phase 3D" below.
 Read this file first. `CLAUDE.md` describes how the project works and rarely
 changes; this file describes where it currently is and changes every session.
 
+**Where to look:** "Health at a glance" for the current numbers, "Named finding
+for the paper" for the result the write-up is built around, **"The agreed Phase
+5–9 programme" for the roadmap**, and "Immediate next step" for what to do
+first. Everything between is the record of what has already landed.
+
 ---
 
 ## Health at a glance
@@ -738,33 +743,139 @@ waiting on its gate review. Phases 0–4 are all pushed.
 
 ---
 
+## The agreed Phase 5–9 programme
+
+Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
+candidate list: a fresh session should resume from this table, not re-derive it.
+Everything in Phases 5–9 is **measurement only**.
+
+### Phase 5 — Correctness and honest baselines
+
+| Sub-phase | Scope | State |
+|---|---|---|
+| **5A** | Conformal template-grouping correction | **DONE** (`cdac8f6`) |
+| **5B** | **Honest ablation** | **NEXT** |
+| **5C** | Zero-shot LLM classification baselines | not started |
+
+**5B — honest ablation.** Add `--mode tier2-only` to the ablation study, compare
+cascade against Tier-2-only with an **exact McNemar test**, and measure **warm
+Tier-1 vs Tier-2 latency** (warm, so the BGE load is not counted as per-ticket
+cost). **First task, before any of that: check whether the published 33/45 (BGE
+alone) and 32/45 (cascade) came from the same classifier.** If they did not, the
+one-ticket difference between those two numbers is not a cascade effect and the
+comparison currently in the README is not like-for-like — which would be the
+seventh instance of the recurring bug class, so derive the answer twice.
+
+**5C — zero-shot LLM baselines.** Gemini plus one free non-Gemini model run
+locally through Ollama, so the comparison is not single-vendor. **~60 Gemini
+calls**; dry-run first and cache every raw response.
+
+### Phase 6 — New research experiments (measurement only)
+
+| Sub-phase | Scope |
+|---|---|
+| **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC |
+| **6B** | Weighted conformal under shift, with a domain-classifier density ratio |
+| **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
+
+6A is the experiment that makes Phase 1's conformal work operational without
+promoting it: it asks whether deferring on set size beats deferring on a
+confidence threshold, on the same data. 6B is the direct successor to the named
+finding — it tests whether reweighting can do what distribution matching could
+not.
+
+### Phase 7 — External validity
+
+| Sub-phase | Scope |
+|---|---|
+| **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` |
+| **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it |
+
+**7A's framing is load-bearing:** that dataset is itself LLM-generated, so it is
+treated as **independently generated data, not real production data**. It tests
+whether the findings survive a different generator — not whether they survive
+reality. Any write-up must say so in those words.
+
+### Phase 8 — Reproducibility
+
+| Sub-phase | Scope |
+|---|---|
+| **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it |
+| **8B** | Docker + CI (the Docker/CI item from the original agreed roadmap) |
+
+8A is the structural answer to this project's recurring bug class: every number
+in the paper regenerated from one script, with a parity test that fails when a
+published figure drifts — the goldens pattern applied to the write-up.
+
+### Phase 9 — The paper
+
+| Sub-phase | Scope |
+|---|---|
+| **9A** | IEEE draft |
+| **9B** | Pre-submission audit |
+| **9C** | Author explainer |
+
+9A builds on the **named finding** above rather than re-deriving it, and keeps
+Phase 2A as a *related* corpus limitation rather than a third instance of the
+mechanism.
+
+### Explicitly FUTURE WORK — not in this programme
+
+- **4B-2 / 4B-3 — a held-out in-domain set** (and a deployment-traffic drift
+  reference). Until they exist, Signal A's power numbers stay provisional and no
+  drift monitor can run; that limitation is already written next to the 4B-1
+  result.
+- **Re-running the Phase 2 harnesses on deployment-distribution data.** Both
+  harnesses are built and guarded and need no code changes — only real resolved
+  tickets.
+
+### Still deferred, each needing its own gate
+
+Turning the decision-log sink on anywhere (e.g. in `/triage`), and any `/drift`
+endpoint.
+
+### Rules for every sub-phase (unchanged)
+
+- **Plan mode first.** Files touched, new files, outputs, anything that could
+  move a published number, how it will be verified, and the Gemini cost. Stop
+  for approval; no code before it.
+- **Measurement only. Production stays frozen** at cascade **0.50**, RAG
+  **0.67**, clustering **0.80**, with `settings.conformal.enabled` and
+  `settings.drift.enabled` both `False`.
+- **Gates are re-run, never quoted:** `pytest`, the adversarial gate at 9/9 with
+  its CSV byte-identical, goldens 45/45 and 9/9, ablation baseline 32/45.
+- **Commit and stop.** Push only on "gate cleared".
+- **Never run two Gemini-spending sub-phases (5C, 6C) on the same day** — the
+  500/day cap would risk a partial result mid-experiment.
+- Benchmarks (14 / 45 / 9 tickets) are read-only; seed 42; a new result gets a
+  new filename; check every count against a second, independent derivation.
+
+---
+
 ## Immediate next step
 
-**Phase 5B — scope to be agreed, then planned in plan mode before any code.**
-5A closed the correction that 4B-1's audit turned up, so nothing is
-outstanding; 5B is the next sub-phase of the publication-readiness programme
-(Phases 5–9, the paper as the deliverable) and **its content is a decision for
-the start of the next session, not something this file should presume.**
+**Phase 5B — the honest ablation.** Open it in plan mode before any code.
 
-The candidates already on the record, any of which 5B could take:
+Its scope, as agreed:
 
-- **4B-2/4B-3 — a held-out in-domain set.** Required before any Signal A power
-  number is quoted as final, and a deployment-traffic reference is required
-  before a drift monitor could run at all. This is the item 4B-1's own
-  limitations name first.
-- **Re-run the Phase 2 harnesses on deployment-distribution data.** Both are
-  built, guarded and need no code changes; 2A could not measure clustering
-  precision on template data, and 2B's groundedness rests on 33 drafts.
-- **Docker/CI packaging** — the last item from the original agreed sequence, and
-  cheaper now: the service is the deployable unit, `/health` reports the config
-  fingerprint, and `requirements.txt` is fully pinned.
-- **Start the write-up (9A).** The **named finding** above is the paper's spine;
-  9A should build on it rather than re-derive it, and must keep Phase 2A as a
-  *related* corpus limitation rather than a third instance of the mechanism.
+1. **First, the like-for-like check:** did the published **33/45** (BGE alone)
+   and **32/45** (cascade) come from the same classifier? If not, that
+   one-ticket gap is not a cascade effect and the README's comparison is not
+   like-for-like. Derive the answer two independent ways — this is exactly the
+   shape of the six bugs already on the record.
+2. **`--mode tier2-only`** added to `run_ablation_study.py`, so the cascade is
+   measured against the strong model alone and not only against Tier-1-only.
+3. **An exact McNemar test**, cascade vs Tier-2-only, on the 45-ticket
+   benchmark — a one- or two-ticket difference at n=45 needs a paired test
+   before it is called a difference at all.
+4. **Warm Tier-1 vs Tier-2 latency**, measured warm so BGE's ~60s load is not
+   charged to per-ticket cost — the honest version of the cascade's efficiency
+   claim, which currently rests on a 1.56s-vs-0.014s fit/load comparison that
+   says nothing about inference.
 
-Two decisions remain deliberately deferred, each needing its own gate: turning
-the decision-log sink on anywhere (e.g. in `/triage`), and any `/drift`
-endpoint.
+Offline, no Gemini quota. It may move a published number, so the plan must say
+which and the gate must show the goldens, adversarial 9/9 and ablation baseline
+unchanged.
 
 ---
 
