@@ -48,6 +48,12 @@ the expected standard deviation is printed alongside every figure.
 
 Run from the project root (offline, no Gemini calls, no quota):
     python -m src.experiments.calibrate_conformal
+
+Outputs are refused rather than overwritten if they already exist. Write a new
+set beside the published one with --out-suffix <name>, or overwrite with
+--force. The published conformal_novelty_results.csv is also read by
+build_drift_reference.py as its reference check, so overwriting it in place
+would undermine that check as well as rule 4.
 """
 
 from __future__ import annotations
@@ -91,6 +97,24 @@ OUTPUT_CSV = os.path.join(DATA_DIR, "conformal_calibration_results.csv")
 NOVELTY_CSV = os.path.join(DATA_DIR, "conformal_novelty_results.csv")
 ARTIFACT_JSON = os.path.join(
     DATA_DIR, "conformal_calibration_bge-base-en-v1-5.json")
+
+
+def output_paths(suffix=""):
+    """The three result files, optionally suffixed.
+
+    Project rule: a new result gets a new filename rather than overwriting a
+    published one. `build_drift_reference.py` reads the UNSUFFIXED
+    conformal_novelty_results.csv as its published reference check, so
+    overwriting these in place would also quietly undermine that check.
+    """
+    tag = f"_{suffix}" if suffix else ""
+    return (
+        os.path.join(DATA_DIR, f"conformal_calibration_results{tag}.csv"),
+        os.path.join(DATA_DIR, f"conformal_novelty_results{tag}.csv"),
+        os.path.join(DATA_DIR,
+                     f"conformal_calibration{tag}_bge-base-en-v1-5.json"),
+    )
+
 
 ALPHAS = [0.20, 0.10, 0.05, 0.01]
 SCORE_FUNCTIONS = ["lac", "aps"]
@@ -198,22 +222,38 @@ def report_contamination_structure(df, calibration):
     """
     _banner("STEP 1b - Why de-contamination by row removal cannot work")
 
-    cal_ids = {int(r["id"]) for r in calibration}
-    total_templates = int(df["scenario_id"].nunique())
-    cal_templates = set(df[df["id"].isin(cal_ids)]["scenario_id"].unique())
-    surviving = int((~df["scenario_id"].isin(cal_templates)).sum())
-    sizes = df.groupby("scenario_id").size()
+    # A template's identity is (category, scenario_id), NOT scenario_id alone.
+    # scenario_id is an index WITHIN a category -- data/generate_dataset.py:634
+    # says so in its own comment -- so grouping by it alone silently merges
+    # seven categories' templates into one, and reports 12 templates of ~430
+    # rows where there are 66 of ~62. Phase 5A corrected exactly that; see the
+    # README correction note under Finding 2.
+    TEMPLATE_KEY = ["category", "scenario_id"]
 
+    cal_ids = {int(r["id"]) for r in calibration}
+    grouped = df.groupby(TEMPLATE_KEY)
+    total_templates = int(grouped.ngroups)
+    cal_templates = set(
+        map(tuple, df[df["id"].isin(cal_ids)][TEMPLATE_KEY]
+            .drop_duplicates().to_numpy()))
+    surviving = int(
+        (~pd.MultiIndex.from_frame(df[TEMPLATE_KEY]).isin(cal_templates))
+        .sum())
+    sizes = grouped.size()
+    median_rows = int(sizes.median())
+
+    print(f"  template key                       : "
+          f"{'+'.join(TEMPLATE_KEY)}")
     print(f"  scenario templates in dataset      : {total_templates}")
     print(f"  templates touched by the {len(cal_ids)} tickets : "
           f"{len(cal_templates)} "
           f"({len(cal_templates) / total_templates:.1%})")
-    print(f"  rows per template (median)         : {int(sizes.median())}")
-    print(f"  siblings left after removing 1 row : "
-          f"{int(sizes.median()) - 1}")
+    print(f"  rows per template (median)         : {median_rows}")
+    print(f"  siblings left after removing 1 row : {median_rows - 1}")
     print(f"  rows surviving template exclusion  : {surviving}/{len(df)}")
     print()
-    print("  => Row-level exclusion removes ~0.2% of a template's evidence,")
+    print(f"  => Row-level exclusion removes ~{1 / median_rows:.1%} of a "
+          "template's evidence,")
     print("     so the fitted model is effectively unchanged.")
     print("  => Template-level exclusion would leave too little data to")
     print("     train on at all. The in-domain calibration set therefore")
@@ -222,9 +262,12 @@ def report_contamination_structure(df, calibration):
     print("     on deployment-distribution data instead.")
 
     return {
+        # Records WHICH grouping produced these counts, so an artifact can
+        # never again be read without knowing what a "template" meant in it.
+        "template_key": "+".join(TEMPLATE_KEY),
         "total_templates": total_templates,
         "calibration_templates": len(cal_templates),
-        "median_rows_per_template": int(sizes.median()),
+        "median_rows_per_template": median_rows,
         "rows_surviving_template_exclusion": surviving,
         "dataset_rows": int(len(df)),
     }
@@ -354,9 +397,26 @@ def top_similarity(text, artifacts, own_id=None):
 # --------------------------------------------------------------------------- #
 # Main
 # --------------------------------------------------------------------------- #
-def run():
+def run(out_suffix="", force=False):
     _banner("CONFORMAL PREDICTION CALIBRATION  (measurement only)")
     print("Production thresholds are NOT modified by this script.")
+
+    # Checked BEFORE the expensive work, so a refusal costs seconds rather
+    # than a full re-fit.
+    out_csv, novelty_csv, artifact_json = output_paths(out_suffix)
+    existing = [p for p in (out_csv, novelty_csv, artifact_json)
+                if os.path.exists(p)]
+    if existing and not force:
+        _fatal(
+            "These output files already exist:\n    "
+            + "\n    ".join(existing)
+            + "\n  Refusing to overwrite published results. Re-run with "
+            "--out-suffix <name>\n  to write new files, or --force to "
+            "overwrite these."
+        )
+    if out_suffix:
+        print(f"Writing suffixed outputs ('_{out_suffix}'); the published "
+              "files are left untouched.")
 
     df, embeddings, calibration, benchmark, ood, adversarial = \
         load_everything()
@@ -629,17 +689,17 @@ def run():
 
     # ---- Write ------------------------------------------------------------ #
     _banner("STEP 6 - Writing results")
-    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as fh:
+    with open(out_csv, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
         w.writeheader()
         w.writerows(rows)
-    print(f"  {OUTPUT_CSV}  ({len(rows)} rows)")
+    print(f"  {out_csv}  ({len(rows)} rows)")
 
-    with open(NOVELTY_CSV, "w", newline="", encoding="utf-8") as fh:
+    with open(novelty_csv, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(novelty_rows[0].keys()))
         w.writeheader()
         w.writerows(novelty_rows)
-    print(f"  {NOVELTY_CSV}  ({len(novelty_rows)} rows)")
+    print(f"  {novelty_csv}  ({len(novelty_rows)} rows)")
 
     from src.agent.config import config_fingerprint
     payload = {
@@ -653,17 +713,30 @@ def run():
         "alphas": ALPHAS,
         "fits": fits_out,
     }
-    with open(ARTIFACT_JSON, "w", encoding="utf-8") as fh:
+    with open(artifact_json, "w", encoding="utf-8") as fh:
         json.dump(payload, fh, indent=2, sort_keys=True)
         fh.write("\n")
-    print(f"  {ARTIFACT_JSON}")
+    print(f"  {artifact_json}")
 
     _banner("DONE - measurement only; no production threshold changed")
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Conformal calibration and coverage measurement "
+                    "(measurement only).")
+    parser.add_argument("--out-suffix", default="",
+                        help="write results to suffixed filenames, e.g. "
+                             "--out-suffix corrected, leaving the published "
+                             "files untouched")
+    parser.add_argument("--force", action="store_true",
+                        help="overwrite existing output files")
+    args = parser.parse_args()
+
     try:
-        run()
+        run(out_suffix=args.out_suffix, force=args.force)
     except KeyboardInterrupt:
         print("\nInterrupted.")
         sys.exit(130)

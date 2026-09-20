@@ -309,10 +309,19 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   45-ticket benchmark while BGE loses 1.1 (noise band 4.5). Do not quote a
   conformal guarantee for a lexical model on out-of-template text.
 - **The 175-ticket calibration set cannot be de-contaminated.** Its tickets are
-  paraphrases of training rows, but memorisation is template-level: 12
-  templates, ~430 rows each, and the set touches 11 of them. Removing source
-  rows changes nothing; removing whole templates would leave 40/4000 rows. Do
+  paraphrases of training rows, but memorisation is template-level: **66
+  templates, ~62 rows each, and the set touches 62 of them. Removing source
+  rows changes nothing; removing whole templates would leave 210/4000 rows.** Do
   not "fix" this by filtering — it needs deployment-distribution data.
+  (Corrected in Phase 5A; the published figures were 12 / ~430 / 11 / 40, from
+  grouping by `scenario_id` alone. Conclusion unchanged.)
+- **A template is `(category, scenario_id)`, never `scenario_id` alone.**
+  `scenario_id` is an index *within* a category — `data/generate_dataset.py:634`
+  says so — so grouping by it alone silently merges all seven categories'
+  templates (66 → 12) and inflates rows-per-template (62 → 430). The
+  per-category clustering scripts are safe because they filter to one category
+  first; anything pooling across categories must use the compound key.
+  `tests/test_contamination_structure.py` pins this.
 - **Generated sets need a near-duplicate guard, not just a label check.** The
   first deployment calibration set had 21 near-duplicate pairs because
   tightening a scope anchor narrowed the scenario space. Duplicated
@@ -328,7 +337,9 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   `encoder dim == index.d == settings.models.embedding_dim`, and Tier-1's manifest
   still matching the dataset it was fitted on. Preserve all three —
   silent stale-artifact mismatch has bitten this project **four** times, most recently
-  in `run_ablation_study.py`, where it reached published results.
+  in `run_ablation_study.py`, where it reached published results. (That count is for
+  the *stale-artifact* form specifically; the wider bug class it belongs to now stands
+  at **six** — see "The recurring bug class".)
 - **Tier-1 is a persisted artifact, not a startup refit.** It is fitted on the
   **full** 4,000 rows — never an 80/20 split, unlike every other script in
   `src/classification/` — because that is what the goldens were captured under. The
@@ -402,10 +413,10 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## The recurring bug class
 
-Five occurrences so far, all the same shape: a value or artifact that is wrong for its
+Six occurrences so far, all the same shape: a value or artifact that is wrong for its
 context, stays internally consistent, and therefore produces wrong results with no
-error. The first four were model swaps; the fifth shows the shape is not limited to
-those.
+error. The first four were model swaps; the fifth and sixth show the shape is not
+limited to those — one was a routing/eligibility test, the other a grouping key.
 
 1. Silent stale embedding cache during the BGE swap.
 2. `test_adversarial_escalation.py` keeping its own MiniLM constants.
@@ -422,8 +433,18 @@ those.
    the status enum** — that field is true in every escalation branch. Caught only
    because the dry run's count (54/0) was checked against an independently measured
    number (33/21).
+6. `calibrate_conformal.py`'s Step 1b grouping rows by `scenario_id` alone when
+   `scenario_id` is unique only *within* a category. It merged all seven categories'
+   templates, reporting 12 templates of ~430 rows where there are 66 of ~62, and
+   40/4000 surviving rows where there are 210. It ran clean, the number was plausible,
+   and it **reached published results** (README Finding 2) — the second instance to do
+   so. Finding 2's conclusion survived, and the coverage numbers were provably
+   untouched because that measurement excludes by row **id**, not by template. Caught
+   by auditing the docs against the generator's own comment, not by any test; now
+   pinned by `tests/test_contamination_structure.py`. Corrected in Phase 5A.
 
-When touching anything model-related — or any routing/eligibility test — assume a sixth
-is waiting. Run `pytest` and the adversarial gate before believing a green result, and
-check any count you rely on against a second, independent derivation of it.
+When touching anything model-related — or any routing/eligibility test, or any grouping
+key — assume a **seventh** is waiting. Run `pytest` and the adversarial gate before
+believing a green result, and check any count you rely on against a second, independent
+derivation of it.
 

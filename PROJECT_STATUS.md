@@ -1,22 +1,21 @@
 # Project Status
 
 **Last updated:** 2026-09-20
-**Last pushed commit:** `b52d4bc` — Refresh PROJECT_STATUS.md with the Phase 4A
-commit SHA. Phase 4A **is pushed**; `git log origin/main..main` was empty at the
-start of this session.
-**Branch:** `main`. The Phase 4B commit sits on top of `b52d4bc`, committed and
+**Last pushed commit:** `6672494` — Name the cross-phase finding: the
+calibration/reference distribution is the binding constraint. Phase 4B-1
+(`8869f0c`) cleared its gate and **is pushed**.
+**Branch:** `main`. The Phase 5A commit sits on top of `6672494`, committed and
 **not pushed**, waiting on its gate review.
-**Current phase:** **Phase 4B-1 (drift detector evaluation) is complete and AT
-ITS GATE, awaiting review.** Planned and approved 2026-09-20 as an
-audit → run → verify → gate of the 4B-1 code that already existed in the working
-tree; no fresh implementation. Verdict: **measured, not shipped** — an eligible
-operating point exists (Signal A calibration-conditional binomial, α=0.05,
-W=100–200) and nothing was promoted into config.
+**Current phase:** **Phase 5A (the conformal template-grouping correction) is
+complete and AT ITS GATE, awaiting review.** It corrected a published
+diagnostic: Finding 2's template counts were computed with a grouping key that
+omitted `category`. The conclusion survived and no coverage number moved.
+Phase 4B-1's verdict stands as **measured, not shipped**.
 
-**Two doc corrections this session**, both places where this file contradicted
-git: it said `5c077dd` was unpushed (it was not) and that 4B had not started
-(4B-1 was already written in the tree, unrun and uncommitted). Trust
-`git log` / `git status` over this file when they disagree.
+**Two doc corrections were made during the 4B-1 session**, both places where
+this file contradicted git: it said `5c077dd` was unpushed (it was not) and that
+4B had not started (4B-1 was already written in the tree, unrun and
+uncommitted). Trust `git log` / `git status` over this file when they disagree.
 
 3A (Tier-1 persistence), 3B (agent boundaries + orchestrator), 3C (HTTP
 service + failure boundary) and 3D (the README write-up) are all done, gated
@@ -33,7 +32,7 @@ changes; this file describes where it currently is and changes every session.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **150 passed** (142 + 8 from 4B), 0 failed/skipped, offline, ~67s |
+| Test suite | `pytest` | **153 passed** (150 + 3 from 5A), 0 failed/skipped, offline, ~70s |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -116,8 +115,11 @@ Four findings:
    set, same α, same benchmark: TF-IDF loses 23.3 coverage points, BGE loses
    1.1, against a 4.5-point noise band.
 2. **The in-domain calibration set cannot be de-contaminated.** Memorisation is
-   template-level — 12 templates, ~430 rows each, the set touches 11. Row
-   removal changes nothing; template removal would leave 40 of 4,000 rows.
+   template-level — **66 templates, ~62 rows each, the set touches 62**. Row
+   removal changes nothing; template removal would leave **210 of 4,000 rows**.
+   (Diagnostic corrected in Phase 5A; it previously read 12 / ~430 / 11 / 40
+   because the grouping key omitted `category`. Conclusion unchanged, coverage
+   numbers unaffected.)
 3. **Conformal novelty detection matches production**: 9/9 adversarial at
    α ≥ 0.05, 100% seed-level OOD detection, with a calibrated false-escalation
    rate the hand-tuned 0.67 threshold never had.
@@ -452,7 +454,57 @@ before being documented.
 
 ---
 
-## Phase 4 — drift detection (4A DONE + PUSHED; 4B-1 AT ITS GATE)
+## Phase 5A — the conformal template-grouping correction (committed, not pushed, awaiting gate review)
+
+Planned and approved 2026-09-20 after the error was found while auditing the
+project's own docs. It **changed a published number**, which is why it was given
+its own sub-phase and gate rather than riding along inside 4B.
+
+**The bug.** `calibrate_conformal.py`'s Step 1b grouped rows by `scenario_id`
+alone, but `scenario_id` is an index *within* a category
+(`data/generate_dataset.py:634` says so in its own comment), so it merged all
+seven categories' templates. Corrected to `(category, scenario_id)`:
+
+| Quantity | Published (wrong) | Corrected |
+|---|---:|---:|
+| Scenario templates | 12 | **66** |
+| Templates touched by the 175 tickets | 11 (91.7%) | **62 (93.9%)** |
+| Median rows per template | 430 | **62** |
+| Rows surviving template-level exclusion | 40 / 4000 | **210 / 4000** |
+| Evidence removed per deleted row | ~0.2% | **~1.6%** |
+
+**Finding 2's conclusion is unchanged** — 210 of 4,000 is still destruction, not
+de-contamination — and **no coverage number moved**, because that measurement
+excludes by row **id**, never by template. Proven, not argued: re-running the
+script produced result CSVs **byte-identical** to the published ones (so they
+are not committed as duplicates; `--out-suffix` reproduces them), and the
+corrected artifact differs in exactly two keys —
+`contamination_structure` and the recorded `config_fingerprint`
+(`05f391baf27c` → `9c9a5cbcb53f`, moved by Phase 4's `settings.drift`
+additions, which cannot affect conformal). The 90 KB `fits` block is identical.
+
+**Verified by independent re-derivation before any code changed** (rule 6): 66
+four ways, 62 and 210 two ways each, and grouping by `scenario_id` alone
+reproduces the published 12/11/40/430 exactly — which is what confirmed the
+diagnosis rather than inferring it.
+
+**Two hardening changes came with it.** The script now **refuses to overwrite**
+its three outputs without `--force` and takes `--out-suffix`, so results get new
+filenames (rule 4) — this mattered more than expected, because
+`build_drift_reference.py` reads the *published* `conformal_novelty_results.csv`
+as its reference check, and an in-place overwrite would have turned that check
+into a self-comparison. And `tests/test_contamination_structure.py` pins both the
+corrected counts and the fact that a `scenario_id`-only grouping disagrees with
+them, so a revert fails the build.
+
+**Logged as the sixth instance of the recurring bug class** and the second to
+reach published results. The stale-artifact count in CLAUDE.md stays at four
+(this was a grouping key, not a stale artifact) with a pointer that the wider
+class now stands at six.
+
+---
+
+## Phase 4 — drift detection (4A DONE + PUSHED; 4B-1 DONE + PUSHED)
 
 ### Phase 4B-1 — the evaluation (committed, not pushed, awaiting gate review)
 
@@ -681,45 +733,28 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ## In progress
 
-**Nothing is mid-flight.** Phase 4B-1 is committed to `main` and **not pushed**,
-waiting on its gate review.
+**Nothing is mid-flight.** Phase 5A is committed to `main` and **not pushed**,
+waiting on its gate review. Phases 0–4 are all pushed.
 
 ---
 
 ## Immediate next step
 
-**Review the 4B-1 gate.** If it clears: push, then open **5A** with a plan in
-plan mode before any code.
+**Review the 5A gate.** If it clears: push, then open the next sub-phase of the
+publication-readiness programme (5B onward) with a plan in plan mode before any
+code.
 
-**5A — correct the conformal template-grouping diagnostic.** Found 2026-09-20
-while auditing the project docs. `calibrate_conformal.py` (Step 1b) groups
-templates by `scenario_id` alone, but `scenario_id` is unique only *within* a
-category — `data/generate_dataset.py:634` says so in its own comment. Published
-Finding 2 diagnostic: 12 templates, 11 touched (91.7%), median 430 rows,
-40/4000 surviving template-level exclusion. Correct grouping by
-`(category, scenario_id)`: **66 templates, 62 touched (93.9%), median 62 rows,
-210/4000 surviving.** Finding 2's *conclusion* survives — 210/4000 is still
-destruction rather than de-contamination, and removing one row still leaves ~61
-siblings (~1.6% of a template's evidence, not the published ~0.2%) — and the
-coverage-movement measurement is unaffected because it excludes by row id. But
-the README table, the script's Step 1b and the conformal artifact JSON all carry
-wrong numbers, and this is **the sixth instance of the recurring bug class**: a
-grouping key that is internally consistent but wrong for its context, which
-reached published results. It gets its own sub-phase and gate because it changes
-a published number.
+Carry forward into the write-up phases:
 
-Then Phases 5–9 of the publication-readiness programme. Two decisions
-deliberately left for later, each needing its own gate: turning the decision-log
-sink on anywhere (e.g. `/triage`), and any `/drift` endpoint. One item also
-remains from the original agreed sequence: **Docker/CI packaging** — cheaper now
-than when it was scoped, since the service is the deployable unit, `/health`
-reports the config fingerprint, and `requirements.txt` is fully pinned.
-
-**If drift is ever taken further, 4B-1 named the blocker:** the binding
-constraint is the reference's register, not the test. A held-out in-domain set
-(4B-2/4B-3) is required before any power number is quoted as final, and a
-deployment-traffic reference is required before any monitor could run without
-alarming continuously.
+- The **named finding** above is the paper's spine; 9A should build on it rather
+  than re-deriving it, and must keep Phase 2A as a *related* corpus limitation
+  rather than a third instance.
+- **4B-2/4B-3** remain if drift is taken further: a held-out in-domain set is
+  required before any Signal A power number is quoted as final, and a
+  deployment-traffic reference before any monitor could run.
+- Two decisions still deliberately deferred, each needing its own gate: turning
+  the decision-log sink on anywhere (e.g. `/triage`), and any `/drift` endpoint.
+- **Docker/CI packaging** is the last item from the original agreed sequence.
 
 ---
 

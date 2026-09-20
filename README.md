@@ -451,17 +451,52 @@ measurement of *why* is reproducible in the script's Step 1b:
 
 | | |
 |---|---:|
-| Scenario templates in the dataset | 12 |
-| Templates touched by the 175 calibration tickets | 11 (91.7%) |
-| Median rows per template | 430 |
-| Sibling rows left after removing one source row | 429 |
-| Rows surviving template-level exclusion | **40 / 4000** |
+| Scenario templates in the dataset | 66 |
+| Templates touched by the 175 calibration tickets | 62 (93.9%) |
+| Median rows per template | 62 |
+| Sibling rows left after removing one source row | 61 |
+| Rows surviving template-level exclusion | **210 / 4000** |
 
 Memorisation here is at *template* level, not row level. Deleting one row
-removes roughly 0.2% of its template's evidence, so the fitted model is
+removes roughly 1.6% of its template's evidence, so the fitted model is
 effectively unchanged. The stronger move — excluding every row sharing a
-template with any calibration ticket — would leave 40 rows to train on, which
+template with any calibration ticket — would leave 210 rows to train on, which
 is not a de-contamination but a destruction.
+
+> **Correction (Phase 5A, 2026-09-20).** This table previously read 12
+> templates, 11 touched (91.7%), a median of 430 rows per template and
+> **40 / 4000** rows surviving, with the prose claiming ~0.2% of a template's
+> evidence per removed row. Those numbers came from grouping rows by
+> `scenario_id` alone — but `scenario_id` is an index *within* a category
+> (`data/generate_dataset.py:634` says so in its own comment), so the
+> diagnostic merged seven categories' templates into one. Grouped correctly by
+> `(category, scenario_id)` the dataset has **66** templates of median **62**
+> rows, of which the calibration set touches **62**, leaving **210 / 4000**.
+>
+> **Finding 2's conclusion is unchanged**, and so is every coverage number in
+> this section: the de-contamination measurement excludes rows by **id**, never
+> by template, so the refit results and all 128 configurations in
+> `conformal_calibration_results.csv` are byte-for-byte unaffected — verified by
+> re-running the script and diffing (both result CSVs identical, and the
+> artifact's entire 90 KB `fits` block identical). Only this diagnostic table
+> was wrong. The corrected artifact differs from the original in exactly two
+> keys: `contamination_structure`, and the recorded `config_fingerprint`
+> (`05f391baf27c` → `9c9a5cbcb53f`), which moved because `settings.drift` and
+> its Signal B reference name were added in Phase 4 — a useful demonstration
+> that the fingerprint is deliberately conservative and fires on config edits
+> that cannot affect the measurement. The
+> corrected run is committed beside the original as
+> `conformal_calibration_corrected_bge-base-en-v1-5.json` rather than
+> overwriting it. The re-run's two result CSVs came out byte-identical to the
+> published ones and are therefore not committed as duplicates —
+> re-`--out-suffix` the script to reproduce them. And
+> `tests/test_contamination_structure.py` now pins both the corrected counts
+> and the fact that a `scenario_id`-only grouping disagrees with them.
+>
+> This is the **sixth** instance of this project's recurring bug class — a key
+> that is internally consistent, plausible, and wrong for its context — and the
+> second to reach published results. It was found while auditing the project's
+> own documentation, not by any test.
 
 So: **an in-domain calibration set built by paraphrasing training rows cannot
 be made exchangeable with a model trained on that data, at any amount of
