@@ -1,11 +1,11 @@
 # Project Status
 
 **Last updated:** 2026-09-21
-**Last commit to move code or a result:** `PENDING_SHA` — Phase 6A (conformal
+**Last commit to move code or a result:** `8f2f5e1` — Phase 6A (conformal
 deferral vs a confidence threshold). **Committed but NOT pushed — held for the
 gate review.** Phase 5C was gate-cleared and pushed on 2026-09-21 (`4793785`,
 `1200451`, `a8557df`).
-**Branch:** `main`, ahead of `origin/main`, working tree clean.
+**Branch:** `main`, two commits ahead of `origin/main` (`8f2f5e1` + this SHA refresh), working tree clean.
 **Current phase:** **Phase 6A — COMPLETE, awaiting gate review.** Verdict:
 **do not promote conformal to the live deferral gate** — and the honest form is
 "no evidence either way on the gated axis", not "conformal is worse". Nothing
