@@ -1,11 +1,11 @@
 # Project Status
 
 **Last updated:** 2026-09-21
-**Last commit to move code or a result:** `PENDING_SHA` — Phase 5C part 2 (the
+**Last commit to move code or a result:** `4793785` — Phase 5C part 2 (the
 local Qwen2.5-3B baseline, the summary harness, and the 5C write-up covering
 both arms). **Committed but NOT pushed — held for the gate review.** Phase 5B
 was gate-cleared and pushed in `bf94e63` + `be1f7c0`; 5C part 1 in `d39e197`.
-**Branch:** `main`, one commit ahead of `origin/main`.
+**Branch:** `main`, two commits ahead of `origin/main` (`4793785` + this SHA refresh), working tree clean.
 **Current phase:** **Phase 5C — COMPLETE, awaiting gate review.** Both arms are
 measured, the gate was re-run clean (pytest 246, adversarial 9/9 with its CSV
 byte-identical, goldens 45/45 and 9/9, ablation 32/45), and the write-up covers
