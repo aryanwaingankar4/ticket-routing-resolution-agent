@@ -333,12 +333,31 @@ to measure their real cost/benefit, rather than assuming they help:
 |---|---:|---:|
 | **Baseline** (both thresholds active) | 71.11% (32/45) | 9/9 correctly escalated |
 | **No cascade** (Tier-1 only, threshold=0) | 35.56% (16/45) | — |
+| **Tier-2 only** (BGE answers everything) | 73.33% (33/45) | — |
 | **No RAG gate** (pretend threshold=0) | — | 9/9 would attempt a resolution; 6/9 should have escalated |
 
-**Cascade threshold (0.50):** removing it drops classification accuracy
-by 35.6 percentage points on the 45-ticket benchmark — the cascade
-isn't a marginal tweak, it roughly doubles real-world classification
-accuracy versus running the cheap Tier-1 model alone.
+**Cascade threshold (0.50) — read this row carefully.** Baseline minus
+no-cascade is 35.6 points, and that number is real, but it is **not the
+value of cascading**. `no-cascade` is TF-IDF answering *every* ticket, so
+the comparison is BGE-versus-TF-IDF: it measures the **representation
+gap**, and it would be almost as large with no cascade logic in the
+system at all.
+
+The comparison that isolates the cascade is baseline against **Tier-2
+only**, and it goes the other way: **the cascade is one ticket *worse*
+than simply letting BGE answer everything** (32/45 vs 33/45), a
+difference an exact McNemar test cannot distinguish from zero
+(p = 1.0). What the cascade actually buys is latency, not accuracy. The
+full measurement, on this benchmark and on a second 175-ticket set, is
+in **"Phase 5B — the honest ablation"** below.
+
+> **Correction (Phase 5B, 2026-09-20).** This paragraph previously read
+> "removing it drops classification accuracy by 35.6 percentage points —
+> the cascade isn't a marginal tweak, it roughly doubles real-world
+> classification accuracy versus running the cheap Tier-1 model alone."
+> The arithmetic was right and the claim attached to it was wrong: it
+> credited the cascade with a gap produced by the embedding model. The
+> `tier2-only` row above is the control that was missing.
 
 > **Correction (re-measured under BGE).** The numbers above were
 > originally 68.89% (31/45) baseline and a 33.3-point gain. Those were
@@ -1712,6 +1731,181 @@ Results: [`drift_evaluation_null.csv`](data/drift_evaluation_null.csv),
 [`drift_evaluation_power.csv`](data/drift_evaluation_power.csv),
 [`drift_evaluation_summary.json`](data/drift_evaluation_summary.json).
 
+### Phase 5B — the honest ablation: what the cascade is actually worth
+
+**Measurement only. No production threshold, artifact, benchmark or golden
+changed.** Cascade stays 0.50, RAG 0.67, clustering 0.80;
+`settings.conformal.enabled` and `settings.drift.enabled` stay `False`.
+
+#### The question, and why the old answer was the wrong one
+
+The published ablation credited the cascade threshold with **+35.6 accuracy
+points**. That figure is `baseline (32/45)` minus `no-cascade (16/45)`, and
+`no-cascade` is **Tier-1 (TF-IDF) answering every ticket**. So it compares a
+BGE-backed system against a TF-IDF-only system and calls the difference a
+cascade effect. It is a representation-gap number wearing a cascade label —
+the control it needed, *the strong model answering everything*, had never been
+run.
+
+Phase 5B added `--mode tier2-only`, ran it on two sets, tested the difference
+as the **paired** comparison it actually is, and replaced the cascade's
+latency proxy with real warm inference timing.
+
+#### First: were the two published numbers even comparable?
+
+Before changing anything, the prerequisite check. The README quotes **33/45**
+for BGE alone and **32/45** for the cascade. If the 33/45 came from
+`train_embeddings_comparison.py`'s in-memory 80/20-split model rather than the
+production Tier-2 artifact, the one-ticket gap would not be a cascade effect
+at all and the comparison would not be like-for-like — a seventh instance of
+this project's recurring bug class. Derived four ways:
+
+| Derivation | Result |
+|---|---|
+| Production `ticket_classifier_bge-base-en-v1-5.joblib`, Tier-2 alone on the 45 | **33/45** |
+| Refit under `train_embeddings_comparison.py`'s own recipe, from its cached `embeddings_bge.npy` | **33/45** |
+| The two classifiers compared directly | agree **45/45** ticket-by-ticket; `max abs coef difference = 0.0`; identical `classes_` |
+| Cascade @0.50 recomputed, vs the published `ablation_baseline_results.csv` | **32/45**, matching **45/45** on `predicted` |
+
+**They are the same classifier, bit-identical.** Both scripts fit
+`LogisticRegression(max_iter=1000)` on
+`train_test_split(test_size=0.2, random_state=42, stratify=y)` over the same
+BGE encoding of `title + " " + description`. **No seventh bug**; the
+comparison was sound. The problem was never the numbers, it was the claim
+attached to them.
+
+#### Result 1 — the cascade costs one ticket, on both sets
+
+| Set | Cascade (0.50) | Tier-2 only | No cascade (Tier-1 only) | Difference | Exact McNemar |
+|---|---:|---:|---:|---:|---:|
+| 45-ticket benchmark | 32/45 (71.11%) | **33/45 (73.33%)** | 16/45 (35.56%) | −1 ticket (−2.22 pts) | b=0, c=1, **p = 1.000** |
+| 175-ticket deployment set | 131/175 (74.86%) | **132/175 (75.43%)** | 91/175 (52.00%) | −1 ticket (−0.57 pts) | b=1, c=2, **p = 1.000** |
+
+The cascade is **not** an accuracy improvement over the strong model alone. It
+is one ticket worse on both sets, and on both sets that difference is **well
+inside what the sample can resolve** — with 1 and 3 discordant pairs, an exact
+McNemar returns p = 1.000 either way. The honest statement is *indistinguishable
+on accuracy*, not *worse*; the −1 is noise, and so was any reading of the
++35.6.
+
+**Limitation, beside the number:** at n=45 with one discordant pair, this test
+has essentially no power — it could not detect a real effect of this size if
+one existed. That cuts both ways, and it is precisely why the paired test
+matters: the raw one-ticket gap was never evidence of anything. The
+175-ticket set adds resolution but only reaches 3 discordant pairs.
+
+**Limitation on the second set:** `deployment_calibration_tickets.json` is
+Gemini-generated deployment-register text, **not production traffic**, and the
+same 175 tickets already carry Phase 1 Finding 4's conformal calibration.
+Using them here adds another use of an already multiply-used set — the same
+selection-risk accumulation already recorded for the 45-ticket benchmark.
+
+#### Result 2 — where the cascade actually acts
+
+| Set | Tier-1 answered | Tier-1 correct there | Tier-2 would have been correct there |
+|---|---:|---:|---:|
+| 45-ticket benchmark | 4 / 45 (8.9%) | 2 | 3 |
+| 175-ticket deployment set | 33 / 175 (18.9%) | 27 | 28 |
+
+At 0.50, Tier-1 keeps between 9% and 19% of tickets — and on the benchmark it
+is **right on only half of the ones it is most confident about**. Every
+discordant ticket is, by construction, one Tier-1 kept; the comparison script
+asserts this rather than assuming it, since a discordant pair on an escalated
+ticket would mean both runs used the same Tier-2 prediction and therefore that
+one of the CSVs is stale.
+
+The single benchmark discordance is instructive: benchmark `#38`
+(`tier1_conf = 0.5481`) is a VPN-won't-connect ticket. Tier-1 answers
+**Database**; Tier-2 answers **Network**, correctly. Two of the three
+deployment-set discordances have the same shape — Tier-1 confidently answering
+**Database** on a Security ticket and on another VPN ticket. Tier-1's
+confident errors are not scattered; they collapse toward one class.
+
+#### Result 3 — latency, measured warm rather than inferred from a fit
+
+The cascade's efficiency claim previously rested on Phase 3A's **1.56 s to fit
+Tier-1 versus 0.014 s to load it**. That is a startup number and says nothing
+about per-ticket cost. Measured properly — models loaded once, 20 warmup
+iterations discarded, 200 timed single-ticket runs per tier, batch size 1:
+
+| | median | p95 | mean |
+|---|---:|---:|---:|
+| Tier-1 (TF-IDF + LogReg) | **1.04 ms** | 1.74 ms | 1.13 ms |
+| Tier-2 (BGE + LogReg) | **156.40 ms** | 227.05 ms | 152.82 ms |
+
+**Tier-2 costs 151× Tier-1 per ticket.** But the cascade does not pay Tier-1's
+price — it *always* runs Tier-1 and *then* runs Tier-2 whenever Tier-1 is
+below 0.50, so its expected cost is `tier1 + (1 − share) × tier2`:
+
+| Set | Tier-1 share | Cascade expected | Tier-2 alone | Saving |
+|---|---:|---:|---:|---:|
+| 45-ticket benchmark | 8.9% | 143.54 ms | 156.40 ms | **−12.87 ms (8.2%)** |
+| 175-ticket deployment set | 18.9% | 127.95 ms | 156.40 ms | **−28.46 ms (18.2%)** |
+
+So the cascade **does** buy something real: 8–18% of median per-ticket
+latency. It is a cost trade, not an accuracy gain.
+
+**Limitation, beside the number:** one machine, one process, batch size 1, CPU
+only (13th Gen Intel Core i5-1334U, 12 logical CPUs, Python 3.14.3, Windows
+11), no competing load controlled for. This bounds per-ticket inference cost
+on this hardware; it is not a throughput or served-latency measurement. The
+Tier-1 share is also a property of these two sets, not a deployment rate.
+
+#### What this means for the paper's framing
+
+The cascade is a **latency optimisation that costs a statistically
+undetectable amount of accuracy** — roughly 8–18% less compute per ticket for
+somewhere between −1 ticket and nothing. That is a perfectly respectable
+engineering result, and it is *not* the contribution this project has.
+
+The contribution is the **calibrated escalation gates**: the RAG similarity
+gate at 0.67 (which the ablation shows prevents 6 concrete
+confidently-wrong Gemini resolutions on the adversarial set alone), conformal
+novelty detection with a *measured* false-escalation rate the hand-tuned
+threshold never had, and the discipline of refusing to ship a detector without
+its null. Those are the results that survive contact with a control. The
+cascade should be described as what it is — a cheap-tier cost saving — and the
+paper's accuracy story should rest on the gates.
+
+This is also the fifth time a control changed the reading of a result in this
+project: the ablation's own BGE correction, the Phase 2A pre-registered rule
+that would have promoted whichever model merged more, the 2B judge whose 90.9%
+agreement concealed κ = −0.042, 4B-1's two unusable drift tests, and now this.
+**An uncontrolled comparison here has never once survived being controlled.**
+
+#### One thing fixed along the way
+
+`run_ablation_study.py` did not load through `artifacts.load_artifacts()`. It
+carried four loaders of its own, and one of them **refitted Tier-1 from
+`synthetic_tickets.csv` on every run** — a locally-derived model that would
+stay internally consistent while silently diverging from the artifact
+production serves, and the precise shape of the bug class that has now hit
+this project six times. It is now migrated, which also gives the script the
+three hard guards it never had (index/metadata alignment, encoder dim ==
+index.d == configured dim, Tier-1 manifest vs dataset).
+
+The migration was verified parity-preserving **before** it landed: persisted
+Tier-1 and the old local refit agreed to `max |Δ tier1_conf| = 0.0` across the
+45, both rounding to the published CSVs' 6 decimals with zero mismatches.
+After it landed, all three published ablation CSVs regenerate **byte-identical**.
+
+#### Gate
+
+Re-run, not quoted: `pytest` **169 passed** (153 + 16 new), adversarial
+**9/9** with `data/adversarial_escalation_results.csv` byte-identical, goldens
+**45/45 and 9/9** exact, ablation baseline **32/45 = 71.11%** and no-cascade
+**16/45** with both CSVs byte-identical, and no `.npy` anywhere after the full
+run.
+
+Scripts: `src/experiments/run_ablation_study.py` (`--mode tier2-only`,
+`--set deployment175`), `src/experiments/compare_cascade_vs_tier2.py`,
+`src/experiments/measure_inference_latency.py`. Results:
+[`ablation_tier2-only_results.csv`](data/ablation_tier2-only_results.csv),
+[`cascade_vs_tier2_mcnemar_benchmark45.csv`](data/cascade_vs_tier2_mcnemar_benchmark45.csv),
+[`cascade_vs_tier2_mcnemar_deployment175.csv`](data/cascade_vs_tier2_mcnemar_deployment175.csv),
+[`inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv`](data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv),
+plus the three `*_deployment175.csv` ablation files.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
@@ -1946,11 +2140,17 @@ above, including why the original n8n plan was superseded.
   MiniLM constants surviving the BGE swap) and is now the anchor
   constraint for the RAG similarity threshold's derivation
 - Ablation study quantifying the real measured value of both safety-net
-  thresholds: the cascade threshold contributes a 35.6-point accuracy
-  gain over Tier-1-only; the RAG gate prevents 6/9 adversarial tickets
-  from receiving a fabricated resolution instead of correctly escalating
-  (re-measured under BGE — see the correction note in "Ablation Study"
-  above for why the original 33.3-point figure was a MiniLM-era number)
+  thresholds, **including the control that was missing until Phase 5B**:
+  the cascade beats Tier-1-only by 35.6 points, but that gap is the
+  BGE-vs-TF-IDF representation difference, not the value of cascading.
+  Against Tier-2 alone the cascade is one ticket *worse* on both
+  evaluation sets and statistically indistinguishable from it (exact
+  McNemar p = 1.000 on each); what it actually buys is 8–18% of median
+  per-ticket latency. The RAG gate prevents 6/9 adversarial tickets from
+  receiving a fabricated resolution instead of correctly escalating.
+  (Re-measured under BGE — see the correction note in "Ablation Study"
+  for why the original 33.3-point figure was a MiniLM-era number — and
+  re-framed in "Phase 5B — the honest ablation".)
 - Category-specific resolution-clustering threshold check: re-ran the
   pooled calibration independently per category. Four of seven categories
   (Infrastructure, Application, Security, Access Management) match the

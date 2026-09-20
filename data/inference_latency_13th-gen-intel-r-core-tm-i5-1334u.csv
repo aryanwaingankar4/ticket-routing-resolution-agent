@@ -1,0 +1,5 @@
+measurement,eval_set,n_runs,warmup,median_ms,p95_ms,mean_ms,min_ms,max_ms,tier1_share,cascade_expected_median_ms,tier2_only_median_ms,delta_ms,cpu,logical_cpus,python,platform,batch_size
+tier1,,200,20,1.0356,1.7392,1.1274,0.7756,2.8381,,,,,13th Gen Intel(R) Core(TM) i5-1334U,12,3.14.3,Windows 11,1
+tier2,,200,20,156.4024,227.0484,152.8163,57.4533,286.601,,,,,13th Gen Intel(R) Core(TM) i5-1334U,12,3.14.3,Windows 11,1
+cascade_expected,benchmark45,,,,,,,,0.088889,143.5356,156.4024,-12.8669,13th Gen Intel(R) Core(TM) i5-1334U,12,3.14.3,Windows 11,1
+cascade_expected,deployment175,,,,,,,,0.188571,127.945,156.4024,-28.4575,13th Gen Intel(R) Core(TM) i5-1334U,12,3.14.3,Windows 11,1

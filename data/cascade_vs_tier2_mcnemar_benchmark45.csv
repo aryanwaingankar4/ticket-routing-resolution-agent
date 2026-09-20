@@ -1,0 +1,2 @@
+index,text,expected,cascade_predicted,cascade_correct,tier2only_predicted,tier2only_correct,tier1_conf,cascade_tier_used,direction
+38,"Whenever I try to open our company portal from home using the new VPN, it just spins forever and eventually says the connection failed. My home internet is working fine for everything else, so I'm not sure why it won't let me in today.",Network,Database,False,Network,True,0.548144,1,cascade_wrong_tier2_right

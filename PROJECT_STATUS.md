@@ -1,18 +1,20 @@
 # Project Status
 
 **Last updated:** 2026-09-20
-**Last pushed commit:** `483dcdb` — Record the agreed Phase 5–9
-publication-readiness programme (docs only). The last commit to move code or a
-result is `cdac8f6`, Phase 5A; `8869f0c` (Phase 4B-1) and `6672494` (the named
-finding) are also pushed.
-**Branch:** `main`, clean and level with `origin/main` — nothing unpushed.
-**Current phase:** **Between sub-phases. Phase 5A is done, gated and pushed.
-Phase 5B (the honest ablation) is next, its scope agreed and recorded** under
-"Immediate next step"; no 5B code exists and it opens in plan mode. 5A corrected
-a published diagnostic: Finding 2's template counts were computed with a
-grouping key that omitted `category`. The conclusion survived, no coverage
-number moved, and production gates never changed. Phase 4B-1's verdict stands as
-**measured, not shipped**.
+**Last pushed commit:** `33ca2b8` — Refresh PROJECT_STATUS.md header (docs
+only). **Phase 5B is committed on top of that and NOT pushed**, awaiting its
+gate review; see "In progress".
+**Branch:** `main`. Phases 0–5A are pushed; 5B is committed and held.
+**Current phase:** **Phase 5B (the honest ablation) is complete, gated, and
+committed — awaiting gate review.** It changed what a published claim *means*
+without moving any measured number: the ablation's "+35.6 points for the
+cascade" is baseline minus Tier-1-only, i.e. the BGE-vs-TF-IDF representation
+gap, not the value of cascading. Against the control that was missing
+(Tier-2-only) the cascade is **one ticket worse on both evaluation sets and
+statistically indistinguishable** (exact McNemar p = 1.000 each). What it
+actually buys is **8–18% of median per-ticket latency**. Production gates
+unchanged; all three published ablation CSVs byte-identical. Phase 5A's
+correction and Phase 4B-1's "measured, not shipped" both stand.
 
 **Two doc corrections were made during the 4B-1 session**, both places where
 this file contradicted git: it said `5c077dd` was unpushed (it was not) and that
@@ -39,13 +41,16 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **153 passed** (150 + 3 from 5A), 0 failed/skipped, offline, ~70s |
+| Test suite | `pytest` | **169 passed** (153 + 16 from 5B), 0 failed/skipped, offline, ~75s |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
 | Escalation regression gate | `python src/experiments/test_adversarial_escalation.py` | **9/9 PASS** |
 | Golden parity | `pytest tests/test_pipeline_parity.py` | 45/45 and 9/9 exact |
 | Ablation baseline (45-ticket) | `run_ablation_study.py --mode baseline` | **71.11%** (32/45) |
+| Ablation tier2-only (45-ticket) | `run_ablation_study.py --mode tier2-only` | **73.33%** (33/45) — the cascade is −1 ticket |
+| Cascade vs Tier-2 (both sets) | `compare_cascade_vs_tier2.py [--set deployment175]` | exact McNemar **p = 1.000** on each |
+| Warm inference latency | `measure_inference_latency.py` | Tier-1 **1.04 ms** vs Tier-2 **156.40 ms** median (151×) |
 | Phase 2A pilot | `score_flag_validation_set.py --pilot` | **0/12 false merges**, STOP verdict |
 | Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
 
@@ -108,7 +113,11 @@ against goldens captured *before* any code moved (45/45 and 9/9 exact).
 - 44 tests where `tests/` had been empty
 - **Fixed** `process_ticket_batch.py` encoding with MiniLM against a BGE index
 - **Corrected a published result**: the ablation study had been measuring the
-  entire pre-BGE pipeline. 68.89% → 71.11%; cascade gain 33.3 → 35.6 points
+  entire pre-BGE pipeline. 68.89% → 71.11%; the baseline-minus-Tier-1-only gap
+  33.3 → 35.6 points. **That gap is not "the cascade gain"** — it is the
+  BGE-vs-TF-IDF representation gap, because the no-cascade arm is TF-IDF
+  answering everything. Relabelled in Phase 5B, which added the missing
+  Tier-2-only control; the arithmetic is unchanged.
 
 ### Phase 1 — conformal prediction (`148ad8b`, `bcb21c8`)
 
@@ -511,9 +520,104 @@ class now stands at six.
 
 ---
 
+## Phase 5B — the honest ablation (committed, NOT pushed, awaiting gate)
+
+Planned and approved 2026-09-20. **Measurement only**: no production threshold,
+artifact, benchmark or golden changed, and all three published ablation CSVs
+regenerate byte-identical.
+
+### The prerequisite check, run and reported before any code changed
+
+Were the published **33/45** (BGE alone) and **32/45** (cascade) even the same
+classifier, or was 33/45 an in-memory 80/20-split model from
+`train_embeddings_comparison.py`? **The same classifier, bit-identical** —
+derived four ways: the production joblib scores 33/45; a refit under the
+comparison script's own recipe from its cached `embeddings_bge.npy` also scores
+33/45; the two agree 45/45 ticket-by-ticket with `max abs coef difference =
+0.0` and identical `classes_`; and a recomputed cascade @0.50 matches the
+published `ablation_baseline_results.csv` 45/45 on `predicted`. **No seventh
+bug.** The comparison was sound; the *claim attached to it* was not.
+
+### What was actually wrong
+
+"The cascade is worth +35.6 points" is `baseline (32/45)` minus `no-cascade
+(16/45)`, and no-cascade is **TF-IDF answering every ticket**. It measures the
+BGE-vs-TF-IDF representation gap. The control that isolates cascading — the
+strong model answering everything — had never been run.
+
+### Result
+
+| Set | Cascade | Tier-2 only | No cascade | Δ | Exact McNemar |
+|---|---:|---:|---:|---:|---:|
+| 45-ticket benchmark | 32/45 (71.11%) | **33/45 (73.33%)** | 16/45 (35.56%) | −1 | b=0, c=1, **p = 1.000** |
+| 175-ticket deployment | 131/175 (74.86%) | **132/175 (75.43%)** | 91/175 (52.00%) | −1 | b=1, c=2, **p = 1.000** |
+
+One ticket worse on both sets, and **indistinguishable from zero** on both. The
+honest reading is *no detectable accuracy difference*, not *worse*.
+
+Where it acts: Tier-1 keeps **4/45 (8.9%)** of benchmark tickets and gets **2 of
+those 4** right (Tier-2 would have got 3); on the deployment set it keeps
+**33/175 (18.9%)** and gets 27 right against Tier-2's 28. Tier-1's confident
+errors are not scattered — three of the four discordant tickets across both sets
+are Tier-1 answering **Database** on a Network or Security ticket.
+
+Latency, measured warm (200 timed single-ticket runs per tier, batch size 1,
+after 20 discarded warmups): **Tier-1 1.04 ms median / 1.74 ms p95** against
+**Tier-2 156.40 ms / 227.05 ms** — Tier-2 costs **151×**. The cascade always
+runs Tier-1 *and then* Tier-2 when unconfident, so its expected cost is
+`tier1 + (1 − share) × tier2`: **143.54 ms vs 156.40 ms (−8.2%)** on the
+benchmark, **127.95 ms vs 156.40 ms (−18.2%)** on the deployment set.
+
+**So the cascade is a latency optimisation costing a statistically undetectable
+amount of accuracy — 8–18% less compute per ticket.** That is a real engineering
+result and it is not this project's contribution. The contribution is the
+**calibrated escalation gates**, and the paper's accuracy story should rest on
+them. This is the fifth time a control changed the reading of a result here (the
+ablation's own BGE correction, 2A's pre-registered rule, 2B's judge, 4B-1's two
+unusable tests, now this) — **no uncontrolled comparison in this project has
+survived being controlled.**
+
+### Limitations, written beside the numbers
+
+- At n=45 with **one** discordant pair the McNemar has essentially no power: it
+  could not detect an effect of this size if one existed. That cuts both ways,
+  and is exactly why the raw one-ticket gap was never evidence. The 175 set adds
+  resolution but reaches only 3 discordant pairs.
+- The 175-ticket set is **Gemini-generated deployment-register text, not
+  production traffic**, and those same tickets already carry Phase 1 Finding 4's
+  conformal calibration — another use of an already multiply-used set.
+- Latency is one machine, one process, batch size 1, CPU only (13th Gen Intel
+  Core i5-1334U, 12 logical CPUs, Python 3.14.3, Windows 11), no competing load
+  controlled. It bounds per-ticket inference cost on this hardware; it is not
+  throughput or served latency. The Tier-1 share is a property of these two
+  sets, not a deployment rate.
+
+### One latent bug closed
+
+`run_ablation_study.py` was the **last holdout from rule 7**: four loaders of
+its own, one of which **refitted Tier-1 from `synthetic_tickets.csv` on every
+run**. Migrated to `artifacts.load_artifacts()`, which also gives it the three
+hard guards it never had. Verified parity-preserving *before* landing
+(`max |Δ tier1_conf| = 0.0` across the 45, both rounding identically at 6
+decimals) and byte-identical *after*.
+
+### Gate — re-run, not quoted
+
+`pytest` **169 passed** (153 + 16 new); adversarial **9/9** with
+`data/adversarial_escalation_results.csv` byte-identical; goldens **45/45 and
+9/9** exact; ablation baseline **32/45 = 71.11%** and no-cascade **16/45**, both
+CSVs byte-identical; no `.npy`, `.jsonl` or `logs/` anywhere afterwards.
+
+New files: `src/experiments/compare_cascade_vs_tier2.py`,
+`src/experiments/measure_inference_latency.py`, `tests/test_ablation_modes.py`,
+and seven new result CSVs (three `*_deployment175`, `ablation_tier2-only_*`, two
+`cascade_vs_tier2_mcnemar_*`, one `inference_latency_*`).
+
+---
+
 ## Phase 4 — drift detection (4A DONE + PUSHED; 4B-1 DONE + PUSHED)
 
-### Phase 4B-1 — the evaluation (committed, not pushed, awaiting gate review)
+### Phase 4B-1 — the evaluation (gated and pushed in `8869f0c`)
 
 Planned and approved 2026-09-20 as **audit → run → verify → gate** of the 4B-1
 code that already existed uncommitted in the tree. No fresh implementation.
@@ -740,8 +844,8 @@ false-alarm measurement, and Signal A already has one), and Docker/CI.
 
 ## In progress
 
-**Nothing is mid-flight.** Phase 5A is committed to `main` and **not pushed**,
-waiting on its gate review. Phases 0–4 are all pushed.
+**Nothing is mid-flight.** Phase 5B is committed to `main` and **not pushed**,
+waiting on its gate review. Phases 0–5A are all pushed.
 
 ---
 
@@ -756,17 +860,14 @@ Everything in Phases 5–9 is **measurement only**.
 | Sub-phase | Scope | State |
 |---|---|---|
 | **5A** | Conformal template-grouping correction | **DONE** (`cdac8f6`) |
-| **5B** | **Honest ablation** | **NEXT** |
-| **5C** | Zero-shot LLM classification baselines | not started |
+| **5B** | Honest ablation | **DONE** — committed, awaiting gate |
+| **5C** | **Zero-shot LLM classification baselines** | **NEXT** |
 
-**5B — honest ablation.** Add `--mode tier2-only` to the ablation study, compare
-cascade against Tier-2-only with an **exact McNemar test**, and measure **warm
-Tier-1 vs Tier-2 latency** (warm, so the BGE load is not counted as per-ticket
-cost). **First task, before any of that: check whether the published 33/45 (BGE
-alone) and 32/45 (cascade) came from the same classifier.** If they did not, the
-one-ticket difference between those two numbers is not a cascade effect and the
-comparison currently in the README is not like-for-like — which would be the
-seventh instance of the recurring bug class, so derive the answer twice.
+**5B — honest ablation. DONE** (see "Phase 5B" above). The like-for-like check
+cleared — 33/45 and 32/45 came from the same bit-identical classifier, so there
+was no seventh bug — and the finding is that the cascade is a **latency
+optimisation**, not an accuracy gain: −1 ticket on both sets at exact McNemar
+p = 1.000, buying 8–18% of median per-ticket latency.
 
 **5C — zero-shot LLM baselines.** Gemini plus one free non-Gemini model run
 locally through Ollama, so the comparison is not single-vendor. **~60 Gemini
@@ -856,28 +957,23 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 5B — the honest ablation.** Open it in plan mode before any code.
+**Review the Phase 5B gate** (committed, unpushed). Then **Phase 5C — zero-shot
+LLM classification baselines.** Open it in plan mode before any code.
 
-Its scope, as agreed:
+5C's scope, as agreed:
 
-1. **First, the like-for-like check:** did the published **33/45** (BGE alone)
-   and **32/45** (cascade) come from the same classifier? If not, that
-   one-ticket gap is not a cascade effect and the README's comparison is not
-   like-for-like. Derive the answer two independent ways — this is exactly the
-   shape of the six bugs already on the record.
-2. **`--mode tier2-only`** added to `run_ablation_study.py`, so the cascade is
-   measured against the strong model alone and not only against Tier-1-only.
-3. **An exact McNemar test**, cascade vs Tier-2-only, on the 45-ticket
-   benchmark — a one- or two-ticket difference at n=45 needs a paired test
-   before it is called a difference at all.
-4. **Warm Tier-1 vs Tier-2 latency**, measured warm so BGE's ~60s load is not
-   charged to per-ticket cost — the honest version of the cascade's efficiency
-   claim, which currently rests on a 1.56s-vs-0.014s fit/load comparison that
-   says nothing about inference.
+1. **Gemini zero-shot classification** on the 45-ticket benchmark, so the
+   trained classifiers have an LLM baseline to be compared against rather than
+   only each other. **~60 Gemini calls.**
+2. **One free non-Gemini model run locally through Ollama**, so the comparison
+   is not single-vendor.
+3. Dry-run first (`--limit 3`), `call_delay_sec >= 4.5`, and **cache every raw
+   response to disk** so a re-score never re-spends quota.
+4. **Never on the same day as 6C**, the other quota-spending sub-phase.
 
-Offline, no Gemini quota. It may move a published number, so the plan must say
-which and the gate must show the goldens, adversarial 9/9 and ablation baseline
-unchanged.
+5B's result sharpens what 5C is for: with the cascade reduced to a latency
+optimisation, the accuracy claim now rests on Tier-2 alone, and a zero-shot LLM
+baseline is the obvious thing a reviewer will ask it to beat.
 
 ---
 
@@ -919,11 +1015,15 @@ unchanged.
   the resolution-clustering calibration behind the production 0.80 threshold.
   Regenerating them under BGE requires re-deriving that threshold in the same
   change. Never a side effect.
-- **The recurring stale-artifact bug class has surfaced five times**, once
-  reaching published results and standing for eleven days. Anything touching a
-  model, index, or threshold should be assumed to have a sixth instance
-  waiting. Run `pytest` and the adversarial gate before believing a green
-  result.
+- **The recurring bug class has surfaced six times** (four of them
+  stale-artifact specifically), twice reaching published results — once
+  standing for eleven days. Anything touching a model, index, threshold,
+  routing/eligibility test or grouping key should be assumed to have a
+  **seventh** instance waiting. Run `pytest` and the adversarial gate before
+  believing a green result, and check every count against a second,
+  independent derivation. Phase 5B closed one latent instance:
+  `run_ablation_study.py` was still refitting Tier-1 locally instead of
+  loading the persisted artifact.
 - **Tier-1 is now a persisted artifact, which is new surface for that class.**
   A clean clone must run `python src/classification/train_tier1.py`, and the
   artifact must be rebuilt whenever `synthetic_tickets.csv` changes. The

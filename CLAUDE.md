@@ -102,10 +102,24 @@ python tests/capture_goldens.py
 ### Experiments
 
 ```powershell
-# Ablation — quantifies what each safety net is actually worth
+# Ablation — quantifies what each safety net is actually worth.
+# --mode no-cascade is Tier-1 answering everything, so baseline minus
+# no-cascade measures the BGE-vs-TF-IDF REPRESENTATION gap, NOT the value of
+# cascading. --mode tier2-only is the control that isolates the cascade.
+# --set defaults to benchmark45 and keeps the historical CSV names; any other
+# set writes ablation_{mode}_results_{set}.csv, so nothing published moves.
 python src/experiments/run_ablation_study.py --mode baseline
 python src/experiments/run_ablation_study.py --mode no-cascade
-python src/experiments/run_ablation_study.py --mode no-rag
+python src/experiments/run_ablation_study.py --mode tier2-only
+python src/experiments/run_ablation_study.py --mode no-rag          # no --set
+python src/experiments/run_ablation_study.py --mode baseline   --set deployment175
+python src/experiments/run_ablation_study.py --mode tier2-only --set deployment175
+
+# Phase 5B — the paired test and the latency measurement (offline, no quota).
+# Both refuse to overwrite their outputs without --force.
+python src/experiments/compare_cascade_vs_tier2.py                  # exact McNemar
+python src/experiments/compare_cascade_vs_tier2.py --set deployment175
+python src/experiments/measure_inference_latency.py                 # warm, batch size 1
 
 # RAG similarity threshold calibration (measurement only; does not edit production)
 python src\classification\generate_ood_calibration_set.py     # ~3.5 min, ~45 Gemini calls
@@ -329,6 +343,14 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   calibration points skew the conformal quantile. Scope anchors buy label
   accuracy at the cost of diversity -- all three Gemini generators in this
   project use that pattern, so check diversity whenever you tighten one.
+- **The cascade is a latency optimisation, not an accuracy gain.** Measured in
+  Phase 5B against the control that was missing: cascade 32/45 vs Tier-2-only
+  33/45 on the benchmark and 131/175 vs 132/175 on the deployment set — one
+  ticket worse on each, exact McNemar p = 1.000 both times. It saves 8–18% of
+  median per-ticket latency (Tier-2 costs 151× Tier-1: 156.40 ms vs 1.04 ms
+  warm, batch size 1). **Never quote the +35.6 points as the value of
+  cascading** — that is baseline minus Tier-1-only, i.e. the BGE-vs-TF-IDF
+  representation gap.
 - **In-distribution accuracy is uninformative here.** Template-generated data makes
   every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.
@@ -352,6 +374,12 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   `artifacts.load_tier1()` for consumers that need Tier-1 alone). Constructing a
   `SentenceTransformer`, reading the index directly, or refitting Tier-1 locally is how
   the three divergent loaders drifted apart in the first place.
+  `run_ablation_study.py` was the last holdout — it carried four loaders of its
+  own and refitted Tier-1 from the CSV on every run — and was migrated in Phase
+  5B, verified parity-preserving first (`max |Δ tier1_conf| = 0.0`, all three
+  published CSVs byte-identical after). The deliberate exceptions remain
+  `calibrate_conformal.py` and `plot_calibration_curves.py`, which fit on
+  leave-out subsets and must not use the production artifact.
 - **Never overwrite a previous model's results file.** BGE re-runs write to
   `*_bge-base-en-v1-5.*` alongside the original MiniLM outputs, so the comparison stays
   auditable.

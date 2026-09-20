@@ -13,14 +13,32 @@ individually and measuring the downstream effect:
      value comes from src/agent/config.py.
 
 Modes (--mode):
-  baseline     -- Real thresholds. 45-ticket classification accuracy AND the
-                  9-ticket adversarial real-escalation decision.
+  baseline     -- Real thresholds. Classification accuracy AND (on
+                  benchmark45 only) the 9-ticket adversarial real-escalation
+                  decision.
   no-cascade   -- run_cascade(threshold=0.0) => Tier-1 raw preds for every
-                  ticket, evaluated on the 45-ticket benchmark.
+                  ticket.
+  tier2-only   -- run_cascade(threshold=TIER2_ONLY_THRESHOLD) => every ticket
+                  is answered by the production Tier-2 (BGE) classifier and
+                  Tier-1 never decides anything. Added in Phase 5B.
   no-rag       -- Real retrieval on the 9-ticket adversarial set, but the
                   escalation gate is pretend-threshold 0.0 => a Gemini call
                   WOULD be attempted whenever retrieval returns anything.
                   Gemini is NEVER actually called.
+
+Evaluation sets (--set):
+  benchmark45    -- data/novel_tickets_expanded.json (45 tickets, READ-ONLY).
+                    The historical default; keeps the historical CSV names so
+                    the published results stay byte-identical.
+  deployment175  -- data/deployment_calibration_tickets.json (175 tickets,
+                    25 per category). Writes *_deployment175.csv, so nothing
+                    published is ever overwritten.
+
+WHY tier2-only exists (Phase 5B). The published "the cascade is worth +35.6
+points" is baseline minus no-cascade, and no-cascade is TF-IDF answering every
+ticket -- so it measures the BGE-vs-TF-IDF representation gap, not the value
+of CASCADING. Cascade vs Tier-2-alone is the comparison that isolates the
+cascade, and it had never been run.
 
 This script performs pure inference on fixed ticket sets. It never calls
 Gemini (call_gemini / build_llm_prompt are never imported or invoked).
@@ -58,7 +76,9 @@ MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 
 EXPANDED_JSON_PATH = os.path.join(DATA_DIR, "novel_tickets_expanded.json")
 ADVERSARIAL_JSON_PATH = os.path.join(DATA_DIR, "adversarial_escalation_tickets.json")
-SYNTHETIC_CSV_PATH = os.path.join(DATA_DIR, "synthetic_tickets.csv")
+DEPLOYMENT175_JSON_PATH = os.path.join(
+    DATA_DIR, "deployment_calibration_tickets.json"
+)
 # MIGRATED TO BGE (was MiniLM).
 #
 # This script previously pointed at ticket_index.faiss, ticket_metadata.json,
@@ -88,7 +108,24 @@ EMBED_MODEL_NAME = _settings.models.embedding_model
 # suggest_resolution.SIMILARITY_THRESHOLD via _import_project_functions().
 SIMILARITY_THRESHOLD_DISPLAY = _settings.rag.similarity_threshold
 
-VALID_MODES = ("baseline", "no-cascade", "no-rag")
+VALID_MODES = ("baseline", "no-cascade", "no-rag", "tier2-only")
+
+# Evaluation sets. benchmark45 is the historical default and keeps the
+# historical output filenames.
+DEFAULT_EVAL_SET = "benchmark45"
+VALID_SETS = (DEFAULT_EVAL_SET, "deployment175")
+EVAL_SET_SIZES = {DEFAULT_EVAL_SET: 45, "deployment175": 175}
+
+# tier2-only is expressed as a cascade threshold that NO Tier-1 confidence can
+# reach, so every ticket escalates to Tier-2 and the rest of the path is
+# byte-for-byte the baseline path -- structurally identical, not a copy.
+#
+# A sentinel constant is exactly the shape of this project's recurring bug
+# class (a value that is wrong for its context but internally consistent), so
+# run_tier2_only() ASSERTS that all N tickets were actually answered by Tier-2
+# rather than trusting the arithmetic. Tier-1 confidence is a max over a
+# predict_proba row and is therefore <= 1.0 by construction.
+TIER2_ONLY_THRESHOLD = 2.0
 
 
 # --------------------------------------------------------------------------
@@ -180,27 +217,19 @@ def _import_project_functions():
 # --------------------------------------------------------------------------
 # Third-party heavy imports (isolated so failures are actionable)
 # --------------------------------------------------------------------------
-def _import_third_party():
+def _import_artifacts():
+    """Import THE loader (src/agent/artifacts.py).
+
+    Isolated so an import failure is actionable rather than a traceback.
+    """
     try:
-        import joblib
-    except Exception as exc:
-        _fatal("Failed to import joblib. Is the venv activated? " + repr(exc))
-    try:
-        import faiss
-    except Exception as exc:
-        _fatal("Failed to import faiss. Is the venv activated? " + repr(exc))
-    try:
-        import pandas as pd
-    except Exception as exc:
-        _fatal("Failed to import pandas. Is the venv activated? " + repr(exc))
-    try:
-        from sentence_transformers import SentenceTransformer
+        from src.agent import artifacts as artifacts_mod
     except Exception as exc:
         _fatal(
-            "Failed to import sentence_transformers. Is the venv activated? "
-            + repr(exc)
+            "Failed to import src/agent/artifacts.py. Is the venv activated "
+            "and are you running from the project root? " + repr(exc)
         )
-    return joblib, faiss, pd, SentenceTransformer
+    return artifacts_mod
 
 
 # --------------------------------------------------------------------------
@@ -216,81 +245,100 @@ def _require_file(path, description):
         )
 
 
-def load_tier1(funcs, pd):
-    """Train Tier-1 fresh from data/synthetic_tickets.csv (project convention)."""
-    _require_file(SYNTHETIC_CSV_PATH, "Tier-1 training data (synthetic_tickets.csv)")
+def load_all(artifacts_mod):
+    """Load every production artifact through THE loader.
+
+    This script used to carry four loaders of its own, and one of them
+    REFITTED Tier-1 from synthetic_tickets.csv on every run. That is the exact
+    shape of this project's recurring bug class: a locally-derived model that
+    stays internally consistent while silently diverging from the artifact
+    production actually serves. load_artifacts() additionally applies the
+    three hard guards the local loaders never had -- index/metadata alignment,
+    encoder dim == index.d == configured dim, and the Tier-1 manifest against
+    the dataset it was fitted on.
+
+    The migration was verified parity-preserving BEFORE it landed (Phase 5B):
+    the persisted Tier-1 and the old local refit agreed to
+    max |delta tier1_conf| = 0.0 across the 45-ticket benchmark, and both
+    round to the published CSVs' 6 decimals with zero mismatches.
+    """
     try:
-        df = pd.read_csv(SYNTHETIC_CSV_PATH)
-    except Exception as exc:
-        _fatal("Failed to read synthetic_tickets.csv: " + repr(exc))
-
-    for col in ("title", "description", "category"):
-        if col not in df.columns:
-            _fatal(
-                "synthetic_tickets.csv is missing required column '{c}'. "
-                "Expected columns: title, description, category.".format(c=col)
-            )
-
-    tier1_texts = (
-        df["title"].fillna("").astype(str)
-        + " "
-        + df["description"].fillna("").astype(str)
-    ).tolist()
-    tier1_labels = df["category"].astype(str).tolist()
-
-    if not tier1_texts:
-        _fatal("synthetic_tickets.csv contained no rows to train Tier-1.")
-
-    tier1_vectorizer, tier1_classifier = funcs["train_tier1"](tier1_texts, tier1_labels)
-    return tier1_vectorizer, tier1_classifier
-
-
-def load_tier2(joblib):
-    _require_file(TIER2_MODEL_PATH, "Tier-2 classifier (ticket_classifier.joblib)")
-    try:
-        return joblib.load(TIER2_MODEL_PATH)
-    except Exception as exc:
-        _fatal("Failed to load Tier-2 classifier joblib: " + repr(exc))
-
-
-def load_embedder(SentenceTransformer):
-    try:
-        return SentenceTransformer(EMBED_MODEL_NAME)
+        return artifacts_mod.load_artifacts(require_gemini=False)
     except Exception as exc:
         _fatal(
-            "Failed to load SentenceTransformer('{m}'): {e}".format(
-                m=EMBED_MODEL_NAME, e=repr(exc)
-            )
+            "Failed to load production artifacts via "
+            "src/agent/artifacts.load_artifacts():\n  {e}\n\n"
+            "Build them first, from the project root:\n"
+            "  python data/generate_dataset.py\n"
+            "  python src/classification/train_tier1.py\n"
+            "  python src/classification/train_embeddings.py\n"
+            "  python src/rag/build_vector_index.py".format(e=repr(exc))
         )
 
 
-def load_faiss_and_metadata(faiss):
-    _require_file(FAISS_INDEX_PATH, "FAISS index (ticket_index.faiss)")
-    _require_file(METADATA_JSON_PATH, "ticket metadata (ticket_metadata.json)")
+def load_deployment175_set():
+    """Load the 175-ticket deployment-distribution evaluation set.
 
+    Validated the same way load_expanded_set() validates the 45-ticket
+    benchmark: exact record count, non-empty text/expected on EVERY record,
+    nothing silently dropped.
+
+    NOTE for anyone reading a result off this set: these tickets are
+    Gemini-generated deployment-register text, NOT production traffic, and the
+    same 175 tickets already carry Phase 1 Finding 4's conformal calibration.
+    Using them for accuracy adds another use of an already multiply-used set.
+    """
+    _require_file(
+        DEPLOYMENT175_JSON_PATH,
+        "deployment evaluation set (deployment_calibration_tickets.json)",
+    )
     try:
-        index = faiss.read_index(FAISS_INDEX_PATH)
+        with open(DEPLOYMENT175_JSON_PATH, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
     except Exception as exc:
-        _fatal("Failed to read FAISS index: " + repr(exc))
+        _fatal("Failed to read deployment_calibration_tickets.json: " + repr(exc))
 
-    try:
-        with open(METADATA_JSON_PATH, "r", encoding="utf-8") as fh:
-            metadata = json.load(fh)
-    except Exception as exc:
-        _fatal("Failed to read ticket_metadata.json: " + repr(exc))
+    if not isinstance(data, list):
+        _fatal("deployment_calibration_tickets.json must be a JSON list.")
 
-    if not isinstance(metadata, list):
-        _fatal("ticket_metadata.json must be a JSON list.")
-
-    if index.ntotal != len(metadata):
+    expected_n = EVAL_SET_SIZES["deployment175"]
+    if len(data) != expected_n:
         _fatal(
-            "FAISS/metadata mismatch: index.ntotal={n} but len(metadata)={m}. "
-            "Rebuild the index and metadata together.".format(
-                n=index.ntotal, m=len(metadata)
-            )
+            "deployment_calibration_tickets.json must contain EXACTLY {n} "
+            "records; found {f}.".format(n=expected_n, f=len(data))
         )
 
-    return index, metadata
+    bad = []
+    for i, rec in enumerate(data):
+        if not isinstance(rec, dict):
+            bad.append((i, "record is not an object"))
+            continue
+        for k in ("text", "expected"):
+            if k not in rec:
+                bad.append((i, "missing key '{k}'".format(k=k)))
+            elif not isinstance(rec[k], str) or not rec[k].strip():
+                bad.append((i, "'{k}' is empty or not a string".format(k=k)))
+
+    if bad:
+        lines = "\n".join(
+            "  record #{i}: {why}".format(i=i, why=why) for i, why in bad[:10]
+        )
+        _fatal(
+            "deployment_calibration_tickets.json has {n} malformed record(s) "
+            "(every record needs non-empty 'text' and 'expected'):\n"
+            "{lines}".format(n=len(bad), lines=lines)
+        )
+
+    return list(data)
+
+
+def load_eval_set(funcs, eval_set):
+    """Dispatch to the right evaluation set, validated by its own loader."""
+    if eval_set == DEFAULT_EVAL_SET:
+        return funcs["load_expanded_set"](EXPANDED_JSON_PATH)
+    if eval_set == "deployment175":
+        return load_deployment175_set()
+    _fatal("Unknown evaluation set: " + repr(eval_set))
 
 
 # --------------------------------------------------------------------------
@@ -349,8 +397,28 @@ def load_adversarial_set():
 # --------------------------------------------------------------------------
 # CSV writer
 # --------------------------------------------------------------------------
-def write_csv(mode, fieldnames, rows):
-    out_path = os.path.join(DATA_DIR, "ablation_{mode}_results.csv".format(mode=mode))
+# Column set for the classification-only CSVs (no-cascade, tier2-only, and
+# baseline on any set other than benchmark45).
+CLS_FIELDNAMES = [
+    "index",
+    "text",
+    "expected",
+    "predicted",
+    "tier1_conf",
+    "tier_used",
+    "correct",
+]
+
+
+def write_csv(mode, fieldnames, rows, eval_set=DEFAULT_EVAL_SET):
+    # benchmark45 keeps the historical filename, so the three already-published
+    # CSVs stay byte-identical. Every other set gets its own suffixed name --
+    # project rule 4: a new result gets a NEW filename, never an overwrite.
+    suffix = "" if eval_set == DEFAULT_EVAL_SET else "_" + eval_set
+    out_path = os.path.join(
+        DATA_DIR,
+        "ablation_{mode}_results{sfx}.csv".format(mode=mode, sfx=suffix),
+    )
     try:
         os.makedirs(DATA_DIR, exist_ok=True)
         with open(out_path, "w", newline="", encoding="utf-8") as fh:
@@ -367,15 +435,22 @@ def write_csv(mode, fieldnames, rows):
 # Classification evaluation (45-ticket benchmark) via run_cascade
 # --------------------------------------------------------------------------
 def evaluate_classification(funcs, threshold, mode_label,
-                            tier1_vec, tier1_clf, tier2_clf, embedder):
+                            tier1_vec, tier1_clf, tier2_clf, embedder,
+                            eval_set=DEFAULT_EVAL_SET):
     """
-    Runs run_cascade on the 45-ticket expanded benchmark at the given
-    threshold and returns (rows, accuracy, n_correct, n_total, n_tier2).
+    Runs run_cascade over the chosen evaluation set at the given threshold and
+    returns (rows, accuracy, n_correct, n_total, n_tier2).
 
-    threshold=0.50 -> baseline behaviour (real cascade).
-    threshold=0.0  -> no-cascade (escalate_idx always empty => Tier-1 raw).
+    threshold=0.50                  -> baseline behaviour (real cascade).
+    threshold=0.0                   -> no-cascade (escalate_idx always empty
+                                       => Tier-1 raw for every ticket).
+    threshold=TIER2_ONLY_THRESHOLD  -> tier2-only (escalate_idx is every index
+                                       => Tier-2 answers every ticket).
+
+    Only the threshold and the record source change between modes; the routing
+    path itself is the same tested run_cascade call in all three.
     """
-    records = funcs["load_expanded_set"](EXPANDED_JSON_PATH)
+    records = load_eval_set(funcs, eval_set)
 
     texts = [r["text"] for r in records]
     expected = [r["expected"] for r in records]
@@ -512,19 +587,19 @@ def evaluate_rag_escalation(funcs, faiss, adversarial, model, index, metadata,
 # --------------------------------------------------------------------------
 # Mode runners
 # --------------------------------------------------------------------------
-def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
-    _banner("MODE: baseline  (cascade={c}, rag={r})".format(
-        c=CASCADE_CONFIDENCE_THRESHOLD, r=funcs["SIMILARITY_THRESHOLD"]))
+def run_baseline(funcs, art, eval_set=DEFAULT_EVAL_SET):
+    _banner("MODE: baseline  (cascade={c}, rag={r}, set={s})".format(
+        c=CASCADE_CONFIDENCE_THRESHOLD, r=funcs["SIMILARITY_THRESHOLD"],
+        s=eval_set))
 
     print("Loading resources...")
-    tier1_vec, tier1_clf = load_tier1(funcs, pd)
-    tier2_clf = load_tier2(joblib)
-    embedder = load_embedder(SentenceTransformer)
-    index, metadata = load_faiss_and_metadata(faiss)
-    adversarial = load_adversarial_set()
+    tier1_vec, tier1_clf = art.tier1_vectorizer, art.tier1_classifier
+    tier2_clf = art.tier2_classifier
+    embedder = art.embedder
 
-    # --- classification on the 45-ticket benchmark (real cascade @ 0.50) ---
-    print("Evaluating 45-ticket classification (cascade threshold=0.50)...")
+    # --- classification on the chosen set (real cascade @ 0.50) ---
+    print("Evaluating {s} classification (cascade threshold={c})...".format(
+        s=eval_set, c=CASCADE_CONFIDENCE_THRESHOLD))
     cls_rows, accuracy, n_correct, n_total, n_tier2 = evaluate_classification(
         funcs,
         CASCADE_CONFIDENCE_THRESHOLD,
@@ -533,7 +608,41 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
         tier1_clf,
         tier2_clf,
         embedder,
+        eval_set=eval_set,
     )
+
+    # The adversarial escalation section is defined on the FIXED 9-ticket set
+    # and measures the RAG gate, not classification. It has no meaning for a
+    # different classification set, so it is skipped rather than faked.
+    if eval_set != DEFAULT_EVAL_SET:
+        out_path = write_csv("baseline", CLS_FIELDNAMES, cls_rows,
+                             eval_set=eval_set)
+        _banner("baseline RESULTS ({s})".format(s=eval_set))
+        print(
+            "Classification ({s}): {c}/{t} correct  =>  accuracy {a:.2%}  "
+            "(answered by Tier-2: {e})".format(
+                s=eval_set, c=n_correct, t=n_total, a=accuracy, e=n_tier2
+            )
+        )
+        print(
+            "Adversarial escalation section skipped: it is defined on the "
+            "fixed 9-ticket set only."
+        )
+        print("CSV written: " + out_path)
+        return {
+            "mode": "baseline",
+            "eval_set": eval_set,
+            "accuracy": accuracy,
+            "n_correct": n_correct,
+            "n_total": n_total,
+            "n_tier2": n_tier2,
+            "rag_summary": None,
+            "csv": out_path,
+        }
+
+    index, metadata = art.index, art.metadata
+    faiss = art.faiss
+    adversarial = load_adversarial_set()
 
     # --- real escalation on the 9-ticket adversarial set ---
     print("Evaluating 9-ticket adversarial escalation (rag threshold={r})..."
@@ -596,7 +705,8 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
         "would_call_gemini",
         "correct",
     ]
-    out_path = write_csv("baseline", fieldnames, combined_rows)
+    out_path = write_csv("baseline", fieldnames, combined_rows,
+                         eval_set=eval_set)
 
     _banner("baseline RESULTS")
     print(
@@ -616,6 +726,7 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
 
     return {
         "mode": "baseline",
+        "eval_set": eval_set,
         "accuracy": accuracy,
         "n_correct": n_correct,
         "n_total": n_total,
@@ -625,17 +736,19 @@ def run_baseline(funcs, joblib, faiss, pd, SentenceTransformer):
     }
 
 
-def run_no_cascade(funcs, joblib, faiss, pd, SentenceTransformer):
-    _banner("MODE: no-cascade  (cascade DISABLED via threshold=0.0)")
+def run_no_cascade(funcs, art, eval_set=DEFAULT_EVAL_SET):
+    _banner("MODE: no-cascade  (cascade DISABLED via threshold=0.0, set={s})"
+            .format(s=eval_set))
 
     print("Loading resources...")
-    tier1_vec, tier1_clf = load_tier1(funcs, pd)
-    tier2_clf = load_tier2(joblib)  # loaded for signature parity; unused at 0.0
-    embedder = load_embedder(SentenceTransformer)
+    tier1_vec, tier1_clf = art.tier1_vectorizer, art.tier1_classifier
+    tier2_clf = art.tier2_classifier  # signature parity; unused at 0.0
+    embedder = art.embedder
 
     print(
-        "Evaluating 45-ticket classification with run_cascade(threshold=0.0)\n"
-        "  -> escalate_idx always empty -> Tier-1 raw prediction for every ticket."
+        "Evaluating {s} classification with run_cascade(threshold=0.0)\n"
+        "  -> escalate_idx always empty -> Tier-1 raw prediction for every "
+        "ticket.".format(s=eval_set)
     )
     cls_rows, accuracy, n_correct, n_total, n_tier2 = evaluate_classification(
         funcs,
@@ -645,6 +758,7 @@ def run_no_cascade(funcs, joblib, faiss, pd, SentenceTransformer):
         tier1_clf,
         tier2_clf,
         embedder,
+        eval_set=eval_set,
     )
 
     if n_tier2 != 0:
@@ -664,17 +778,20 @@ def run_no_cascade(funcs, joblib, faiss, pd, SentenceTransformer):
         "tier_used",
         "correct",
     ]
-    out_path = write_csv("no-cascade", fieldnames, cls_rows)
+    out_path = write_csv("no-cascade", fieldnames, cls_rows,
+                         eval_set=eval_set)
 
     _banner("no-cascade RESULTS")
     print(
-        "Classification (45-ticket, Tier-1 only): {c}/{t} correct  =>  "
-        "accuracy {a:.2%}".format(c=n_correct, t=n_total, a=accuracy)
+        "Classification ({s}, Tier-1 only): {c}/{t} correct  =>  "
+        "accuracy {a:.2%}".format(s=eval_set, c=n_correct, t=n_total,
+                                  a=accuracy)
     )
     print("CSV written: " + out_path)
 
     return {
         "mode": "no-cascade",
+        "eval_set": eval_set,
         "accuracy": accuracy,
         "n_correct": n_correct,
         "n_total": n_total,
@@ -683,12 +800,90 @@ def run_no_cascade(funcs, joblib, faiss, pd, SentenceTransformer):
     }
 
 
-def run_no_rag(funcs, joblib, faiss, pd, SentenceTransformer):
+def run_tier2_only(funcs, art, eval_set=DEFAULT_EVAL_SET):
+    """Every ticket answered by the production Tier-2 (BGE) classifier.
+
+    Phase 5B. This is the comparison that isolates the CASCADE, as opposed to
+    no-cascade, which isolates the REPRESENTATION (TF-IDF vs BGE). Nothing
+    differs from baseline except the threshold handed to run_cascade, so any
+    accuracy difference is attributable to Tier-1 keeping tickets rather than
+    escalating them.
+    """
+    _banner("MODE: tier2-only  (Tier-1 never decides; threshold={t}, set={s})"
+            .format(t=TIER2_ONLY_THRESHOLD, s=eval_set))
+
+    print("Loading resources...")
+    tier1_vec, tier1_clf = art.tier1_vectorizer, art.tier1_classifier
+    tier2_clf = art.tier2_classifier
+    embedder = art.embedder
+
+    print(
+        "Evaluating {s} classification with run_cascade(threshold={t})\n"
+        "  -> every Tier-1 confidence is below the sentinel -> Tier-2 answers "
+        "every ticket.".format(s=eval_set, t=TIER2_ONLY_THRESHOLD)
+    )
+    cls_rows, accuracy, n_correct, n_total, n_tier2 = evaluate_classification(
+        funcs,
+        TIER2_ONLY_THRESHOLD,
+        "tier2-only",
+        tier1_vec,
+        tier1_clf,
+        tier2_clf,
+        embedder,
+        eval_set=eval_set,
+    )
+
+    # HARD GUARD, not a warning (rule 6: check a count a second, independent
+    # way). A sentinel threshold that silently failed to route everything to
+    # Tier-2 would produce a plausible, internally consistent, WRONG number --
+    # this project's recurring bug class. Two independent derivations must
+    # agree: run_cascade's own counter, and the per-row tier_used column.
+    n_rows_tier2 = sum(1 for r in cls_rows if r["tier_used"] == 2)
+    if n_tier2 != n_total or n_rows_tier2 != n_total:
+        _fatal(
+            "tier2-only did NOT route every ticket to Tier-2.\n"
+            "  run_cascade n_tier2   = {a} (expected {t})\n"
+            "  rows with tier_used=2 = {b} (expected {t})\n"
+            "The sentinel threshold ({s}) must exceed every possible Tier-1 "
+            "confidence. Refusing to write a result that does not measure "
+            "what this mode claims to measure.".format(
+                a=n_tier2, b=n_rows_tier2, t=n_total, s=TIER2_ONLY_THRESHOLD
+            )
+        )
+
+    out_path = write_csv("tier2-only", CLS_FIELDNAMES, cls_rows,
+                         eval_set=eval_set)
+
+    _banner("tier2-only RESULTS")
+    print(
+        "Classification ({s}, Tier-2 only): {c}/{t} correct  =>  "
+        "accuracy {a:.2%}".format(s=eval_set, c=n_correct, t=n_total,
+                                  a=accuracy)
+    )
+    print(
+        "Verified: {n}/{t} tickets answered by Tier-2 (two independent "
+        "counts agree).".format(n=n_tier2, t=n_total)
+    )
+    print("CSV written: " + out_path)
+
+    return {
+        "mode": "tier2-only",
+        "eval_set": eval_set,
+        "accuracy": accuracy,
+        "n_correct": n_correct,
+        "n_total": n_total,
+        "n_tier2": n_tier2,
+        "csv": out_path,
+    }
+
+
+def run_no_rag(funcs, art, eval_set=DEFAULT_EVAL_SET):
     _banner("MODE: no-rag  (rag gate DISABLED via pretend threshold=0.0)")
 
     print("Loading resources...")
-    embedder = load_embedder(SentenceTransformer)
-    index, metadata = load_faiss_and_metadata(faiss)
+    embedder = art.embedder
+    index, metadata = art.index, art.metadata
+    faiss = art.faiss
     adversarial = load_adversarial_set()
 
     print(
@@ -758,37 +953,66 @@ def print_comparison(result):
 
     if mode == "baseline":
         print(
-            "baseline classification accuracy (45-ticket): {a:.2%} "
+            "baseline classification accuracy ({s}): {a:.2%} "
             "({c}/{t})".format(
-                a=result["accuracy"], c=result["n_correct"], t=result["n_total"]
+                s=result["eval_set"], a=result["accuracy"],
+                c=result["n_correct"], t=result["n_total"]
             )
         )
-        rs = result["rag_summary"]
-        print(
-            "baseline: {esc}/{t} adversarial tickets correctly escalated "
-            "(gate < {g}).".format(esc=rs["n_correct_escalation"],
-                                   t=rs["n_total"],
-                                   g=SIMILARITY_THRESHOLD_DISPLAY)
-        )
+        # rag_summary is None whenever the adversarial section was skipped,
+        # which is every set other than benchmark45.
+        rs = result.get("rag_summary")
+        if rs is None:
+            print(
+                "baseline: adversarial escalation not evaluated on this set "
+                "(it is defined\n          on the fixed 9-ticket set only)."
+            )
+        else:
+            print(
+                "baseline: {esc}/{t} adversarial tickets correctly escalated "
+                "(gate < {g}).".format(esc=rs["n_correct_escalation"],
+                                       t=rs["n_total"],
+                                       g=SIMILARITY_THRESHOLD_DISPLAY)
+            )
         print("")
         print(
-            "Run --mode no-cascade to compare classification accuracy, and "
-            "--mode no-rag to\ncompare escalation behaviour against these "
-            "baseline numbers."
+            "Run --mode tier2-only to isolate the CASCADE, --mode no-cascade "
+            "to isolate\nthe REPRESENTATION, and --mode no-rag to compare "
+            "escalation behaviour."
         )
 
     elif mode == "no-cascade":
         print(
-            "no-cascade classification accuracy (Tier-1 only, 45-ticket): "
+            "no-cascade classification accuracy (Tier-1 only, {s}): "
             "{a:.2%} ({c}/{t})".format(
-                a=result["accuracy"], c=result["n_correct"], t=result["n_total"]
+                s=result["eval_set"], a=result["accuracy"],
+                c=result["n_correct"], t=result["n_total"]
             )
         )
         print("")
         print(
-            "Compare against the baseline run's classification accuracy. The "
-            "drop (if any)\nis the measured value of the cascade confidence "
-            "threshold (0.50)."
+            "Compare against the baseline run. NOTE what this difference "
+            "actually is:\nno-cascade is TF-IDF answering EVERY ticket, so "
+            "baseline minus no-cascade\nmeasures the BGE-vs-TF-IDF "
+            "representation gap, NOT the value of cascading.\nFor that, "
+            "compare baseline against --mode tier2-only."
+        )
+
+    elif mode == "tier2-only":
+        print(
+            "tier2-only classification accuracy (Tier-2 only, {s}): "
+            "{a:.2%} ({c}/{t})".format(
+                s=result["eval_set"], a=result["accuracy"],
+                c=result["n_correct"], t=result["n_total"]
+            )
+        )
+        print("")
+        print(
+            "This is the comparison that ISOLATES THE CASCADE: baseline "
+            "against this\nnumber differs only in whether Tier-1 was allowed "
+            "to answer. Run\n  python src/experiments/compare_cascade_vs_"
+            "tier2.py --set {s}\nfor the paired exact McNemar test and the "
+            "discordant tickets.".format(s=result["eval_set"])
         )
 
     elif mode == "no-rag":
@@ -824,7 +1048,21 @@ def parse_args(argv):
         "--mode",
         required=True,
         choices=VALID_MODES,
-        help="Which ablation to run: baseline | no-cascade | no-rag",
+        help=(
+            "Which ablation to run: baseline | no-cascade | tier2-only | "
+            "no-rag"
+        ),
+    )
+    parser.add_argument(
+        "--set",
+        dest="eval_set",
+        default=DEFAULT_EVAL_SET,
+        choices=VALID_SETS,
+        help=(
+            "Classification evaluation set. benchmark45 (default, 45 tickets, "
+            "historical CSV names) or deployment175 (175 tickets, writes "
+            "*_deployment175.csv)."
+        ),
     )
     return parser.parse_args(argv)
 
@@ -835,20 +1073,37 @@ def main(argv=None):
 
     args = parse_args(argv)
     mode = args.mode
+    eval_set = args.eval_set
+
+    # no-rag measures the RAG gate on the fixed 9-ticket adversarial set and
+    # never touches a classification set. Accepting --set there would imply a
+    # choice that does not exist, so it is refused rather than ignored.
+    if mode == "no-rag" and eval_set != DEFAULT_EVAL_SET:
+        _fatal(
+            "--mode no-rag does not take --set: it evaluates the RAG gate on "
+            "the fixed\n9-ticket adversarial set only, and never runs "
+            "classification."
+        )
 
     _banner("AI Ticket Agent -- Ablation Study")
     print("Project root : " + PROJECT_ROOT)
     print("Mode         : " + mode)
+    if mode != "no-rag":
+        print("Eval set     : {s} ({n} tickets)".format(
+            s=eval_set, n=EVAL_SET_SIZES[eval_set]))
 
     funcs = _import_project_functions()
-    joblib, faiss, pd, SentenceTransformer = _import_third_party()
+    artifacts_mod = _import_artifacts()
+    art = load_all(artifacts_mod)
 
     if mode == "baseline":
-        result = run_baseline(funcs, joblib, faiss, pd, SentenceTransformer)
+        result = run_baseline(funcs, art, eval_set)
     elif mode == "no-cascade":
-        result = run_no_cascade(funcs, joblib, faiss, pd, SentenceTransformer)
+        result = run_no_cascade(funcs, art, eval_set)
+    elif mode == "tier2-only":
+        result = run_tier2_only(funcs, art, eval_set)
     elif mode == "no-rag":
-        result = run_no_rag(funcs, joblib, faiss, pd, SentenceTransformer)
+        result = run_no_rag(funcs, art, eval_set)
     else:
         _fatal("Unknown mode: " + repr(mode))  # unreachable due to choices=
 

@@ -1,0 +1,4 @@
+index,text,expected,cascade_predicted,cascade_correct,tier2only_predicted,tier2only_correct,tier1_conf,cascade_tier_used,direction
+18,"Our main server running all our team software completely froze up and crashed because it ran completely out of memory, so nobody can load anything right now.",Infrastructure,Infrastructure,True,Database,False,0.50821,1,cascade_right_tier2_wrong
+67,A bunch of new programs I never installed just appeared on my desktop and my antivirus keeps flashing warnings about malicious software trying to steal my data.,Security,Database,False,Security,True,0.564966,1,cascade_wrong_tier2_right
+117,"I am trying to work from my kitchen table today, but the secure connection tool keeps getting stuck trying to reach the office network and eventually times out. My home internet is working fine for everything else, so I am not sure why it won't connect.",Network,Database,False,Network,True,0.513995,1,cascade_wrong_tier2_right
