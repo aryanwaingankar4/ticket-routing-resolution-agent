@@ -1,22 +1,35 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `ba98843` — Phase 7A (external-validity
-feasibility). **Gate cleared and PUSHED on 2026-09-22.** Phase 6B (`8419db6`) is
+**Last commit to move code or a result:** *(7B is committed and awaiting its
+gate — SHA recorded on the next refresh.)* Phase 7A (`ba98843`) is gated and
+PUSHED. Phase 6B (`8419db6`) is
 also gated and pushed. Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
-**Current phase:** **Phase 6A — COMPLETE, GATED and PUSHED.** Verdict:
-**do not promote conformal to the live deferral gate** — and the fixed wording is
-"no evidence it defers better on the gated axis", **never** "conformal is worse".
-Nothing promoted; `settings.conformal.enabled` stays `False`.
+
+**Current phase: Phase 7B — COMPLETE, COMMITTED, AWAITING GATE.**
+**Verdict: FINDING 1 DOES NOT REPLICATE on a different generator's corpus.**
+Under a measured covariate shift (domain AUC 0.8472), TF-IDF and BGE transfer
+coverage **equally well** — Tier-1's gap at α=0.10 is **+0.0009** where ours is
+**−0.2333**. Eleven of twelve pre-registered readings sit inside a band 2.8×
+tighter than the one that measured Finding 1. **Finding 1 is not withdrawn and
+not softened; its SCOPE narrows** to a property of our corpus that did not
+reproduce on the one other corpus it has been tried on. The named cross-phase
+finding is **sharpened** by this, not damaged. Two further results: the **6A
+deferral question resolved for the first time** (3 of 6 comparisons, *all*
+favouring the confidence incumbent — conformal deferral is **worse** there, on
+that corpus only), and a **RECORD CORRECTION** — 7A's ad hoc domain AUCs do not
+reproduce and are replaced. Nothing promoted; `settings.conformal.enabled` and
+`settings.drift.enabled` stay `False`. **Next: Phase 6C, on a fresh-quota day.**
+
 **Phase 7A is COMPLETE, GATED and PUSHED** (2026-09-22). **Design A chosen as
-7B's primary** (version split within the `aa` file, 51+52 → 400, measured
-domain AUC **0.8584**); Design B pre-registered as secondary; **Design C
+7B's primary** (version split within the `aa` file, 51+52 → 400, domain AUC
+recorded as 0.8584 — **corrected by 7B to 0.8727 raw / 0.8472 operating**);
+Design B pre-registered as secondary; **Design C
 rejected** — a coverage drop on German would measure encoder competence, not
-distribution shift. **Next: Phase 7B, opening in plan mode — see "Immediate
-next step" for the four things its plan must specify.** Verdict: the
+distribution shift. Verdict: the
 external dataset **can carry 7B** — 28,261 English rows (628× the benchmark;
 12,500 distinct after de-duplication, 278×), 10/10 queues ≥300, and the Phase
 2A clustering-precision question is **answerable** there. Methodological
@@ -68,8 +81,12 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **322 passed** (306 + 16 from 7A), 0 failed/skipped, offline |
+| Test suite | `pytest` | **340 passed** (322 + 18 from 7B), 0 failed/skipped, offline |
 | External corpus (7A) | `profile_external_dataset.py` | 28,261 English rows (628× benchmark45); **12,500 distinct** after dedup; near-dup **79.39%** vs **our own 85.20%** |
+| **Finding 1 on external data (7B)** | `run_external_conformal_shift.py` | **does NOT replicate** — Tier-1 gap **+0.0009** vs Tier-2 **−0.0072** at α=0.10, band 0.0165, n_cal 1,327 / n_test 10,441 |
+| Boundary contamination (7B) | same script | **1.46%** of test tickets have a BGE≥0.95 neighbour in train∪cal; full and no-neighbour readings agree to 0.0011 |
+| External label ceiling (7B) | same script | Tier-1 **0.3476**, Tier-2 **0.3732** over 10 queues — labels generator-assigned and **unaudited** |
+| Deferral rules, external (7B) | `compare_deferral_rules_external.py` | gated axis **resolves**: 3 of 6 signals, **all favouring the confidence incumbent**; gate coverage 6.15% = **642 tickets** (6A had 4) |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -1434,6 +1451,130 @@ measurable here**.
 
 ---
 
+## Phase 7B — Finding 1 does NOT replicate (COMPLETE, committed, awaiting gate)
+
+Offline, **zero Gemini calls**, measurement only. Production frozen; both
+`enabled` flags stay `False`. The isolation check was widened from 7A's three
+files to **22** — our dataset, both benchmarks, the deployment calibration set,
+`models/`, `tests/goldens/`, and every published conformal, deferral and
+ablation CSV — all hashed before and after, all byte-identical.
+
+### The primary result
+
+Design A: calibrate on the `aa` file's English rows at `version` ∈ {51, 52},
+test on `version` == 400. Pool 5,897 raw → **3,305** de-duplication components
+(56.05% distinct) → **1,978 train / 1,327 calibration**, seed 42, stratified by
+queue. Test **10,441**, used in full. Both tiers fitted **fresh on the external
+training split only**.
+
+| tier | α | coverage | gap | ±2 s.d. band | outside? |
+|---|---|---|---|---|---|
+| tier1 | 0.05 | 0.9480 | −0.0020 | 0.0120 | in |
+| tier1 | 0.10 | 0.9009 | **+0.0009** | 0.0165 | in |
+| tier1 | 0.20 | 0.7780 | −0.0220 | 0.0220 | **OUT** (in on the no-neighbour arm) |
+| tier2 | 0.05 | 0.9545 | +0.0045 | 0.0120 | in |
+| tier2 | 0.10 | 0.8928 | −0.0072 | 0.0165 | in |
+| tier2 | 0.20 | 0.7907 | −0.0093 | 0.0220 | in |
+
+On our corpus Tier-1's α=0.10 gap is **−0.2333** against Tier-2's −0.0111.
+Here the two tiers are **indistinguishable**, and the band is 2.8× tighter
+(0.0165 vs 0.0454). **The pre-registered headline question — "does TF-IDF lose
+far more coverage than BGE, as on our data?" — is answered NO.**
+
+### The fixed wordings for 7B
+
+- **Finding 1 is NOT withdrawn and NOT softened.** Its numbers on our corpus
+  are unchanged and were re-verified by 6B. What changes is its **scope**: a
+  measured property of our template-generated corpus that **did not reproduce
+  on the one other corpus it has been tried on**. The paper says that, not
+  "coverage transfer is a property of the representation".
+- **Never write "7B refutes Finding 1."** The corpus has **no representation
+  gap to find** — Tier-1 34.8% vs Tier-2 37.3%, 2.6 points apart, against 35.6
+  points on ours. Finding 1's mechanism needs a better representation to be the
+  one that transfers. That weakens 7B as evidence, and it is a **limitation,
+  not a rescue**: the honest statement is that Finding 1 has not been shown to
+  hold anywhere its originating corpus's structure is absent.
+- **The named cross-phase finding is SHARPENED by this, not damaged.** "The
+  calibration/reference distribution, not the test or method, is the binding
+  constraint" predicts exactly this outcome. 7B is the **fourth** phase to
+  reach that wall and the first to reach it by *removing* an effect rather than
+  by failing to repair one.
+- **Never quote an external set size against ours.** Mean sets run 3.5–6.7 of
+  **ten** labels here versus seven categories on ours; the corpora are not
+  comparable in absolute terms.
+
+### The deferral secondary — 6A's question resolves, for the first time
+
+The transplanted 0.50 gate covers **6.15% = 642 tickets** here, against the
+**four** that left 6A's gated axis unmeasurable.
+
+**3 of 6 comparisons resolve, and all three favour the confidence incumbent:**
+Tier-1 LAC +0.0466 [+0.0156, +0.0779], Tier-1 APS +0.0532 [+0.0236, +0.0836],
+Tier-2 APS +0.0330 [+0.0126, +0.0530]. Risk is error among accepted tickets, so
+positive means **worse**. No comparison favours conformal.
+
+**Fixed wording.** This **does** say conformal deferral is worse rather than
+equal *on this corpus, at this coverage*. It **does not** retro-license
+"conformal is worse" as a claim about ours — **6A's wording, "no evidence
+either way on the gated axis", still stands for the data 6A measured.**
+Different corpus, transplanted gate, ~35% label accuracy.
+
+Conformal still cannot be **operated** at the gate: achievable α-indexed
+coverages are 0.39%/0.75%/2.43% (Tier-1) and 0.34%/1.82%/3.90% (Tier-2) against
+6.15%. **AURC agrees with the gated axis this time and is still not promoted** —
+a coherence observation, nothing more.
+
+### Design B resolved nothing, twice, for two different named reasons
+
+The recorded design never specified the test arm, so **both readings were run
+rather than one chosen after the fact**:
+
+| variant | AUC range | why no resolution |
+|---|---|---|
+| `full_test` | 0.8312–0.8566 (span 0.025) | the magnitude knob does not move — a queue holdout barely changes a shift the version split already dominates |
+| `held_out_queue` | 0.8499–0.9693 (span 0.120) | the test arm carries **one class**, so coverage becomes class-conditional rather than marginal — a different quantity |
+
+The degeneracy rule also fired for real: **Billing and Payments hits AUC 0.9693
+and is BLOCKED**, the same condition that blocked 6B's BGE arm. Its rows are in
+the CSV marked blocked, never as results.
+
+### RECORD CORRECTION — 7A's ad hoc domain AUCs do not reproduce
+
+**Design A was recorded as 0.8584.** Fully specified recomputation (5-fold
+cross-fitted LogReg in BGE space, seed 42, reusing 6B's
+`cross_fitted_domain_probabilities`) gives **0.8727 raw / 0.8472 operating**.
+Five variants were tried while chasing the recorded value and they span
+0.8637–0.8727; none lands on 0.8584. **Design B's recorded 0.6706–0.9316 does
+not reproduce either**, though the queue *ordering* does.
+
+The figures were computed ad hoc at the 7A gate and never committed — which is
+exactly why 8A exists. **The design conclusion is unchanged**: every value sits
+below the 0.95 degeneracy line, which is what the numbers were recorded to
+establish. README's 7A design table now carries both the struck-through and the
+corrected values.
+
+Also corrected: the post-de-duplication estimate of "~2,600" extrapolated the
+corpus-wide 44.2% distinct rate; measured within the pool it is **56.05% →
+3,305**.
+
+### Verification
+
+Embedding-cache alignment **proved, not assumed** (64 seeded rows re-encoded,
+worst cosine 0.99999994 — a row-count check is exactly what a misaligned cache
+passes). Rule 6 throughout: arm sizes two ways, coverage two ways, FAISS vs
+brute force on 200 probes (0 mismatches), every deferral curve's coverage-1.0
+endpoint against the independently measured accuracy. Split integrity checked
+by row **and by de-duplication component**. **18 new unit tests** pin two bugs
+found while building 7B: a CSV writer that dropped ragged rows (it would have
+deleted every BLOCKED Design B row) and a split that was row-disjoint while
+sharing components.
+
+**Gates re-run, never quoted:** `pytest` **340 passed**; adversarial **9/9**
+with its CSV byte-identical; goldens **45/45** and **9/9**; ablation baseline
+**32/45**.
+
+---
+
 ## The agreed Phase 5–9 programme
 
 Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
@@ -1477,7 +1618,7 @@ not.
 | Sub-phase | Scope |
 |---|---|
 | **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (`ba98843`, gated and pushed) |
-| **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it — **LIVE TASK**, Design A primary (version split in the `aa` file, AUC 0.8584), Design B secondary |
+| **7B** | Replicate Finding 1 on it — **DONE**, committed and awaiting gate. **It does NOT replicate.** Design A primary; Design B resolved nothing, twice, for two named reasons |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
 Evaluation-set size at low coverage is now the binding constraint in **four**
@@ -1555,77 +1696,42 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 7B — replicate Finding 1 on the external corpus.** Design chosen at the
-7A gate on 2026-09-22. Offline, **zero Gemini calls**, measurement only.
-`settings.conformal.enabled` and `settings.drift.enabled` stay `False`.
-**Opens in plan mode** like every sub-phase.
+**Phase 6C — the retrieval-sufficiency gate, on the 33 groundedness tickets.**
+**~55–110 Gemini calls**, so it runs on a day with **fresh quota** and must not
+share a day with any other quota-spending sub-phase. Opens in plan mode like
+every sub-phase.
 
-### The chosen design
+7B is **committed and awaiting its gate**. Nothing is pushed until "gate
+cleared".
 
-**Design A is PRIMARY: the version split *within* the `aa` file**
-(`aa_dataset-tickets-multi-lang-5-2-50-version.csv`), calibrating on **versions
-51+52** and testing on **version 400**.
+### What 6C's plan must specify
 
-- **Measured shift magnitude: cross-fitted domain AUC 0.8584** (BGE space) — a
-  real shift, and critically **below the 0.95 degeneracy threshold that blocked
-  6B's BGE arm at 0.9908**. This corpus offers shifts that are real *and*
-  operable, which is exactly what 6B lacked.
-- **Expected n:** 5,897 English calibration rows and 10,441 test rows raw;
-  roughly **2,600 / 4,600 after de-duplication** at the corpus's measured 44.2%
-  distinct-component rate.
-- **The file restriction is what removes the confound.** Across the whole
-  corpus `version` is confounded with source file — all 11,923 version-NaN rows
-  are `dataset-tickets-multi-lang-4-20k.csv`. Inside the `aa` file, versions 51,
-  52 and 400 all coexist, so the split is free of it. Version is also spread
-  proportionally across queues, so there is no queue confound either.
-- **It resolves 6A's wall.** 10% operating coverage on the test arm is ~460
-  tickets against the **4** that made 6A's gated axis unmeasurable — ~115×.
+1. **The dry run first**, at `--limit 3`, checking the prompt before the full
+   budget is spent — the rule that caught `build_groundedness_set.py`'s
+   eligibility bug when its 54/0 count was checked against an independently
+   measured 33/21.
+2. **`call_delay_sec` at or above 4.5s**, and **every raw response cached to
+   disk** keyed by prompt hash, so a crash or a re-score never re-spends quota.
+3. **Eligibility derived from `decision.escalated`, never a status enum** —
+   `ESCALATED` belongs to the *filing* gate and a RAG-gate escalation carries
+   `NEEDS_HUMAN_RESOLUTION`. This is occurrence 5 of the recurring bug class.
+4. **The count checked against a second, independent derivation** before any
+   quota is spent.
 
-**Design B is the PRE-REGISTERED SECONDARY: a queue-holdout magnitude sweep.**
-Hold one queue out of *calibration only*, keeping it in training so the label
-space is preserved. Measured AUCs give a tunable shift magnitude: Billing and
-Payments **0.9316**, Service Outages and Maintenance **0.8705**, General Inquiry
-**0.7281**, IT Support **0.6706**. This is the only design that varies shift
-magnitude deliberately, so it can ask *how much* shift Finding 1's effect needs
-rather than only whether it reappears. **Known confound, reportable but not
-removable:** queue correlates with `type` (Technical Support is 52% Incident;
-General Inquiry is 27% Change), so a queue holdout also shifts the type mix.
+### Order after 6C
 
-**Design C (language, EN → DE) is REJECTED.** A coverage drop on German would
-measure **encoder competence, not distribution shift** — the production encoder
-is `bge-base-en-v1.5`, an English-only model, so "the encoder cannot read the
-input" would be indistinguishable from "the distribution moved". That answers a
-different question than Finding 1 asks. Recorded in the README as well.
+**6C → 8A → 8B → 9A–9C.**
 
-### What 7B's plan must specify, before any result is seen
+**6C must be GATED before 8A starts**, because 8A builds every paper table from
+finished results and starting it while a result is in flight would bake a
+moving number into the reproducibility layer.
 
-1. **A training split disjoint from calibration.** Both drawn from versions
-   51+52, **seed 42, stratified by queue**, with the **post-de-duplication n**
-   stated for each side — not the raw row count.
-2. **Boundary contamination, measured and reported two ways.** The share of
-   version-400 test tickets that have a **BGE ≥ 0.95 near-duplicate in the
-   training or calibration split**, given that 7A measured 79.39% near-duplicate
-   density corpus-wide. Coverage must be reported **on the full test set AND on
-   the no-neighbour subset**, because a contaminated test arm would reproduce
-   Finding 1's mechanism for the wrong reason.
-3. **A label-noise sanity check.** In-distribution accuracy for both tiers on
-   this corpus, with the limitation written **beside** the number — the external
-   labels are generator-assigned and have not been audited, so a low ceiling
-   would bound every downstream reading.
-4. **The 6A deferral comparison on Design A's test arm, as a pre-registered
-   secondary.** This is the first dataset where the low-coverage comparison can
-   actually resolve, so 6A's unanswerable question gets re-asked with power.
-
-### Order after 7B
-
-**7B → 6C → 8A → 8B → 9A–9C.**
-
-- **6C** (retrieval-sufficiency gate on the 33 groundedness tickets, **~55–110
-  Gemini calls**) runs on a day with **fresh quota** and must not share a day
-  with any other quota-spending sub-phase.
-- **6C must be GATED before 8A starts**, because **8A builds every paper table
-  from finished results** — starting it while a result is still in flight would
-  bake a moving number into the reproducibility layer.
+**8A's remit grew because of 7B.** Two recorded design AUCs turned out to be
+ad hoc figures whose derivation was never committed and which do not reproduce
+(see the Phase 7B record correction). That is precisely the failure
+`build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test exist to stop,
+and **any number quoted at a gate must now come from a committed script**, not
+from an interactive session.
 
 ### Carried forward for Phase 9A
 
@@ -1643,7 +1749,23 @@ different question than Finding 1 asks. Recorded in the README as well.
    0.9295) yet is the space whose coverage transfers. Cross-reference Finding 1.
 5. **7A's control lesson:** never quote a redundancy or similarity rate without
    stating what it is high *relative to*. Our own corpus is **more**
-   near-duplicated (85.20%) than the external one (79.39%).
+   near-duplicated (85.20%) than the external one (79.39%). 7B applies it
+   again: its 1.46% boundary-contamination rate is low because the *reference
+   set* is 3,305 rows, not because the corpus changed.
+6. **7B's scope correction to Finding 1 is load-bearing and must not be lost.**
+   Finding 1 is presented as a measured property of our corpus that **did not
+   reproduce on the one other corpus it has been tried on** — never as a
+   general property of representations. The limitation goes **beside** it: that
+   corpus has no representation gap to find (2.6 points vs our 35.6), which
+   weakens 7B as evidence and is a limitation, not a rescue.
+7. **7B's deferral reading must not be merged with 6A's.** 6A: "no evidence
+   either way on the gated axis", for our data. 7B: conformal deferral is
+   **worse** — 3 of 6 resolving comparisons, all favouring the incumbent — on a
+   different generator's corpus, with a transplanted gate and ~35% label
+   accuracy. Two readings, two scopes, reported separately.
+8. **The 7B record correction belongs in the reproducibility section**, as the
+   concrete motivation for 8A: a number quoted at a gate and never regenerated
+   from a committed script is a number that can stop being true.
 
 
 ---

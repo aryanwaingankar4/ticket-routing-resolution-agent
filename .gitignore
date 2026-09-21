@@ -18,4 +18,5 @@ data/embedding_comparison/*.npy
 data/external_tobibueck/raw/
 data/external_tobibueck/english_subset.csv
 data/external_tobibueck/*.npy
+data/external_tobibueck/*.npz
 data/external_tobibueck/*.faiss

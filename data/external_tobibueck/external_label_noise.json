@@ -1,0 +1,14 @@
+{
+  "tier1": {
+    "accuracy_calibration": 0.38432554634513943,
+    "accuracy_test": 0.34757207164064746,
+    "n_calibration": 1327,
+    "n_test": 10441
+  },
+  "tier2": {
+    "accuracy_calibration": 0.37829691032403917,
+    "accuracy_test": 0.3732401111004693,
+    "n_calibration": 1327,
+    "n_test": 10441
+  }
+}

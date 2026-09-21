@@ -2588,8 +2588,17 @@ operable, which is exactly what 6B lacked.
 
 | Design | Split | Domain AUC | Post-dedup n | Status |
 |---|---|---|---|---|
-| **A** | version 51+52 -> 400, **within the `aa` file** | **0.8584** | ~2,600 / ~4,600 | **PRIMARY** |
-| **B** | queue held out of calibration only | 0.6706-0.9316 | ~180-1,280 | pre-registered secondary |
+| **A** | version 51+52 -> 400, **within the `aa` file** | ~~0.8584~~ **0.8727** | ~~~2,600~~ **3,305** / 10,441 | **PRIMARY** |
+| **B** | queue held out of calibration only | ~~0.6706-0.9316~~ **0.8312-0.9693** | ~180-1,280 | pre-registered secondary |
+
+> **Corrected by Phase 7B (2026-09-22).** The struck-through figures were
+> computed ad hoc at this gate and their derivation was never committed; they
+> **do not reproduce**. The replacements come from 7B's fully specified
+> recomputation - see "RECORD CORRECTION" in the Phase 7B entry below. The
+> post-de-duplication estimate was likewise an extrapolation from the
+> corpus-wide 44.2% distinct rate; measured within the pool the rate is 56.05%.
+> **The design conclusion is unchanged**: every value sits below the 0.95
+> degeneracy line, which is what these numbers were recorded to establish.
 | C | language EN -> DE | not measured | ~12,500 / ~14,800 | **REJECTED** |
 
 **Design A's confound is removed by construction.** Across the whole corpus
@@ -2621,6 +2630,232 @@ Scripts: `src/experiments/fetch_external_dataset.py`,
 [`answer_diversity_by_queue.csv`](data/external_tobibueck/answer_diversity_by_queue.csv).
 The raw CSVs and the embedding cache are gitignored and reproducible from the
 pinned revision.
+
+### Phase 7B - Finding 1 does NOT replicate on a different generator's corpus
+
+**The headline, stated plainly because it undercuts a published claim.** On
+`Tobi-Bueck/customer-support-tickets`, calibrated and tested under a measured
+covariate shift, **TF-IDF and BGE transfer coverage equally well**. There is no
+trace of the 23.3-vs-1.1 point contrast that Finding 1 rests on. Of twelve
+pre-registered readings, exactly one gap falls outside its band - TF-IDF at
+alpha=0.20, at -0.0220 against a band of 0.0220 - and that one returns inside
+the band on the de-contaminated test arm. **Finding 1's scope narrows: on the
+evidence now available it is a property of our corpus, not a general property
+of lexical versus dense representations.** What that means for the paper is in
+"What this does to Finding 1" below.
+
+This corpus is **independently generated data, not real production data**. 7B
+tests whether Finding 1 survives a *different generator*, not whether it
+survives reality.
+
+#### The design, pre-registered before any result was seen
+
+Design A, chosen at the 7A gate: calibrate on the `aa` file's English rows at
+`version` in {51, 52}, test on `version` == 400. The file restriction is what
+removes the confound - corpus-wide, `version` is confounded with source file,
+but inside the `aa` file all three versions coexist.
+
+| arm | raw n | after de-duplication |
+|---|---|---|
+| calibration pool (v51+v52) | 5,897 | **3,305 components** (56.05% distinct) |
+| -> training split (60%) | - | **1,978** |
+| -> calibration split (40%) | - | **1,327** |
+| test (v400) | **10,441** | used in full |
+
+De-duplication runs on the pool at BGE cosine >= 0.95 **before** the split, so
+no near-duplicate spans training and calibration and no duplicated point enters
+the conformal quantile. The test arm is deliberately **not** de-duplicated:
+removing rows there would change the very coverage being measured. Split is
+seed 42, stratified by queue; both tiers are fitted **fresh on the external
+training split only** and never load `models/`.
+
+At n_cal = 1,327 the +-2 s.d. band is **0.0120 / 0.0165 / 0.0220** at
+alpha = 0.05 / 0.10 / 0.20 - against **0.0454** at our n_cal = 175, so this is a
+2.8x sharper instrument than the one that measured Finding 1.
+
+#### The primary result
+
+| test arm | tier | alpha | coverage | gap | band | outside? | mean set |
+|---|---|---|---|---|---|---|---|
+| full | tier1 | 0.05 | 0.9480 | -0.0020 | 0.0120 | in | 6.55 |
+| full | tier1 | 0.10 | 0.9009 | +0.0009 | 0.0165 | in | 5.04 |
+| full | tier1 | 0.20 | 0.7780 | **-0.0220** | 0.0220 | **OUT** | 3.49 |
+| full | tier2 | 0.05 | 0.9545 | +0.0045 | 0.0120 | in | 6.68 |
+| full | tier2 | 0.10 | 0.8928 | -0.0072 | 0.0165 | in | 4.88 |
+| full | tier2 | 0.20 | 0.7907 | -0.0093 | 0.0220 | in | 3.53 |
+| no-neighbour | tier1 | 0.20 | 0.7791 | -0.0209 | 0.0220 | in | 3.48 |
+| no-neighbour | tier2 | 0.20 | 0.7917 | -0.0083 | 0.0220 | in | 3.52 |
+
+On our corpus Tier-1's gap at alpha=0.10 is **-0.2333**. Here it is **+0.0009**
+- not smaller, but on the *other side* of nominal and three orders of magnitude
+closer to it. The pre-registered headline question was "does TF-IDF lose far
+more coverage than BGE, as on our data?" The measured answer is **no**.
+
+#### Boundary contamination: measured, and not the explanation
+
+**152 of 10,441 version-400 test tickets (1.46%)** have a BGE >= 0.95
+near-duplicate in training or calibration; median top-1 similarity is 0.8795.
+The full and no-neighbour readings agree everywhere to within 0.0011, so
+memorisation is not doing the work here. The rate is far below 7A's 79.39%
+corpus-wide figure for the simple reason that the reference set is 3,305 rows
+rather than 28,261 - a near-duplicate rate is a statement about a *pair of
+sets*, not about a corpus alone, which is 7A's control lesson applied again.
+
+#### Limitations, recorded beside the result, not after it
+
+- **The external queue labels are generator-assigned and have not been
+  audited.** In-distribution accuracy is **0.3476 (Tier-1)** and **0.3732
+  (Tier-2)** over ten queues. Label noise depresses accuracy and inflates
+  prediction-set sizes for both tiers - mean sets here run 3.5-6.7 labels out
+  of 10 - so a low ceiling bounds every downstream reading, and set sizes are
+  not comparable in absolute terms with our seven-class corpus.
+- **The most important caveat is that this corpus has no representation gap to
+  find.** Tier-1 and Tier-2 score 34.8% and 37.3%: 2.6 points apart. On our
+  corpus the same contrast is 35.6 points. Finding 1's mechanism needs a
+  representation that is *better* to be the one that transfers; where neither
+  representation works, the test has little to detect. **This weakens 7B as
+  evidence against Finding 1 - and it is a limitation, not a rescue.** The
+  honest statement is that Finding 1 has not been shown to hold anywhere its
+  originating corpus's structure is absent.
+- **The shift is real but moderate**: cross-fitted domain AUC **0.8472** on the
+  arms actually operated (0.8727 on the raw arms), well below the 0.95 line
+  that blocked 6B's BGE arm at 0.9908.
+- Independently generated data, not real production data.
+
+#### RECORD CORRECTION: the 7A gate's domain AUC does not reproduce
+
+`PROJECT_STATUS.md` and this README recorded Design A's cross-fitted domain AUC
+as **0.8584**. That figure was computed ad hoc at the 7A gate and its
+derivation was never committed. **It does not reproduce.** 7B's fully specified
+recomputation - 5-fold cross-fitted logistic regression in BGE space, seed 42,
+reusing 6B's `cross_fitted_domain_probabilities` - gives **0.8727** on the raw
+arms and **0.8472** on the arms actually operated on. Five variants were tried
+while chasing the recorded number (balanced subsampling two ways, first-n,
+L2-normalised embeddings, post-de-duplication) and they span 0.8637-0.8727;
+none lands on 0.8584.
+
+**The design conclusion is unchanged** - every variant sits far below the 0.95
+degeneracy line, so the shift is real and operable, which is what the number
+was recorded to establish. The corrected values are the ones above, and the
+same defect appears again in Design B's recorded AUC range.
+
+#### Design B: reported, and it resolves nothing - twice, for two reasons
+
+Design B holds one queue out of **calibration only**, keeping it in training so
+the label space is preserved. The recorded design did not specify the test arm,
+so **both readings were run rather than one being chosen after the fact**:
+
+| variant | test arm | AUC range | why it does not resolve |
+|---|---|---|---|
+| `full_test` | all of version 400 | 0.8312-0.8566 (span **0.025**) | the magnitude knob does not move: a queue holdout barely changes a shift the version split already dominates |
+| `held_out_queue` | version-400 rows *of* queue Q | 0.8499-0.9693 (span **0.120**) | the test arm carries **one class**, so coverage becomes class-conditional for that class rather than marginal - a different quantity |
+
+The pre-registered degeneracy rule applies to both: **name the condition,
+report "no resolution", never substitute a metric that happens to resolve.**
+The rule also fired for real - Billing and Payments reaches AUC **0.9693** in
+the second variant and is **BLOCKED**, the same condition that blocked 6B's BGE
+arm. Its rows are in the CSV marked blocked, not as results.
+
+Note also that Design B's recorded 7A range (0.6706-0.9316) does not reproduce
+either, though the *ordering* of queues by AUC does: Billing highest, IT
+Support lowest. Second instance of the same documentation defect.
+
+Design B's confound remains reportable and not removable: queue correlates with
+`type`, so a queue holdout also shifts the type mix.
+
+#### Pre-registered secondary: the 6A deferral question, where it can resolve
+
+Phase 6A asked whether deferring on conformal set size beats deferring on a
+confidence threshold, and could not answer: the live gate's operating coverage
+held **four** tickets on benchmark45 and 34 on deployment175, leaving 3 of 4
+configurations degenerate. Here the transplanted 0.50 gate covers **6.15% =
+642 tickets**, and the comparison resolves.
+
+| tier | rule | risk at gate | delta vs confidence | 95% interval | signal |
+|---|---|---|---|---|---|
+| tier1 | confidence | 0.1791 | (incumbent) | | |
+| tier1 | margin | 0.1745 | -0.0074 | [-0.0234, +0.0081] | no |
+| tier1 | **lac** | 0.2290 | **+0.0466** | [+0.0156, +0.0779] | **yes** |
+| tier1 | **aps** | 0.2321 | **+0.0532** | [+0.0236, +0.0836] | **yes** |
+| tier2 | confidence | 0.0966 | (incumbent) | | |
+| tier2 | margin | 0.0872 | -0.0085 | [-0.0202, +0.0031] | no |
+| tier2 | lac | 0.0888 | -0.0071 | [-0.0296, +0.0156] | no |
+| tier2 | **aps** | 0.1324 | **+0.0330** | [+0.0126, +0.0530] | **yes** |
+
+**Three of six comparisons resolve, and all three favour the incumbent.** Risk
+is error among accepted tickets, so a positive delta means the conformal rule
+accepts a worse set of tickets than the plain confidence threshold. **No
+comparison favours conformal.**
+
+Two things this does and does not license. It **does** say that on this corpus,
+at this operating coverage, conformal deferral is worse rather than equal -
+which is a stronger statement than 6A could make. It **does not** retro-license
+"conformal is worse" as a claim about *our* corpus: 6A's fixed wording, "no
+evidence either way on the gated axis", still stands for the data 6A measured.
+Different corpus, transplanted gate, ~35% label accuracy.
+
+And conformal still cannot be **operated** at the gate: the achievable
+alpha-indexed operating points sit at **0.39% / 0.75% / 2.43%** coverage for
+Tier-1 and **0.34% / 1.82% / 3.90%** for Tier-2, against a 6.15% gate. The
+obstacle 6A identified is present here too, on 10,441 tickets.
+
+**AURC is reported and is not promoted**, per the standing rule. For the record
+it agrees with the gated axis this time - every rule's AURC is worse than
+confidence's, 7 of 8 with a signal - which is a coherence observation, not a
+reason to promote anything. In 6A the two axes contradicted; the rule that
+ignores AURC is the same either way.
+
+#### What this does to Finding 1
+
+Finding 1 is **not withdrawn and not softened**. Its numbers on our corpus are
+unchanged and were re-verified by 6B. What changes is its **scope**: it is now
+a measured property of our template-generated corpus that **did not reproduce
+on the one other corpus it has been tried on**, and the paper must say so in
+those words rather than presenting it as a general property of representations.
+
+The cross-phase named finding is *sharpened*, not damaged. "The
+calibration/reference distribution, not the test or method, is the binding
+constraint" predicts exactly this: change the corpus and the effect changes,
+because the corpus was doing the work all along. 7B is the fourth phase to
+reach that wall, and the first to reach it by *removing* an effect rather than
+by failing to repair one.
+
+#### Verification
+
+- **Embedding-cache alignment proved, not assumed**: 64 seeded rows re-encoded
+  through the production encoder, worst cosine **0.99999994** against the 7A
+  cache. Row-count agreement alone is exactly the check a misaligned cache
+  passes.
+- **Rule 6, two independent derivations**: arm sizes from a boolean mask *and*
+  `value_counts`; coverage from `cp.coverage` *and* an independent loop over
+  the prediction sets (fatal beyond 1e-12); top-1 similarities from FAISS *and*
+  brute force on 200 probed rows (**0 mismatches**); each deferral curve's
+  coverage-1.0 endpoint checked against the accuracy the primary script
+  measured separately.
+- **Split integrity**: disjoint by row index **and** by de-duplication
+  component, with the union covering all 3,305 components - a split can be
+  row-disjoint and still leak a near-duplicate.
+- **Isolation check, widened from 7A's three files to 22**: our dataset, both
+  benchmarks, the deployment calibration set, `models/`, `tests/goldens/`, and
+  every published conformal, deferral and ablation CSV - all hashed before and
+  after, all byte-identical.
+- **18 unit tests** on the new helpers against constructed ground truth,
+  including the two bugs found while building 7B: a CSV writer that dropped
+  rows whose key sets differed (which would have deleted every BLOCKED row from
+  the Design B file) and a split that was row-disjoint while sharing
+  components.
+- **Gates re-run, not quoted**: `pytest` **340 passed**; adversarial escalation
+  **9/9** with its CSV byte-identical; goldens **45/45** and **9/9**; ablation
+  baseline **32/45**.
+
+Scripts: `src/experiments/run_external_conformal_shift.py`,
+`src/experiments/compare_deferral_rules_external.py`. Outputs:
+[`external_conformal_designA.csv`](data/external_tobibueck/external_conformal_designA.csv),
+[`external_conformal_designB.csv`](data/external_tobibueck/external_conformal_designB.csv),
+[`external_deferral_results.csv`](data/external_tobibueck/external_deferral_results.csv),
+[`external_contamination.json`](data/external_tobibueck/external_contamination.json),
+[`external_label_noise.json`](data/external_tobibueck/external_label_noise.json),
+[`external_shift_splits.json`](data/external_tobibueck/external_shift_splits.json).
 
 ### Automation-flagging feature
 

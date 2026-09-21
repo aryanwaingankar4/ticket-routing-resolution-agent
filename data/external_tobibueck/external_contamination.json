@@ -1,0 +1,16 @@
+{
+  "threshold": 0.95,
+  "model": "BAAI/bge-base-en-v1.5",
+  "n_test": 10441,
+  "n_reference": 3305,
+  "n_with_near_neighbour": 152,
+  "near_neighbour_rate": 0.014557992529451202,
+  "n_no_neighbour": 10289,
+  "mean_top1_similarity": 0.871476830439188,
+  "median_top1_similarity": 0.8794902563095093,
+  "p05_top1_similarity": 0.7759773135185242,
+  "brute_force_probe_rows": 200,
+  "brute_force_mismatches": 0,
+  "corpus_wide_near_duplicate_rate_7a": 0.7939209511340717,
+  "note": "Coverage is reported on the full test set AND on the no-neighbour subset. A memorised test arm would reproduce Finding 1's mechanism for the wrong reason."
+}

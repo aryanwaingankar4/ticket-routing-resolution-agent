@@ -184,6 +184,17 @@ python src/experiments/compare_deferral_rules.py
 python src/experiments/fetch_external_dataset.py
 python src/experiments/profile_external_dataset.py
 
+# Phase 7B -- does Finding 1 replicate on a different generator? (offline, no
+# quota). Reuses 7A's embedding cache and fits BOTH tiers FRESH on the external
+# training split -- a declared rule-7 exception, since the production artifacts
+# were fitted on our 4,000 rows over a different label space. Step 1 re-encodes
+# 64 seeded rows and is FATAL unless they match the cache: a row-count check is
+# exactly what a misaligned cache passes. The isolation check is widened to 22
+# files, including models/, tests/goldens/ and every published conformal,
+# deferral and ablation CSV. Both scripts refuse to overwrite without --force.
+python src/experiments/run_external_conformal_shift.py
+python src/experiments/compare_deferral_rules_external.py    # run it second
+
 # Phase 6B -- weighted conformal under shift (offline, no quota). Measurement
 # only; refuses to run if settings.conformal.enabled is True, and refuses to
 # overwrite its CSV without --force. FATAL unless the unweighted rows reproduce
@@ -374,10 +385,33 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 - **Benchmarks are read-only.** `NOVEL_TICKETS` in `generalization_test.py` (14 tickets)
   and `data/novel_tickets_expanded.json` (45 tickets) are fixed reference points used
   across every method comparison. Never edit or regenerate them.
-- **Conformal coverage transfers for Tier-2 but not Tier-1.** Calibrated on the
-  same 175 tickets at the same alpha, TF-IDF loses 23.3 coverage points on the
-  45-ticket benchmark while BGE loses 1.1 (noise band 4.5). Do not quote a
-  conformal guarantee for a lexical model on out-of-template text.
+- **Conformal coverage transfers for Tier-2 but not Tier-1 — ON OUR CORPUS,
+  and only there.** Calibrated on the same 175 tickets at the same alpha,
+  TF-IDF loses 23.3 coverage points on the 45-ticket benchmark while BGE loses
+  1.1 (noise band 4.5). Do not quote a conformal guarantee for a lexical model
+  on out-of-template text. **Phase 7B tried this on the external corpus and it
+  DID NOT REPLICATE**: under a measured shift, Tier-1's gap is +0.0009 against
+  Tier-2's −0.0072 at α=0.10, band 0.0165 — the two tiers are
+  indistinguishable. Finding 1 is **not withdrawn and not softened**; its
+  **scope** narrows to our corpus. **Never write "7B refutes Finding 1"** —
+  that corpus has no representation gap to find (Tier-1 34.8% vs Tier-2 37.3%,
+  2.6 points, against 35.6 on ours), which weakens 7B as evidence and is a
+  limitation, not a rescue.
+- **7B's deferral reading must never be merged with 6A's.** 6A, on our data:
+  "no evidence either way on the gated axis" — that wording still stands. 7B,
+  on the external test arm where the comparison finally resolves (642 tickets
+  at the gate against 6A's four): **3 of 6 comparisons signal and all three
+  favour the confidence incumbent**, so conformal deferral is *worse* there.
+  Different corpus, transplanted gate, ~35% label accuracy — it does not
+  retro-license a claim about ours. Conformal still cannot be *operated* at the
+  gate in either place.
+- **A number quoted at a gate must come from a committed script.** 7A's two
+  design domain AUCs (0.8584; 0.6706–0.9316) were computed in an interactive
+  session, never committed, and **do not reproduce** — 7B's specified
+  recomputation gives 0.8727 raw / 0.8472 operating, and five variants chasing
+  the recorded value span 0.8637–0.8727. The conclusions were unaffected
+  because every value cleared the same threshold, but the figures were wrong in
+  print for a day. This is the concrete motivation for Phase 8A.
 - **The 175-ticket calibration set cannot be de-contaminated.** Its tickets are
   paraphrases of training rows, but memorisation is template-level: **66
   templates, ~62 rows each, and the set touches 62 of them. Removing source
