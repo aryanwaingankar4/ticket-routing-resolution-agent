@@ -2,14 +2,15 @@
 
 **Last updated:** 2026-09-21
 **Last commit to move code or a result:** `8f2f5e1` — Phase 6A (conformal
-deferral vs a confidence threshold). **Committed but NOT pushed — held for the
-gate review.** Phase 5C was gate-cleared and pushed on 2026-09-21 (`4793785`,
-`1200451`, `a8557df`).
-**Branch:** `main`, two commits ahead of `origin/main` (`8f2f5e1` + this SHA refresh), working tree clean.
-**Current phase:** **Phase 6A — COMPLETE, awaiting gate review.** Verdict:
-**do not promote conformal to the live deferral gate** — and the honest form is
-"no evidence either way on the gated axis", not "conformal is worse". Nothing
-promoted; `settings.conformal.enabled` stays `False`. **Next: Phase 6B.**
+deferral vs a confidence threshold). **Gate cleared and PUSHED on 2026-09-21**,
+along with Phase 5C (`4793785`, `1200451`, `a8557df`).
+**Branch:** `main`, level with `origin/main`, working tree clean.
+**Current phase:** **Phase 6A — COMPLETE, GATED and PUSHED.** Verdict:
+**do not promote conformal to the live deferral gate** — and the fixed wording is
+"no evidence it defers better on the gated axis", **never** "conformal is worse".
+Nothing promoted; `settings.conformal.enabled` stays `False`.
+**Next: Phase 6B, which opens in plan mode — see "Immediate next step" for the
+pre-registration it must carry.**
 
 Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
@@ -130,6 +131,28 @@ to the phase that owes the decision:
   distribution* (Phase 1 Finding 4; Phase 4B-1) and the *training distribution*
   (Phase 5C).
 - **Phase 2A stays a related dataset limitation, not an instance.**
+
+**Added 2026-09-21 after the 6A gate — a SECOND named finding, methodological.**
+6A's AURC result goes in the paper as a **methodological finding**, paired with
+the Phase 2A decision-rule inversion. They are **two independent instances of the
+same failure: an ungated or averaged metric manufacturing significance where the
+pre-registered, gated comparison has no resolution.**
+
+- **Phase 2A — the decision-rule inversion.** A valid exact binomial on which
+  clustering configuration won more discordant pairs would have promoted
+  whichever model *merged more*, because every pair in the comparison region was
+  within-template and the two configurations differed only in recall. The rule
+  would have inverted the project's precision-over-recall asymmetry through the
+  gate meant to enforce it.
+- **Phase 6A — AURC vs the gated axis.** AURC returned significant effects in 3
+  of 12 comparisons, in **contradictory directions** across the two evaluation
+  sets, and favouring the simpler baseline (margin) rather than conformal — while
+  the pre-registered gated metric had **no resolution at all in 3 of 4
+  configurations**.
+
+**The verdict wording is fixed and must not drift:** *"no evidence it defers
+better on the gated axis"*. **Never** *"conformal is worse"* — the data does not
+support the stronger claim, and 6A's own degeneracy is the reason why.
 
 Two things he asked to survive into the paper from 5C specifically:
 
@@ -1008,9 +1031,9 @@ with 6C.
 ---
 
 
-## Phase 6A — conformal deferral vs a confidence threshold (COMPLETE, awaiting gate)
+## Phase 6A — conformal deferral vs a confidence threshold (gated and pushed in `8f2f5e1`)
 
-**Committed, not pushed.** Measurement only; `settings.conformal.enabled` stays
+**Gate cleared and pushed.** Measurement only; `settings.conformal.enabled` stays
 `False` and nothing was promoted.
 
 ### The verdict
@@ -1134,7 +1157,7 @@ calls**; dry-run first and cache every raw response.
 
 | Sub-phase | Scope |
 |---|---|
-| **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE, awaiting gate** |
+| **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE** (`8f2f5e1`, gated and pushed) |
 | **6B** | Weighted conformal under shift, with a domain-classifier density ratio |
 | **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
 
@@ -1150,6 +1173,19 @@ not.
 |---|---|
 | **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` |
 | **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it |
+
+**PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
+Evaluation-set size at low coverage is now the binding constraint in **four**
+places: Phase 1's coverage transfer, Phase 4B-1's provisional power numbers,
+Phase 5C's corpus ceiling, and Phase 6A, where the live gate's ~9–19% operating
+coverage contains only 4 tickets on the benchmark and 34 on the deployment set,
+leaving the gated axis unmeasurable in 3 of 4 configurations.
+
+`Tobi-Bueck/customer-support-tickets` carries **61.8k rows** and is **the only
+planned work where a low-coverage comparison could actually resolve** — a 10%
+operating coverage there is thousands of tickets rather than four. That makes
+Phase 7 a prerequisite for re-asking 6A's question (and 6B's) with any power,
+not an external-validity nicety.
 
 **7A's framing is load-bearing:** that dataset is itself LLM-generated, so it is
 treated as **independently generated data, not real production data**. It tests
@@ -1214,19 +1250,33 @@ endpoint.
 
 ## Immediate next step
 
-**Review the Phase 6A gate.** The phase is complete and committed; nothing is
-pushed until "gate cleared". Its gate table is under "Phase 6A" above — all
-checks were re-run, not quoted.
+**Phase 6B — weighted conformal under shift**, with a domain-classifier density
+ratio. Offline, **no Gemini quota**, measurement only: `settings.conformal.enabled`
+stays `False` whatever the result shows. Opens in plan mode like every sub-phase.
 
-Once cleared: **Phase 6B — weighted conformal under shift**, with a
-domain-classifier density ratio. Offline, no Gemini quota, measurement only.
-It is the direct successor to the named finding: it tests whether reweighting
-can do what distribution matching could not. Opens in plan mode.
+6B is the direct successor to the named finding — it tests whether **reweighting**
+can do what distribution matching could not (Phase 1 Finding 4 recovered only
+~38% of Tier-1's coverage shortfall and left it six times outside the noise band).
 
-**Carry into 6B:** 6A's binding constraint was that the live gate's operating
-coverage (~10–20%) contains only a handful of tickets on either evaluation set,
-so the gated axis was unmeasurable in 3 of 4 configurations. 6B should say up
-front what it will do when its own primary metric has no resolution.
+**HANDOFF NOTE FROM 6A — 6B must declare this in its plan, BEFORE any result is
+seen.** 6A's primary metric turned out to have **no resolution in 3 of 4
+configurations**: at the live gate's ~9–19% operating coverage the benchmark
+admits 4 tickets and the deployment set 34, and every deferral rule accepted the
+same ones. That was discovered *after* the run. 6B must therefore state up front,
+as part of its pre-registration:
+
+1. **What its primary metric is**, and at what sample size that metric can
+   resolve a difference worth acting on.
+2. **What it reports when the metric has no resolution** — the answer must be an
+   explicit "no resolution on the gated axis", never a fallback to whichever
+   secondary or averaged statistic happens to show an effect. 6A's AURC produced
+   three contradictory significant effects in exactly that situation.
+3. **Whether the question is answerable on the available sets at all**, decided
+   before running rather than after. If it is not, say so and defer to Phase 7,
+   whose 61.8k-row dataset is the only planned work where a low-coverage
+   comparison could resolve.
+
+6A is gated and pushed; its gate table is under "Phase 6A" above.
 
 **Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
 and a re-score costs nothing. **5C must not share a day with 6C.**
