@@ -174,6 +174,13 @@ python -m src.experiments.calibrate_conformal
 # accuracy (16/45, 33/45, 91/175, 132/175).
 python src/experiments/compare_deferral_rules.py
 
+# Phase 6B -- weighted conformal under shift (offline, no quota). Measurement
+# only; refuses to run if settings.conformal.enabled is True, and refuses to
+# overwrite its CSV without --force. FATAL unless the unweighted rows reproduce
+# Finding 1 exactly (Tier-1 -0.233333, Tier-2 -0.011111 at alpha=0.10), checked
+# both against a constant and against conformal_calibration_results.csv.
+python src/experiments/run_weighted_conformal.py
+
 # Phase 4A -- drift reference (offline, no quota). Refuses to overwrite
 # without --force; fatal unless it reproduces the published Phase 1
 # OOD/adversarial detection results exactly.
@@ -501,6 +508,24 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   *margin*, not conformal. **Never quote an AURC win as a reason to promote**:
   this project gates on risk at the operating coverage, and AURC averages over
   coverages the system never runs at.
+- **Weighted conformal (6B) is a PARTIAL repair, never a correction.**
+  Reweighting moves Tier-1's benchmark coverage gap from -0.233 to -0.122
+  (TF-IDF space, alpha=0.10) -- a change larger than the +-2 s.d. band, but the
+  residual is still **5.4 s.d. below nominal**. Never write this as "the shift
+  is correctable by covariate reweighting": the change cleared the band, the
+  residual did not. Report both readings. Post-hoc, recovery is 47.6% against
+  distribution matching's ~38% -- two independent strategies, both partial,
+  which **sharpens** the named finding.
+- **6B's BGE arm is degenerate and must never be quoted.** The cross-fitted
+  domain AUC is **0.9908**: the in-domain and deployment sets are near-perfectly
+  separable in the very space Tier-2 scores in, so the density ratio is
+  ill-posed. Its numbers are the flattering ones (alpha=0.05 lands at +0.0056,
+  essentially nominal) and are in the CSV as blocked, not as a result. Quoting
+  them repeats 6A's AURC error. The 0.9908 itself is a quantitative statement
+  of the named finding.
+- **Reweighting has a cost, charged to Tier-2.** 6B's sanity check did not come
+  back clean: 7 of 18 Tier-2 configurations made the gap worse and 5 were pushed
+  outside the band. Report that beside any Tier-1 gain.
 - **A local model must never be measured while swapping.** `OllamaBackend`
   refuses to start below a per-model RAM floor (`MODEL_RAM_FLOOR_MB`), because a
   swapping model yields a latency number that is meaningless *and* plausible.

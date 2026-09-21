@@ -9,8 +9,13 @@ along with Phase 5C (`4793785`, `1200451`, `a8557df`).
 **do not promote conformal to the live deferral gate** — and the fixed wording is
 "no evidence it defers better on the gated axis", **never** "conformal is worse".
 Nothing promoted; `settings.conformal.enabled` stays `False`.
-**Next: Phase 6B, which opens in plan mode — see "Immediate next step" for the
-pre-registration it must carry.**
+**Phase 6B is COMPLETE and GATED, awaiting push.** Verdict: weighted conformal
+is a **partial repair, not a correction** — Tier-1's benchmark gap moves
+−0.2333 → −0.1222 at α=0.10, a change beyond the ±2 s.d. band but a residual
+still **5.4 s.d. below nominal**. **Never write "the shift is correctable by
+covariate reweighting."** Nothing promoted; `settings.conformal.enabled` stays
+`False`. **Next: Phase 6C (Gemini-spending) or Phase 7 — see "Immediate next
+step".**
 
 **Recorded 2026-09-21, after the 6A gate: the corpus's nasscom-brief origin, as
 a framing note for Phase 9A.** No experiment, dataset, threshold or result
@@ -51,7 +56,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **261 passed** (246 + 15 from 6A), 0 failed/skipped, offline, ~80s |
+| Test suite | `pytest` | **306 passed** (261 + 45 from 6B), 0 failed/skipped, offline, ~121s |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -65,6 +70,7 @@ first. Everything between is the record of what has already landed.
 | Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
 | Zero-shot Gemini (5C) | `run_zeroshot_baselines.py --backend gemini` | **40/45** and **14/14**, 0 unparseable, median 0.81 s |
 | Zero-shot Qwen2.5-3B (5C) | `run_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct` | **34/45** and **12/14**, 0 unparseable, median 6.98 s (CPU) |
+| Weighted conformal (6B) | `run_weighted_conformal.py` | Tier-1 gap −0.2333 → **−0.1222** (TF-IDF, α=0.10); residual **5.4 s.d. out**; BGE arm **blocked**, domain AUC **0.9908** |
 | Deferral rules (6A) | `compare_deferral_rules.py` | **no signal on the gated axis in all 12 comparisons**; 3 of 4 configurations degenerate at the live gate |
 | Prompt identity across the two 5C arms | `summarize_zeroshot_baselines.py --prompt-check-against` | **59/59 byte-identical** (sha256), both directions |
 
@@ -1179,6 +1185,138 @@ is the same constraint the named finding describes, arriving a fourth time.
 
 ---
 
+## Phase 6B — weighted conformal under shift (COMPLETE, gated, awaiting push)
+
+**Measurement only.** `settings.conformal.enabled` and `settings.drift.enabled`
+stay `False`; cascade 0.50, RAG 0.67, clustering 0.80 untouched. Offline, zero
+Gemini calls. Nothing was promoted.
+
+### The verdict, in the wording that must not drift
+
+**Weighted conformal is a PARTIAL REPAIR, not a correction.** Reweighting moves
+Tier-1's benchmark-45 coverage gap from **−0.2333 to −0.1222** at α = 0.10
+(TF-IDF space), a change of **+0.1111** against a ±2 s.d. band of 0.0454 — but
+the residual is still **5.4 s.d. below nominal**.
+
+**Never write "the shift is correctable by covariate reweighting."** The change
+cleared the band; the residual did not. Both readings are reported.
+
+### Why both readings are reported — a pre-registration ambiguity, disclosed
+
+The pre-registered interpretation clause read *"weighting closes Tier-1's gap
+beyond the noise band"*. That admits two readings which **disagree on this
+data**:
+
+- **(a) the CHANGE exceeds the band** → 3/3 resolving configurations.
+- **(b) the RESIDUAL falls inside the band** → 0/3.
+
+Reading (a) alone would have licensed "correctable". Both are therefore in the
+CSV and in the verdict, and the ambiguity is disclosed rather than resolved in
+whichever direction flatters the result. Picking one after seeing the numbers is
+exactly what the pre-registration exists to prevent.
+
+`recovery_fraction` (47.6%) is **post-hoc and descriptive**, flagged as such in
+the CSV and the README. It describes; it does not decide.
+
+### Result 1 — the primary axis
+
+| Space | Cross-fitted AUC | n_eff | Gap at α=0.10 | Change | Residual |
+|---|---|---|---|---|---|
+| (unweighted) | — | 175 | **−0.2333** | — | 10.3 s.d. out |
+| BGE | 0.9908 | 145.0–153.9 | −0.1667 | +0.0667 | **blocked** |
+| TF-IDF | 0.9295 | 124.4–129.1 | **−0.1222** | **+0.1111** | **5.4 s.d. out** |
+
+All three clip variants (none/p95/p99) give the same gap per space; clipping
+barely matters because `n_eff` never collapsed.
+
+**This sharpens the named finding.** Distribution matching recovered ~38%
+(Finding 4) and reweighting recovers 47.6% — two independent repair strategies,
+different mechanisms, both partial, both leaving coverage 5–6 s.d. outside
+nominal. If neither matching the calibration distribution nor reweighting it
+closes the gap, the constraint is a property of the corpus, not the method.
+
+### Result 2 — the production representation is the degenerate one
+
+The BGE arm triggered a **pre-registered** degeneracy condition: cross-fitted
+domain **AUC 0.9908**. The in-domain and deployment sets are near-perfectly
+separable **in the very space Tier-2 scores in**, so a density ratio is
+ill-posed there.
+
+**The blocked numbers are the flattering ones** — BGE at α = 0.05 moves the gap
+from −0.1056 to **+0.0056**, essentially exactly nominal. They are in the CSV as
+blocked and are **NOT a result**. Quoting them would repeat 6A's AURC error.
+The 0.9908 is itself a quantitative statement of the named finding.
+
+### Result 3 — the Tier-2 sanity check is NOT clean
+
+Declared in advance as a check weighting must not break; it did not come back
+clean. Of 18 Tier-2 configurations: **7 made |gap| worse, 5 were pushed outside
+the band, 3 changed by more than the band.** Worst are all TF-IDF (α=0.20:
+−0.0444 → −0.0667; α=0.10: −0.0111 → −0.0556).
+
+**Reweighting has a cost and it is charged to the tier that did not need
+repairing.** Report it beside any Tier-1 gain.
+
+### Limitations, recorded beside the result
+
+- **The target proxy is not the test set.** Weights are built toward the
+  deployment 175; coverage is measured on the benchmark 45. So this measures
+  "reweighting toward *this* target did not repair it", **not** "no reweighting
+  could". Stated before the run, not after.
+- **Weights are estimated, not known** (Barber et al. 2022 give the cost); no
+  part of the residual is attributed to a particular cause.
+- **n = 45**, so the ±2 s.d. band is ~4.5 points and smaller differences are not
+  read.
+- **Tier-2 carries no finding by construction**, as declared in advance.
+
+### What was built
+
+- `src/agent/conformal.py` — **additive only**: `weighted_conformal_quantile`,
+  `_weighted_quantiles` (batched), `weighted_predict_sets`,
+  `effective_sample_size`, `true_label_scores`. No existing function changed;
+  production imports only `conformal_p_values`, untouched.
+- `src/experiments/run_weighted_conformal.py` — the experiment, carrying the
+  pre-registration in its docstring.
+- `tests/test_weighted_conformal.py` — 22 tests (45 with parameterisation).
+- `data/weighted_conformal_results.csv` — 42 rows, new filename.
+
+### Verifications (rule 6 — second independent derivations)
+
+- Unweighted rows **reproduce Finding 1 exactly**, checked **twice**: against a
+  constant in the script *and* against the published
+  `conformal_calibration_results.csv`, so a typo in the constant cannot become
+  the thing the run validates against. Fatal on mismatch.
+- **Uniform weights reproduce the unweighted quantile exactly** (`==`), over 4
+  alphas × 6 sizes. Both reduce to rank `ceil((n+1)(1−α))` from the same float
+  expression.
+- **Batched quantile == scalar quantile**, exactly.
+- **Coverage and `n_eff` each recomputed by a second expression** (`n/(1+CV²)`),
+  fatal on disagreement.
+- **Synthetic covariate-shift test** with `P(Y|X)` fixed and the true ratio
+  supplied: 0.829 unweighted → 0.889 weighted at nominal 0.90. The first version
+  of this test **did not bite** (a flatter test distribution over-covered at
+  0.893) and would have passed a broken implementation; it was rebuilt.
+- **Prior correction `n_cal/n_target` verified to be exactly 1.0**, not dropped.
+
+### Rule-7 exception, stated
+
+6B refits via `fit_scoring_models(df, embeddings, exclude_ids=set())` rather
+than loading production artifacts. Not optional: the in-domain 175 **is** the
+contaminated calibration set, and reproducing Finding 1's −0.233 exactly
+requires the exact fit that produced it. 6A could use production artifacts
+because both its eval sets were disjoint from training; 6B cannot.
+
+### 6B gate — RE-RUN, not quoted
+
+| Check | Result |
+|---|---|
+| `pytest` | **306 passed**, 0 failed (was 261) |
+| Adversarial escalation | **9/9 PASS**, CSV sha256 `d53e40c616ace5a7` **byte-identical** |
+| Golden parity | **45/45 and 9/9** exact |
+| Ablation baseline (45) | **71.11% (32/45)**, CSV sha256 `8282e2db4353ca57` byte-identical |
+
+---
+
 ## The agreed Phase 5–9 programme
 
 Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
@@ -1208,7 +1346,7 @@ calls**; dry-run first and cache every raw response.
 | Sub-phase | Scope |
 |---|---|
 | **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE** (`8f2f5e1`, gated and pushed) |
-| **6B** | Weighted conformal under shift, with a domain-classifier density ratio |
+| **6B** | Weighted conformal under shift, with a domain-classifier density ratio — **DONE** (gated, awaiting push) |
 | **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
 
 6A is the experiment that makes Phase 1's conformal work operational without
@@ -1300,38 +1438,30 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 6B — weighted conformal under shift**, with a domain-classifier density
-ratio. Offline, **no Gemini quota**, measurement only: `settings.conformal.enabled`
-stays `False` whatever the result shows. Opens in plan mode like every sub-phase.
+**Phase 6B is done and gated.** The remaining Phase 6 item is **6C — the
+retrieval-sufficiency gate on the 33 groundedness tickets (~55–110 Gemini
+calls)**, which is quota-spending and **must not share a day with any other
+Gemini sub-phase**.
 
-6B is the direct successor to the named finding — it tests whether **reweighting**
-can do what distribution matching could not (Phase 1 Finding 4 recovered only
-~38% of Tier-1's coverage shortfall and left it six times outside the noise band).
+**But 6B strengthens the case for doing Phase 7 first.** 6B's BGE arm was
+blocked by a cross-fitted domain AUC of **0.9908** — the calibration and
+deployment sets are near-separable in the production embedding space — and its
+resolving arm left the gap 5.4 s.d. out on **45 tickets**. Evaluation-set size
+and corpus register now bind in **five** places: Phase 1 coverage transfer,
+Phase 4B-1 power, Phase 5C's corpus ceiling, Phase 6A's low-coverage
+degeneracy, and now 6B's residual. `Tobi-Bueck/customer-support-tickets` at
+**61.8k rows** remains the only planned work where these questions could
+resolve.
 
-**HANDOFF NOTE FROM 6A — 6B must declare this in its plan, BEFORE any result is
-seen.** 6A's primary metric turned out to have **no resolution in 3 of 4
-configurations**: at the live gate's ~9–19% operating coverage the benchmark
-admits 4 tickets and the deployment set 34, and every deferral rule accepted the
-same ones. That was discovered *after* the run. 6B must therefore state up front,
-as part of its pre-registration:
+**Recommendation to decide at the gate:** run **7A** next (offline, no quota),
+and hold 6C until a day is free for it. Either way the choice is Aryan's — both
+open in plan mode.
 
-1. **What its primary metric is**, and at what sample size that metric can
-   resolve a difference worth acting on.
-2. **What it reports when the metric has no resolution** — the answer must be an
-   explicit "no resolution on the gated axis", never a fallback to whichever
-   secondary or averaged statistic happens to show an effect. 6A's AURC produced
-   three contradictory significant effects in exactly that situation.
-3. **Whether the question is answerable on the available sets at all**, decided
-   before running rather than after. If it is not, say so and defer to Phase 7,
-   whose 61.8k-row dataset is the only planned work where a low-coverage
-   comparison could resolve.
+**Carried forward for 6C when it runs:** dry-run at `--limit 3` first,
+`call_delay_sec >= 4.5`, cache every raw response. **Do not spend more Gemini
+quota on 5C** — all 59 responses are cached and a re-score costs nothing.
 
-6A is gated and pushed; its gate table is under "Phase 6A" above.
-
-**Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
-and a re-score costs nothing. **5C must not share a day with 6C.**
-
-**Two items carried forward for Phase 9A:**
+**Three items carried forward for Phase 9A:**
 
 1. 5C widened the named finding from the calibration/reference distribution to
    the training distribution as well. The README heading was kept for
@@ -1339,11 +1469,12 @@ and a re-score costs nothing. **5C must not share a day with 6C.**
    wording.**
 2. **The corpus's nasscom-brief origin** must open the experimental-setup
    section, immediately followed by the corpus-as-object-of-study framing
-   (Phase 2A, Finding 2, Phase 5C). Recorded in full under "The corpus's
-   origin — the nasscom brief" above; it is a framing note only and moved no
-   result.
-
----
+   (Phase 2A, Finding 2, Phase 5C). Recorded under "The corpus's origin — the
+   nasscom brief" above; framing only, moved no result.
+3. **6B's two wordings are fixed and must not drift.** "A partial repair, not a
+   correction" — never "the shift is correctable by covariate reweighting". And
+   the BGE arm is **blocked, not a result**, however favourable its numbers
+   look.
 
 ## Open questions
 

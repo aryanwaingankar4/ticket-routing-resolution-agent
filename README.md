@@ -2262,6 +2262,158 @@ Script: `src/experiments/compare_deferral_rules.py`. Results:
 [`deferral_conformal_operating_points.csv`](data/deferral_conformal_operating_points.csv),
 plus four `deferral_risk_coverage_{tier}_{set}.png` figures.
 
+### Phase 6B - weighted conformal under shift: a partial repair, not a correction
+
+**Measurement only. `settings.conformal.enabled` stays `False`.** Cascade 0.50,
+RAG 0.67, clustering 0.80 unchanged; no artifact, benchmark or golden touched.
+Offline, zero Gemini calls.
+
+#### The question
+
+Finding 1 measured that a conformal predictor calibrated on the in-domain 175
+loses **23.3 coverage points** on the 45-ticket benchmark for Tier-1 - 10.3 s.d.
+below nominal, against a +-2 s.d. band of 0.045. Phase 1 Finding 4 then showed
+that **distribution matching** - rebuilding the calibration set at deployment
+register, matched on size and class balance - recovers only ~38% of that
+shortfall (-0.233 -> -0.144) and leaves it six s.d. outside nominal.
+
+6B asks the successor question: can **covariate reweighting** do what
+distribution matching could not? Weighted split conformal (Tibshirani et al.
+2019; Barber et al. 2022, *Conformal prediction beyond exchangeability*)
+reweights calibration scores by the covariate likelihood ratio between the test
+and calibration distributions. If the shift is a covariate shift, reweighting is
+the principled repair.
+
+#### Pre-registered, before any result was seen
+
+Written into the script's docstring before the first run, because 6A's primary
+metric turned out to have no resolution in 3 of 4 configurations and that was
+discovered *after* the run.
+
+- **Primary metric:** Tier-1 benchmark-45 **marginal coverage** gap at
+  alpha = 0.10, weighted vs unweighted, judged against the +-2 s.d. band.
+- **Answerability, decided in advance:** 6B is *not* on 6A's wall. 6A's gated
+  axis was selective risk at low coverage, where the benchmark admitted 4
+  tickets. 6B's axis is marginal coverage over **all 45** - no coverage
+  restriction - and Finding 1's gap already resolved there.
+- **Tier-2 declared unanswerable in advance.** Its unweighted gap (-0.011) is
+  already inside the band, so there is no headroom for an improvement to show.
+  Tier-2 is a **sanity check**, never a finding.
+- **Degeneracy rule:** report "no resolution", naming the condition, if
+  `n_eff < 50`, or cross-fitted domain AUC `>= 0.95`, or weighted and unweighted
+  sets are identical. No secondary or averaged statistic is promoted in place of
+  a primary that cannot resolve - 6A's AURC lesson, written into the rule.
+
+#### Result 1 - reweighting improves coverage measurably but does not repair it
+
+Density ratio from a **cross-fitted** (5-fold, seed 42) logistic-regression
+domain classifier separating the in-domain 175 from the deployment 175, the
+latter used **unlabeled as the target proxy and never scored**. Fitted in BGE
+space and TF-IDF space separately. Clip variants: none, p95, p99.
+
+| Space | Cross-fitted AUC | n_eff | Gap at alpha=0.10 | Change | Residual |
+|---|---|---|---|---|---|
+| (unweighted) | - | 175 | **-0.2333** | - | 10.3 s.d. out |
+| BGE | 0.9908 | 145.0-153.9 | -0.1667 | +0.0667 | **blocked by pre-registration** |
+| TF-IDF | 0.9295 | 124.4-129.1 | **-0.1222** | **+0.1111** | **5.4 s.d. out** |
+
+All three clip variants give the same gap in each space; clipping barely matters
+because `n_eff` never collapsed.
+
+Both pre-registered readings are reported, because **the pre-registered wording
+turned out to be ambiguous** and the two readings disagree here:
+
+- **(a) the change exceeds the band: 3/3 resolving configurations.**
+- **(b) the residual gap falls inside the band: 0/3.**
+
+Reading (a) alone would license "the shift is correctable by covariate
+reweighting". It is not. Coverage is still **5.4 s.d. below nominal** after
+reweighting. The ambiguity is disclosed rather than resolved in whichever
+direction flatters the result - picking one after seeing the numbers is
+precisely what the pre-registration exists to prevent.
+
+**The honest claim: a partial recovery, not a correction.** Post-hoc and
+descriptive, the recovery fraction is **47.6%**, against distribution matching's
+~38%. Two independent repair strategies, reached by different mechanisms, both
+partial, both leaving coverage 5-6 s.d. outside nominal. **This sharpens the
+named finding rather than overturning it:** if neither matching the calibration
+distribution nor reweighting it closes the gap, the constraint is a property of
+the corpus, not of the method - which is exactly what the named finding claims.
+
+#### Result 2 - the production representation is the degenerate one
+
+The BGE arm triggered a pre-registered degeneracy condition: **cross-fitted
+domain AUC 0.9908**. The in-domain and deployment sets are very nearly
+**perfectly separable in the embedding space Tier-2 actually scores in**. A
+density ratio is ill-posed when the two domains barely overlap, which is why
+that condition was registered in advance.
+
+This matters twice over. First, it blocks the BGE numbers from being read as a
+result - and they are the *flattering* ones: BGE at alpha = 0.05 moves the gap
+from -0.1056 to **+0.0056**, essentially exactly nominal. That is in the CSV and
+is **not** a finding. Quoting it would be the 6A AURC error repeated.
+
+Second, an AUC of 0.9908 is itself a direct, quantitative statement of the named
+finding: the two distributions are near-disjoint in the production
+representation. The separability *is* the constraint.
+
+#### Result 3 - the Tier-2 sanity check is NOT clean
+
+Declared in advance as a check that weighting must not break, and it did not
+come back clean. Of 18 Tier-2 configurations: **7 made |gap| worse, 5 were
+pushed outside the band, and 3 changed by more than the band.** Worst cases are
+all TF-IDF - alpha=0.20 moves -0.0444 to -0.0667, and alpha=0.10 moves -0.0111
+to -0.0556.
+
+**Reweighting has a cost, and it is charged to the tier that did not need
+repairing.** That belongs beside any Tier-1 gain, not in a footnote.
+
+#### Limitations, recorded beside the result
+
+- **The target proxy is not the test set.** Weights are built toward the
+  deployment 175, but coverage is measured on the 45-ticket benchmark. Weighted
+  conformal assumes test points are drawn from the target the weights describe.
+  So this measures "reweighting toward *this* target did not repair it", **not**
+  "no reweighting could". Stated before the run, not after.
+- **The weights are estimated, not known.** Barber et al. (2022) give the
+  coverage cost of estimated weights; none of the residual gap is attributed
+  here to any particular cause.
+- **n = 45.** Each benchmark ticket is worth 2.2 coverage points, so the
+  +-2 s.d. band is ~4.5 points. Differences smaller than that are not read.
+- **`recovery_fraction` is post-hoc** - added after the results were seen,
+  flagged as such in the CSV and here. It describes; it does not decide.
+- **Tier-2 carries no finding by construction**, as declared in advance.
+
+#### Verification
+
+- The unweighted rows **reproduce Finding 1 exactly** - Tier-1 -0.233333,
+  Tier-2 -0.011111 - checked **twice**: against a constant in the script and
+  independently against the published `conformal_calibration_results.csv`, so a
+  typo in the constant cannot become the thing the run validates against. Fatal
+  on mismatch.
+- **Uniform weights reproduce the unweighted quantile exactly** (`==`, not
+  `approx`), across four alphas and six calibration sizes. Both sides reduce to
+  rank `ceil((n+1)(1-alpha))` from the same float expression.
+- **The batched quantile equals the scalar one exactly** - two internally
+  consistent implementations of one quantity being allowed to drift is this
+  project's recurring bug class.
+- **Coverage and `n_eff` each recomputed by a second, independent expression**
+  (`n_eff` via `n/(1+CV^2)`), fatal on disagreement.
+- **A synthetic covariate-shift test** where `P(Y|X)` is held identical and only
+  `P(X)` moves, with the true density ratio supplied: unweighted coverage 0.829,
+  weighted 0.889 at nominal 0.90. Without it, a null on the real data could not
+  be told apart from a broken implementation. (The first version of this test
+  did not bite - a flatter test distribution *over*-covered at 0.893 - and would
+  have passed a broken implementation; it was rebuilt.)
+- **The prior correction `n_cal/n_target` is verified to be exactly 1.0** rather
+  than silently dropped.
+
+Script: `src/experiments/run_weighted_conformal.py`. Results:
+[`weighted_conformal_results.csv`](data/weighted_conformal_results.csv) (42
+rows). Library: `weighted_conformal_quantile`, `weighted_predict_sets`,
+`effective_sample_size`, `true_label_scores` in `src/agent/conformal.py`, all
+additive; tests in `tests/test_weighted_conformal.py`.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`

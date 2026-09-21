@@ -162,6 +162,246 @@ def min_calibration_size(alpha: float) -> int:
 
 
 # --------------------------------------------------------------------------- #
+# Weighted split conformal (Phase 6B) -- MEASUREMENT ONLY
+# --------------------------------------------------------------------------- #
+# Added for Phase 6B. Nothing above this line changed, and no production path
+# calls anything below it: drift.py imports conformal_p_values only, and
+# settings.conformal.enabled is False.
+#
+# Split conformal assumes exchangeability. Under COVARIATE SHIFT it fails, and
+# Tibshirani et al. (2019) show the repair: reweight each calibration point by
+# the covariate likelihood ratio w(x) = dP_target/dP_calibration, then take a
+# WEIGHTED quantile instead of an order statistic. Barber et al. (2022),
+# "Conformal prediction beyond exchangeability", give the general treatment and
+# the coverage gap incurred when the weights are estimated rather than known.
+#
+# THE TEST POINT CARRIES ITS OWN WEIGHT. The normalisation is over the
+# calibration weights PLUS w(x), with the remaining mass sitting on an atom at
+# +infinity. Dropping that atom is the standard implementation error here: it
+# makes q_hat too small, shrinks the sets, and lands coverage below nominal --
+# the same silent, reassuring direction the unweighted contamination failure
+# takes. So test_weight is a required argument, not an optional one.
+def effective_sample_size(weights: Sequence[float]) -> float:
+    """Kish effective sample size: (sum w)^2 / sum(w^2).
+
+    How many equally-weighted calibration points the weighted set is worth. It
+    equals n exactly when the weights are uniform and collapses toward 1 as a
+    single point takes over. A weighted conformal quantile computed from an
+    n_eff of a handful of points is arithmetic, not evidence, which is why
+    Phase 6B pre-registered n_eff < 50 as a degeneracy condition rather than
+    reading the number that came out.
+    """
+    w = np.asarray(weights, dtype=np.float64).ravel()
+    if w.size == 0:
+        raise ValueError("Cannot compute an effective sample size from no "
+                         "weights.")
+    if np.any(w < 0):
+        raise ValueError("Weights must be non-negative.")
+
+    total = float(w.sum())
+    if total <= 0.0:
+        raise ValueError("Weights sum to zero; no calibration mass.")
+
+    return float(total * total / float(np.square(w).sum()))
+
+
+def weighted_conformal_quantile(scores: Sequence[float],
+                                weights: Sequence[float],
+                                alpha: float,
+                                test_weight: float) -> float:
+    """Weighted q_hat: the smallest score whose cumulative normalised weight
+    reaches 1 - alpha.
+
+        p_i   = w_i / (sum_j w_j + w_test)      for each calibration point
+        p_inf = w_test / (sum_j w_j + w_test)   the atom at +infinity
+        q_hat = inf { s : sum_{i : s_i <= s} p_i >= 1 - alpha }
+
+    Returns +inf when the calibration mass never reaches 1 - alpha, which is
+    the weighted analogue of `conformal_quantile` running out of ranks: the
+    honest answer is the full label set.
+
+    UNIFORM WEIGHTS REPRODUCE `conformal_quantile` EXACTLY. With w_i = w_test
+    the threshold is k >= (n + 1)(1 - alpha), whose smallest integer solution
+    is ceil((n + 1)(1 - alpha)) -- the same rank, computed from the same float
+    expression, so the two agree bit for bit rather than approximately. That
+    equivalence is asserted in tests/test_weighted_conformal.py and is what
+    makes this function safe to introduce beside the published unweighted path.
+    """
+    if not 0.0 < alpha < 1.0:
+        raise ValueError(f"alpha must be in (0, 1); got {alpha!r}")
+
+    s = np.asarray(scores, dtype=np.float64).ravel()
+    w = np.asarray(weights, dtype=np.float64).ravel()
+
+    if s.size == 0:
+        raise ValueError("Cannot calibrate on an empty score set.")
+    if w.size != s.size:
+        raise ValueError(
+            f"Got {w.size} weights for {s.size} calibration scores."
+        )
+    if np.any(w < 0):
+        raise ValueError("Weights must be non-negative.")
+    if not math.isfinite(test_weight) or test_weight < 0:
+        raise ValueError(
+            f"test_weight must be finite and non-negative; got {test_weight!r}"
+        )
+
+    total = float(w.sum()) + float(test_weight)
+    if total <= 0.0:
+        raise ValueError("Calibration and test weights sum to zero.")
+
+    # Ascending by score, weights carried along. Ties are handled by the
+    # cumulative sum: all points sharing a score contribute before the
+    # comparison that selects it.
+    order = np.argsort(s, kind="stable")
+    s_sorted = s[order]
+    cumulative = np.cumsum(w[order])
+
+    # Same expression ordering as conformal_quantile's rank, so the uniform
+    # case matches exactly rather than to within a rounding error.
+    target = (1.0 - alpha) * total
+
+    reached = np.nonzero(cumulative >= target)[0]
+    if reached.size == 0:
+        return float("inf")
+
+    return float(s_sorted[reached[0]])
+
+
+def _weighted_quantiles(scores: np.ndarray,
+                        weights: np.ndarray,
+                        alpha: float,
+                        test_weights: np.ndarray) -> np.ndarray:
+    """Vectorised `weighted_conformal_quantile` over many test weights.
+
+    The quantile is test-point-dependent only through the normalising total,
+    so the sort and the cumulative sum are computed ONCE and reused. This is
+    the same arithmetic as the scalar function, not an approximation of it --
+    `test_vectorised_quantiles_match_the_scalar_function` asserts exact
+    equality, because a divergence between the two would be precisely this
+    project's recurring bug class.
+
+    Kept private: callers use the scalar function or `weighted_predict_sets`.
+    """
+    order = np.argsort(scores, kind="stable")
+    s_sorted = scores[order]
+    cumulative = np.cumsum(weights[order])
+
+    total = float(weights.sum()) + test_weights
+    targets = (1.0 - alpha) * total
+
+    # First index whose cumulative mass reaches the target -- identical
+    # semantics to `cumulative >= target` followed by the first hit.
+    idx = np.searchsorted(cumulative, targets, side="left")
+
+    out = np.full(targets.shape, np.inf, dtype=np.float64)
+    found = idx < s_sorted.size
+    out[found] = s_sorted[idx[found]]
+    return out
+
+
+def weighted_predict_sets(probabilities: np.ndarray,
+                          calibration_scores: Sequence[float],
+                          calibration_weights: Sequence[float],
+                          test_weights: Sequence[float],
+                          alpha: float,
+                          classes: Sequence[str],
+                          score_function: ScoreFunction = "lac",
+                          ) -> list[list[str]]:
+    """Prediction sets under weighted split conformal.
+
+    q_hat is recomputed PER TEST POINT, because each test point contributes its
+    own weight to the normalisation. That is the definition, not an
+    optimisation choice -- a single shared quantile would be a different
+    (and uncovered) procedure.
+
+    An empty set stays empty, for the reason given in `predict_sets`.
+    """
+    probabilities = np.asarray(probabilities, dtype=np.float64)
+    if probabilities.ndim == 1:
+        probabilities = probabilities.reshape(1, -1)
+
+    classes = list(classes)
+    if probabilities.shape[1] != len(classes):
+        raise ValueError(
+            f"probabilities has {probabilities.shape[1]} columns but "
+            f"{len(classes)} classes were given."
+        )
+
+    test_weights = np.asarray(test_weights, dtype=np.float64).ravel()
+    if test_weights.size != probabilities.shape[0]:
+        raise ValueError(
+            f"Got {test_weights.size} test weights for "
+            f"{probabilities.shape[0]} rows."
+        )
+
+    cal_scores = np.asarray(calibration_scores, dtype=np.float64).ravel()
+    cal_weights = np.asarray(calibration_weights, dtype=np.float64).ravel()
+
+    if cal_scores.size == 0:
+        raise ValueError("Cannot calibrate on an empty score set.")
+    if cal_weights.size != cal_scores.size:
+        raise ValueError(
+            f"Got {cal_weights.size} weights for {cal_scores.size} "
+            f"calibration scores."
+        )
+    if np.any(cal_weights < 0) or np.any(test_weights < 0):
+        raise ValueError("Weights must be non-negative.")
+    if not np.all(np.isfinite(test_weights)):
+        raise ValueError("Test weights must be finite.")
+    if not 0.0 < alpha < 1.0:
+        raise ValueError(f"alpha must be in (0, 1); got {alpha!r}")
+
+    all_scores = score_matrix(probabilities, score_function)
+    quantiles = _weighted_quantiles(cal_scores, cal_weights, alpha,
+                                    test_weights)
+
+    return [
+        [c for i, c in enumerate(classes) if row[i] <= q]
+        for row, q in zip(all_scores, quantiles)
+    ]
+
+
+def true_label_scores(probabilities: np.ndarray,
+                      labels: Sequence[str],
+                      classes: Sequence[str],
+                      score_function: ScoreFunction = "lac") -> np.ndarray:
+    """The nonconformity score of each row's TRUE label.
+
+    `calibrate()` computes this internally and keeps only the quantile. The
+    weighted path needs the scores themselves, so this exposes the same
+    computation rather than duplicating it with a subtly different one.
+    """
+    probabilities = np.asarray(probabilities, dtype=np.float64)
+    classes = list(classes)
+    labels = list(labels)
+
+    if probabilities.shape[1] != len(classes):
+        raise ValueError(
+            f"probabilities has {probabilities.shape[1]} columns but "
+            f"{len(classes)} classes were given."
+        )
+    if len(labels) != probabilities.shape[0]:
+        raise ValueError(
+            f"Got {len(labels)} labels for {probabilities.shape[0]} rows."
+        )
+
+    unknown = sorted(set(labels) - set(classes))
+    if unknown:
+        raise ValueError(
+            f"Calibration labels contain categories the model does not know: "
+            f"{unknown}"
+        )
+
+    index_of = {c: i for i, c in enumerate(classes)}
+    all_scores = score_matrix(probabilities, score_function)
+    return np.array(
+        [all_scores[i, index_of[y]] for i, y in enumerate(labels)],
+        dtype=np.float64,
+    )
+
+
+# --------------------------------------------------------------------------- #
 # Calibrated predictor
 # --------------------------------------------------------------------------- #
 @dataclass(frozen=True)
