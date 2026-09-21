@@ -1,8 +1,9 @@
 # Project Status
 
-**Last updated:** 2026-09-21
-**Last commit to move code or a result:** `8419db6` — Phase 6B (weighted
-conformal under shift). **Gate cleared and PUSHED on 2026-09-21.** Phase 6A
+**Last updated:** 2026-09-22
+**Last commit to move code or a result:** `ba98843` — Phase 7A (external-validity
+feasibility). **Gated, COMMITTED, awaiting push.** Phase 6B (`8419db6`) is gated
+and pushed. Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
