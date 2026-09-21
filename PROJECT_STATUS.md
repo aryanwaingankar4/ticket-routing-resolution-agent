@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-09-21
 **Last commit to move code or a result:** `8419db6` — Phase 6B (weighted
-conformal under shift). **Gated, COMMITTED, awaiting push.** Phase 6A
+conformal under shift). **Gate cleared and PUSHED on 2026-09-21.** Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
@@ -10,7 +10,7 @@ pushed.
 **do not promote conformal to the live deferral gate** — and the fixed wording is
 "no evidence it defers better on the gated axis", **never** "conformal is worse".
 Nothing promoted; `settings.conformal.enabled` stays `False`.
-**Phase 6B is COMPLETE and GATED, awaiting push.** Verdict: weighted conformal
+**Phase 6B is COMPLETE, GATED and PUSHED** (2026-09-21). Verdict: weighted conformal
 is a **partial repair, not a correction** — Tier-1's benchmark gap moves
 −0.2333 → −0.1222 at α=0.10, a change beyond the ±2 s.d. band but a residual
 still **5.4 s.d. below nominal**. **Never write "the shift is correctable by
@@ -71,7 +71,7 @@ first. Everything between is the record of what has already landed.
 | Phase 2B groundedness | `score_groundedness_set.py` | **31/33 grounded** (93.9%), judge κ = −0.042 |
 | Zero-shot Gemini (5C) | `run_zeroshot_baselines.py --backend gemini` | **40/45** and **14/14**, 0 unparseable, median 0.81 s |
 | Zero-shot Qwen2.5-3B (5C) | `run_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct` | **34/45** and **12/14**, 0 unparseable, median 6.98 s (CPU) |
-| Weighted conformal (6B) | `run_weighted_conformal.py` | Tier-1 gap −0.2333 → **−0.1222** (TF-IDF, α=0.10); residual **5.4 s.d. out**; BGE arm **blocked**, domain AUC **0.9908** |
+| Weighted conformal (6B) | `run_weighted_conformal.py` | Tier-1 gap −0.2333 → **−0.1222** (TF-IDF, α=0.10); residual **5.4 s.d. out**; BGE arm **blocked**, domain AUC **0.9908** — and BGE separates *more* easily yet transfers *better* |
 | Deferral rules (6A) | `compare_deferral_rules.py` | **no signal on the gated axis in all 12 comparisons**; 3 of 4 configurations degenerate at the live gate |
 | Prompt identity across the two 5C arms | `summarize_zeroshot_baselines.py --prompt-check-against` | **59/59 byte-identical** (sha256), both directions |
 
@@ -1186,7 +1186,7 @@ is the same constraint the named finding describes, arriving a fourth time.
 
 ---
 
-## Phase 6B — weighted conformal under shift (COMPLETE, gated, awaiting push)
+## Phase 6B — weighted conformal under shift (COMPLETE, gated and pushed in `8419db6`)
 
 **Measurement only.** `settings.conformal.enabled` and `settings.drift.enabled`
 stay `False`; cascade 0.50, RAG 0.67, clustering 0.80 untouched. Offline, zero
@@ -1235,6 +1235,24 @@ barely matters because `n_eff` never collapsed.
 different mechanisms, both partial, both leaving coverage 5–6 s.d. outside
 nominal. If neither matching the calibration distribution nor reweighting it
 closes the gap, the constraint is a property of the corpus, not the method.
+
+> **GUARD — do NOT write that reweighting recovers more than distribution
+> matching.** Both percentages are **post-hoc**, and the quantity that matters
+> is the **residual gap: −0.122 vs −0.144**, differing by **0.022 — inside the
+> ±2 s.d. band of 0.045**. The two are **statistically indistinguishable**. The
+> permitted claim is that both are partial and both leave the gap 5–6 s.d. out.
+
+### A second finding — separability does not imply score shift
+
+**BGE separates calibration from deployment MORE easily than TF-IDF (domain AUC
+0.9908 vs 0.9295), yet BGE is the space whose coverage transfers** (Tier-2 gap
+−0.011, inside the band; Tier-1/TF-IDF −0.233). **Separability of two
+distributions in a representation does not imply that scores computed in that
+representation shift.** Cross-reference **Finding 1**: domain AUC measures
+whether the *inputs* are distinguishable, coverage transfer measures whether the
+*scores* are exchangeable, and the first does not predict the second. The
+intuitive inference — "the embedding can tell them apart, so calibration will
+not transfer" — is wrong here.
 
 ### Result 2 — the production representation is the degenerate one
 
@@ -1347,7 +1365,7 @@ calls**; dry-run first and cache every raw response.
 | Sub-phase | Scope |
 |---|---|
 | **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE** (`8f2f5e1`, gated and pushed) |
-| **6B** | Weighted conformal under shift, with a domain-classifier density ratio — **DONE** (gated, awaiting push) |
+| **6B** | Weighted conformal under shift, with a domain-classifier density ratio — **DONE** (`8419db6`, gated and pushed) |
 | **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
 
 6A is the experiment that makes Phase 1's conformal work operational without
@@ -1439,30 +1457,42 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 6B is done and gated.** The remaining Phase 6 item is **6C — the
-retrieval-sufficiency gate on the 33 groundedness tickets (~55–110 Gemini
-calls)**, which is quota-spending and **must not share a day with any other
-Gemini sub-phase**.
+**Phase 7A — feasibility check on `Tobi-Bueck/customer-support-tickets`.**
+Agreed 2026-09-21 after the 6B gate cleared. **FEASIBILITY ONLY — no
+experiments**, offline, **zero Gemini calls**. Opens in plan mode like every
+sub-phase.
 
-**But 6B strengthens the case for doing Phase 7 first.** 6B's BGE arm was
-blocked by a cross-fitted domain AUC of **0.9908** — the calibration and
-deployment sets are near-separable in the production embedding space — and its
-resolving arm left the gap 5.4 s.d. out on **45 tickets**. Evaluation-set size
-and corpus register now bind in **five** places: Phase 1 coverage transfer,
-Phase 4B-1 power, Phase 5C's corpus ceiling, Phase 6A's low-coverage
-degeneracy, and now 6B's residual. `Tobi-Bueck/customer-support-tickets` at
-**61.8k rows** remains the only planned work where these questions could
-resolve.
+**Order is settled: 7A next, then 6C** (the retrieval-sufficiency gate, ~55–110
+Gemini calls) **on a day with fresh quota**. 6C must not share a day with any
+other Gemini-spending sub-phase.
 
-**Recommendation to decide at the gate:** run **7A** next (offline, no quota),
-and hold 6C until a day is free for it. Either way the choice is Aryan's — both
-open in plan mode.
+**Why 7A first.** Evaluation-set size and corpus register now bind in **five**
+places: Phase 1's coverage transfer, Phase 4B-1's provisional power, Phase 5C's
+corpus ceiling, Phase 6A's low-coverage degeneracy (4 benchmark tickets at the
+live gate's operating coverage), and now Phase 6B's residual, measured on 45
+tickets. At **~61.8k rows** that dataset is the only planned work where a
+low-coverage comparison could resolve.
+
+**7A's framing is load-bearing and was restated at the gate.** The dataset's own
+page advertises a synthetic generator from the same author, so it is treated as
+**independently generated data, not real production data**. It tests whether the
+findings survive a *different generator*, not whether they survive reality. Any
+write-up must say so in those words.
+
+**Record in 7A's write-up why the alternative was rejected:** the
+Endava/Microsoft `all_tickets.csv` is **real**, but its text is
+anonymized/encrypted, so a pretrained encoder such as BGE cannot read it. Real
+but unreadable is worse here than synthetic but readable.
+
+**Scope constraints agreed in advance:** English subset only, into
+`data/external_tobibueck/`, **never mixed with our artifacts**, and the dataset
+**revision hash recorded**.
 
 **Carried forward for 6C when it runs:** dry-run at `--limit 3` first,
 `call_delay_sec >= 4.5`, cache every raw response. **Do not spend more Gemini
 quota on 5C** — all 59 responses are cached and a re-score costs nothing.
 
-**Three items carried forward for Phase 9A:**
+**Four items carried forward for Phase 9A:**
 
 1. 5C widened the named finding from the calibration/reference distribution to
    the training distribution as well. The README heading was kept for
@@ -1470,12 +1500,15 @@ quota on 5C** — all 59 responses are cached and a re-score costs nothing.
    wording.**
 2. **The corpus's nasscom-brief origin** must open the experimental-setup
    section, immediately followed by the corpus-as-object-of-study framing
-   (Phase 2A, Finding 2, Phase 5C). Recorded under "The corpus's origin — the
-   nasscom brief" above; framing only, moved no result.
-3. **6B's two wordings are fixed and must not drift.** "A partial repair, not a
-   correction" — never "the shift is correctable by covariate reweighting". And
-   the BGE arm is **blocked, not a result**, however favourable its numbers
-   look.
+   (Phase 2A, Finding 2, Phase 5C). Framing only; moved no result.
+3. **6B's wordings are fixed and must not drift.** "A partial repair, not a
+   correction" — never "the shift is correctable by covariate reweighting". The
+   BGE arm is **blocked, not a result**, however favourable its numbers look.
+   And **no ordered comparison** between reweighting and distribution matching:
+   their residuals differ by 0.022, inside the 0.045 band.
+4. **6B's second finding:** separability does not imply score shift — BGE
+   separates calibration from deployment more easily than TF-IDF (AUC 0.9908 vs
+   0.9295) yet is the space whose coverage transfers. Cross-reference Finding 1.
 
 ## Open questions
 

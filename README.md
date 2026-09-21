@@ -2340,6 +2340,37 @@ named finding rather than overturning it:** if neither matching the calibration
 distribution nor reweighting it closes the gap, the constraint is a property of
 the corpus, not of the method - which is exactly what the named finding claims.
 
+> **Do NOT write that reweighting recovers more than distribution matching.**
+> The two recovery percentages (47.6% vs ~38%) are **post-hoc**, and the
+> quantity that matters is the **residual gap**: **-0.122 vs -0.144**, a
+> difference of **0.022 - inside the +-2 s.d. band of 0.045**. The two
+> strategies are **statistically indistinguishable** on this evidence. The
+> permitted claim is that **both are partial and both leave the gap 5-6 s.d.
+> outside nominal**; an ordered comparison between them is not supported.
+> Percentages of a shortfall exaggerate here, because dividing by a small base
+> inflates an apparent margin between residuals that are within noise of each
+> other.
+
+#### A second finding: separability does not imply score shift
+
+**BGE separates the calibration set from the deployment set MORE easily than
+TF-IDF does - cross-fitted domain AUC 0.9908 vs 0.9295 - yet BGE is the space
+whose conformal coverage transfers** (Tier-2's unweighted gap is -0.011, inside
+the band, where Tier-1/TF-IDF's is -0.233). **Separability of two distributions
+in a representation therefore does not imply that the scores computed in that
+representation shift.** A domain classifier can tell the two corpora apart
+almost perfectly while the classifier's own nonconformity scores remain
+exchangeable enough for the guarantee to hold.
+
+This is worth stating because the intuitive inference runs the other way -
+"the embedding can tell them apart, so the calibration will not transfer" - and
+it is wrong here. Cross-reference **Finding 1** (conformal coverage transfers
+for Tier-2 but not Tier-1: BGE loses 1.1 coverage points on the 45-ticket
+benchmark where TF-IDF loses 23.3, against a noise band of 4.5). The two
+measurements are about different things: domain AUC measures whether the
+*inputs* are distinguishable, coverage transfer measures whether the *scores*
+are exchangeable, and 6B shows the first does not predict the second.
+
 #### Result 2 - the production representation is the degenerate one
 
 The BGE arm triggered a pre-registered degeneracy condition: **cross-fitted
