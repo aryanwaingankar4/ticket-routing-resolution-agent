@@ -12,6 +12,10 @@ Nothing promoted; `settings.conformal.enabled` stays `False`.
 **Next: Phase 6B, which opens in plan mode — see "Immediate next step" for the
 pre-registration it must carry.**
 
+**Recorded 2026-09-21, after the 6A gate: the corpus's nasscom-brief origin, as
+a framing note for Phase 9A.** No experiment, dataset, threshold or result
+moved — see "The corpus's origin" below. It is the second 9A carry-forward item.
+
 Phase 5B (the honest ablation) is **complete, gated and pushed**. It changed what a published claim *means*
 without moving any measured number: the ablation's "+35.6 points for the
 cascade" is baseline minus Tier-1-only, i.e. the BGE-vs-TF-IDF representation
@@ -166,6 +170,52 @@ Two things he asked to survive into the paper from 5C specifically:
    **Cross-reference that to the Infrastructure benchmark-scope bug** (the
    generation prompt that left "Infrastructure" unanchored and produced 5
    mislabeled tickets, README "Benchmark scope anchor").
+
+### The corpus's origin — the nasscom brief (recorded 2026-09-21, for 9A)
+
+**Framing note only. No experiment, dataset, threshold or result was touched
+when this was recorded.** It exists because the paper's experimental-setup
+section needs the corpus's provenance stated, and because the provenance
+changes how the corpus's limitations should be read.
+
+**The origin.** This project comes from a **nasscom hackathon use-case brief**.
+The brief itself **explicitly recommended a synthetic, LLM-generated dataset**
+— ~1,000 tickets carrying `title`, `description`, `category`, `resolution` and
+`priority` — and specified the **7 categories**, along with classification,
+routing, resolution suggestion, confidence-based escalation and automation
+flagging. Our dataset follows that brief **at 4,000 rows** rather than 1,000.
+
+Verified against the data on 2026-09-21, by two independent derivations:
+`data/synthetic_tickets.csv` is **4,000 rows** (4,001 lines including the
+header; `pandas` agrees at 4,000) across **7 categories** — Access Management,
+Application, Database, Infrastructure, Network, Security, Storage — and its
+columns are the brief's five fields plus our own `id` and `scenario_id`.
+
+**What 9A must do with it.** The experimental-setup section should state the
+brief's origin **as the reason for the synthetic corpus** — the synthetic data
+is a followed specification, not a convenience substitute for real tickets —
+and should then **immediately** state that we treat the corpus as an **object
+of study**. Three measurements are readings of what the corpus is worth, and
+they belong next to that sentence:
+
+1. **Phase 2A — the templates *are* the fix classes.** Clustering precision is
+   unmeasurable on this corpus, because no configuration makes a cross-template
+   merge anywhere. A negative result about the corpus, not about the method.
+2. **Finding 2 — template-level memorisation defeats de-contamination.** 66
+   templates of ~62 rows each; the 175-ticket calibration set touches 62 of
+   them, so removing source rows changes nothing and removing whole templates
+   would leave 210/4000. (Figures as corrected in Phase 5A.)
+3. **Phase 5C — a 3B open-weight model that never saw the corpus is
+   indistinguishable from a classifier fitted on 3,200 of its rows** (34/45 vs
+   33/45, exact McNemar p = 1.000) on out-of-template phrasing.
+
+**The ordering is the argument, and it is load-bearing:** origin first, then
+the corpus as object of study. Stated that way, the corpus's limits read as
+*findings this project measured and published* rather than as a weakness a
+reviewer has to discover. This is the same move as the named finding — the data
+distribution a component is fitted or calibrated on is the binding constraint —
+and 5C is an instance of both, so the two sections must not contradict each
+other on wording. **9A settles the final wording; nothing is rewritten now.**
 
 ---
 
@@ -1281,10 +1331,17 @@ as part of its pre-registration:
 **Do not spend more Gemini quota on 5C** — all 59 responses are cached on disk
 and a re-score costs nothing. **5C must not share a day with 6C.**
 
-**One item carried forward for Phase 9A:** 5C widened the named finding from the
-calibration/reference distribution to the training distribution as well. The
-README heading was kept for continuity and a scope note added beside it; **9A
-must settle the final wording.**
+**Two items carried forward for Phase 9A:**
+
+1. 5C widened the named finding from the calibration/reference distribution to
+   the training distribution as well. The README heading was kept for
+   continuity and a scope note added beside it; **9A must settle the final
+   wording.**
+2. **The corpus's nasscom-brief origin** must open the experimental-setup
+   section, immediately followed by the corpus-as-object-of-study framing
+   (Phase 2A, Finding 2, Phase 5C). Recorded in full under "The corpus's
+   origin — the nasscom brief" above; it is a framing note only and moved no
+   result.
 
 ---
 
