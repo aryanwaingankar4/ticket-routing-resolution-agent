@@ -1,9 +1,10 @@
 # Project Status
 
 **Last updated:** 2026-09-21
-**Last commit to move code or a result:** `8f2f5e1` — Phase 6A (conformal
-deferral vs a confidence threshold). **Gate cleared and PUSHED on 2026-09-21**,
-along with Phase 5C (`4793785`, `1200451`, `a8557df`).
+**Last commit to move code or a result:** `8419db6` — Phase 6B (weighted
+conformal under shift). **Gated, COMMITTED, awaiting push.** Phase 6A
+(`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
+pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 **Current phase:** **Phase 6A — COMPLETE, GATED and PUSHED.** Verdict:
 **do not promote conformal to the live deferral gate** — and the fixed wording is
