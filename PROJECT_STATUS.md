@@ -2,8 +2,8 @@
 
 **Last updated:** 2026-09-22
 **Last commit to move code or a result:** `ba98843` — Phase 7A (external-validity
-feasibility). **Gated, COMMITTED, awaiting push.** Phase 6B (`8419db6`) is gated
-and pushed. Phase 6A
+feasibility). **Gate cleared and PUSHED on 2026-09-22.** Phase 6B (`8419db6`) is
+also gated and pushed. Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
@@ -11,7 +11,12 @@ pushed.
 **do not promote conformal to the live deferral gate** — and the fixed wording is
 "no evidence it defers better on the gated axis", **never** "conformal is worse".
 Nothing promoted; `settings.conformal.enabled` stays `False`.
-**Phase 7A is COMPLETE and GATED, awaiting push** (2026-09-22). Verdict: the
+**Phase 7A is COMPLETE, GATED and PUSHED** (2026-09-22). **Design A chosen as
+7B's primary** (version split within the `aa` file, 51+52 → 400, measured
+domain AUC **0.8584**); Design B pre-registered as secondary; **Design C
+rejected** — a coverage drop on German would measure encoder competence, not
+distribution shift. **Next: Phase 7B, opening in plan mode — see "Immediate
+next step" for the four things its plan must specify.** Verdict: the
 external dataset **can carry 7B** — 28,261 English rows (628× the benchmark;
 12,500 distinct after de-duplication, 278×), 10/10 queues ≥300, and the Phase
 2A clustering-precision question is **answerable** there. Methodological
@@ -1343,7 +1348,7 @@ because both its eval sets were disjoint from training; 6B cannot.
 
 ---
 
-## Phase 7A — external-validity feasibility (COMPLETE, gated, awaiting push)
+## Phase 7A — external-validity feasibility (COMPLETE, gated and pushed in `ba98843`)
 
 **FEASIBILITY ONLY — no replication, no experiment, no finding about this
 project's methods.** Offline, zero Gemini calls. Production frozen; isolation
@@ -1471,8 +1476,8 @@ not.
 
 | Sub-phase | Scope |
 |---|---|
-| **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (gated, awaiting push) |
-| **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it |
+| **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (`ba98843`, gated and pushed) |
+| **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it — **LIVE TASK**, Design A primary (version split in the `aa` file, AUC 0.8584), Design B secondary |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
 Evaluation-set size at low coverage is now the binding constraint in **four**
@@ -1550,58 +1555,98 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 7A — feasibility check on `Tobi-Bueck/customer-support-tickets`.**
-Agreed 2026-09-21 after the 6B gate cleared. **FEASIBILITY ONLY — no
-experiments**, offline, **zero Gemini calls**. Opens in plan mode like every
-sub-phase.
+**Phase 7B — replicate Finding 1 on the external corpus.** Design chosen at the
+7A gate on 2026-09-22. Offline, **zero Gemini calls**, measurement only.
+`settings.conformal.enabled` and `settings.drift.enabled` stay `False`.
+**Opens in plan mode** like every sub-phase.
 
-**Order is settled: 7A next, then 6C** (the retrieval-sufficiency gate, ~55–110
-Gemini calls) **on a day with fresh quota**. 6C must not share a day with any
-other Gemini-spending sub-phase.
+### The chosen design
 
-**Why 7A first.** Evaluation-set size and corpus register now bind in **five**
-places: Phase 1's coverage transfer, Phase 4B-1's provisional power, Phase 5C's
-corpus ceiling, Phase 6A's low-coverage degeneracy (4 benchmark tickets at the
-live gate's operating coverage), and now Phase 6B's residual, measured on 45
-tickets. At **~61.8k rows** that dataset is the only planned work where a
-low-coverage comparison could resolve.
+**Design A is PRIMARY: the version split *within* the `aa` file**
+(`aa_dataset-tickets-multi-lang-5-2-50-version.csv`), calibrating on **versions
+51+52** and testing on **version 400**.
 
-**7A's framing is load-bearing and was restated at the gate.** The dataset's own
-page advertises a synthetic generator from the same author, so it is treated as
-**independently generated data, not real production data**. It tests whether the
-findings survive a *different generator*, not whether they survive reality. Any
-write-up must say so in those words.
+- **Measured shift magnitude: cross-fitted domain AUC 0.8584** (BGE space) — a
+  real shift, and critically **below the 0.95 degeneracy threshold that blocked
+  6B's BGE arm at 0.9908**. This corpus offers shifts that are real *and*
+  operable, which is exactly what 6B lacked.
+- **Expected n:** 5,897 English calibration rows and 10,441 test rows raw;
+  roughly **2,600 / 4,600 after de-duplication** at the corpus's measured 44.2%
+  distinct-component rate.
+- **The file restriction is what removes the confound.** Across the whole
+  corpus `version` is confounded with source file — all 11,923 version-NaN rows
+  are `dataset-tickets-multi-lang-4-20k.csv`. Inside the `aa` file, versions 51,
+  52 and 400 all coexist, so the split is free of it. Version is also spread
+  proportionally across queues, so there is no queue confound either.
+- **It resolves 6A's wall.** 10% operating coverage on the test arm is ~460
+  tickets against the **4** that made 6A's gated axis unmeasurable — ~115×.
 
-**Record in 7A's write-up why the alternative was rejected:** the
-Endava/Microsoft `all_tickets.csv` is **real**, but its text is
-anonymized/encrypted, so a pretrained encoder such as BGE cannot read it. Real
-but unreadable is worse here than synthetic but readable.
+**Design B is the PRE-REGISTERED SECONDARY: a queue-holdout magnitude sweep.**
+Hold one queue out of *calibration only*, keeping it in training so the label
+space is preserved. Measured AUCs give a tunable shift magnitude: Billing and
+Payments **0.9316**, Service Outages and Maintenance **0.8705**, General Inquiry
+**0.7281**, IT Support **0.6706**. This is the only design that varies shift
+magnitude deliberately, so it can ask *how much* shift Finding 1's effect needs
+rather than only whether it reappears. **Known confound, reportable but not
+removable:** queue correlates with `type` (Technical Support is 52% Incident;
+General Inquiry is 27% Change), so a queue holdout also shifts the type mix.
 
-**Scope constraints agreed in advance:** English subset only, into
-`data/external_tobibueck/`, **never mixed with our artifacts**, and the dataset
-**revision hash recorded**.
+**Design C (language, EN → DE) is REJECTED.** A coverage drop on German would
+measure **encoder competence, not distribution shift** — the production encoder
+is `bge-base-en-v1.5`, an English-only model, so "the encoder cannot read the
+input" would be indistinguishable from "the distribution moved". That answers a
+different question than Finding 1 asks. Recorded in the README as well.
 
-**Carried forward for 6C when it runs:** dry-run at `--limit 3` first,
-`call_delay_sec >= 4.5`, cache every raw response. **Do not spend more Gemini
-quota on 5C** — all 59 responses are cached and a re-score costs nothing.
+### What 7B's plan must specify, before any result is seen
 
-**Four items carried forward for Phase 9A:**
+1. **A training split disjoint from calibration.** Both drawn from versions
+   51+52, **seed 42, stratified by queue**, with the **post-de-duplication n**
+   stated for each side — not the raw row count.
+2. **Boundary contamination, measured and reported two ways.** The share of
+   version-400 test tickets that have a **BGE ≥ 0.95 near-duplicate in the
+   training or calibration split**, given that 7A measured 79.39% near-duplicate
+   density corpus-wide. Coverage must be reported **on the full test set AND on
+   the no-neighbour subset**, because a contaminated test arm would reproduce
+   Finding 1's mechanism for the wrong reason.
+3. **A label-noise sanity check.** In-distribution accuracy for both tiers on
+   this corpus, with the limitation written **beside** the number — the external
+   labels are generator-assigned and have not been audited, so a low ceiling
+   would bound every downstream reading.
+4. **The 6A deferral comparison on Design A's test arm, as a pre-registered
+   secondary.** This is the first dataset where the low-coverage comparison can
+   actually resolve, so 6A's unanswerable question gets re-asked with power.
+
+### Order after 7B
+
+**7B → 6C → 8A → 8B → 9A–9C.**
+
+- **6C** (retrieval-sufficiency gate on the 33 groundedness tickets, **~55–110
+  Gemini calls**) runs on a day with **fresh quota** and must not share a day
+  with any other quota-spending sub-phase.
+- **6C must be GATED before 8A starts**, because **8A builds every paper table
+  from finished results** — starting it while a result is still in flight would
+  bake a moving number into the reproducibility layer.
+
+### Carried forward for Phase 9A
 
 1. 5C widened the named finding from the calibration/reference distribution to
-   the training distribution as well. The README heading was kept for
-   continuity and a scope note added beside it; **9A must settle the final
-   wording.**
-2. **The corpus's nasscom-brief origin** must open the experimental-setup
-   section, immediately followed by the corpus-as-object-of-study framing
-   (Phase 2A, Finding 2, Phase 5C). Framing only; moved no result.
-3. **6B's wordings are fixed and must not drift.** "A partial repair, not a
-   correction" — never "the shift is correctable by covariate reweighting". The
-   BGE arm is **blocked, not a result**, however favourable its numbers look.
-   And **no ordered comparison** between reweighting and distribution matching:
-   their residuals differ by 0.022, inside the 0.045 band.
+   the training distribution as well; **9A settles the final wording.**
+2. **The corpus's nasscom-brief origin** opens the experimental-setup section,
+   immediately followed by the corpus-as-object-of-study framing (Phase 2A,
+   Finding 2, Phase 5C).
+3. **6B's wordings are fixed:** "a partial repair, not a correction" — never
+   "the shift is correctable by covariate reweighting"; the BGE arm is
+   **blocked, not a result**; and **no ordered comparison** between reweighting
+   and distribution matching (residuals differ by 0.022, inside the 0.045 band).
 4. **6B's second finding:** separability does not imply score shift — BGE
-   separates calibration from deployment more easily than TF-IDF (AUC 0.9908 vs
+   separates calibration from deployment more easily than TF-IDF (0.9908 vs
    0.9295) yet is the space whose coverage transfers. Cross-reference Finding 1.
+5. **7A's control lesson:** never quote a redundancy or similarity rate without
+   stating what it is high *relative to*. Our own corpus is **more**
+   near-duplicated (85.20%) than the external one (79.39%).
+
+
+---
 
 ## Open questions
 

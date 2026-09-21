@@ -2578,6 +2578,41 @@ Pairs at or above the 0.80 threshold run 0.16%-0.83% per queue.
   including the two-rate distinction and that `--force` does not imply
   `--reencode`.
 
+#### The shift designs, and why the largest one was rejected
+
+Candidate shifts were not asserted to be real -- each was **measured**, with a
+cross-fitted domain classifier in BGE space, reusing Phase 6B's machinery. The
+headline: **every candidate sits below the 0.95 degeneracy threshold that
+blocked 6B's BGE arm at 0.9908.** This corpus offers shifts that are real *and*
+operable, which is exactly what 6B lacked.
+
+| Design | Split | Domain AUC | Post-dedup n | Status |
+|---|---|---|---|---|
+| **A** | version 51+52 -> 400, **within the `aa` file** | **0.8584** | ~2,600 / ~4,600 | **PRIMARY** |
+| **B** | queue held out of calibration only | 0.6706-0.9316 | ~180-1,280 | pre-registered secondary |
+| C | language EN -> DE | not measured | ~12,500 / ~14,800 | **REJECTED** |
+
+**Design A's confound is removed by construction.** Across the whole corpus
+`version` is confounded with source file -- all 11,923 version-NaN rows are
+`dataset-tickets-multi-lang-4-20k.csv`. Inside the `aa` file, versions 51, 52
+and 400 coexist, so the split is free of it; version is also spread
+proportionally across queues. At 10% operating coverage the test arm holds ~460
+tickets against the **4** that left Phase 6A's gated axis unmeasurable.
+
+**Design B is the only design that varies shift magnitude deliberately**, so it
+can ask *how much* shift Finding 1's effect requires rather than only whether it
+reappears. Its confound is reportable but not removable: queue correlates with
+`type` (Technical Support is 52% Incident; General Inquiry is 27% Change), so a
+queue holdout also shifts the type mix.
+
+**Design C is rejected despite having the largest n**, and the reason is worth
+stating plainly: **a coverage drop on German would measure encoder competence,
+not distribution shift.** The production encoder is `bge-base-en-v1.5`, an
+English-only model, so "the encoder cannot read the input" would be
+indistinguishable from "the distribution moved". That answers a different
+question than Finding 1 asks, and no amount of extra n repairs a measurement
+pointed at the wrong quantity.
+
 Scripts: `src/experiments/fetch_external_dataset.py`,
 `src/experiments/profile_external_dataset.py`. Outputs:
 [`PROVENANCE.json`](data/external_tobibueck/PROVENANCE.json),
