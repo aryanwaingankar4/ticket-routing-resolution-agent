@@ -1,0 +1,11 @@
+queue,n_english_rows,meets_min_300,share
+Technical Support,8149,True,0.28834789993276955
+Product Support,5305,True,0.18771451824068505
+Customer Service,4269,True,0.15105622589434203
+IT Support,3333,True,0.11793637875517497
+Billing and Payments,2897,True,0.10250875765188776
+Returns and Exchanges,1402,True,0.049609001804607054
+Service Outages and Maintenance,1106,True,0.03913520399136619
+Sales and Pre-Sales,843,True,0.0298290930964934
+Human Resources,553,True,0.019567601995683095
+General Inquiry,404,True,0.014295318636990906

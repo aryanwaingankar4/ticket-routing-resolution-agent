@@ -10,7 +10,12 @@ pushed.
 **do not promote conformal to the live deferral gate** — and the fixed wording is
 "no evidence it defers better on the gated axis", **never** "conformal is worse".
 Nothing promoted; `settings.conformal.enabled` stays `False`.
-**Phase 6B is COMPLETE, GATED and PUSHED** (2026-09-21). Verdict: weighted conformal
+**Phase 7A is COMPLETE and GATED, awaiting push** (2026-09-22). Verdict: the
+external dataset **can carry 7B** — 28,261 English rows (628× the benchmark;
+12,500 distinct after de-duplication, 278×), 10/10 queues ≥300, and the Phase
+2A clustering-precision question is **answerable** there. Methodological
+finding: **our own corpus is MORE near-duplicated than the external one**
+(85.20% vs 79.39%). Phase 6B is COMPLETE, GATED and PUSHED (2026-09-21). Verdict: weighted conformal
 is a **partial repair, not a correction** — Tier-1's benchmark gap moves
 −0.2333 → −0.1222 at α=0.10, a change beyond the ±2 s.d. band but a residual
 still **5.4 s.d. below nominal**. **Never write "the shift is correctable by
@@ -57,7 +62,8 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **306 passed** (261 + 45 from 6B), 0 failed/skipped, offline, ~121s |
+| Test suite | `pytest` | **322 passed** (306 + 16 from 7A), 0 failed/skipped, offline |
+| External corpus (7A) | `profile_external_dataset.py` | 28,261 English rows (628× benchmark45); **12,500 distinct** after dedup; near-dup **79.39%** vs **our own 85.20%** |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
 | Drift reference | `python src/experiments/build_drift_reference.py` | reproduces all 24 published Phase 1 detection values exactly; 175/175 pipeline-vs-direct similarity match |
@@ -1336,6 +1342,92 @@ because both its eval sets were disjoint from training; 6B cannot.
 
 ---
 
+## Phase 7A — external-validity feasibility (COMPLETE, gated, awaiting push)
+
+**FEASIBILITY ONLY — no replication, no experiment, no finding about this
+project's methods.** Offline, zero Gemini calls. Production frozen; isolation
+check confirms our dataset and artifacts byte-identical before and after.
+
+### Verdict: the dataset CAN carry 7B
+
+`Tobi-Bueck/customer-support-tickets`, revision
+**`ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb`**, licence **CC-BY-NC-4.0**.
+
+- **61,765 rows → 28,261 English** = **628×** our 45-ticket benchmark, and
+  **12,500 distinct items after de-duplication = 278×**.
+- **10/10 queues clear ≥300 English rows.**
+- **Only 6 empty answers** — item 7 is viable.
+
+**The framing is load-bearing and must appear in these words:
+INDEPENDENTLY GENERATED DATA, NOT REAL PRODUCTION DATA.** The dataset card
+advertises a synthetic ticket generator from the same author. Phase 7 tests
+whether the findings survive **a different generator**, not whether they survive
+reality.
+
+**Why the real alternative was rejected:** Endava/Microsoft `all_tickets.csv` is
+real, but its text is anonymized/encrypted, so BGE cannot read it. Real but
+unreadable is worse than synthetic but readable.
+
+### The methodological finding — a rate is meaningless without a control
+
+**79.39% of external rows have a near-duplicate at BGE ≥ 0.95.** In isolation
+that reads as disqualifying. Two controls, both now computed *inside* the
+script, say otherwise:
+
+1. **Is 0.95 a duplicate threshold for this encoder?** Random pairs sit at
+   median **0.5912**; only **0.0100%** reach 0.95. It discriminates.
+2. **High relative to what?** Against the corpus we already publish on:
+
+| | External | **Ours** |
+|---|---|---|
+| Near-duplicate rate | **79.39%** | **85.20%** |
+| Nearest-neighbour p05 | 0.8867 | 0.9270 |
+| Distinct / rows | 12,500 / 28,261 (**44.2%**) | 1,213 / 4,000 (**30.3%**) |
+
+**Our own corpus is MORE redundant on every measure.** High near-duplication is
+a property of template-generated corpora generally — the same mechanism
+Finding 2 and Phase 2A document from the inside — not a flaw distinguishing this
+dataset. De-duplication is mandatory in 7B, but it is not a reason to prefer our
+corpus. **Publishing 79.39% without the control would have been a plausible,
+internally consistent, wrong conclusion.**
+
+### Item 7 — the Phase 2A question IS answerable here
+
+Measured with the production configuration (MiniLM @ 0.80 from config, reusing
+`group_by_threshold` rather than reimplementing it). Distinct-answer rate
+**0.26–0.55**; Technical Support gives **819 clusters from 1,500 answers, 646
+singletons, largest cluster 209**.
+
+Every queue has **both genuine singletons and substantial clusters** — merge
+candidates *and* items that must not merge. That is exactly what our corpus
+lacks (templates *are* the fix classes), so **clustering precision becomes
+measurable here**.
+
+### Limitations, recorded beside the numbers
+
+- Independently generated, not real. CC-BY-NC-4.0 (non-commercial).
+- **Item 7 sampled at 1,500/queue**, seed 42, because `group_by_threshold` is
+  production's O(n²) loop. `sampled`/`sample_cap` columns record it per row.
+- **`version` and source-file are confounded** — all 11,923 version-NaN rows are
+  the `4-20k` file. One split, not two axes.
+- **12.9% of rows have no subject** (3,639); text is subject+body so they are
+  body-only, not empty.
+- **Encode cost:** 28,261 texts in **5,541 s (~92 min, 5.1/s)**. Throughput
+  varied **2.9–5.1/s** with machine load, so a single-number estimate for this
+  box would be false precision.
+
+### 7A gate — RE-RUN, not quoted
+
+| Check | Result |
+|---|---|
+| `pytest` | **322 passed**, 0 failed (306 + 16 new; the sum is the second derivation) |
+| Adversarial escalation | **9/9 PASS**, CSV sha256 `d53e40c616ace5a7` byte-identical |
+| Golden parity | **45/45 and 9/9** exact |
+| Ablation baseline (45) | **71.11% (32/45)**, CSV sha256 `8282e2db4353ca57` byte-identical |
+| Isolation | our dataset + benchmarks byte-identical before/after |
+
+---
+
 ## The agreed Phase 5–9 programme
 
 Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
@@ -1378,7 +1470,7 @@ not.
 
 | Sub-phase | Scope |
 |---|---|
-| **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` |
+| **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (gated, awaiting push) |
 | **7B** | Replicate Finding 1 (coverage transfer is a property of the representation) on it |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**

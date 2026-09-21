@@ -19,6 +19,13 @@ scipy==1.18.0
 # --- Data ------------------------------------------------------------------
 pandas==3.0.5
 numpy==2.5.1
+# Phase 7A promoted this from a transitive dependency of sentence-transformers
+# to a DIRECT one: fetch_external_dataset.py downloads the external corpus at a
+# pinned revision. Pinned for the same reason scipy is -- a version nobody
+# tested is a version a clean clone can silently drift to. Deliberately NOT the
+# `datasets` library: the repo holds plain CSVs, and adding a heavy dependency
+# would change the environment the published results were produced with.
+huggingface-hub==1.24.0
 
 # --- LLM -------------------------------------------------------------------
 # The CURRENT unified SDK, imported as `from google import genai`.

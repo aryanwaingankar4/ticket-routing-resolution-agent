@@ -174,6 +174,16 @@ python -m src.experiments.calibrate_conformal
 # accuracy (16/45, 33/45, 91/175, 132/175).
 python src/experiments/compare_deferral_rules.py
 
+# Phase 7A -- external-validity feasibility (offline, no quota, no Gemini).
+# Downloads Tobi-Bueck/customer-support-tickets at a PINNED revision (fatal on
+# mismatch) into data/external_tobibueck/, English subset only, NEVER mixed
+# with our artifacts -- an isolation check hashes our dataset and benchmarks
+# before and after. The profile refuses to overwrite without --force, and
+# --force REUSES the cached embeddings: re-encoding is the separate
+# --reencode flag, because the BGE pass is ~92 minutes on CPU.
+python src/experiments/fetch_external_dataset.py
+python src/experiments/profile_external_dataset.py
+
 # Phase 6B -- weighted conformal under shift (offline, no quota). Measurement
 # only; refuses to run if settings.conformal.enabled is True, and refuses to
 # overwrite its CSV without --force. FATAL unless the unweighted rows reproduce
@@ -508,6 +518,22 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   *margin*, not conformal. **Never quote an AURC win as a reason to promote**:
   this project gates on risk at the operating coverage, and AURC averages over
   coverages the system never runs at.
+- **A near-duplicate rate is meaningless without a control.** 7A measured
+  79.39% of the external corpus's rows as having a BGE>=0.95 near-duplicate,
+  which reads as disqualifying until two controls are applied: random pairs sit
+  at median 0.5912 (so the threshold discriminates), and **our own corpus
+  scores 85.20% -- worse on every measure** (p05 0.9270 vs 0.8867; 30.3% vs
+  44.2% distinct after de-duplication). High near-duplication is a property of
+  template-generated corpora generally, not a flaw of that dataset. Never quote
+  a redundancy or similarity rate without stating what it is high *relative to*.
+- **The external dataset is INDEPENDENTLY GENERATED DATA, NOT REAL PRODUCTION
+  DATA** -- its card advertises a synthetic generator from the same author. It
+  tests whether findings survive a *different generator*, not reality. The
+  Endava/Microsoft `all_tickets.csv` is real but anonymized/encrypted, so BGE
+  cannot read it; real-but-unreadable is worse here than synthetic-but-readable.
+- **In the external corpus, `version` and source-file are confounded** -- all
+  11,923 version-NaN rows are `dataset-tickets-multi-lang-4-20k.csv`. They are
+  one split, never two independent shift axes.
 - **Weighted conformal (6B) is a PARTIAL repair, never a correction.**
   Reweighting moves Tier-1's benchmark coverage gap from -0.233 to -0.122
   (TF-IDF space, alpha=0.10) -- a change larger than the +-2 s.d. band, but the

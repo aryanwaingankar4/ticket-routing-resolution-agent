@@ -10,3 +10,12 @@ data/batch_intake/incoming_tickets_batch.csv
 data/category_stores/
 data/.expanded_benchmark_checkpoint.json
 data/embedding_comparison/*.npy
+# Phase 7A -- external dataset (Tobi-Bueck/customer-support-tickets).
+# The raw CSVs (~53 MB) and the derived caches are reproducible from the
+# pinned revision recorded in data/external_tobibueck/PROVENANCE.json, so the
+# REPORT is committed and the bulk data is not. Note that the existing
+# data/ticket_embeddings*.npy pattern does not cover this path.
+data/external_tobibueck/raw/
+data/external_tobibueck/english_subset.csv
+data/external_tobibueck/*.npy
+data/external_tobibueck/*.faiss

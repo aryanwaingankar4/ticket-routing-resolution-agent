@@ -1,0 +1,91 @@
+{
+  "phase": "7A",
+  "repo_id": "Tobi-Bueck/customer-support-tickets",
+  "revision": "ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb",
+  "license": "cc-by-nc-4.0",
+  "attribution": "Tobi-Bueck/customer-support-tickets, CC-BY-NC-4.0",
+  "is_real_production_data": false,
+  "provenance_note": "Independently generated data, not real production data. The dataset card advertises a synthetic ticket generator from the same author, so this tests whether findings survive a different generator, not whether they survive reality.",
+  "rejected_alternative": "Endava/Microsoft all_tickets.csv -- real, but its text is anonymized/encrypted, so a pretrained encoder such as BGE cannot read it.",
+  "downloaded_utc": "2026-09-21T13:48:32.384717+00:00",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "rows_parsed_total": 61765,
+  "rows_english_total": 28261,
+  "english_subset_csv": "data\\external_tobibueck\\english_subset.csv",
+  "per_file": {
+    "aa_dataset-tickets-multi-lang-5-2-50-version.csv": {
+      "rows_parsed": 28587,
+      "rows_english": 16338,
+      "raw_newline_count_upper_bound": 28590,
+      "language_values": {
+        "en": 16338,
+        "de": 12249
+      },
+      "columns": [
+        "subject",
+        "body",
+        "answer",
+        "type",
+        "queue",
+        "priority",
+        "language",
+        "version",
+        "tag_1",
+        "tag_2",
+        "tag_3",
+        "tag_4",
+        "tag_5",
+        "tag_6",
+        "tag_7",
+        "tag_8"
+      ],
+      "sha256": "f187c090e59581c2bbf3aa1377c8db4dd647464ecf2ae51bf8966e42e0ed6bc0",
+      "bytes": 25996354
+    },
+    "dataset-tickets-multi-lang-4-20k.csv": {
+      "rows_parsed": 20000,
+      "rows_english": 11923,
+      "raw_newline_count_upper_bound": 20001,
+      "language_values": {
+        "en": 11923,
+        "de": 8077
+      },
+      "columns": [
+        "subject",
+        "body",
+        "answer",
+        "type",
+        "queue",
+        "priority",
+        "language",
+        "tag_1",
+        "tag_2",
+        "tag_3",
+        "tag_4",
+        "tag_5",
+        "tag_6",
+        "tag_7",
+        "tag_8"
+      ],
+      "sha256": "9be3bf810584fe01e8e83383e83dfd33f4c3910938ecad03ef151da79d8f0635",
+      "bytes": 18799808
+    },
+    "dataset-tickets-german_normalized_50_5_2.csv": {
+      "rows_parsed": 13178,
+      "rows_english": 0,
+      "raw_newline_count_upper_bound": 13179,
+      "language_values": {
+        "de": 13178
+      },
+      "columns": [
+        "subject",
+        "body",
+        "queue",
+        "priority",
+        "language"
+      ],
+      "sha256": "22580337aed864d8c0485f16a7fe683d48d8adfc3af0cd1a6fe1e240f728735f",
+      "bytes": 8327422
+    }
+  }
+}

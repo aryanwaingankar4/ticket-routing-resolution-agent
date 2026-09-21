@@ -2445,6 +2445,148 @@ rows). Library: `weighted_conformal_quantile`, `weighted_predict_sets`,
 `effective_sample_size`, `true_label_scores` in `src/agent/conformal.py`, all
 additive; tests in `tests/test_weighted_conformal.py`.
 
+### Phase 7A - external-validity feasibility: the corpus is usable, and our own is worse
+
+**FEASIBILITY ONLY. No replication, no experiment, no finding about this
+project's methods.** 7A decides whether `Tobi-Bueck/customer-support-tickets`
+can carry Phase 7B and at what n. Offline, zero Gemini calls. Production
+untouched; an explicit isolation check confirms our dataset and artifacts are
+byte-identical before and after.
+
+#### Provenance, and what this dataset is NOT
+
+- Repo `Tobi-Bueck/customer-support-tickets`, revision
+  **`ddf1c81a5475992c4fa6752bf1e8b4e31f07bbeb`** (pinned; a mismatch is fatal),
+  licence **CC-BY-NC-4.0**.
+- **It is INDEPENDENTLY GENERATED DATA, NOT REAL PRODUCTION DATA.** The dataset
+  card advertises a synthetic ticket generator from the same author. So Phase 7
+  tests whether our findings survive **a different generator** - not whether
+  they survive reality. Any write-up must say so in those words.
+- **Why the real alternative was rejected:** the Endava/Microsoft
+  `all_tickets.csv` is genuinely real, but its text is anonymized/encrypted, so
+  a pretrained encoder such as BGE cannot read it. Real but unreadable is worse
+  here than synthetic but readable.
+
+#### The feasibility numbers
+
+| Item | Result |
+|---|---|
+| Rows | **61,765** total -> **28,261 English** (the German-normalised file contributes 0) |
+| vs our 45-ticket benchmark | **628x** raw, **278x** after de-duplication |
+| Queues >= 300 English rows | **10 / 10** (Technical Support 8,149 -> General Inquiry 404) |
+| Text length (median chars) | subject 42, body 365, answer 372 |
+| Missing fields | **6 empty answers**, 1 empty body - but **3,639 empty subjects (12.9%)** |
+| Exact duplicates | **4,514 redundant rows (15.97%)**; 9,028 rows (**31.95%**) sit in a duplicate group; largest group 2 |
+| Near-duplicates (BGE >= 0.95) | **79.39%** of rows; **12,500 distinct components** (44.2% survive) |
+| `version` | NaN 11,923 / 400.0 10,441 / 52.0 5,346 / 51.0 551 |
+
+**Two duplicate rates are reported deliberately.** 15.97% counts only the
+redundant copies; 31.95% counts every row that shares its text with another.
+They describe the same corpus and differ by a factor of two, so quoting one as
+the other would misstate redundancy outright.
+
+#### The methodological point: a near-duplicate rate is meaningless without a control
+
+79.39% looks disqualifying. It is not, and the two controls are the reason -
+both now computed inside the script rather than asserted in prose.
+
+**Control 1 - is 0.95 a duplicate threshold for this encoder at all?** BGE has a
+high similarity floor for same-domain text, so a raw rate could be reading the
+embedding's scale rather than duplication. Measured: **random pairs sit at
+median 0.5912**, and only **0.0100%** of random pairs reach 0.95. The threshold
+discriminates.
+
+**Control 2 - high relative to what?** The only fair reference is the corpus
+this project already publishes on:
+
+| | External | **Ours** |
+|---|---|---|
+| Near-duplicate rate (BGE >= 0.95) | **79.39%** | **85.20%** |
+| Nearest-neighbour p05 | 0.8867 | 0.9270 |
+| Distinct components / rows | 12,500 / 28,261 (**44.2%**) | 1,213 / 4,000 (**30.3%**) |
+
+**Our own corpus is MORE redundant than the external one, on every measure.**
+So 79.39% is not a defect that distinguishes this dataset - **high
+near-duplication is a property of template-generated corpora in general**, which
+is the same mechanism Finding 2 and Phase 2A already document from the inside.
+De-duplication becomes a mandatory step in any 7B design, but it is not an
+argument for preferring our corpus. Reporting the external rate without this
+control would have been a plausible, internally consistent, and wrong
+conclusion - this project's recurring bug class, in its statistics form.
+
+#### Item 7 - the Phase 2A question IS answerable here
+
+Phase 2A could not measure clustering precision because on our corpus **the
+templates ARE the fix classes**: no configuration ever makes a cross-template
+merge, so a false merge cannot occur and precision is undefined. Measured here
+with the production configuration - **MiniLM at 0.80**, read from config, using
+`group_by_threshold` from `flag_automation_candidates.py` rather than a second
+implementation:
+
+| Queue | n scored | Clusters | Singletons | Largest | Distinct rate |
+|---|---|---|---|---|---|
+| Technical Support | 1,500 | 819 | 646 | 209 | 0.546 |
+| Product Support | 1,500 | 698 | 489 | 190 | 0.465 |
+| IT Support | 1,500 | 652 | 391 | 173 | 0.435 |
+| Customer Service | 1,500 | 631 | 410 | 186 | 0.421 |
+| Billing and Payments | 1,500 | 398 | 225 | 464 | 0.265 |
+| General Inquiry | 404 | 134 | 47 | 36 | 0.332 |
+
+**Yes.** Every queue shows both genuine singletons *and* substantial clusters -
+43% singletons alongside a 209-member cluster in Technical Support. That mix is
+exactly what our corpus lacks: there are merge candidates *and* items that must
+not merge, so a false merge is possible and precision is therefore measurable.
+Pairs at or above the 0.80 threshold run 0.16%-0.83% per queue.
+
+#### Limitations, recorded beside the numbers
+
+- **Independently generated, not real.** Stated above; it bounds every
+  conclusion Phase 7 can draw.
+- **CC-BY-NC-4.0** - non-commercial. Fine for an academic project; the term and
+  attribution are recorded in `PROVENANCE.json`.
+- **Item 7 is sampled at 1,500 answers per queue**, seeded (42), because
+  `group_by_threshold` is production's O(n^2) Python loop. The `sampled` and
+  `sample_cap` columns record this per row so a sample can never be mistaken
+  for a full queue. Four queues were scored in full.
+- **`version` and source-file are confounded.** All 11,923 version-NaN rows come
+  from `dataset-tickets-multi-lang-4-20k.csv` and every versioned row from
+  `aa_dataset-tickets-multi-lang-5-2-50-version.csv`. They are one split, not
+  two independent shift axes.
+- **12.9% of rows have no subject.** Text is built as subject + body, so those
+  rows are body-only rather than empty - but any per-field analysis must
+  account for it.
+- **Encoding cost is real:** 28,261 texts took **5,541 s (~92 min at 5.1/s)** on
+  CPU. Throughput varied 2.9-5.1/s with machine load, so a single-number
+  estimate for this box would be false precision. The embeddings are cached, and
+  `--force` re-renders the report **without** re-encoding (`--reencode` is a
+  separate flag) - deliberately, so fixing a report line never costs 90 minutes.
+
+#### Verification
+
+- **Revision pinned and verified against the Hub**; fatal on mismatch.
+- **Rule 6, two independent derivations:** row counts from pandas *and* a raw
+  newline count (treated as an upper bound because of quoted fields); the
+  English subset from a boolean mask *and* from `value_counts`; exact duplicates
+  from `n_rows - n_unique` *and* from summing `(count - 1)`; near-duplicate
+  neighbours from FAISS *and* brute force on 200 probed rows (**0 mismatches**);
+  the test count as 306 + 16 = **322**.
+- **Isolation check:** `synthetic_tickets.csv`, `novel_tickets_expanded.json`
+  and `calibration_tickets_paraphrased.json` hashed before and after - all
+  byte-identical. Nothing written outside `data/external_tobibueck/`.
+- **16 unit tests** on the profiling helpers, checking duplicate and cluster
+  rates against *constructed* ground truth rather than eyeballed output,
+  including the two-rate distinction and that `--force` does not imply
+  `--reencode`.
+
+Scripts: `src/experiments/fetch_external_dataset.py`,
+`src/experiments/profile_external_dataset.py`. Outputs:
+[`PROVENANCE.json`](data/external_tobibueck/PROVENANCE.json),
+[`profile_summary.json`](data/external_tobibueck/profile_summary.json),
+[`queue_distribution.csv`](data/external_tobibueck/queue_distribution.csv),
+[`answer_diversity_by_queue.csv`](data/external_tobibueck/answer_diversity_by_queue.csv).
+The raw CSVs and the embedding cache are gitignored and reproducible from the
+pinned revision.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`
