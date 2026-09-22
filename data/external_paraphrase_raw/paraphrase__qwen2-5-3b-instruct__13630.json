@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13630,
+ "queue": "IT Support",
+ "prompt_sha256": "31666508e832593a4372e3b86ba673d0d8584a699a6843caceba300bc2ce979e",
+ "response": "{\"paraphrase\": \"They found out there might have been someone trying to get into the medical computer systems without permission. They're watching the logs to see what happened and told the people who use the system to change their passwords.\"}",
+ "elapsed_s": 8.502247199998237,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

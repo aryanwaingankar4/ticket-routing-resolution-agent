@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12010,
+ "queue": "Technical Support",
+ "prompt_sha256": "b455b955c9db9752f1de7f9145f9eb3591c65e18dd1ea90be74198d4f877ed9e",
+ "response": "{\"paraphrase\": \"I had a problem with my computer crashing in the place where we do all our data stuff. It could be because of some software not getting along or maybe the hardware is broken. Restarting the computer might fix it.\"}",
+ "elapsed_s": 10.837428300001193,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

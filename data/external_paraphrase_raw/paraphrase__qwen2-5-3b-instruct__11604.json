@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11604,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "0fd875f5d3e10cc22bdcda4f752ed962d678b12726738bf62d6bafec1eea8061",
+ "response": "{\"paraphrase\": \"Hey, we're talking to the support team to help us change how we pay for some digital stuff. Our goal is to make our brand bigger and better by changing how we price things. We think we can reach more people if we change how we price things. If you could look at how we pay now and give us some ideas on how to change it, that would really help us grow our brand online. We're looking forward to hearing back from you soon.\"}",
+ "elapsed_s": 21.54966350000177,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

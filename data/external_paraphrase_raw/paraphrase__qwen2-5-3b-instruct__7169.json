@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7169,
+ "queue": "IT Support",
+ "prompt_sha256": "957af114ae1d70e66b419a2ee54d136b8666dcec838ebefd545294b7f92fe38a",
+ "response": "{\"paraphrase\": \"Our support system is having trouble keeping up during busy times. It might be because there are too many people using it at once, which is more than our servers can handle. We tried to make the computer searches faster and gave it more resources, but the problem still isn't fixed.\"}",
+ "elapsed_s": 13.934543199997279,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

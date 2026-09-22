@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12745,
+ "queue": "Technical Support",
+ "prompt_sha256": "c7a2f44494c20638b15ef2a1a913b9005d6c9465a00d6ad3ed229e7f4b0dcd1b",
+ "response": "{\"paraphrase\":\"Hey, do you know how to make SendGrid work better for our email marketing? I want to make our emails go out more often and people like them more. I've tried different things but nothing seems to be working. If you have any tips on how to use SendGrid better, I'd really appreciate it. Thanks for your help!\"}",
+ "elapsed_s": 14.61363939999137,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

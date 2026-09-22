@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7904,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "2c4f90b191be0b95942d58940d9dd567b4202d7e5394f54c211b32f638324e0f",
+ "response": "{\"paraphrase\":\"I'm curious about the different ways to pay for using Airtable with our stuff. Could you tell me about the different plans and how much they cost? Also, can you explain how the money gets charged and if there are any deals for people who use it a lot or for a long time?\"}",
+ "elapsed_s": 18.358159100011108,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

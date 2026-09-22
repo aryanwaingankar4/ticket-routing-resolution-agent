@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15810,
+ "queue": "Product Support",
+ "prompt_sha256": "9bf3f84a23005f7f7f38ddaccd2c345ffa5b34aeaf779eb1237311e1123433fe",
+ "response": "{\"paraphrase\":\"The financial company is having trouble with their data analytics tools not syncing right with their investment platforms. It could be because the software isn't working well together or because of some recent changes to the API. They've already tried restarting the apps, clearing out the cache, and checking for updates, but the problem is still there. I really hope you can help look into this and find a solution as soon as you can.\"}",
+ "elapsed_s": 15.919412899995223,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

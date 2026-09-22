@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9578,
+ "queue": "IT Support",
+ "prompt_sha256": "ffce52a9cd9edd178e2304f1a9dc705a00c65bfd1d2a09da147e9ea732eaadf7",
+ "response": "{\"paraphrase\":\"People have been having trouble using the cloud-based stuff lately. It's because the internet connection isn't always stable or when too many people are using it. We tried fixing it by resetting the internet and checking each app, but the problems still happen. They happen randomly and mess up how we work. We really need your help to fix this fast so we don't have more problems.\"}",
+ "elapsed_s": 20.149396499997238,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

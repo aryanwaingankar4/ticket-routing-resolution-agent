@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15568,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "31621f1632aa48a711445bc7349dd0606b9a08d79afb70ef10c4713d685826fa",
+ "response": "{\"paraphrase\": \"Hey, the marketing company noticed that people aren't interacting as much with their ads online. They think it's because they're not doing a good job with the digital stuff.\"}",
+ "elapsed_s": 7.770391500002006,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9639,
+ "queue": "IT Support",
+ "prompt_sha256": "e080cdaea001c54ebf339c00d5122b33358069b3a207a67473923f4b5d4a2605",
+ "response": "{\"paraphrase\": \"Hey Customer Support, we need help making our digital marketing tools work better together to grow our brand. We want to make our marketing easier and faster, and reach more people. We want to use stuff like social media, email, and analytics to know more about what our customers want. Can you give us some advice on how to connect all these things together?\"}",
+ "elapsed_s": 18.796797700008028,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

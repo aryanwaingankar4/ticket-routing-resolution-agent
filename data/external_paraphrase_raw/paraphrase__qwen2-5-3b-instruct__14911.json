@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14911,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "5e0681256e9b0435bb980bfae23655c95ee177b181161bfa02ed6835613bcc68",
+ "response": "{\"paraphrase\": \"Hey, we need urgent help to fix some problems with our services. It's affecting things like Cisco, Symantec, and Airtable. It's causing big issues and we need them fixed fast. Could you tell us when it will be done and why it's happening? We really want this sorted out quickly and will appreciate any help you can give.\"}",
+ "elapsed_s": 19.327195799996844,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

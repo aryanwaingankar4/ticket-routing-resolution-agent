@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12878,
+ "queue": "Product Support",
+ "prompt_sha256": "1b29c366112a33343f4f4fe4ef18284a4025b7acb6de93aee22860ce0941e5f6",
+ "response": "{\"paraphrase\": \"Hey, could you tell me about the security stuff for doctors and hospitals? I want to know how they keep people's private info safe and make sure they're following all the rules.\"}",
+ "elapsed_s": 9.073751500007347,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

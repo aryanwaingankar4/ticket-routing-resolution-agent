@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13656,
+ "queue": "Technical Support",
+ "prompt_sha256": "a1503ca9fd5203c349e6df3a1f059b72d6ba96f7870fc296a20f6a494f9d4409",
+ "response": "{\"paraphrase\": \"Hey Support Team, I had a system crash while doing some data stuff. It looks like maybe too much data was trying to go through at once. I restarted it and cleared the cache, but it’s still not working. The crash happened when it was trying to process a big set of data, and I think the system might not be able to handle that much. I already checked for any software updates and made sure the hardware was okay, but the problem is still there. I really need your help to fix this.\"}",
+ "elapsed_s": 18.82720590000099,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

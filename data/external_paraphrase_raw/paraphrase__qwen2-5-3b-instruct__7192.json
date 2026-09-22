@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7192,
+ "queue": "Technical Support",
+ "prompt_sha256": "4024913af31f8ab9c5c8b38cb3ca7e8e3677810776437642f750c58592a216e5",
+ "response": "{\"paraphrase\":\"Help with API docs. Need a detailed guide on how to use the API for a project management SaaS. A step-by-step guide would be super helpful for our project. Thanks for your help and looking forward to your response.\"}",
+ "elapsed_s": 11.848553200004972,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

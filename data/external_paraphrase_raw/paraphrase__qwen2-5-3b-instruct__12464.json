@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12464,
+ "queue": "General Inquiry",
+ "prompt_sha256": "607885eb6d991f55f90a48a6bd7f9c0d2a038929531fa76d3926e7f8433e657e",
+ "response": "{\"paraphrase\":\"Hey there, I'm writing to ask if we can add some easier stuff to our project management app. The way it looks now is really confusing, especially for people who are new to it. I think making it where you can drag things around, have your own special screens, and work with others in real time would make it much better. Also, making it work well on phones would let people manage projects wherever they are. Thanks for looking into this.\"}",
+ "elapsed_s": 16.769291499993415,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

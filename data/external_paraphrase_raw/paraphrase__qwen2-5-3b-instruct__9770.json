@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9770,
+ "queue": "IT Support",
+ "prompt_sha256": "ffddf60dc3d201353630559555963e8a823e398b84ab577639a7c80a4fc6baec",
+ "response": "{\"paraphrase\": \"Hey, I wanted to ask the support team about making our data analysis tools better so we can use them to make better investment choices and connect them to our other products. I think it will help us make smarter decisions. But I need help figuring out how to put these new tools into our system so everything works well together. If you could give me some advice on how to do that, it would be really helpful.\"}",
+ "elapsed_s": 22.294467999992776,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

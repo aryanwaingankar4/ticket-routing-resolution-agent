@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14309,
+ "queue": "Technical Support",
+ "prompt_sha256": "9d531e249a53bce851ff20d76b0041a5ce58fb46e21b5d8636dc07bdd6418992",
+ "response": "{\"paraphrase\": \"Having trouble with the project management tool on my iMac, which is part of a SaaS project. It seems like the Google Nest Wifi Router isn't stable, and even after restarting and clearing the cache, the problem still won't go away.\"}",
+ "elapsed_s": 12.278378899995005,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8906,
+ "queue": "Technical Support",
+ "prompt_sha256": "031774a314be91c36d2589bbe74be4e8e783e0c77baa478b0135af74b04d9658",
+ "response": "{\"paraphrase\": \"They found out there was a problem with the computer system in the hospital. It might have made people's medical records not safe because the software is old. They tried to check for any bad software and update it, but it didn't work.\"}",
+ "elapsed_s": 13.654367999988608,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

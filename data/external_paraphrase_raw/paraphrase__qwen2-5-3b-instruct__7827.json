@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7827,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "cb66e964c54963ccba57cc2da61eecd2f18859c8a2f6c06d1fb1d35711b6b267",
+ "response": "{\"paraphrase\": \"Hey, we want to make the tools that look at financial data better. We want them to help us pick the best investments, track how well they're doing, and make our financial stuff work better so we can make better choices.\"}",
+ "elapsed_s": 11.003336800000397,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

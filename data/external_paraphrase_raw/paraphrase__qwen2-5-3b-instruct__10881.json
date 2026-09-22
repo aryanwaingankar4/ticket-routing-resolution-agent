@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10881,
+ "queue": "Technical Support",
+ "prompt_sha256": "49b4a8a76d083e8ee07c90b20b2e11cccdd4792a5aa2bda43a55d96eb5882bbd",
+ "response": "{\"paraphrase\": \"The hospital's computer stuff got hacked and it messed up a few programs. Even after they fixed the software and made the firewall stronger, the problems still won't go away.\"}",
+ "elapsed_s": 13.394251299992902,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

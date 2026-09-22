@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15012,
+ "queue": "IT Support",
+ "prompt_sha256": "ef5e88b94f89a4693ea90bc725a1684c40569af0a4faea6e2e80346b8c16bb6c",
+ "response": "{\"paraphrase\": \"Support for Medical Data Compliance on Microsoft Teams Need help making sure we follow the rules for using Microsoft Teams with medical stuff. We need advice on how to make sure our place is safe for handling private patient information. Would like some tips and stuff to set up the platform right and keep the data safe. Thanks for your help.\"}",
+ "elapsed_s": 15.708455699990736,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

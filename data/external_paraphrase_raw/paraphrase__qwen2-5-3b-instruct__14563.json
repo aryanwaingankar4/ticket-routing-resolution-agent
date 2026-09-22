@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14563,
+ "queue": "Customer Service",
+ "prompt_sha256": "d8e9959bfc13cd468fef788033a608fe13f469b3aafaa8fb2e433ed793664cb9",
+ "response": "{\"paraphrase\":\"Customer Support, <br><br>I wrote to tell about a big problem with some personal medical information getting into the wrong hands. We think it might be because the security stuff is old. We fixed it by updating the computer stuff and checking the network. But we need help to find out more and make sure it doesn't happen again. Could you please say you got my message and thank us for updating the computer stuff and checking the network? We need to know when and if we got any error messages. That will help us give better advice on how to fix it and make sure it doesn't happen again.\"}",
+ "elapsed_s": 27.073596000002,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

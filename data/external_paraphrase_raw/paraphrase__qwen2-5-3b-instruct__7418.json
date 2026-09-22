@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7418,
+ "queue": "Product Support",
+ "prompt_sha256": "c316b764b98c6a46ce1b66d795426a49f22d3cf335ff77973bce8d32a9660b02",
+ "response": "{\"paraphrase\": \"Hey Customer Support, checking out your digital strategy stuff to help grow our brand. Would love to know more about what you offer and how it can help our business, especially with stuff like social media, content, and SEO. Can you throw in some case studies and testimonials from your past clients? Can't wait to hear back and learn how you can help our business.\"}",
+ "elapsed_s": 18.138168999998015,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

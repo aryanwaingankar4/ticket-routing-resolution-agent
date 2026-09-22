@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10177,
+ "queue": "Technical Support",
+ "prompt_sha256": "2bc0feea53535f9059040a05082262664df5005f52cb46b2dca246ce686c4483",
+ "response": "{\"paraphrase\": \"Hey, I'm trying to understand how Plex makes data analytics better for picking investments. Could you tell me about the ways they do it and how it helps people make smarter choices? I'd really like to learn more about how data helps in picking investments, so any info or stuff you have would be super helpful.\"}",
+ "elapsed_s": 16.35167150000052,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

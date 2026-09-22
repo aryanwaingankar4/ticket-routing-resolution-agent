@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9699,
+ "queue": "Customer Service",
+ "prompt_sha256": "4e569ba20e4663dc761e062e44c1b879bc88783e87a0b2d9ab15dce6530185c8",
+ "response": "{\"paraphrase\": \"Hey Support, I'm having trouble with the SaaS platform. My internet keeps going out sometimes, and that messes up a bunch of different connections. I tried restarting my stuff and checking my network, but it's still not working. It's hard to fix things when it keeps stopping. Can you help me fix this so it doesn't bother other people too much?\"}",
+ "elapsed_s": 20.26549669999804,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8063,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "f33e20cb0c3f57a22822b38489e06fea051c4481166587af36063cf6f071ba53",
+ "response": "{\"paraphrase\":\"Hey, we're looking for info on how to keep medical stuff safe using Airtable and MySQL 8.0 in a hospital setting. We need help figuring out how to protect patient info. Are there any special features or settings we should know about? Any advice would be super helpful, this is a big deal.\"}",
+ "elapsed_s": 15.899459199994453,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

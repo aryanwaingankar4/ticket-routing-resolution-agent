@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10445,
+ "queue": "Customer Service",
+ "prompt_sha256": "bedaf81fce93c19a50e5c09ddda232933d35b304ed29400a8cc40edcf85004e6",
+ "response": "{\"paraphrase\": \"Could you tell me more about how to keep medical information safe when using SAP ERP for healthcare stuff?\"}",
+ "elapsed_s": 7.329003599996213,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7525,
+ "queue": "Technical Support",
+ "prompt_sha256": "f93a9a172a7ce1dc0157612ca3822fcb2309a240d616d8a51745ff92c06b231f",
+ "response": "{\"paraphrase\":\"We're having a problem with our system when it's trying to look at old money stuff. It might be because of some software fighting with each other or because we're using too much memory. We've already tried turning the computer off and on again and updating some of the software, but it's still not working. We really need your help to fix this. Could you tell us what else we can do to figure out what's wrong? Thanks for your help.\"}",
+ "elapsed_s": 21.764698300001328,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

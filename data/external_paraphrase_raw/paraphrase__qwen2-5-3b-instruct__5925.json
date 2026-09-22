@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 5925,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "f570b8a136add95e655dba5887860fd67a3a45ea61edd7439f33647a5521bc30",
+ "response": "{\"paraphrase\": \"I want to add a feature that lets people speak into their device and have it type out what they say. I need easy-to-understand instructions on how to do that.\"}",
+ "elapsed_s": 23.3432310000062,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 3564,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 3564.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

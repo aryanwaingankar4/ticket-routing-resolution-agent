@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6957,
+ "queue": "Customer Service",
+ "prompt_sha256": "57fe991bcb02599b2b034eb7056e0cb1659cbbf09bfe89439e322e0dc653aaac",
+ "response": "{\"paraphrase\": \"Hey, we need info on how you keep patient info safe for your healthcare stuff. Could you tell me about the stuff you use to scramble the info so no one can read it? And the stuff you do to make sure only the right people can get to it? Also, do you get checked by anyone to make sure your stuff is really safe? Thanks, and I'll be waiting for your reply soon.\"}",
+ "elapsed_s": 26.83005879999837,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

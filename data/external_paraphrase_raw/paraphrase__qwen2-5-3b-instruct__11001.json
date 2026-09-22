@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11001,
+ "queue": "Product Support",
+ "prompt_sha256": "65b6d89db6439599e865b2a345d60ad94a34b9d540d9aa8de0babfcc3eaf137b",
+ "response": "{\"paraphrase\":\"Hey, there's been a security problem with the medical system where some bad guys might have gotten into it because the software is old and not very secure. We need to update the system, change passwords, and watch it more closely. We need your help to figure out what happened and how to stop it from happening again. Can you tell us what we should do next to fix this? \"}",
+ "elapsed_s": 17.58519419998629,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

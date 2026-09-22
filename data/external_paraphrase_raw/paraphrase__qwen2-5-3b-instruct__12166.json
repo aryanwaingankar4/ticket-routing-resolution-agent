@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12166,
+ "queue": "Technical Support",
+ "prompt_sha256": "d486efa977cb98699a1d27e00c4f562c89401f9015bb2c640ea4093e90d82520",
+ "response": "{\"paraphrase\": \"Could you tell me more about keeping medical data safe when we use 3D printers that are part of something called Kubernetes? It's important to make sure we follow the rules.\"}",
+ "elapsed_s": 8.302329300000565,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

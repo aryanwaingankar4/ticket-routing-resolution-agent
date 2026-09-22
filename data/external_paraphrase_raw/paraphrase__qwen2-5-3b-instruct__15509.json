@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15509,
+ "queue": "Technical Support",
+ "prompt_sha256": "7f0075f5879de5b5e2ffd78745e8dc287c191c94e9388a8bf1f88a4918697d91",
+ "response": "{\"paraphrase\": \"There are problems with how we analyze our data, and it's slowing down our plans for investing. It could be because the system is running out of resources or there are mistakes in how it's set up. We tried restarting some apps and clearing out some caches, and that helped a little bit, but we still don't know what's causing the main problem. We really need your help to fix it and make the system work better. If you need more details or if a call at that phone number would be good, let us know. It's connected to our account number.\"}",
+ "elapsed_s": 26.732482000006712,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

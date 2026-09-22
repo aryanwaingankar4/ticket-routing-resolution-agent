@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14205,
+ "queue": "Product Support",
+ "prompt_sha256": "5a1d1a5c14fd356421e25575effeb850ae61c522a42a5134faaade310a8ada1b",
+ "response": "{\"paraphrase\": \"Hey, the marketing agency's campaigns aren't doing as well as they should. That's making the brand grow slower than expected. There might be problems when they try to connect their data tools. They've made some changes to where they're putting their ads and what they're saying, and that's helped a little bit. But they still need help to fix everything and make the brand better.\"}",
+ "elapsed_s": 15.42343969999638,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

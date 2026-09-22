@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13745,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "62f80f7f963e7ac9a7241ee778c81eaa84a0d16d550693cdf8d308eff3dbcfb5",
+ "response": "{\"paraphrase\":\"Hey, noticed some weird billing stuff with different things we bought. Stuff doesn't add up.\"}",
+ "elapsed_s": 5.683560999998008,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

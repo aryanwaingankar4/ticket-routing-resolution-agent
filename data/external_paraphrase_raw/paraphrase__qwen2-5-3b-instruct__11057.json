@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11057,
+ "queue": "Technical Support",
+ "prompt_sha256": "62eee48fa4dea5934adcfb8a3f732a6ebea0066023d45ba01e0b7cdb21316f0c",
+ "response": "{\"paraphrase\":\"Do you think you could send me all the details on how to use MATLAB R2021a with our project management tool? I really need this and would appreciate your help quick.\"}",
+ "elapsed_s": 10.862195900001097,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

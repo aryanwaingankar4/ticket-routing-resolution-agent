@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8828,
+ "queue": "Technical Support",
+ "prompt_sha256": "8e23d5c564381db0802425407712dea64dc5ed49a926c119064d9e235a361528",
+ "response": "{\"paraphrase\": \"There was a surprise when the service stopped working, and it caused problems. We turned the devices back on, checked the connections, and looked at how the service is doing to fix it. But the issue is still there and is making it hard to do digital marketing stuff.\"}",
+ "elapsed_s": 14.662634299995261,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

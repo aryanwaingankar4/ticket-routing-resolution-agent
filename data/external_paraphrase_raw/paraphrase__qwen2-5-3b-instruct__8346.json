@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8346,
+ "queue": "IT Support",
+ "prompt_sha256": "8b987c3c9aa79ab90b09054eb769f807d50cafbb7bd0e52d544606307569abd1",
+ "response": "{\"paraphrase\": \"They're having a problem with their computer system and it's important for their work. They think it might be because they just updated their software and it didn't work well with their current system. They've tried restarting the system and checking for updates, but the problem is still there.\"}",
+ "elapsed_s": 14.06293289999303,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

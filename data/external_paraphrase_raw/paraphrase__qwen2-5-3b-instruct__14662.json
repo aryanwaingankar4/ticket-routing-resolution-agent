@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14662,
+ "queue": "Customer Service",
+ "prompt_sha256": "2a6fe738b55808c065d74787c24c6f9856aab9d4dc1ff7a97dfdb24ca967a180",
+ "response": "{\"paraphrase\":\"They've been complaining that the project dashboard takes a long time to load during busy times when lots of people are using it. We've tried to fix the problems with the computers and the way we look up information, but the issue still isn't fixed yet.\"}",
+ "elapsed_s": 13.874100699991686,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

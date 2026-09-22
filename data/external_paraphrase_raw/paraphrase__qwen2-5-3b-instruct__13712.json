@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13712,
+ "queue": "Technical Support",
+ "prompt_sha256": "4ee056a2463c1df5388955551d163f6ece736d8167a2327ba55c9615069d5eb3",
+ "response": "{\"paraphrase\": \"Hey friend, there's a big problem with some personal information getting into the wrong hands in the hospital's computer system. We need help fixing it quick.\"}",
+ "elapsed_s": 6.893335900007514,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

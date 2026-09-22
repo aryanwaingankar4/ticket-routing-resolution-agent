@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7581,
+ "queue": "Customer Service",
+ "prompt_sha256": "f2204c8170f875f20b4ca4fbfdb98e4f0a7f9f23f4cb5cefee719ccf37e1ff9e",
+ "response": "{\"paraphrase\": \"Hey Customer Support, I need help with the manual for integrating HelloSign with our project management software. I really need step-by-step instructions on how to set it up, including the API keys and how to authenticate. It would also be great to know what the software can and can't do. I'm really excited to start using it and appreciate any help you can give me. Let me know if there's anything else I need to provide.\"}",
+ "elapsed_s": 23.1276438000059,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15512,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "3272f31c0a974952ebbb19f7f33ab3b54946e58f097e1551709a31b30ec7f644",
+ "response": "{\"paraphrase\":\"Hey, I'm trying to figure out the different plans for the SaaS product and how to pay for it. Can you tell me about the different plans, any discounts, long-term commitments, and special offers? Also, can you explain how the payment works and if there are any extra fees? And do you have any free trials or demos before I commit to a paid plan?\"}",
+ "elapsed_s": 19.62151040000026,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

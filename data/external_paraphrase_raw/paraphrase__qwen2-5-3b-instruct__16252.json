@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16252,
+ "queue": "Customer Service",
+ "prompt_sha256": "6e94f8c9a6924cfdbb87ddf590d29fc7341a3f2a67cb32d234f196cb087a3e4e",
+ "response": "{\"paraphrase\": \"Hey, the medical system at the hospital has some weak spots that could let out private patient information. We need to make it stronger by using fancy encryption and having secure places to store data. Also, we should check it regularly to find any new weak spots. Your help would be really appreciated.\"}",
+ "elapsed_s": 13.087865299996338,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

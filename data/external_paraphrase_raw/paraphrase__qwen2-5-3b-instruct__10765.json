@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10765,
+ "queue": "Customer Service",
+ "prompt_sha256": "035cb662563d43086160f88f724faaea546663ecc0fc2277fc2b1be104127811",
+ "response": "{\"paraphrase\": \"Hey Support Team, I’m writing to ask about how Smartsheet keeps medical data safe, especially since we have to follow strict rules for healthcare. As someone who works in healthcare, we need to make sure we’re following all the rules. Could you tell me more about how they use codes to protect the data, how they control who can see it, and what else they do to keep it safe? I’d really appreciate any help you can give us on how to use Smartsheet to follow all these rules. Thanks for your help.\"}",
+ "elapsed_s": 36.868009199999506,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

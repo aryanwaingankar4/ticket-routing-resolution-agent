@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12221,
+ "queue": "Product Support",
+ "prompt_sha256": "a6a96f35a004f14469678abdca45110b2a3cafe456dd761e704d88a538f11977",
+ "response": "{\"paraphrase\": \"Hey, I'm having trouble with the investment report. The numbers don't match up with what we're seeing in the data. I've tried restarting the database and checking the settings, but it's still not working. I think it might be because of a problem between PostgreSQL and Magento. It's causing some issues with our projections, so I was wondering if you could take a look and see if you can fix it? We need to get this sorted out fast.\"}",
+ "elapsed_s": 17.087651600013487,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

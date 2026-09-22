@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12897,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "18344b1b5d9b476f8b7f1de0795489ede7906a2545decc66bf9dc4ae50fe3369",
+ "response": "{\"paraphrase\": \"There's a problem with the monthly billing cycle. Something went wrong during the check to make sure everything is correct. We looked at the recent software changes and the transaction logs to try and fix it, but we couldn't find a solution yet.\"}",
+ "elapsed_s": 9.976879000008921,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9974,
+ "queue": "Customer Service",
+ "prompt_sha256": "8d7fbba98cc62617fcd4eafebc046d2d92516540e654c1bed7153337f58faaa3",
+ "response": "{\"paraphrase\": \"The marketing agency's plans aren't working as well as they hoped. It looks like they're not reaching the right people with their ads. After looking at what they're doing and changing how they talk to people, they didn't get much better results.\"}",
+ "elapsed_s": 13.808311000000685,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

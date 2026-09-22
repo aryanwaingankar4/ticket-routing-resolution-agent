@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10698,
+ "queue": "Customer Service",
+ "prompt_sha256": "a15e43ad95c0a368ab0e41424000eb77d9509324b5ebe144675784f6142db86d",
+ "response": "{\"paraphrase\": \"There's a problem with the analytics tool. It's taking longer to make investment reports than usual. I think it might be because of some recent software changes. I already tried restarting everything and checking my internet connection, but the tool is still slow. So I'm not sure what to do next.\"}",
+ "elapsed_s": 18.439169099990977,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

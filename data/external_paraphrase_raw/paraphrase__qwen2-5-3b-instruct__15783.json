@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15783,
+ "queue": "Customer Service",
+ "prompt_sha256": "136052e543dacf25fcaafd39b52cee83143088179b65ad46d45fecbda255fba4",
+ "response": "{\"paraphrase\":\"Hey, a business owner is interested in learning about the digital stuff your company does to help them grow their business online. They want to know about things like managing their social media, creating content, and making sure their website shows up in search results. They also want to know how much it costs and what the steps are for these things. Lastly, they want to know what kind of help they can get. So, could you tell me more about all that?\"}",
+ "elapsed_s": 17.974675799996476,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

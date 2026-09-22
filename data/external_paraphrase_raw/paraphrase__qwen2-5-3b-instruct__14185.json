@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14185,
+ "queue": "Technical Support",
+ "prompt_sha256": "351606f6fcaac15e133bf00338d9167b0f82b17fe36f1927a08f7a7a266edcde",
+ "response": "{\"paraphrase\": \"Hey, there's been a problem with the project management dashboard. Users are having trouble accessing it and it's really slow. We tried to fix it by making the servers work better and clearing some old stuff, but it's still slow. It's making things take longer and we're not as productive. Can you please look into this and find a way to fix it? If you need more info, let us know.\"}",
+ "elapsed_s": 17.968437700008508,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

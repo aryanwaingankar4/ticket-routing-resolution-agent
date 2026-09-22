@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6891,
+ "queue": "Product Support",
+ "prompt_sha256": "5ff6970ec12ec5b56a9e83dfc989c81ef4512f3e1bd913510b4c8a5831e788d6",
+ "response": "{\"paraphrase\": \"Can we use those data stuff to see better how to pick investments? We'd really like to hear what you think. Thanks!\"}",
+ "elapsed_s": 10.433852700007265,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

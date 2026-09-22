@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6381,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "b0b74aef58700c54abdc4b89d57052c61abb66e0b4398785b72c4bab9f065b3f",
+ "response": "{\"paraphrase\": \"They won't let me into the hospital system because of a security thing. Do you know what to do about that?\"}",
+ "elapsed_s": 10.076452299996163,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

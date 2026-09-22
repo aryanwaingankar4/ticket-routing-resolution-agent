@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14240,
+ "queue": "Product Support",
+ "prompt_sha256": "81c1d40288dcd6348c66e140c27a207299538a00ef48384985d63ea7d0e0e1ef",
+ "response": "{\"paraphrase\":\"The fancy money calculator isn't giving us the same good investment advice every time. It could be because we just updated the software or maybe we're not putting in the right numbers. We checked where we got our data from and changed some settings, but the problem still won't go away. Can you please help us fix this?\"}",
+ "elapsed_s": 12.622014699998545,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

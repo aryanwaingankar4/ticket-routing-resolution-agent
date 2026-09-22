@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14060,
+ "queue": "Technical Support",
+ "prompt_sha256": "8e30e1303841c94a3e113896df1b374476e9a85d3b91a71382fb6185ec665636",
+ "response": "{\"paraphrase\": \"Hey Support, our money place had a big system glitch that's messing with the important tools we use to pick investments. It could be because of new software or if our devices aren't playing nice together. We've tried restarting stuff, checking connections, and updating drivers, but it's still not fixed. We really need you to help us fix it quick so we don't have any more problems. Can you give us a quick fix or set up a time to do some maintenance?\"}",
+ "elapsed_s": 18.011387099992135,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

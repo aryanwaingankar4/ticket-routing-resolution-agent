@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9384,
+ "queue": "IT Support",
+ "prompt_sha256": "06bc52f3a4efe2ac14d61844c714a387a55a9c960a18c43d4735ee8f9aa35499",
+ "response": "{\"paraphrase\": \"They're having a big problem with their project management stuff. New updates are causing it to not work right. They tried to fix it by going back to an older version and clearing out some of the old stuff, but it's still not working. They can't get to the important project information, and that's really slowing everything down. They need help fixing this right away.\"}",
+ "elapsed_s": 20.677029999991646,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

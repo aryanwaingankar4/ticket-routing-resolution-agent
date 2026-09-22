@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13277,
+ "queue": "Customer Service",
+ "prompt_sha256": "c914c5b0ec8f8fef0103a54a8ff593bd9d4bd77cebebaf93b2a83bbf04b9dbb7",
+ "response": "{\"paraphrase\": \"Hey Support, I need help with some data stuff to make my investments better. Can you tell me about the tools and ways to look at how the stock market is moving and make decisions based on that data? I would really like some tips on how to use the system, since it comes with our investment stuff. Thanks, and I'll be waiting for your reply soon.\"}",
+ "elapsed_s": 14.75998589998926,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

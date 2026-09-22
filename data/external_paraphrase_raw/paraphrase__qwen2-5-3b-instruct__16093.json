@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16093,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "d6bbadfd7f3440971933440fa230f2a91c1fd743a03595dce6645cd9cada2eec",
+ "response": "{\"paraphrase\": \"There's been a problem with accessing medical data and it's affecting the security. It could be because the software versions don't match or because the permissions for using the data changed. We've been trying to fix it by changing how people can access the data and updating the software. We need help to find out what's causing the issue and how to stop it from happening again.\"}",
+ "elapsed_s": 14.323566700011725,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

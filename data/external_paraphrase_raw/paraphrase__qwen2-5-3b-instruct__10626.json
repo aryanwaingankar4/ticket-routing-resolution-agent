@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10626,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "5f8cd1a9557d52a4c18abe3897185611597e7c56cda13fecfde3d897962b2bef",
+ "response": "{\"paraphrase\": \"Hey Support, I need help with securing our hospital's IT system using McAfee Total Protection. I want to know how to use stuff like data encryption, access controls, and threat detection. If you have any docs or stuff that can explain it better, that would be great. I'm looking forward to hearing back from you soon. Thanks for your help.\"}",
+ "elapsed_s": 19.429445499990834,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

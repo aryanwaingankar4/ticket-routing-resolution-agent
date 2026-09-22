@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11113,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "adebd03d362a2fc56aa96888d17167823a8ee65e21c6ea60b1941ff6e4d7df1a",
+ "response": "{\"paraphrase\": \"There was a mistake with the billing for the SaaS subscription that led to being charged twice for it. It might be because of a problem with how the payments are processed.\"}",
+ "elapsed_s": 9.826455699992948,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

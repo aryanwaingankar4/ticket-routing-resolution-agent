@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14299,
+ "queue": "Customer Service",
+ "prompt_sha256": "fc3ac3739e3fae4f9ee963d0b7abb7ca64209d4c5cdb3803460f2146e7366f11",
+ "response": "{\"paraphrase\":\"I'm having trouble with my computer crashing when I try to look at money stuff. It might be because of some software or hardware not getting along. I've tried turning my computer off and on again and even reinstalled a video editing program, but it's still happening. I really need your help to fix this. Let me know if you need any more info to figure out what's wrong.\"}",
+ "elapsed_s": 17.705829200000153,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

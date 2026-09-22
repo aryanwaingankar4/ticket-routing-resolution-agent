@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15802,
+ "queue": "Technical Support",
+ "prompt_sha256": "c76e67222880d2f6354b5422dbcddf05b338d76ee7c97e91ead8ae404a8590d7",
+ "response": "{\"paraphrase\":\"Hey Support, we've seen our online stuff get less popular on social media for a while now. It might be because of some changes they made to how they show stuff. We've tried changing what we post a bit, and it's gotten a little better. But we're still keeping an eye on it because we're worried it might hurt our business. Could you help us figure out what's going on and how we can fix it? If you need more info, let us know.\"}",
+ "elapsed_s": 18.417408699999214,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

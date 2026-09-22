@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11291,
+ "queue": "Product Support",
+ "prompt_sha256": "29d0731a9a320d11dc061cbb81eb0997c4b566c4195c22ed561648beb63eba95",
+ "response": "{\"paraphrase\":\"When we have problems with the third-party software we use, it's slow. Can you tell us more about which ones and how slow they are? Also, what have you tried to fix it? If we need to, we can set up a time to talk about it more.\"}",
+ "elapsed_s": 13.910147100003087,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

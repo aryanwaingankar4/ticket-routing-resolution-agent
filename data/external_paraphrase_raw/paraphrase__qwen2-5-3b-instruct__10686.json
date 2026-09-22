@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10686,
+ "queue": "Technical Support",
+ "prompt_sha256": "5a3795bed2a735403a196d1105750cbfafebfde3b44c970396b100fcc240ff5f",
+ "response": "{\"paraphrase\": \"Having trouble with data syncing across different devices when using ClickUp. It's been affecting how we update our projects. Tried clearing the cache, restarting devices, and trying to reconnect, but nothing seems to work. Our team is ready to give more details to help fix this.\"}",
+ "elapsed_s": 14.982296000001952,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

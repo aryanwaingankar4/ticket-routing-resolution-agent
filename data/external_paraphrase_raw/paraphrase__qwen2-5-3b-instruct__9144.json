@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9144,
+ "queue": "Customer Service",
+ "prompt_sha256": "41dd3ad682c349b83075ab321e1e57e2df66fe59b22a52caa4d6d76eb732634d",
+ "response": "{\"paraphrase\": \"Hey, we need help with using data stuff to make better investment choices. Could you tell me what tools are out there to get started? Any help with this would be super cool.\"}",
+ "elapsed_s": 11.154485499995644,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

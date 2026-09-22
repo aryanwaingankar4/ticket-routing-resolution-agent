@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9848,
+ "queue": "Technical Support",
+ "prompt_sha256": "29850c9e6847890f0f64bed0fc4a8ec0d1e9742ff1f76ca889548bd6f7598eb8",
+ "response": "{\"paraphrase\": \"Hey, I'm having trouble with our digital marketing tools. They're not working properly and it's making it hard to run our campaigns. I think it might be because the servers are overloaded or there's a conflict with the software. We've already tried restarting the affected software and checking our internet connection, but that didn't fix it. We really need your help to look into this and find a solution. Let us know if you need any more info to help us out.\"}",
+ "elapsed_s": 24.391396700011683,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

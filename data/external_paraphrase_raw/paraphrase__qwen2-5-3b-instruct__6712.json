@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6712,
+ "queue": "Technical Support",
+ "prompt_sha256": "5330241fa81b8e858ad8ea5443b826111108cf741c4dac4d4b1f928b08f31076",
+ "response": "{\"paraphrase\": \"There's a problem with the digital tools the agency is using. It's causing some issues with their plans to grow the brand. The problems could be because the internet isn't stable or the software isn't working well together. We tried rebooting the router and updating the software, but that didn't fix it. We need your help to fix this quickly so we don't have more problems.\"}",
+ "elapsed_s": 19.792350300005637,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

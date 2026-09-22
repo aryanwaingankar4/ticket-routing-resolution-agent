@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10372,
+ "queue": "Technical Support",
+ "prompt_sha256": "cf0b18d6db3dc3015ba73c30432484b0bf88be0e4f609c64dad7873fde955f2d",
+ "response": "{\"paraphrase\": \"There's a problem with the marketing agency's digital tools. They're not working right and it's stopping them from growing their brand. It might be because they just updated the software. I've already restarted the apps and checked if the computer is compatible.\"}",
+ "elapsed_s": 12.819526899998891,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

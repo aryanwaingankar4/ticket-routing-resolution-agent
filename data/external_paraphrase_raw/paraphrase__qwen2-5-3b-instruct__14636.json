@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14636,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "2a3eb0bef545e84932b049c48199d1335c00ea0c9d32789c3d5e648c5b52a416",
+ "response": "{\"paraphrase\": \"Hey, I'm curious about the SaaS project management thing. I want to know more about the different plans they have, like how much they cost and if there are any discounts. Also, I want to know how the payments work and if there are any extra fees I need to be aware of. I'm looking forward to hearing back from you about all that stuff.\"}",
+ "elapsed_s": 19.010745799998404,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

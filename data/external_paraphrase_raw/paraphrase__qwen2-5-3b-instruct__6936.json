@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6936,
+ "queue": "Technical Support",
+ "prompt_sha256": "af5e1b63beb030fe7cdd41ea76e4235a34af46eacf8c009734c316fbf7016ec0",
+ "response": "{\"paraphrase\": \"Hey, there's a big problem with the hospital's computer stuff. Some medical information got stolen even though they fixed the software and made it harder for people to get in. They need help to fix it and stop it from happening again. Can you look into it and tell them what to do? I really need this fixed fast.\"}",
+ "elapsed_s": 16.954944500001147,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

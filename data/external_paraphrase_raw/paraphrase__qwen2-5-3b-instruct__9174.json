@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9174,
+ "queue": "Product Support",
+ "prompt_sha256": "53a381f2cf6d29aaa011c87932816f308a102ee88433add1aeaff7fa12d19a46",
+ "response": "{\"paraphrase\": \"Hey team, I need your help to make our software work better with PHP 8.0. We're having trouble connecting it to our project management tools right now. We think if we fix this, it will make our work faster and easier. Could you give us some steps on how to do this and help us through it? Thanks a lot for your help.\"}",
+ "elapsed_s": 19.17699609999545,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

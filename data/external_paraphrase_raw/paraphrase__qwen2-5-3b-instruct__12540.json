@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12540,
+ "queue": "Product Support",
+ "prompt_sha256": "39a80f6540cb3d06d4337e2da2884a4d1bd5373092a40fff6bd2f00664558e35",
+ "response": "{\"paraphrase\": \"Hey Support, we had a problem where bad guys tried to get into our medical stuff. It was because our security wasn't up to date and people were using weak passwords. We fixed it by updating the security and training people on passwords. We need your help to look into it and make sure it doesn't happen again. Can you tell us what to do?\"}",
+ "elapsed_s": 14.632414199993946,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

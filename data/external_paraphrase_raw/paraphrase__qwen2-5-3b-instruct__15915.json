@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15915,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "578440bf327c66a5cf4dfdc1bed6bfa10e2b9aa3bb14e92dc01db3cf3db4faa3",
+ "response": "{\"paraphrase\": \"I noticed some mistakes in the latest invoices. They're not right.\"}",
+ "elapsed_s": 5.027168799992069,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

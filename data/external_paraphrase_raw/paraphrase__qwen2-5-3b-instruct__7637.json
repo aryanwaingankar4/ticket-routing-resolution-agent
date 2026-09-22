@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7637,
+ "queue": "IT Support",
+ "prompt_sha256": "9a321a6422a25efb0caa10dc322876787cdf36d1b4940a9e510284d709c46eda",
+ "response": "{\"paraphrase\": \"There have been people trying to look at hospital records without permission. It might be because the security settings aren't strong enough or the software is old. We've already updated the software and looked at who was trying to access things. But we still can't fix it. We need help figuring out why and how to stop it from happening again.\"}",
+ "elapsed_s": 18.785084799994365,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

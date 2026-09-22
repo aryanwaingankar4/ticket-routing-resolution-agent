@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9208,
+ "queue": "Product Support",
+ "prompt_sha256": "0181bfba0ebb6840f96d1f1a0f32f8b692bffc4c263868fb2089fa6ba1dc6b4b",
+ "response": "{\"paraphrase\":\"Customer Support for Enhancement Tools for Investment Decisions, we need help understanding the tools in the data analytics product that can help with making investment choices. Could you tell us what kinds of tools are there to help with investing? We really want to know about the features and how they work. Also, do you have any guides or videos to help us start using these tools? Thanks for your help, and we'll be waiting for your reply soon.\"}",
+ "elapsed_s": 21.607806899992283,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

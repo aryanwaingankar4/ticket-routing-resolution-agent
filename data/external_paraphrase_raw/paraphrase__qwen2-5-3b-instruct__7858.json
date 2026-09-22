@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7858,
+ "queue": "Product Support",
+ "prompt_sha256": "27e2d99566f85786027fb57ea101066aabc67a1bacda2dd360a69ce1b1b96e23",
+ "response": "{\"paraphrase\":\"There's a problem with the data analytics tool. It's not giving us good predictions for investments. This happened after we updated the software. We restarted the app and cleared the cache, but the issue still won't go away. The predictions are all over the place and don't match what's happening in the market. We've tried fixing it ourselves, but we can't seem to get it to work. Can you please look into this and find a solution for us? \"}",
+ "elapsed_s": 28.086579099996015,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

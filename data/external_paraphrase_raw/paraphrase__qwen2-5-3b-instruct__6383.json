@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6383,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "8ebab596f559b4fe96437965f821ccf86374e95f6fab015680e609863c559b0c",
+ "response": "{\"paraphrase\": \"Hey, we really need to fix our digital stuff. Our marketing tools have been down a lot, and that's been really bad for our work. We've missed some important deadlines and we've lost some chances. Our team uses these tools to do our marketing, and if they keep going down, we can't finish our work. We need someone to fix this right away to stop it from happening again. Maybe we could try changing how we use our tools or maybe find new ones that work better.\"}",
+ "elapsed_s": 26.541321400000015,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

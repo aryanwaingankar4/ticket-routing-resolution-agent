@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15413,
+ "queue": "Product Support",
+ "prompt_sha256": "e74484a2f973bd486ac61b276a8c86bb202dcad5936487697818b83c2968b830",
+ "response": "{\"paraphrase\": \"Hey Support, I’m writing to ask for some changes to how our products work together. My main goal is to make it easier for everyone to work on projects and keep track of what’s happening. Right now, it’s hard to connect everything smoothly, which is making our projects take longer and be less efficient. I think making these connections better would really help us get more done and have better results. If you could tell me if it’s possible and when we might see changes, that would be great. Thanks.\"}",
+ "elapsed_s": 23.990090299994336,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

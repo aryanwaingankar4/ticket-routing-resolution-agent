@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12911,
+ "queue": "Customer Service",
+ "prompt_sha256": "7f95c1fc30122ba4cfa947cb9a7369bbb9995005a9213ff88ffb3722ba09dca9",
+ "response": "{\"paraphrase\": \"Hey, we're in touch because we want to know about good ways to keep medical information safe for doctors. The healthcare world is changing all the time, and we need to make sure that patient details don't get into the wrong hands. Could you tell us more about how to protect medical data, like using codes and making sure only allowed people can get in? Also, what do you think doctors should use to make sure they follow all the rules? We'd really appreciate any help or stuff you can give us on this.\"}",
+ "elapsed_s": 19.16363490000367,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

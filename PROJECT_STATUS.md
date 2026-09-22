@@ -9,7 +9,16 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 7B — COMPLETE, GATED and PUSHED** (`f789b8d`, 2026-09-22).
+**Current phase: Phase 7C — COMPLETE, COMMITTED, AWAITING GATE.**
+**Verdict: BLOCKED** (`blocked_auc_ge_0.95`) — the pre-registered degeneracy
+rule fired at a TF-IDF-space domain AUC of **0.9972**, so **no verdict is drawn
+on the primary**. 7C set out to test Finding 1 under the shift it was actually
+measured under; it did not get to answer. **After 7B and 7C, Finding 1 has not
+been shown either to hold or to fail outside its original corpus.** Two post-hoc
+notes carry forward: the blocking rule may be **mis-specified for this design**
+(a question for the gate), and the mechanism **is** visible in accuracy — the
+paraphrase shift cost Tier-1 **10.5 points** against Tier-2's **2.5** — but not
+in coverage. Phase 7B is COMPLETE, GATED and PUSHED (`f789b8d`, 2026-09-22).
 **Verdict: FINDING 1 DOES NOT REPLICATE on a different generator's corpus.**
 Under a measured covariate shift (domain AUC 0.8472), TF-IDF and BGE transfer
 coverage **equally well** — Tier-1's gap at α=0.10 is **+0.0009** where ours is
@@ -24,8 +33,9 @@ deferral question resolved for the first time** (3 of 6 comparisons, *all*
 favouring the confidence incumbent — conformal deferral is **worse** there, on
 that corpus only), and a **RECORD CORRECTION** — 7A's ad hoc domain AUCs do not
 reproduce and are replaced. Nothing promoted; `settings.conformal.enabled` and
-`settings.drift.enabled` stay `False`. **Next: Phase 7C — added at the 7B
-gate, opening in plan mode, and it runs BEFORE 6C.**
+`settings.drift.enabled` stay `False`. **Next: the 7C gate decides whether the
+≥0.95 blocking rule applies to a design that estimates no density ratio; then
+Phase 6C on a fresh-quota day.**
 
 **Phase 7A is COMPLETE, GATED and PUSHED** (2026-09-22). **Design A chosen as
 7B's primary** (version split within the `aa` file, 51+52 → 400, domain AUC
@@ -84,11 +94,13 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **340 passed** (322 + 18 from 7B), 0 failed/skipped, offline |
+| Test suite | `pytest` | **372 passed** (340 + 32 from 7C), 0 failed/skipped, offline |
 | External corpus (7A) | `profile_external_dataset.py` | 28,261 English rows (628× benchmark45); **12,500 distinct** after dedup; near-dup **79.39%** vs **our own 85.20%** |
 | **Finding 1 on external data (7B)** | `run_external_conformal_shift.py` | **does NOT replicate** — Tier-1 gap **+0.0009** vs Tier-2 **−0.0072** at α=0.10, band 0.0165, n_cal 1,327 / n_test 10,441 |
 | Boundary contamination (7B) | same script | **1.46%** of test tickets have a BGE≥0.95 neighbour in train∪cal; full and no-neighbour readings agree to 0.0011 |
 | External label ceiling (7B) | same script | Tier-1 **0.3476**, Tier-2 **0.3732** over 10 queues — labels generator-assigned and **unaudited** |
+| **Finding 1 under paraphrase shift (7C)** | `run_paraphrase_shift_conformal.py` | **BLOCKED** — TF-IDF domain AUC **0.9972** ≥ 0.95; manipulation worked (TF-IDF cosine **0.2489**, BGE **0.8462**), n=286 pairs |
+| Accuracy under paraphrase shift (7C) | same script | Tier-1 **0.3776 → 0.2727** vs Tier-2 **0.3776 → 0.3531** — the lexical model hit **4× harder** |
 | Deferral rules, external (7B) | `compare_deferral_rules_external.py` | gated axis **resolves**: 3 of 6 signals, **all favouring the confidence incumbent**; gate coverage 6.15% = **642 tickets** (6A had 4) |
 | Service | `uvicorn src.service.api:app --port 8000` → `GET /health` | fingerprint **`9c9a5cbcb53f`** (was `830c211b1fe9`; changed by adding `settings.drift.rate_reference_name`), index 4000, Tier-1 4000 rows |
 | Drift evaluation | `python src/experiments/evaluate_drift_detection.py` | 25/68 operating points eligible; verdict **measured, not shipped** |
@@ -1588,6 +1600,125 @@ with its CSV byte-identical; goldens **45/45** and **9/9**; ablation baseline
 
 ---
 
+## Phase 7C — Finding 1 under a paraphrase shift: BLOCKED (COMPLETE, committed, awaiting gate)
+
+Offline, **zero Gemini calls** (local Ollama). Measurement only; production
+frozen; both `enabled` flags stay `False`. Isolation check: **27 files**
+byte-identical, including 7B's own outputs.
+
+### The verdict is a NON-ANSWER, and is reported as one
+
+**`blocked_auc_ge_0.95`.** The pre-registered degeneracy rule fired: the
+TF-IDF-space cross-fitted domain AUC between originals and paraphrases is
+**0.9972**, above the 0.95 line borrowed from 6B. **No verdict is drawn on the
+primary**, and the blocked numbers sit in the CSV marked blocked — as 6B's BGE
+arm does — not as a result.
+
+**After 7B and 7C, Finding 1's status is unchanged:** it holds under the shift
+it was measured under, on the corpus it was measured on, and has **not been
+shown either to hold or to fail anywhere else.**
+
+### The manipulation worked — that is not in doubt
+
+| space | mean cosine | domain AUC |
+|---|---|---|
+| **BGE** (meaning preserved) | 0.8462 | 0.9981 |
+| **TF-IDF** (surface vocabulary moved) | **0.2489** | **0.9972** |
+
+Surface vocabulary is almost entirely replaced while meaning survives. 7B's
+version shift, for scale, sits at BGE-space AUC 0.8472.
+
+**Length ratio (pre-registered secondary), paraphrase/original:** tokens mean
+1.0279 / median 0.9543 / **aggregate 0.9417**; words **aggregate 0.9344**.
+About 6% shorter — no length confound.
+
+### POST-HOC, and the question for the gate: the rule may be mis-specified
+
+In **6B** the ≥0.95 rule gated a **density-ratio estimate**, where
+near-separability makes the ratio ill-posed — the rule measured what it gated.
+**7C estimates no density ratio**; it runs plain split conformal and uses the
+AUC only as a *manipulation check*, where a near-1.0 value means the
+manipulation was **strong**. Carrying the threshold across may gate the wrong
+quantity — the error this project has already named once, when a clustering
+promotion rule measured recall while claiming to gate precision.
+
+The counter-reading is real: a rewrite a classifier identifies with
+near-certainty is arguably a *different corpus* rather than a shifted one.
+**Both readings are recorded. The choice is the gate's, not the write-up's.**
+
+### POST-HOC: the mechanism IS visible — in accuracy, not coverage
+
+| arm | Tier-1 accuracy | Tier-2 accuracy |
+|---|---|---|
+| original | 0.3776 | 0.3776 |
+| paraphrased | **0.2727** | **0.3531** |
+| change | **−10.5 pts** | **−2.5 pts** |
+
+**The paraphrase shift hit the lexical model roughly four times harder** —
+Finding 1's mechanism, confirmed directly. 7B never produced this contrast,
+which supports the diagnosis that its version shift was the wrong kind of shift.
+
+Yet coverage barely moved for either tier. The candidate explanation, offered
+as a **hypothesis, not a finding**: with ten classes and ~35% accuracy,
+prediction sets run **4.9–6.9 labels of 10**, and sets that large **buffer
+coverage against a score shift**. Our corpus's seven classes and high accuracy
+give small sets, where the same shift pushes labels out. If it holds, Finding 1
+needs **both** a representation contrast **and** small enough sets for coverage
+to be sensitive — a sharper and testable scope statement.
+
+The identical original-arm accuracies were checked, not assumed: the tiers
+disagree on **87 of 286** tickets with a **23/23** discordant split and
+different probability matrices. A genuine coincidence.
+
+### Limitations, beside the result
+
+- Labels generator-assigned and **unaudited**, base accuracy ~35%. A null is
+  weak evidence here — and the low accuracy may be the *cause* of the null, not
+  incidental to it.
+- The paraphraser is a **3B local model** with a recognisable style, part of why
+  the domain classifier separates the arms so easily.
+- Independently generated data, not real production data — corpus and
+  paraphrases both.
+
+### Run provenance, and the RAM deviation
+
+The generation run was **killed twice by the harness for low system memory** and
+**resumed from cache both times**, with no regeneration and no data loss: first
+at 168/299, then after all 299 had completed, during the guard step. **The
+second kill's cause was the BGE/Ollama overlap** — Ollama holds its model for
+five minutes after the last call, so loading BGE for the similarity guard puts
+both models resident at once. That is the memory peak of the phase.
+
+The fix, applied before the final pass: `ollama stop qwen2.5:3b-instruct`
+confirmed against `/api/ps`, then **`--cached-only`**, which refuses every live
+call and makes a cache miss or prompt-hash mismatch fatal rather than a silent
+regeneration. It verified **299/299 prompt hashes** and made **zero** calls.
+
+**DEVIATION, accepted at the dry-run gate:** 5C's `require_free_ram`
+double-counts a model Ollama already holds, and refused a run with 4,339 MB
+genuinely in play (2,275 available + 2,064 resident, floor 3,277).
+`--allow-low-ram` would have proceeded while stamping every response
+`low_ram_override` — permanently and **falsely** marking the paraphrases as
+untrustworthy. So the **check was corrected, not bypassed**: a 7C-local
+preflight adds resident CPU-side bytes back. `run_zeroshot_baselines.py` is
+untouched. **It still fails closed** — an unreadable residency counts as zero
+resident — and four tests pin exactly that.
+
+### Verification
+
+7B's models **proved** unchanged (refit reproduces cached probabilities at
+max |Δ| = 0.0, classes identical); pairing re-verified against the corpus
+before any statistic; coverage derived twice; guard counts two ways; **the band
+is COMBINED**, since at n=286 the test-sampling sd (0.0173) dominates the
+calibration term (0.0082) — quoting the calibration term alone, as Finding 1
+and 7B do on far larger test arms, would understate uncertainty by ~2×.
+
+**Gates re-run, never quoted:** `pytest` **372 passed**; adversarial **9/9**
+with its CSV byte-identical; goldens **45/45** and **9/9**; ablation baseline
+**32/45**.
+
+---
+
 ## The agreed Phase 5–9 programme
 
 Agreed 2026-09-20. **The paper is the deliverable.** This replaces the earlier
@@ -1632,7 +1763,7 @@ not.
 |---|---|
 | **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (`ba98843`, gated and pushed) |
 | **7B** | Replicate Finding 1 on it — **DONE, GATED and PUSHED** (`f789b8d`). **It does NOT replicate** under a *version* shift. Design B resolved nothing, twice, for two named reasons |
-| **7C** | **Replicate Finding 1 under the shift it was actually measured under** — paraphrase version-400 tickets into plain register via local Ollama (zero Gemini quota) and re-run the same table. **LIVE TASK**, added 2026-09-22 at the 7B gate, **runs BEFORE 6C** |
+| **7C** | Replicate Finding 1 under a **paraphrase** shift — **DONE**, committed and awaiting gate. **BLOCKED** by the pre-registered ≥0.95 rule; the mechanism shows in accuracy (−10.5 vs −2.5 pts) but not coverage |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
 Evaluation-set size at low coverage is now the binding constraint in **four**

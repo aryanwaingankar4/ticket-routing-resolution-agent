@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6777,
+ "queue": "Product Support",
+ "prompt_sha256": "45994236a198b2e829144387ecef38f4b4504413718906c62215434e2f973fe2",
+ "response": "{\"paraphrase\":\"The marketing agency is having trouble with numbers showing up differently on different websites. They think it might be because of some new changes they made to their software. They've looked at the data and checked the settings, but they need help figuring out which websites and software changes are causing the problem. Could you tell them more about which ones and how we can fix it so all the numbers are the same?\"}",
+ "elapsed_s": 19.612950499998988,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

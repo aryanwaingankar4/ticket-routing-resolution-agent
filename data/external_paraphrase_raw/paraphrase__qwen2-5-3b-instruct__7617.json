@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7617,
+ "queue": "Product Support",
+ "prompt_sha256": "942e1ceca12ad27b1b402d80cf793d5062d8a06465b61c772bc60ab57ad42539",
+ "response": "{\"paraphrase\":\"They're having trouble with people not engaging with their ads. They've tried changing how much they spend on ads, changing the message, and dividing the audience into smaller groups, but it's still not working. They need help to make the ads more effective.\"}",
+ "elapsed_s": 12.40800140000647,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

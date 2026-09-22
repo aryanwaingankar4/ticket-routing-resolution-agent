@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11818,
+ "queue": "Customer Service",
+ "prompt_sha256": "77e6448018b334adf930f9caaedc053e21037a6e4ab7539116b20798c89e191e",
+ "response": "{\"paraphrase\":\"Hey Support, I'm trying to learn more about how different SaaS products work together. I'm really interested in knowing if they can work well together and if there are any easy steps to set them up. I also want to know if there are any rules or things I need to watch out for when connecting them. Could you give me some info on that? Thanks a lot.\"}",
+ "elapsed_s": 19.45167350000702,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

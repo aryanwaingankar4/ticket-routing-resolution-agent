@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10560,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "7a3fcc9fdeeda99bb60880ad336c2d5074169a86d70c646910d600753704a08f",
+ "response": "{\"paraphrase\": \"They're having trouble with their bills for some digital products. It seems like there's a problem with the software that handles payments. They've already checked the payment details and talked to customer support. They really need you to look into it and find a solution. If you need any more info to help, let them know.\"}",
+ "elapsed_s": 16.999116299994057,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

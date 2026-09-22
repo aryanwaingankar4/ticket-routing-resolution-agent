@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9266,
+ "queue": "Customer Service",
+ "prompt_sha256": "17b30bea5b5b9dd9d05789443a92430e810a6cb4e3259d113652ecf47e61c83b",
+ "response": "{\"paraphrase\":\"Hey Support, our financial firm is having trouble with the tools they use to look at investments. They keep breaking and it's taking forever to get the data. They think it might be because the new updates don't work well with the old software. We've tried restarting everything and updating the software, but it's still not fixed. We need help fast to fix this so we don't have any more problems. Thanks for your help.\"}",
+ "elapsed_s": 23.7352777000051,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

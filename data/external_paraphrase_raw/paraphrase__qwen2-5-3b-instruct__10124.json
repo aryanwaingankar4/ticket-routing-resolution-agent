@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10124,
+ "queue": "Customer Service",
+ "prompt_sha256": "6aee9c55e23e1597b8055b7c8235a0be9f9742a7cd369cb472834c2e1de53080",
+ "response": "{\"paraphrase\": \"Hey, I need help from customer support to make my investments better by using the data analysis stuff they have. Could you give me some tips and stuff to get started? I really want to learn how to use those data visualization things to see what's happening in the market and how to use those machine learning things to guess what will happen with my investments. That would be super helpful.\"}",
+ "elapsed_s": 19.597504000004847,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

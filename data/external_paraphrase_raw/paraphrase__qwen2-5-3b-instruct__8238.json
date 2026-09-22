@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8238,
+ "queue": "Customer Service",
+ "prompt_sha256": "8c319b38150d40d5a2fbf9c36ebb4bbd9c4fa731e5796bf7539cfb6ce48d4b8b",
+ "response": "{\"paraphrase\":\"Hey Customer Support, I need help keeping important health stuff safe when I use that fancy VR stuff at my hospital. I'm really curious about how to lock down the data and make sure only the right people can see it. Any tips or places to look would be super helpful. Thanks a lot, and I'll be waiting to hear back from you soon.\"}",
+ "elapsed_s": 17.0632895000017,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

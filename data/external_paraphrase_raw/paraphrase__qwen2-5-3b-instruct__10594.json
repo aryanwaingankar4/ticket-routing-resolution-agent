@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10594,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "c7edaece0e34fde8ade1c8217ef539fcc98a051d940a6fd425f87b8c6e698d52",
+ "response": "{\"paraphrase\": \"Hey, can you tell me more about those data stuff that helps people pick better investments? Thanks.\"}",
+ "elapsed_s": 6.887274400010938,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

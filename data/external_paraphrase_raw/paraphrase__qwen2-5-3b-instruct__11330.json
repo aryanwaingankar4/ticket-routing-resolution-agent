@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11330,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "94eb802e6e2b801a33c574796a7c2491c42c9813b4bbda6b51e042cbd9c28920",
+ "response": "{\"paraphrase\": \"Hey, is it possible to get all the details on how to make our investments better using Smart-Tracker and Firebase?\"}",
+ "elapsed_s": 7.819749500005855,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

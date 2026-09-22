@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13153,
+ "queue": "IT Support",
+ "prompt_sha256": "1faa441b6072fcf687652ffeb8f57a70bfb943f6e8e894c65a4aa61deb24f5bf",
+ "response": "{\"paraphrase\": \"Trying to figure out how to make our investments better using some data stuff. Could you help us out with that investment question quickly?\"}",
+ "elapsed_s": 6.896082799998112,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

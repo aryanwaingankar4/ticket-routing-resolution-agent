@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14118,
+ "queue": "Customer Service",
+ "prompt_sha256": "5da69360ccb2191b9e6798f728f462d84b35095d472ede50517951e992c02e0d",
+ "response": "{\"paraphrase\":\"Hey, is it okay if I talk about some ways to use the internet to make our company more popular? I really need some help figuring this out. Thanks a lot for your help. I'll be waiting to hear back from you soon.\"}",
+ "elapsed_s": 10.092520099991816,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

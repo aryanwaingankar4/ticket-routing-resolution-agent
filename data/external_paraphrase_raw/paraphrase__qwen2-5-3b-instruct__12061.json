@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12061,
+ "queue": "Product Support",
+ "prompt_sha256": "d74b50761f17c41da7dc9cb60d698c980bf87cf145d1c8f0d46db2e3278ad260",
+ "response": "{\"paraphrase\":\"Hey Support, I'm having trouble with our project management app that connects different tools. It keeps crashing and I think it's because of Ansible and Django 3.2 not playing nice together. I tried restarting the app, clearing the cache, and updating the other tools, but it's still happening. Can you help me fix this? If you need more info or specific steps to try, let me know. Thanks.\"}",
+ "elapsed_s": 19.46362670000235,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9487,
+ "queue": "Product Support",
+ "prompt_sha256": "53157367266a714e492417abef912c0b389c18ab5d4718a5a1c27c01229fde39",
+ "response": "{\"paraphrase\": \"They're saying that people tried to get into our healthcare computer systems without permission. We've already changed the passwords and made the firewalls stronger, but it's still happening. We need help right away to make sure the patient information stays safe. Could you tell us more about what's going on and any problems you're having? Also, it would be good to know what kind of computers we have and what security we have now. This will help us fix the problem quickly to stop more people from trying to get in.\"}",
+ "elapsed_s": 24.2037735000049,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

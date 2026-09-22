@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11208,
+ "queue": "Product Support",
+ "prompt_sha256": "3bdce8115a157bbe9bf0a48b59e982379b007dde1b5c7cad299f276c4d0c19c8",
+ "response": "{\"paraphrase\": \"Noticing a possible security issue found recently, they found someone trying to get into the medical records without being allowed to.\"}",
+ "elapsed_s": 7.588022299998556,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10741,
+ "queue": "Product Support",
+ "prompt_sha256": "2ed571216076790e5c7abccb3fc97fe663134200aff2caa33dd81b04b2fee2d1",
+ "response": "{\"paraphrase\": \"We want to make our medical information safer. Our company is looking into new ways to protect patient data. We're interested in things like encryption, making sure only the right people can get in, and checking who accesses the data. We think these new security things are important for keeping our patient information safe.\"}",
+ "elapsed_s": 20.77197420000448,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

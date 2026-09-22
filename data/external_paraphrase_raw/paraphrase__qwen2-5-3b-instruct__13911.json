@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13911,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "add96a3a4d0f94eadacda28d901fd8e8a5e935f8833cfc4c71144495fbfa7c9c",
+ "response": "{\"paraphrase\":\"Hey Support, we need help keeping important health stuff safe when we use your stuff at the hospital. Can you tell us how you keep people's private medical info private, safe, and always there when needed? Any tips or stuff you recommend would be super helpful. Thanks for your help, we're looking forward to your reply soon.\"}",
+ "elapsed_s": 13.972830900005647,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

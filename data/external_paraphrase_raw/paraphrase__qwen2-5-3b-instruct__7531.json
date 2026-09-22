@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7531,
+ "queue": "IT Support",
+ "prompt_sha256": "c942edd78625dfbf6e477930988b454d3dcc9755745d6bc61dd0f03600ac003c",
+ "response": "{\"paraphrase\":\"Can we learn how to use tools like Elasticsearch and Airtable to help us make better investment decisions? I want to use these tools to manage my investments and see how risky they might be. Are there any special parts of these tools I should know about? I hope you can help me make better investment choices.\"}",
+ "elapsed_s": 15.706930600004853,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

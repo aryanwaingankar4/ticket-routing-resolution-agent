@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6911,
+ "queue": "IT Support",
+ "prompt_sha256": "cdc944ab3a6469ff976817d211bcab6bcbc8dd36a3957952cd3cdee2757e8cd9",
+ "response": "{\"paraphrase\":\"Hey, they had a problem with MATLAB on their Mac Mini where it keeps crashing. This is important because they use MATLAB to figure out how to invest money wisely and it uses a lot of the Mac's CPU. They need help figuring out what's causing the crashes.\"}",
+ "elapsed_s": 13.382615099995746,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

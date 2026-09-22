@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7868,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "694f67892f6d1c9f4afa16bb7520f18bbc2e06f080b6c77beff5a58792fad204",
+ "response": "{\"paraphrase\": \"I'm checking out security stuff for keeping medical info safe in hospitals. Could you tell me about the different ways to protect it? Also, can you give me info on how to scramble the data and who gets to see it? I'd really like to see any case studies or papers on this. And could you let me know if these solutions meet the rules for hospitals, especially the ones called HIPAA? Also, do you have any webinars or live demos I can watch to learn more about these security things? I'm looking forward to hearing back from you.\"}",
+ "elapsed_s": 24.96634630000335,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

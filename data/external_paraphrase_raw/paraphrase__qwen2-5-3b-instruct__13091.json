@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13091,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "fc3829c5b4c8bd7c6b93f7c53a0d1782e594f5bf62ac0b2b04d479be5176916c",
+ "response": "{\"paraphrase\":\"Hey, they want to know how Elasticsearch works with data analytics stuff to make investments better. They want to know the good parts and how to put it all together.\"}",
+ "elapsed_s": 7.908078499996918,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

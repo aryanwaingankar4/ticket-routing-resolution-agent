@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14648,
+ "queue": "Technical Support",
+ "prompt_sha256": "2572f76d988dad3089c486f6685756757e9c14a61b3535434f26ff341e9aa57a",
+ "response": "{\"paraphrase\": \"The company can't get into the investment analytics because the system is down.\"}",
+ "elapsed_s": 6.797772600009921,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

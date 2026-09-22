@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14150,
+ "queue": "Customer Service",
+ "prompt_sha256": "80df9469af69f6eb260f9a6b2ffd3705ce8f2c918ac4d7c421b2c4367660903b",
+ "response": "{\"paraphrase\": \"Hey Support Team, there's been a problem with our project data not loading properly. It's taking longer than usual, and we tried clearing our browser stuff and making our queries better, but it's still slow. It's affecting how we work, so we need your help to fix it. We can give you any info you need to figure out what's wrong. Just let us know what steps you need to take to solve this. Thanks for looking into this.\"}",
+ "elapsed_s": 19.246716000008746,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

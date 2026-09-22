@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13791,
+ "queue": "Product Support",
+ "prompt_sha256": "8ae7cfc18677042551e298502c163569d11f5aec043c7c4a6f03e99681e2b587",
+ "response": "{\"paraphrase\": \"Using data to make better investment plans\"}",
+ "elapsed_s": 4.1889536999951815,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

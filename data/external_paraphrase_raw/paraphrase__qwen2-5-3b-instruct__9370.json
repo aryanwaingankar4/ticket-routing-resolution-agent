@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9370,
+ "queue": "IT Support",
+ "prompt_sha256": "72e1ed831afd08088de1872dc459bcf173373f494d433da4257dde470045c76f",
+ "response": "{\"paraphrase\": \"The website is loading really slow. They updated some software and got more people visiting, but we cleared the cache and made the images smaller, but it's still taking forever to load.\"}",
+ "elapsed_s": 10.877972400005092,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

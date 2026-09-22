@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14512,
+ "queue": "Technical Support",
+ "prompt_sha256": "64d8c1664bb5d63207611d584e0c4a0a20718e0652f1221368e7a86a593b2579",
+ "response": "{\"paraphrase\": \"We need help from your support team to connect DataRobot with our project management tool. We want to use DataRobot to make our project management better. Could you tell us how to connect them and what we need to do? Also, can you tell us how connecting DataRobot can make our work better?\"}",
+ "elapsed_s": 17.84513989998959,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

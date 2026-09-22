@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13079,
+ "queue": "Product Support",
+ "prompt_sha256": "111e764cedb322986cae13521696a00c589f7bb5547f89451e6b340444e45265",
+ "response": "{\"paraphrase\":\"Hey Support, I'm trying to learn about the data stuff you got that can make our investment plans better. I'm curious about things like guessing what might happen next, figuring out how to pick stocks, and how to be careful with money. If you could tell me about some examples where people used this stuff and it worked out well, that would be great. Also, I want to know how to use it and if you can teach me and help me along the way. Thanks for your help and I'm looking forward to hearing back.\"}",
+ "elapsed_s": 20.536463299999014,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

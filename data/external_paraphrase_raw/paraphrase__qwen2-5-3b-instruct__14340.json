@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14340,
+ "queue": "Customer Service",
+ "prompt_sha256": "6cee5b24c3e368e777b4cd33de8fee6d9b226b25c0c49c6c096d332fea89f2d9",
+ "response": "{\"paraphrase\": \"They noticed that people aren't liking or sharing stuff as much as before. They think it might be because the rules for what gets shown changed and some of the old stuff isn't as interesting anymore.\"}",
+ "elapsed_s": 10.647922899996047,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

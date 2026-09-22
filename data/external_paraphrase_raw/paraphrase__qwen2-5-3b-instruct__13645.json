@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13645,
+ "queue": "Customer Service",
+ "prompt_sha256": "ee7a1482c33a2214d5e4b05b720b1f8187fac3fba419dae294f4491e93d118da",
+ "response": "{\"paraphrase\": \"Hey Customer Support, I need to ask about making our hospital safer for medical stuff. Keeping everything secure and making sure no one messes with patient data is really important. I think we should use really strong locks for the data, have people check the locks often, and teach everyone how to keep the data safe. Also, we should have a plan for if something goes wrong, and test how safe we are by pretending something bad happens. I think these things will make our hospital safer for medical stuff.\"}",
+ "elapsed_s": 18.185564899991732,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13874,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "d88b8e48065709c1cf766b6871375761c7a116381714aa87bad579675e571f54",
+ "response": "{\"paraphrase\": \"They need help with some service problems that are stopping people from getting healthcare data. It could be because of a network setting that's not right or maybe someone tried to break into their system. They've already tried restarting the services and checking their internet connection.\"}",
+ "elapsed_s": 10.224440599995432,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

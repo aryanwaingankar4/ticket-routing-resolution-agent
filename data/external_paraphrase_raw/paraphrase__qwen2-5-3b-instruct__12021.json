@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12021,
+ "queue": "Technical Support",
+ "prompt_sha256": "92c09653d055169ecc8c5c1dcb6180fd614c9abbb85b81806b49bde37cafd218",
+ "response": "{\"paraphrase\":\"Hey, they want info on different tools to help them make good choices when picking investments. I'm really curious about how machine learning and AI can spot changes in the market. Do you know anything about that? Thanks for the help and I'll be waiting to hear back.\"}",
+ "elapsed_s": 14.134929899999406,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

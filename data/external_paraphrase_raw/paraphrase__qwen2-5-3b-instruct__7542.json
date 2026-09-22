@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7542,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "63c669cbe877217d6655da95859988a35d71b38eb699eab0ed7d9f6a90e18e48",
+ "response": "{\"paraphrase\": \"They noticed that even though things are getting better, the money they're putting in isn't growing as fast as it should. They think it might be because the computer programs they use aren't set up right, or because they're using old information instead of the latest stuff.\"}",
+ "elapsed_s": 12.836430499999551,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

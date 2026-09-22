@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12183,
+ "queue": "Product Support",
+ "prompt_sha256": "d298e1aaa83154cb6d3803bbdb179145d55be18ca508c6d14616d035553a07d0",
+ "response": "{\"paraphrase\":\"People who are having problems with Microsoft Dynamics 365 and Avid Pro Tools are seeing a lot of crashes. It could be because the programs don't work well together or because there's not enough space for them to run smoothly. To help better, we need to know how often these crashes are happening and any error messages you see. Also, it would be great to know what your computer is made of and how it's set up. If needed, we can have a call to talk more about it.\"}",
+ "elapsed_s": 18.941891900001792,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6679,
+ "queue": "Customer Service",
+ "prompt_sha256": "bb89353b85e1be8014265d488224f7efb4adea05457212ce283fa0e955d46214",
+ "response": "{\"paraphrase\":\"Hey Support, I need to know about how your project handles more people using it and how much it costs for different levels of use. Can you tell me more about that? Thanks, and I'll check back soon.\"}",
+ "elapsed_s": 14.278955000001588,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

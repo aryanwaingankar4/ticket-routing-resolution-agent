@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6969,
+ "queue": "Technical Support",
+ "prompt_sha256": "9712de673a49e1f0901ce3b371e2e78b061ad2e22a862503a306374c73b773df",
+ "response": "{\"paraphrase\": \"I'm writing a report about some big problems with digital marketing stuff because of software not working well together. They updated some important apps recently and that might be the problem. We tried to reinstall the software and update the device drivers, but it's still not fixed. I really need your help to fix this.\"}",
+ "elapsed_s": 14.869844200002262,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

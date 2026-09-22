@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13170,
+ "queue": "Customer Service",
+ "prompt_sha256": "f85f0024704a85fc0429d9d0a9b931a3b86e71acb42517feca5ba38c87f2dacf",
+ "response": "{\"paraphrase\":\"Hey, we're looking for a project management SaaS solution. Could you tell us about its features like task management, team collaboration, and reporting? Also, can you give us the different pricing plans and any discounts or promotions that might be available? We want to find one that helps our team work better and be more productive.\"}",
+ "elapsed_s": 14.534818100000848,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9088,
+ "queue": "Technical Support",
+ "prompt_sha256": "564873477038e1d97d3774212294b1d51dab916bb0219b91ef5647f213a72d05",
+ "response": "{\"paraphrase\": \"There's a problem with the audio quality during our team meetings on Microsoft Teams. The sound isn't as clear as it used to be, which makes it hard to hear everyone properly. It could be because the internet isn't stable or because the settings on your devices are wrong. We've tried restarting the switch and changing the settings on the camera, but the issue still isn't fixed. This is affecting how well we can work together. If you have a good time to call and help fix this, we'd really appreciate it.\"}",
+ "elapsed_s": 24.815625999995973,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

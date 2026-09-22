@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10351,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "4dce94e017d6c4c78607317379194926dd54cf89908d6c740e828ee497800b6e",
+ "response": "{\"paraphrase\":\"I want to use IBM SPSS Statistics 28 with our other tools for looking at investment data. Can you tell us how to do that? We're trying to figure out how to make them work together better. We're curious about any problems we might have, if we need to update any software, and what good it might do. Any help with this would be really great.\"}",
+ "elapsed_s": 18.795086699989042,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

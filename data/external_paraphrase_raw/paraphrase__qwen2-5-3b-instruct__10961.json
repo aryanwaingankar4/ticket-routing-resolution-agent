@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10961,
+ "queue": "IT Support",
+ "prompt_sha256": "928dd030f87f5fc78093e82e185cb00aba3a097098076a4576f32591f430e95d",
+ "response": "{\"paraphrase\":\"Hey Support, I'm having trouble with the app loading sometimes. It might be because of some changes they made to the servers. I tried rebooting the server and clearing the cache, but it's still not working. The errors are happening now and then, so I'm having a hard time figuring out what's causing it. Could you please help me with this? If you need more info, let me know. I'm hoping you can get back to me soon. Thanks for your help.\"}",
+ "elapsed_s": 27.691299199999776,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

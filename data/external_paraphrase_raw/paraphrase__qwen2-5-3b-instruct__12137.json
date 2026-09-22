@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12137,
+ "queue": "Product Support",
+ "prompt_sha256": "3a049d43ae64284e1eb849f527e36d67167be8e3a71f5e2e942d4e65b61ab2cc",
+ "response": "{\"paraphrase\": \"They noticed that people aren't liking our brand as much on the internet lately. They think it might be because things are changing in the market. They've tried changing the stuff they post and buying more ads on social media, but it hasn't gotten much better. They want help to figure out how to make their posts better match what people want now and make their brand more popular online. They think they can come up with a plan to get more people interested and help grow their business.\"}",
+ "elapsed_s": 20.78679660000489,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8983,
+ "queue": "Technical Support",
+ "prompt_sha256": "76a84fc6e459adaa2020634d5779c3ee566777b648cf0b9d214cbc806df64102",
+ "response": "{\"paraphrase\":\"Hey there, I wanted to talk to you about our data analysis stuff. The ones we use right now aren't very good at giving us quick looks at what's happening. That's making it hard for us to know where to put our money and how to tell people how well we're doing. I think if we could make them better, we could make better choices and do a better job overall. It affects our main software and some of our gadgets. If you could look into this and find a way to help, I'd really appreciate it. Thanks a lot.\"}",
+ "elapsed_s": 25.601743100007297,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

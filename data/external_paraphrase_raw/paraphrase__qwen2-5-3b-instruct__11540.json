@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11540,
+ "queue": "Technical Support",
+ "prompt_sha256": "f72a35b15c7faab6320ad8cad3f168d92536910267a1a28d5eb087e9f690b288",
+ "response": "{\"paraphrase\":\"Hey Support, I'm having trouble with the data syncing in Smartsheet TYPO3. It says the API is hitting the speed limit. I tried rebooting and reconnecting, but it didn't work. Can you help me figure out what to do? I'd really appreciate it. Thanks!\"}",
+ "elapsed_s": 17.048698900005547,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

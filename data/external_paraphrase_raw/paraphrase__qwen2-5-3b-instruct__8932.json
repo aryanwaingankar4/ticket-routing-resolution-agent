@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8932,
+ "queue": "Customer Service",
+ "prompt_sha256": "fc4a502cb6b773b152d7eda32a6446ec35ab9051e50031c99733af896df98809",
+ "response": "{\"paraphrase\": \"Hey Support, we're having a big problem with a few apps because of a new update on the SaaS thing. We tried to undo the changes and fix the connections, but it's still not working. We need your help to fix it quick so we don't have too many problems. Can you tell us what to do next? Thanks for your fast help.\"}",
+ "elapsed_s": 22.594350800005486,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

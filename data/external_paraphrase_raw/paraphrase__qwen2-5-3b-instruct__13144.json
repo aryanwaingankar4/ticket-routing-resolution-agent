@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13144,
+ "queue": "IT Support",
+ "prompt_sha256": "d813f6130c09bb770c45e30036a747ab9b8cfdde6beb9fc46a9c8e7308e85654",
+ "response": "{\"paraphrase\": \"We're having a lot of problems where the project management software keeps crashing during busy times. It might be because the server doesn't have enough space or memory. We've tried to use the resources better and updated the software, but the crashes are still happening.\"}",
+ "elapsed_s": 11.42828580000787,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

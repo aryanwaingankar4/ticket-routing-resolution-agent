@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12533,
+ "queue": "Customer Service",
+ "prompt_sha256": "c4990a57d80bd74bd318fc59d67d427fac5d3c004eef2fe657a1d88ee35ad0bf",
+ "response": "{\"paraphrase\": \"Hey Support, we're having trouble keeping our project data in sync across different devices. It might be because of some new software updates or the servers being too busy. We tried clearing out some stuff and resetting connections, and that helped a little bit. But the problem still isn't fixed, and it's causing our project timelines to be late sometimes. We'd really appreciate some help figuring out what to do next and how to fix this. Let us know if you need any more information.\"}",
+ "elapsed_s": 17.804783400002634,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

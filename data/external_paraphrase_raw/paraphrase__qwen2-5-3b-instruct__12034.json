@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12034,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "642eaf967dfe626395987cc749fe6a5379210a02038ef1769edd10785ac8931a",
+ "response": "{\"paraphrase\": \"There's been a problem with the service because of a big update to the system. It affected a few products and caused some downtime.\"}",
+ "elapsed_s": 7.760633500001859,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

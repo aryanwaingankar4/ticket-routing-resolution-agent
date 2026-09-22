@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7265,
+ "queue": "Customer Service",
+ "prompt_sha256": "dd8f31dd7a8ecae3e45b0ca64ada9da9984f9e992508e9fcb485592790b5be45",
+ "response": "{\"paraphrase\": \"Hey, I'm curious about how your company uses digital stuff to make the brand more popular. I want to know about stuff like using social media, making cool content, and working with influencers. Also, I'd like to know how you check if all that stuff is working and what numbers you use to see if it's good or not. Thanks for helping out and I'll check your reply.\"}",
+ "elapsed_s": 20.26429379999172,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12444,
+ "queue": "Technical Support",
+ "prompt_sha256": "243b93b567f783591d2ac4ddee806c382b20272d6785a482441223ec425b883b",
+ "response": "{\"paraphrase\": \"The marketing stuff for Brand Growth isn't working very well. I looked at the numbers and changed how much we're spending on ads, but it didn't make much difference.\"}",
+ "elapsed_s": 7.726338199994643,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

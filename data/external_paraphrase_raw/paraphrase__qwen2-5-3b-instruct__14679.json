@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14679,
+ "queue": "Technical Support",
+ "prompt_sha256": "cf83bb03c70ca70d9522ad275d8d0c0442275d10f14b73ebf485c01390869669",
+ "response": "{\"paraphrase\":\"People have been having trouble accessing the project management tool sometimes. It might be because the server is getting too many requests at once. We already tried restarting the server and making the database queries better, but the problems still happen. The team is looking into why and trying to fix it so everyone can use it easily.\"}",
+ "elapsed_s": 15.72982619999675,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

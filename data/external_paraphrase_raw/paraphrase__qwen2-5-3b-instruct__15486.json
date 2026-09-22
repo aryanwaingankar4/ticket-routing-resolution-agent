@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15486,
+ "queue": "Technical Support",
+ "prompt_sha256": "a9f9677ebf695572d3fac65fbedb749701e1c50b58d4dfb9278ddd4ae9f87d7e",
+ "response": "{\"paraphrase\": \"Hey, we had a problem with the data processing for our investment analysis. It was taking longer because there was more data coming in. We restarted the systems and did some checks to fix it. Now we need help to make sure everything is working properly again.\"}",
+ "elapsed_s": 13.047146400000202,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

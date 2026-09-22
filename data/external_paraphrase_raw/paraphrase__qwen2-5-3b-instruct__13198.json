@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13198,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "347dd46b683a05e50edb6eeb50335f95d20f59cc264494a003d456c5fda80e04",
+ "response": "{\"paraphrase\": \"Hey, we're having a problem with the medical systems and they're not working right now because of a service outage. Do you think you could help me out with this?\"}",
+ "elapsed_s": 7.61526039999444,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

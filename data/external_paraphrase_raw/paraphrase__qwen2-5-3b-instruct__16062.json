@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16062,
+ "queue": "Product Support",
+ "prompt_sha256": "8a0774700cea1f027eb5e05bcafbf613bfa942eab6a05f56a65e8d2a19c4dba0",
+ "response": "{\"paraphrase\": \"The tech support team had a problem with the app when lots of people were using it at the same time. They think it might be because there weren't enough computer resources to handle all the users. They've tried to make the app run better by changing how it looks for information in the database and making the servers bigger. To help fix it, they need to know how many people were using the app and how many resources the servers have right now. If you could tell them that, it would help them find a better way to make the app work better.\"}",
+ "elapsed_s": 19.964420100004645,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

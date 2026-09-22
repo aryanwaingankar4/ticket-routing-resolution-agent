@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12019,
+ "queue": "IT Support",
+ "prompt_sha256": "ef6e2e4b2eb1af5efbb10cb621646c8f1b15e623fd5ccb71372b964524e36150",
+ "response": "{\"paraphrase\":\"They had a problem with their computer stuff because their router might have broken. They tried restarting it and checking all the connections, but the problem is still there. They need help to fix it so they can use their money stuff again.\"}",
+ "elapsed_s": 11.204221199994208,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

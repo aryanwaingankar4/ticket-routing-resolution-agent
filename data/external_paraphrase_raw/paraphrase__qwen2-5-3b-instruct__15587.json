@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15587,
+ "queue": "Customer Service",
+ "prompt_sha256": "2e0567987a559daf683c2c0fab3b95acb2c84ff1eb791573edbc07660e729263",
+ "response": "{\"paraphrase\": \"The app is having trouble sometimes and we need to fix it.\"}",
+ "elapsed_s": 4.721088899997994,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

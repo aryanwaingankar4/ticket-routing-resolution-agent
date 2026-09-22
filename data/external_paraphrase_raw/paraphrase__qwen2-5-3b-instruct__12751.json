@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12751,
+ "queue": "Technical Support",
+ "prompt_sha256": "97b4038dc8647e1bc44632b33d52c6274938a4d105857db98c5fc601fb30e631",
+ "response": "{\"paraphrase\": \"The tool for analyzing data is having trouble connecting to the financial databases, which is causing delays in making investments better. Even after trying to go back to an older version of the software and checking the network, the problem still exists. It might be because the software isn't updated properly or there's a network issue. We need help fixing this important problem as soon as possible.\"}",
+ "elapsed_s": 14.084115499994368,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

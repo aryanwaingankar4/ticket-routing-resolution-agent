@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9362,
+ "queue": "Technical Support",
+ "prompt_sha256": "3a7c9bbc862bef3420cbc86d88de23de6eda812f705b13d202dd428bcbfcf5c6",
+ "response": "{\"paraphrase\": \"Hey, the new update to our data tool is messing up how we do investments. It's giving us wrong reports. I tried restarting it, checking if it's compatible with other stuff, and looking at the change log, but it's still not working right. I really need your help to figure out what's wrong so we don't have more problems.\"}",
+ "elapsed_s": 18.870536299989908,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

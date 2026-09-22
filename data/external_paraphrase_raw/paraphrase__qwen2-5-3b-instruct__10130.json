@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10130,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "1c4ce9bf7ced5468b248f1bc0a6dc9a7f0bc33c202ff32e3fc13c21bd2ea978e",
+ "response": "{\"paraphrase\": \"Hey Support, I'm checking out the prices for linking Zoho Books to our project management software. Could you give me a rundown of all the costs, like setup, support, and maintenance? Also, are there any discounts for long-term use or buying in bulk? I want to know what the integration can do for us and if there are any stories from people who already use it.\"}",
+ "elapsed_s": 27.944120100000873,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

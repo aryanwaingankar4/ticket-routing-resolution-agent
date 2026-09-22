@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11773,
+ "queue": "Technical Support",
+ "prompt_sha256": "806b9d0471576c00d3412f47f1a5790c6a5743fe5a6cbd54e5c3a16a781ea9bf",
+ "response": "{\"paraphrase\": \"There's a problem with the report on the Airtable API. The marketing agency can't see their campaign analytics because of API issues. They think it might be because of some recent server updates. They've tried to fix it by reconnecting and checking settings, but nothing's working. Can you help fix this as soon as you can?\"}",
+ "elapsed_s": 14.793714200000977,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7170,
+ "queue": "Technical Support",
+ "prompt_sha256": "decff4c56954d53a8c97ca50cdd1dc9e98d1571d0b3622f7afa7ffcc30754d1a",
+ "response": "{\"paraphrase\":\"There's a problem with the investment reports where the analytics aren't right. It could be because of some recent software changes or how the apps are set up. I tried restarting the apps and checking the data again, but the problems are still there. Would really appreciate if you could take a look and fix it for me as soon as you can.\"}",
+ "elapsed_s": 15.427366199990502,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

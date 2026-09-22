@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7458,
+ "queue": "Product Support",
+ "prompt_sha256": "473e108777f3784f7649757e77a825f268c8eed8d1dfee7ae481c5dd3245cec5",
+ "response": "{\"paraphrase\":\"The big money company's computer program that looks at investments stopped working when lots of people were using it. It might have happened because there was too much information coming in and not enough space for it. We've already turned the program back on and looked at the computer's memory to see if it found any mistakes. We're trying to figure out why it stopped working and how to fix it so it doesn't happen again. If you need to tell us anything else to make it better, just let us know.\"}",
+ "elapsed_s": 22.45696450000105,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

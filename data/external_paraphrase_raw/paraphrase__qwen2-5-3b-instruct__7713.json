@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7713,
+ "queue": "Product Support",
+ "prompt_sha256": "901607286d8c3712cfae24396a19a1f0d1a2d67c3d226f6b004282ef9660f69f",
+ "response": "{\"paraphrase\":\"Hey support team, I need to ask for better ways to connect our stuff. This would make it easier to manage projects and make things smoother for users. I think it would be really good and they'd appreciate it. Can you look into this and get back to me soon? Thanks for your help.\"}",
+ "elapsed_s": 13.958478999993531,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

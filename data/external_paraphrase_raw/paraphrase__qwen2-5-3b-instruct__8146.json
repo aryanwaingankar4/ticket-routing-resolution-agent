@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8146,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "742b978f30305cf5539ed575784c58c4c6a2455129c24efb62add54c05916874",
+ "response": "{\"paraphrase\":\"Hey, they want some info on how we use data to help people pick better investments. We look at all the numbers and make predictions to help people decide what to buy and sell. They're asking if you're looking at stocks, bonds, or something else, and what problems you're having with your investments. They want to know so they can give you better help.\"}",
+ "elapsed_s": 19.98656689999916,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

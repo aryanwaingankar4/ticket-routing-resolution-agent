@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12401,
+ "queue": "Technical Support",
+ "prompt_sha256": "9e3382b940d96f3847e4b7697a77ad3d29a2c8e55fc62ef55244a70ff9c1d7fc",
+ "response": "{\"paraphrase\": \"The new update made the project management app crash on Android phones. It might be because it doesn't work well with Wix Sketch 71. We tried to reinstall the app and clear the cache, but the problem still won't go away. Can you help us fix this quickly?\"}",
+ "elapsed_s": 11.929091600002721,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

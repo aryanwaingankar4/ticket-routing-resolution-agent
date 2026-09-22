@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15519,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "5bed0a81674b3d9b30835f2b55dfd3a428438e19a7939891d8155d316802fb3a",
+ "response": "{\"paraphrase\": \"Hey, there was a problem with some personal medical information in the hospital's computer system. It might have happened because they didn't have strong enough security measures or their software was old. They've already changed some passwords and added a second layer of security. They've also asked their friends in other companies for help. They want to know what to do next to make sure everything is safe. Can you tell them what to do now and if there's anything else they should do?\"}",
+ "elapsed_s": 22.74221710000711,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

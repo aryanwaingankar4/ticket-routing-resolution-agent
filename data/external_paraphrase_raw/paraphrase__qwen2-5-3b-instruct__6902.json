@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6902,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "f36735292e2431e295d977dee67300cc8b1979487cf80b5f29d8c2e7a3900537",
+ "response": "{\"paraphrase\": \"Hey, we're looking for help from the AWS Analytics customer support team. They can help us use AWS Alteryx to make our investments better. We want to learn how to use these tools to make smart choices about where to put our money. We're curious about what kind of smart analysis we can do with these tools to look at big piles of numbers and spot patterns. We also want to know what kind of analysis we can do with these tools to help us pick the best investments. We'd really appreciate some help and resources to learn about this stuff.\"}",
+ "elapsed_s": 32.336982900000294,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

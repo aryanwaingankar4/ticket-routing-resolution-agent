@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7034,
+ "queue": "Product Support",
+ "prompt_sha256": "60dbd07dc80450f16ab191526b8869db424583bb609d11956ca83a0dcec68318",
+ "response": "{\"paraphrase\": \"Hey Support, we're having a problem with how the investment stuff is being sorted out. It might be because of a new update that changed some settings. I checked the data and restarted the thing that looks at numbers, but it's still not working. The people who look at the system said there might be a little glitch. This is making it hard to manage our investments properly and we need your help to fix it. Could you give us some steps on how to fix this?\"}",
+ "elapsed_s": 23.37004779999552,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

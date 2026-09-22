@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15335,
+ "queue": "Technical Support",
+ "prompt_sha256": "73b7d2378dac118111e55cc657d70e5237f9c57bee39d78a2cb9266ec73e00d6",
+ "response": "{\"paraphrase\": \"Hey, we need to change how we use those data tools in Airtable to make better decisions about where to put our money. Can you help us with that?\"}",
+ "elapsed_s": 8.748859600003925,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

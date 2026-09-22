@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8878,
+ "queue": "Technical Support",
+ "prompt_sha256": "e9737b9da16b5e7923a174c5bd88e9071ef2eedc7037f18a459d1271b3141118",
+ "response": "{\"paraphrase\": \"QuickBooks连接项目管理软件在尝试和PDFfiller集成时，不响应了。\"}",
+ "elapsed_s": 7.880451700009871,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

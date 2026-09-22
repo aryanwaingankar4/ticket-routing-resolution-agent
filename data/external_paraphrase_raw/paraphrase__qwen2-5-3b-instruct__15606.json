@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15606,
+ "queue": "General Inquiry",
+ "prompt_sha256": "cc5559bd2f2a191acdb7002fb905a2771abfb5b8ed053ede375da29e1ff13bf8",
+ "response": "{\"paraphrase\": \"Hey Customer Support, can you look into the big problem with our marketing stuff? We're not getting the growth we wanted in people liking our brand and buying from us. Our ads and content don't seem to be hitting the right people. We've tried changing them, but it didn't work. We'd really like to talk about how we can make our marketing better for our customers.\"}",
+ "elapsed_s": 15.85660439998901,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10917,
+ "queue": "IT Support",
+ "prompt_sha256": "da196d546f89aa508ed94ed5d802b0a8aca0df88d89aeea5b6d2debebafe1332",
+ "response": "{\"paraphrase\": \"Having trouble with the project management tool during sessions even after trying to fix it.\"}",
+ "elapsed_s": 6.97398229999817,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

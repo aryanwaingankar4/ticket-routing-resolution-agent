@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14464,
+ "queue": "Technical Support",
+ "prompt_sha256": "211a4c50ff81bfbfb8cb4ca6356e0d7b90c59d37fa411492cfe82d167d50075a",
+ "response": "{\"paraphrase\": \"They noticed today that someone tried to get into our system without permission. This could have put our medical information at risk. It might have been because of a phishing email that tricked some of our workers. They've already checked it out and told the security team to look into it more.\"}",
+ "elapsed_s": 14.600300900012371,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

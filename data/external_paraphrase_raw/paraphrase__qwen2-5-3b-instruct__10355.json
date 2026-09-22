@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10355,
+ "queue": "Product Support",
+ "prompt_sha256": "e78dfd0312fd82c211000bb73128a57dc04c11b57301e8fe3ef391949be76c55",
+ "response": "{\"paraphrase\": \"There was a try to get into our hospital's computer stuff because the software was old and had some weak spots. We fixed that by updating the software and making sure the firewalls are working right.\"}",
+ "elapsed_s": 10.74769690001267,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

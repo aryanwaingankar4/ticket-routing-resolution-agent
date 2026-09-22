@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15281,
+ "queue": "IT Support",
+ "prompt_sha256": "03126d5a0924a4cf382db492e41a59b32899338fc4dd1f8dd06e1116fcc2a04a",
+ "response": "{\"paraphrase\": \"We need help to fix the website. It went down unexpectedly. We restarted the server and tried to manage the traffic better, but it's still not working. We need your assistance to solve this problem.\"}",
+ "elapsed_s": 11.342644699994707,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

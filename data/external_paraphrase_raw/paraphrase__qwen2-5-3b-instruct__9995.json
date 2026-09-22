@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9995,
+ "queue": "Technical Support",
+ "prompt_sha256": "c0f02933f2a0c064f823af60d015e8297b5b5b3ecd666a2852520ad104d0e599",
+ "response": "{\"paraphrase\":\"Hey, I need to know if your software works on different computers and phones. I want to make sure it will work with the ones we already have. Could you tell me which ones it works with? That would help me figure out if we can use it. Thanks for your help!\"}",
+ "elapsed_s": 16.364983299994492,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

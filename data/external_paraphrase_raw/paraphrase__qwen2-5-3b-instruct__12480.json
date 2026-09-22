@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12480,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "9ed9879f50d8389b29769991dbdad2b175383d7370f992e8d62a5bcc9984282f",
+ "response": "{\"paraphrase\": \"Hey, there's a big problem with the hospital's computer systems. Someone might have gotten into them because the software and rules for keeping them safe are old. We've tried updating the software, checking who has access to the computers, and asked some security experts to help. But the problem still isn't fixed. We need help fast to make sure the patient's medical information stays safe.\"}",
+ "elapsed_s": 14.257888599997386,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

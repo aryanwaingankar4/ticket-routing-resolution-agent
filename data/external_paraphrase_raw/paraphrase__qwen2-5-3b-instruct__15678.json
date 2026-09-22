@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15678,
+ "queue": "Product Support",
+ "prompt_sha256": "ef9d01371b4b3d55b743c52495ed2612e939dc83d70a927d6ef9fc5304c8da04",
+ "response": "{\"paraphrase\": \"Hey Support, please fix this right away because we found out some bad guys might have gotten into our hospital's computer system and could have seen people's medical records. It's because our computer stuff is a bit old and not as secure as it should be. We tried fixing it, but it didn't work. If you can help fast, it would be really good for keeping the bad guys out. Can you call us on the number we gave you to tell us more and help solve this? Thanks a lot.\"}",
+ "elapsed_s": 19.463202099999762,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

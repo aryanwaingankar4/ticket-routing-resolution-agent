@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14493,
+ "queue": "Product Support",
+ "prompt_sha256": "4eff3562970eb6346a86ad2a8e77f3cbeb9c748f6dd0c295da55e3b11cb9642e",
+ "response": "{\"paraphrase\": \"There were problems with the software update that made it hard to use the project tools. We fixed it by turning off and on the router. It might be because the tools don't work well with the update or because there wasn't enough space for the internet to flow smoothly.\"}",
+ "elapsed_s": 13.029645899994648,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

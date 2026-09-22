@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15340,
+ "queue": "Customer Service",
+ "prompt_sha256": "8df68e011d992690c36d17c23c179034c0d522348c119ff6029bca681148426d",
+ "response": "{\"paraphrase\":\"Hey Customer Support, I need help understanding how to keep important medical stuff safe in the hospital computers that use osCommerce. If you could give me some advice or point me in the right direction, I would really appreciate it. It's really important to me that we follow all the rules for keeping this stuff private. Thanks for your help. I'm looking forward to hearing from you soon. Sincerely, [Your Name]\"}",
+ "elapsed_s": 18.58616589999292,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

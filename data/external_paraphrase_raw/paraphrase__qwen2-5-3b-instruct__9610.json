@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9610,
+ "queue": "Human Resources",
+ "prompt_sha256": "b392c4c6060f96e0b3a1f88569947e3059694b337da54fe4f596ff20c787c010",
+ "response": "{\"paraphrase\":\"Hey Support, I'm trying to figure out if the AR-Brille project management software plays well with other systems. Can you give me some details on how they can work together smoothly? I'm also curious about the tech stuff and any limits. Any docs or stuff that can help me understand the integration would be great. I'm excited to see how AR-Brille can make our project management better. Thanks for your help and time.\"}",
+ "elapsed_s": 28.80591419999837,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

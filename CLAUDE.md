@@ -195,6 +195,21 @@ python src/experiments/profile_external_dataset.py
 python src/experiments/run_external_conformal_shift.py
 python src/experiments/compare_deferral_rules_external.py    # run it second
 
+# Phase 7C -- Finding 1 under a PARAPHRASE shift (offline, no Gemini quota;
+# local Ollama qwen2.5:3b-instruct, ~2h for 299 tickets at ~18s each).
+# ALWAYS --limit 3 first and read the paraphrases before spending the full run.
+# UNLOAD THE MODEL BEFORE THE GUARD STEP: Ollama holds its weights for 5 min
+# after the last call, so loading BGE for the similarity guard puts both models
+# resident at once -- that overlap is this phase's memory peak and it got the
+# run killed once. `ollama stop qwen2.5:3b-instruct`, confirm /api/ps is empty,
+# then re-run with --cached-only, which refuses every live call and makes a
+# cache miss or prompt-hash mismatch FATAL rather than a silent regeneration.
+python src/experiments/paraphrase_external_tickets.py --limit 3
+python src/experiments/paraphrase_external_tickets.py
+ollama stop qwen2.5:3b-instruct
+python src/experiments/paraphrase_external_tickets.py --cached-only
+python src/experiments/run_paraphrase_shift_conformal.py
+
 # Phase 6B -- weighted conformal under shift (offline, no quota). Measurement
 # only; refuses to run if settings.conformal.enabled is True, and refuses to
 # overwrite its CSV without --force. FATAL unless the unweighted rows reproduce
@@ -397,6 +412,35 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   that corpus has no representation gap to find (Tier-1 34.8% vs Tier-2 37.3%,
   2.6 points, against 35.6 on ours), which weakens 7B as evidence and is a
   limitation, not a rescue.
+- **7C is BLOCKED, and a blocked arm is not a null.** The pre-registered ≥0.95
+  degeneracy rule fired (TF-IDF-space domain AUC **0.9972**), so **no verdict
+  was drawn on the primary** and the numbers sit in the CSV marked blocked, as
+  6B's BGE arm does. **After 7B and 7C, Finding 1 has not been shown either to
+  hold or to fail outside its original corpus** — write that, not "it failed
+  twice". Open question for a future gate, recorded post-hoc: the ≥0.95 rule
+  was imported from 6B, where it gated a **density-ratio estimate**; 7C
+  estimates no density ratio and uses the AUC only as a manipulation check,
+  where a near-1.0 value means the manipulation was *strong*. It may be gating
+  the wrong quantity.
+- **Finding 1's mechanism IS confirmed in accuracy, even though 7C is
+  blocked.** The paraphrase shift cost Tier-1 **10.5 accuracy points**
+  (0.3776 → 0.2727) against Tier-2's **2.5** (0.3776 → 0.3531) — about 4×.
+  7B's version shift produced no such contrast, which is direct support for the
+  diagnosis that it was the wrong kind of shift. Coverage barely moved either
+  way; the post-hoc hypothesis is that **large prediction sets buffer coverage
+  against a score shift** (4.9–6.9 labels of 10 here), so Finding 1 may need
+  both a representation contrast *and* small sets. Hypothesis, not finding.
+- **A test-arm coverage band must include the test-sampling term.** Finding 1
+  and 7B quote `coverage_sd(alpha, n_cal)` alone, which is fine on a
+  10,441-ticket arm. At 7C's n=286 the test-sampling sd (0.0173 at α=0.10)
+  **dominates** the calibration term (0.0082), so 7C reports a combined band.
+  Quoting the calibration term alone on a small test arm understates
+  uncertainty by roughly 2×.
+- **Never measure a local model while another model is resident.** Ollama holds
+  its weights for five minutes after the last call, so loading BGE straight
+  after a generation run puts both in RAM at once. That overlap is what got
+  7C's run killed for memory. `ollama stop <model>`, confirm `/api/ps` is
+  empty, then do the embedding work.
 - **7B's deferral reading must never be merged with 6A's.** 6A, on our data:
   "no evidence either way on the gated axis" — that wording still stands. 7B,
   on the external test arm where the comparison finally resolves (642 tickets

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10223,
+ "queue": "Technical Support",
+ "prompt_sha256": "f400492db8444acb9beb8f03bb1534017f500fd8765cf504b2a9a9f23887ed3a",
+ "response": "{\"paraphrase\": \"On Monday, we want to ask if we can connect the Streaming-Kamera to make our project management and real-time teamwork better. This would make our work process and how we get things done faster and easier.\"}",
+ "elapsed_s": 11.003034800000023,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

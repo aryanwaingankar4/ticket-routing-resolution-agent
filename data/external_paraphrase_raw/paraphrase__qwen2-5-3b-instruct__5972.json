@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 5972,
+ "queue": "Customer Service",
+ "prompt_sha256": "bb2de4d9a59b77298c6924cc5a4d2beb33ad8faf913e2174eab5bb6311764d1f",
+ "response": "{\"paraphrase\": \"Hey, we're asking about how to grow our brand. Could you tell us about ways to make people know about us and get them interested? We're really curious about how to use social media and make good content. Thanks for your help. We're looking forward to hearing back soon.\"}",
+ "elapsed_s": 18.286223799994332,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 3564,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 3564.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

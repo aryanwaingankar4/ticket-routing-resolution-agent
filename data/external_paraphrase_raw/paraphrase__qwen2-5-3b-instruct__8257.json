@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8257,
+ "queue": "Technical Support",
+ "prompt_sha256": "4dd0d323b1bc20322bb0ff2b28ec98f8a431031078abe4d9ce34eca6fe61e224",
+ "response": "{\"paraphrase\": \"I'm wondering about keeping medical information safe in a hospital. I'm thinking about using this HTC Vive Cosmos thing. Do you have any advice on how to keep patient information private and safe using tech? Any good tips or places to look for more info would be really helpful.\"}",
+ "elapsed_s": 22.66740829999617,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

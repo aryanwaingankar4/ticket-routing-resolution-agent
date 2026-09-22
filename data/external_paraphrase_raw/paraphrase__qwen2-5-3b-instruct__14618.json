@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14618,
+ "queue": "Customer Service",
+ "prompt_sha256": "6c3793f3fd7edc854588196c8ed6b916dca4406d1223508146a69f65bc4bfa41",
+ "response": "{\"paraphrase\": \"We need help with our digital marketing stuff. Our campaigns aren't growing as much as we want them to. It could be because we're not using the strategies right or because we're using old tools. We've looked at the numbers and changed how we're targeting people, but it's not working better. We've also checked what other companies are doing and found some areas where we could improve. But we still need some pointers to make it better.\"}",
+ "elapsed_s": 21.206724800009397,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

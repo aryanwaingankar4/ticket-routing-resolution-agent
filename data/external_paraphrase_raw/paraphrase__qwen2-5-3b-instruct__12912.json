@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12912,
+ "queue": "IT Support",
+ "prompt_sha256": "7bd4bcc454fc00d2fa1a522c159f4d84c39a235032655ce889b9be49993c075a",
+ "response": "{\"paraphrase\": \"Hey, we need some help making our software work better together and improving how we use the internet to grow our business. This will let us serve customers better and make our whole operation stronger.\"}",
+ "elapsed_s": 8.723110499995528,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

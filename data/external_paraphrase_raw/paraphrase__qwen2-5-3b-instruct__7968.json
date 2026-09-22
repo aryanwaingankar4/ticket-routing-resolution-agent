@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7968,
+ "queue": "Product Support",
+ "prompt_sha256": "7d060026f6924afa6cd236db9d1395951d8d136fdb7619250019327e8b398439",
+ "response": "{\"paraphrase\":\"I want to know more about digital marketing stuff. Could you tell me how to make our company grow bigger? I'm really curious about the tricks we can use to make our company more seen and liked by people. Your knowledge would be super helpful. Thanks!\"}",
+ "elapsed_s": 17.22339249998913,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

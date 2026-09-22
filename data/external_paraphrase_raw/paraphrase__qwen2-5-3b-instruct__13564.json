@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13564,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "9061409109aa7c8292ba349e3d5fbfe0cda820951d6c05a36be3a1c40e08201a",
+ "response": "{\"paraphrase\": \"Hey, a few things like a Cooler Master Cooler Box and a Lenovo laptop aren't working right. We've already tried turning them off and checking the connections, but they still don't work. Wondering what we should do next to fix it.\"}",
+ "elapsed_s": 10.885248600010527,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

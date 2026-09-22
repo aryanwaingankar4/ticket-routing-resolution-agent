@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9640,
+ "queue": "Customer Service",
+ "prompt_sha256": "db5661c7f0d88ac1df731319657dee5473e7d34241b41a99039b67cacf0a5b26",
+ "response": "{\"paraphrase\": \"We want to make our digital stuff better to grow our brand and have more people know about us online. We need help to do that.\"}",
+ "elapsed_s": 10.134611100002076,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

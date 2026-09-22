@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14444,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "443298a6b67848f9b900b6eda983b7f82aeadbc66f3690cf428871cd7f52634d",
+ "response": "{\"paraphrase\":\"There are some billing mistakes in our SaaS account that we can't figure out. It might be because the payment system isn't connecting correctly with the payment gateways. We've already checked everything, but the problem is still there. Could you look into it and tell us what to do next? I really need this fixed fast.\"}",
+ "elapsed_s": 18.017240400004084,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

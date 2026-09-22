@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6738,
+ "queue": "Technical Support",
+ "prompt_sha256": "3017195391889460fa87c6d5d0b1fa5d6be126a8c26642d59aceea2af7f8ee4f",
+ "response": "{\"paraphrase\": \"They want to make the hospital safer, especially for keeping patient information. The current system has some weak spots that could let bad guys get into things. They want to check everything and add new ways to spot and stop bad guys. They also want to make sure all the equipment is up to date with the new safety rules to keep patient info safe.\"}",
+ "elapsed_s": 18.18953980000515,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

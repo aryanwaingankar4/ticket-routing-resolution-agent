@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10898,
+ "queue": "IT Support",
+ "prompt_sha256": "7c4be3aeadd85e9f08afa9d4ce8c75efcf347b6b1ae9b7e221360c18e35e4fd0",
+ "response": "{\"paraphrase\": \"Make digital marketing tools better to help grow our brand and see how well we're doing. That way, more people will know about us and we can reach more people, which will make us do better.\"}",
+ "elapsed_s": 14.963943800001289,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

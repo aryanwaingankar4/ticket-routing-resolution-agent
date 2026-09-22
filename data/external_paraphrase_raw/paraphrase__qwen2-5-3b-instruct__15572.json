@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15572,
+ "queue": "Technical Support",
+ "prompt_sha256": "0ce1a9bb85625367cb453b7eb70f263075da04d2b27b36dd5c1c3c637c9e363e",
+ "response": "{\"paraphrase\": \"Hey, we have a big problem with the hospital computer system. They found out that some bad people might have gotten into the system because the security wasn't up to date. Even though we tried to make it safer, there are still spots where it could be weak. If this happened, they could have seen some private patient information, which could be very dangerous. We need you to look into it and let us know what you found out so far.\"}",
+ "elapsed_s": 17.17138060000434,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

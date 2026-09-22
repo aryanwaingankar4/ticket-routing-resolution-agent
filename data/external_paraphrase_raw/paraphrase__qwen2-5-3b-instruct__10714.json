@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10714,
+ "queue": "Technical Support",
+ "prompt_sha256": "250bff48703c6625b34705a1f330835ce58f51be738a2a54bfaeae6742e80386",
+ "response": "{\"paraphrase\": \"Hey, I'm writing to ask about how we can use digital stuff to make our brand more popular and get people talking about it. I’m really interested in how we can use social media, make cool content, and work with people who have big followings. I also want to know how we can show how well these ideas are working and use that to make good choices. Thanks for helping me out, I really need this.\"}",
+ "elapsed_s": 24.213365900010103,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

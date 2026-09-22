@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11093,
+ "queue": "Product Support",
+ "prompt_sha256": "22a8a8853cb0a84679c861dac2478f9e8965514efe2d286604afa3feb3d59b22",
+ "response": "{\"paraphrase\": \"Having trouble with our marketing tools and software after the recent updates. It seems like installation errors are causing problems. We tried reinstalling and clearing the cache, but the issues are still there.\"}",
+ "elapsed_s": 10.41392469999846,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

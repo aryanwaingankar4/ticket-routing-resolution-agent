@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15402,
+ "queue": "IT Support",
+ "prompt_sha256": "ab29958151e3d3cc294f411c67ce1e3569342020ba4c511f88e67ec42a05aa70",
+ "response": "{\"paraphrase\": \"They noticed some people trying to get into the medical computer systems without permission. It might be because the firewalls are old and people are getting tricked more often. So they updated the security rules and taught the workers how to spot scams so it doesn't happen again.\"}",
+ "elapsed_s": 13.806233899988001,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

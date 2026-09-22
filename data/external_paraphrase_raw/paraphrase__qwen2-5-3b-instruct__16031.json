@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16031,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "1d129f8144d3209d25495e482edbd49b9209fa02bf6e87ebc43bb4085012dbe7",
+ "response": "{\"paraphrase\": \"Hey, we're having trouble with our marketing. We've been trying different things to grow our brand, but it's not growing as much as we'd like. What can we do to fix this?\"}",
+ "elapsed_s": 8.284955199997057,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

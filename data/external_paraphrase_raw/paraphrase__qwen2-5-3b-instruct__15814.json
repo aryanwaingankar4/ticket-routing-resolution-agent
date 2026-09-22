@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15814,
+ "queue": "IT Support",
+ "prompt_sha256": "7338cd3c7b71e518df98a30d34e2ec3d3b5c46b7fa9a86e68dc92cec60561bbb",
+ "response": "{\"paraphrase\": \"Hey, we're curious about what Avast Premium Security needs for a hospital. Could you tell us how to keep medical information safe there?\"}",
+ "elapsed_s": 7.3047533000062685,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

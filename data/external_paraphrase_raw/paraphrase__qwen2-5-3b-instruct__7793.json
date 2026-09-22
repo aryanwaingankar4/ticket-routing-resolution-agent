@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7793,
+ "queue": "Product Support",
+ "prompt_sha256": "2a34449538054769da1b57a8ebbf52e83816ce5e9bf1f8ccbb0faba2c0e0cc45",
+ "response": "{\"paraphrase\": \"Could you tell me more about how to use Bitdefender Antivirus Plus 2021 to keep medical data safe in a hospital? I really need help with this.\"}",
+ "elapsed_s": 12.35433390000253,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16110,
+ "queue": "Human Resources",
+ "prompt_sha256": "3662c3e56a6bae3ca8ca50d9cec61601980a2cb6bfe091ce52e612fa4357699b",
+ "response": "{\"paraphrase\": \"Hey, I need help with the project management software. It crashed during a team meeting. I tried restarting it and changing some settings, but it's still not working. It's a really important project and the delay is affecting everything. Can you please look into this and find a solution? If you need more info, let me know.\"}",
+ "elapsed_s": 15.05626330000814,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

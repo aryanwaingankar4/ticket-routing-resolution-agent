@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14120,
+ "queue": "Product Support",
+ "prompt_sha256": "b38388c7d2cd399e186b0fb3d8a2484ea9d09e6c357bf150ea4f24fc9cf7292e",
+ "response": "{\"paraphrase\": \"Hey, noticed that the brand growth numbers are going down.\"}",
+ "elapsed_s": 4.7408623000083026,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

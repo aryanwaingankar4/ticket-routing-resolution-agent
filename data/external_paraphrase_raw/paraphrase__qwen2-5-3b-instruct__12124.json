@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12124,
+ "queue": "Technical Support",
+ "prompt_sha256": "2cca1f2cd5cd51eff97c59f126fdefde828fbbd837a5ef5af0c301d5abd742ca",
+ "response": "{\"paraphrase\":\"Hey, we need info on H2O.ai working with PHP 8.0 for our SaaS app. Do you know of any problems or limits? We're trying to make it easy for people to use our app. Any help or docs would be super. Thanks!\"}",
+ "elapsed_s": 14.414316300011706,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

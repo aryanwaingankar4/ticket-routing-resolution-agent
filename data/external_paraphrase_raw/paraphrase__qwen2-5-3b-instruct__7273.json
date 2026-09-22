@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7273,
+ "queue": "Technical Support",
+ "prompt_sha256": "9c4e4a5431a94c3469ab665e7c4974eaebaf5d5c7c544d98574f15531c8be64b",
+ "response": "{\"paraphrase\":\"Could you tell me more about the data analytics services that help with making smart investment choices? I want to know what services can help me make better decisions when it comes to money. I would really like to see some examples and hear from people who used these services before. Thanks for your help, and I'll be waiting to hear back soon.\"}",
+ "elapsed_s": 17.995337200001813,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

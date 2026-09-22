@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13089,
+ "queue": "Customer Service",
+ "prompt_sha256": "14607804b6df2bf77c4bbb77843e5061eae93e48f2c27d701b14edc70191dfc3",
+ "response": "{\"paraphrase\": \"They noticed the investment optimization results were wrong because the algorithms were old and the data wasn't matching up.\"}",
+ "elapsed_s": 5.996251899996423,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

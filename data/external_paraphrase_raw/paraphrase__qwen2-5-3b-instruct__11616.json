@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11616,
+ "queue": "Technical Support",
+ "prompt_sha256": "546600a0d2c9cd6b7d930892cb069cd37a110cde42beee36cf00a7cde38112f6",
+ "response": "{\"paraphrase\": \"Hey team, there was a situation where someone tried to access something they weren't supposed to, and it might have gotten medical information. It could be because the software is old and the security isn't strong enough. We've already fixed some things like updating the security walls and limiting who can access stuff. But we still need help to make sure no one else gets in and to keep the important information safe. We really need your help to fix this quickly so it doesn't happen again and we can protect everything. Thanks for your help.\"}",
+ "elapsed_s": 27.050464900006773,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

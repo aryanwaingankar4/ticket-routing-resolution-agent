@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12085,
+ "queue": "Product Support",
+ "prompt_sha256": "a21ec0d5e93190f493527518afefdd0465c1d636d6a79f889b3e7428759898b7",
+ "response": "{\"paraphrase\": \"They're having trouble with their digital plans because some apps aren't working well together. It might be because of new software changes that aren't compatible. They've tried to fix it, but couldn't. So they're asking for help now.\"}",
+ "elapsed_s": 12.536661899997853,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

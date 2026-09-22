@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9767,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "71db16df2273089c21c9f198c377921b7525a1f786b0507300ad1cc858fba961",
+ "response": "{\"paraphrase\":\"Tell us about changing how we pay for stuff and the tools we use for looking at data. We're having trouble with one of our payment places. Can you show us what other ways we can pay and help us change our payment info? We really need your help with this and we'll be waiting to hear from you soon. Thanks for all you do.\"}",
+ "elapsed_s": 20.212312699994072,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

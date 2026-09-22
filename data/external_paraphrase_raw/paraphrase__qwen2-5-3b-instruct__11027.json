@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11027,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "a9de6b671af77726a99c1e00245d678f4e15a427e0567c8f07f64bba6d3b6abb",
+ "response": "{\"paraphrase\": \"They noticed that the money they're getting from their investments isn't as much as usual, and they think it might be because the computer programs they use to figure out how much money they'll get are a bit old. They've changed those programs a little bit and looked at what's happening in the market lately to see if that helps explain why the returns are down.\"}",
+ "elapsed_s": 17.922727799988934,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

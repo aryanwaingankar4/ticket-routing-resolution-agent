@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6146,
+ "queue": "Technical Support",
+ "prompt_sha256": "908e4e981e30c803a74dcf01b7b0228aec9e0d594b77134606ca053bbd9770ec",
+ "response": "{\"paraphrase\": \"Hey, we're looking for more details about the digital stuff you offer for our brand and products. Could you tell us about the services like managing social media, creating content, and making sure our website shows up in search results? Also, can you give us info on the software and tools you use for marketing and the analytics stuff? And if you have any examples of successful campaigns you've done before, that would be really helpful. Thanks for sharing all this info with us.\"}",
+ "elapsed_s": 32.59993419999955,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

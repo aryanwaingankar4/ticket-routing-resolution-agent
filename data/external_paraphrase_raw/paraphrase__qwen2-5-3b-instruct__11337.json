@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11337,
+ "queue": "Technical Support",
+ "prompt_sha256": "4ea09e365e2030da23b2537f771f96b603018206be9bd2e7e21efd272fb259e6",
+ "response": "{\"paraphrase\": \"There was a security problem found in the hospital's computer stuff, which could have made people's private medical information at risk. We've taken some steps to make the computers safer and are keeping a close eye on them to make sure everything is okay.\"}",
+ "elapsed_s": 11.96905160001188,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

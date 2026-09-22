@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7817,
+ "queue": "Product Support",
+ "prompt_sha256": "9c03cbebed428edb16eb905e0deddb7fa32d485d03922e416c7d9bfb97e3af6a",
+ "response": "{\"paraphrase\":\"Hey, we need to talk to the customer support people about making our digital stuff better to make our brand look cooler on the internet. We're thinking about adding some Samsung EVO Select and Google Cloud to what we're already doing. Can you tell us how using those things can help us see more people and get more people interested in our brand? Also, we want to know more about how safe and how big these things can get if we use them.\"}",
+ "elapsed_s": 23.29362160000892,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

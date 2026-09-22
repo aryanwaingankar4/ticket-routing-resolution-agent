@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13977,
+ "queue": "Customer Service",
+ "prompt_sha256": "370a6766624b86ee3f2f013b2c583075ce2be72a0694ee26f40bf799c1138e77",
+ "response": "{\"paraphrase\":\"Customer Support, We're not getting as many people interested in our stuff online even though we tried new ways to use computers. It could be because we're not showing our stuff to the right people or our stuff isn't very good. We looked at how well things are going and tried changing what we show and updating our stuff. That helped a little bit. But we need help figuring out why people aren't interested and how to make them more interested. Can you help us figure this out and give us some advice?\"}",
+ "elapsed_s": 18.207888399992953,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

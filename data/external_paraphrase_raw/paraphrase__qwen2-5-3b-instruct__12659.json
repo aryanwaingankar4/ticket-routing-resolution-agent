@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12659,
+ "queue": "Technical Support",
+ "prompt_sha256": "cae058b64b4037c3100b70de185b31c8d0f461c2e5e0c34cd7277c1a1c581ba3",
+ "response": "{\"paraphrase\": \"We found someone trying to get into our healthcare system's Wi-Fi, which could make patient information unsafe. They tried to change the security settings.\"}",
+ "elapsed_s": 7.3147422000038205,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

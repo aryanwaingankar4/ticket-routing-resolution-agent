@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13918,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "f6d9d5803000c7c8ae5a5948753bc7e89c45b526e12dae5164547a82718ee694",
+ "response": "{\"paraphrase\": \"Could you tell me about the security stuff and making sure we follow HIPAA rules in HubSpot for healthcare stuff? Thanks.\"}",
+ "elapsed_s": 6.745888599994942,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6756,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "60c63c4e994d4c609b0e232c82fe0a29a4a590962177a3487c460ef81141ef32",
+ "response": "{\"paraphrase\":\"Hey Support, I need help with my bills. I got charged for some software I didn't use. I think it's because the system made a mistake when renewing my account. I looked at my settings and checked my transactions, but the problem is still there. Can you tell me what I should do next? Thanks for your help.\"}",
+ "elapsed_s": 21.100737799992203,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

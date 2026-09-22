@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11241,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "a1bac1f2fc44a6525654a63bdb6419f01512f2fc2594a6ca9321e4a53bf601f9",
+ "response": "{\"paraphrase\":\"Hey Support, I wanted to ask about the billing stuff on this SaaS project management thing. Could you tell me about the different plans, how we pay for it, and if there are any deals? I'm curious about how it can grow with our business. Also, I want to know about the help we get and how they keep our info safe. Thanks for your help and I'll check back soon.\"}",
+ "elapsed_s": 19.499428700000863,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

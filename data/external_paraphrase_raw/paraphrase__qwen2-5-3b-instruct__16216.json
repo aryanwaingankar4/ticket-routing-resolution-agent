@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16216,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "17eaac9db2ebbd79ea1d883bf73dbc5e1fd4e209c616dd6ed1e4359e39ab9165",
+ "response": "{\"paraphrase\": \"There's been a problem with the SaaS platform and the reports aren't working well anymore. It's important for our project management. The issues started after we updated the software, maybe because the new version doesn't play nice with the old one. We've tried rebooting the servers and fixing the database queries, but the problems are still there. It's causing us trouble meeting our deadlines. We need help to fix this quickly. Can you take a look at it?\"}",
+ "elapsed_s": 18.176820600012434,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

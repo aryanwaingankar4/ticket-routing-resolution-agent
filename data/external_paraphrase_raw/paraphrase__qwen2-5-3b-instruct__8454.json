@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8454,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "12c66fa43e65af2c06c75e5af822e755c93b099d4a6b5cda336adaf6edf16071",
+ "response": "{\"paraphrase\": \"Hey, we need an update on the marketing agency's plan. They're doing well with their digital stuff, but we're having some internet issues that are hurting our brand. I think a new plan could help us reach more people and make our brand stronger. Could you look into it and give us a plan to update their digital strategy? It should look at what they're doing now and figure out how to do it better.\"}",
+ "elapsed_s": 20.580384499990032,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

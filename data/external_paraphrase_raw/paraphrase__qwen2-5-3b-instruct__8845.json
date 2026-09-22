@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8845,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "f3fdfefb58ec17c19ab7cd4fd1b1cab2f9aaecef973ace13ed1a3a5b83535a03",
+ "response": "{\"paraphrase\": \"There are problems with the service when it goes down and with the tools we use to invest money. They need to be fixed.\"}",
+ "elapsed_s": 10.907425299999886,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

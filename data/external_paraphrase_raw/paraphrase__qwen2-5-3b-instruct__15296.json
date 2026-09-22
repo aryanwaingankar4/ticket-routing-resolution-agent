@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15296,
+ "queue": "Technical Support",
+ "prompt_sha256": "25e099a77018cffd24bf376fa875b69bb25769544c1b04cbdd01c28790e23147",
+ "response": "{\"paraphrase\":\"Hey Support, <br>The financial firm's investment system is having a problem with numbers not matching up. It might be because different software programs aren't talking to each other properly. We've already restarted the servers, checked everything is set up right, and updated the products that are having trouble. We really need your help to fix this so the numbers for investments are correct and we can trust them. Can you tell us what you're going to do next to solve this? \"}",
+ "elapsed_s": 22.6628536000062,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

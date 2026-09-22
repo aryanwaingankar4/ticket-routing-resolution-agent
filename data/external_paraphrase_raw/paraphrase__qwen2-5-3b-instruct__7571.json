@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7571,
+ "queue": "IT Support",
+ "prompt_sha256": "bd61bb4e9624354ae9a7d86a0e94422c5a4649c657bd4ef8cc66db90828ed250",
+ "response": "{\"paraphrase\": \"Hey, we're using some data analysis software for picking investments. But the tools aren't good enough to give us all the info we need to make good choices. We'd really like to have things like predicting what might happen and looking at data right away. That would help us make better investment plans and get more money back. We're looking forward to you thinking about this request.\"}",
+ "elapsed_s": 18.61405879999802,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14282,
+ "queue": "Customer Service",
+ "prompt_sha256": "23db398786272285ec839c890d94d56e32233830ca1e063ba2e46ef2d656c980",
+ "response": "{\"paraphrase\": \"Support for ClickUp integrations had some problems. The ClickUp app kept crashing when I tried to use it with Final Cut Pro X and Google Meet. It might be because ClickUp doesn't work well with other apps. I've already tried reinstalling ClickUp, clearing the cache, and making sure all the software is up to date. I really need help to fix this because it's slowing me down. Can you give me any other steps to try to fix the problem with other apps not working well with ClickUp?\"}",
+ "elapsed_s": 21.474137600001995,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

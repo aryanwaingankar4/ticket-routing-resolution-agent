@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13514,
+ "queue": "Technical Support",
+ "prompt_sha256": "33341ce1c188a2fbbb02a9f224f2b5ec9399c83572b553bda971574429c4ea3a",
+ "response": "{\"paraphrase\": \"A healthcare place keeps having problems with people getting into their patient records. Even though they changed some of their computer stuff and checked for bad software, the records are still getting hacked sometimes.\"}",
+ "elapsed_s": 8.860667400003877,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

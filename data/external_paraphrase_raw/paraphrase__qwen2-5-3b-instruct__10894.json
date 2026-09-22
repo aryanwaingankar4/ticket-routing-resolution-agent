@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10894,
+ "queue": "IT Support",
+ "prompt_sha256": "aaee3376c0d5228f057743ed420c6f5e3920f7bec91f6d337fec194bce659edb",
+ "response": "{\"paraphrase\": \"Hey, we're having trouble with the internet connection on different gadgets. It's not working properly sometimes. Do you know what I mean?\"}",
+ "elapsed_s": 9.883230699997512,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

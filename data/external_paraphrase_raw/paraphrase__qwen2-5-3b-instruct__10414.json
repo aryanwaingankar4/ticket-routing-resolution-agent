@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10414,
+ "queue": "IT Support",
+ "prompt_sha256": "9f14d4ba94f3c23a34127d7929ff18d9e03b8f747d11e6af7d42e37699511628",
+ "response": "{\"paraphrase\": \"There was a time when our computer system wasn't working, so we restarted the Aruba switch and reinitialized some devices, but we still can't access it.\"}",
+ "elapsed_s": 8.850203499998315,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

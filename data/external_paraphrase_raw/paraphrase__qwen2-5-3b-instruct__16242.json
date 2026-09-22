@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16242,
+ "queue": "Product Support",
+ "prompt_sha256": "5103fbf4a35669a118a366f5fdc05aa2ca4990dbb7054a174afdbffa7e48eb43",
+ "response": "{\"paraphrase\": \"Having trouble loading the project dashboard, it's taking forever to load.\"}",
+ "elapsed_s": 4.9711295000015525,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

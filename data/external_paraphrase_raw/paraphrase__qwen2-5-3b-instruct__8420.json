@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8420,
+ "queue": "Customer Service",
+ "prompt_sha256": "f188e67ad0cd5af1152864e8013092315f89595b5fc232c324761356cf6df1ec",
+ "response": "{\"paraphrase\":\"Hey, I'm curious about how the project management tool handles big projects and lots of people working on them. I'd like to know if there are any features that can be changed to fit what we need. Thanks for your help.\"}",
+ "elapsed_s": 12.602436000001035,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

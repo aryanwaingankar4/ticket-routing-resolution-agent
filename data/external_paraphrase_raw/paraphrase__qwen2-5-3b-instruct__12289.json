@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12289,
+ "queue": "IT Support",
+ "prompt_sha256": "62e5638bba0770b7eeb2c844271dde65fdc5bbbf8727e16b42f58b9053aa361e",
+ "response": "{\"paraphrase\":\"Hey, I need help making our digital stuff better and coming up with better ways to market our stuff. Could you tell me what upgrades we can get that will help our brand grow bigger? I really need your help with this.\"}",
+ "elapsed_s": 9.638451200007694,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

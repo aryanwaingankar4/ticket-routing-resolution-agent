@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14145,
+ "queue": "Technical Support",
+ "prompt_sha256": "cc10c21c81dc86a80eb6218c47431ed5a9bfcbb516d366a6423912c4e953c243",
+ "response": "{\"paraphrase\": \"We found out there was a problem where someone got into our system and messed with some medical records. It's like if someone peeked into your personal files at work and changed things without you knowing.\"}",
+ "elapsed_s": 8.194069699995453,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

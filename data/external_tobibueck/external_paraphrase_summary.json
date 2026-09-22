@@ -1,0 +1,64 @@
+{
+  "phase": "7C",
+  "measurement_only": true,
+  "is_real_production_data": false,
+  "verdict": "blocked_auc_ge_0.95",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "seed": 42,
+  "bootstrap_draws": 10000,
+  "primary_alpha": 0.1,
+  "n_pairs": 286,
+  "n_calibration": 1327,
+  "min_paired_n": 150,
+  "primary_t1_minus_t2_paraphrased": -0.020979020979020935,
+  "primary_bootstrap_mean": -0.02117062937062937,
+  "primary_ci_lo": -0.0524475524475525,
+  "primary_ci_hi": 0.010489510489510412,
+  "primary_signal": false,
+  "secondary_t1_minus_t2_original": 0.0,
+  "secondary_ci_lo": -0.02447552447552448,
+  "secondary_ci_hi": 0.02447552447552448,
+  "did_mean": -0.021147552447552447,
+  "did_ci_lo": -0.055944055944055826,
+  "did_ci_hi": 0.013986013986013845,
+  "our_corpus_reference": -0.2222,
+  "manipulation": {
+    "bge_mean_cosine": 0.846181302195699,
+    "bge_median_cosine": 0.8522373852023022,
+    "bge_domain_auc": 0.9980805907379333,
+    "tfidf_mean_cosine": 0.24887508791367252,
+    "tfidf_median_cosine": 0.21830260886898345,
+    "tfidf_domain_auc": 0.9971942393271065,
+    "floor_auc": 0.6,
+    "failed": false,
+    "blocked": true,
+    "reference_7b_version_shift_bge_auc": 0.8471736293799147,
+    "length_ratios": {
+      "token": {
+        "mean_ratio": 1.0279425730638874,
+        "median_ratio": 0.9543369474562136,
+        "aggregate_ratio": 0.941747572815534,
+        "mean_source_length": 71.66783216783217,
+        "mean_paraphrase_length": 67.49300699300699,
+        "n_zero_length_sources": 0
+      },
+      "word": {
+        "mean_ratio": 1.0389864148969028,
+        "median_ratio": 0.9594520547945204,
+        "aggregate_ratio": 0.9343945689705624,
+        "mean_source_length": 59.74475524475525,
+        "mean_paraphrase_length": 55.82517482517483,
+        "n_zero_length_sources": 0
+      }
+    }
+  },
+  "paraphrase_set": {
+    "model": "qwen2.5:3b-instruct",
+    "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+    "n_sampled": 299,
+    "n_unparseable": 0,
+    "n_discarded_not_rewritten": 13,
+    "mean_bge_similarity_to_source": 0.8510829210281372
+  },
+  "limitation": "External queue labels are generator-assigned and unaudited; base accuracy is ~35%, so a null here is weaker evidence than a null on a well-learned task."
+}

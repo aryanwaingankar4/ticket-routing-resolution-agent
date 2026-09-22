@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7008,
+ "queue": "Technical Support",
+ "prompt_sha256": "310448f4bd124fb63fc5d7c89379e19fe0453323c199ad91fdcb215c79bd77cb",
+ "response": "{\"paraphrase\": \"The tool we use for analyzing data is giving us different predictions for investments. We think it might be because of the new software changes. We've restarted the tool and checked where the data comes from, but the problems are still happening. We need help to fix this.\"}",
+ "elapsed_s": 13.790002299996559,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

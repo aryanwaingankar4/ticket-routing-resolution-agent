@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9326,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "e96d1509922145dd270056a873ff3ffb73896e67dc0256000212d50d83b78c48",
+ "response": "{\"paraphrase\": \"Having trouble with the SaaS platform. A few devices are affected. If more people use it, there could be problems connecting everything. We tried restarting the devices, clearing their memory, and checking the server. But the issue still isn't fixed.\"}",
+ "elapsed_s": 14.236221099999966,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

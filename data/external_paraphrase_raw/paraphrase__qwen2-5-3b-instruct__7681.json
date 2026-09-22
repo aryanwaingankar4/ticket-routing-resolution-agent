@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7681,
+ "queue": "Technical Support",
+ "prompt_sha256": "d352e6df3c8d54794a35bf0edf68a86737ac8de98a41c91b4d4d4fe77388ad49",
+ "response": "{\"paraphrase\": \"Hey Support, we're having trouble with the dashboard loading really slow. It might be because there's a lot of people using the servers right now. We tried making the database queries better and cleared the cache to make it faster, but it's still slow. Users are still saying it's slow and that's making them unhappy. We really need your help to fix this. Could you check it out and give us a solution? Also, if you could call us at a time that works for us, that would be great. Let us know when you can talk to us. Thanks!\"}",
+ "elapsed_s": 29.87549420000869,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

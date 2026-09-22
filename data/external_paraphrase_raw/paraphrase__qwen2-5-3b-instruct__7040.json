@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7040,
+ "queue": "Technical Support",
+ "prompt_sha256": "1b77ebdc5e33c4bbc38a067350b4e51d6cfdc649fd69e66785db5016a3890cbb",
+ "response": "{\"paraphrase\": \"Hey Support, we really need your help because something big is wrong. Our place had a problem where important patient information got mixed up. We fixed it by putting in new security stuff and updating our antivirus, but it’s still not fixed. We think it might be because of some weak spots in our computer programs. We’re worried about what to do next, so could you tell us what we should do?\"}",
+ "elapsed_s": 17.824340099992696,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

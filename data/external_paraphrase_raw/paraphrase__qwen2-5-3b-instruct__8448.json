@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8448,
+ "queue": "Technical Support",
+ "prompt_sha256": "bab7f2c17b470f8e9ee319063419b1cfa27e741b7d8d31e209c8d9eec39961cc",
+ "response": "{\"paraphrase\":\"Hey, we're trying to connect our QuickBooks Online project management tool with another system. Can you tell us how to do that, what good it will do, and how we set it up? Also, can you explain any limits or extra costs that might come with it? And if there are any special things we need to do before connecting QuickBooks Online, can you mention those too? I'd really appreciate it because it will help us manage our projects better.\"}",
+ "elapsed_s": 22.922919999997248,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

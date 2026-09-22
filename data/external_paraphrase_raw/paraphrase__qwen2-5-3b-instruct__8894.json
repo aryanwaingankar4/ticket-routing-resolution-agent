@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8894,
+ "queue": "Technical Support",
+ "prompt_sha256": "c95d34e8cf765a2276ba95e3e4f2a43cf55e60b84662452c055b6f2bc4f02ba7",
+ "response": "{\"paraphrase\":\"Had a problem getting into my medical records. It might be because of a new update they did. I restarted the server and checked my internet, but still can't get in. Any help would be really great.\"}",
+ "elapsed_s": 12.593832099999418,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

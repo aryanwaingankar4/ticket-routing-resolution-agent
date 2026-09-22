@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11139,
+ "queue": "Product Support",
+ "prompt_sha256": "6309fadfb3e32e7c8f3599230cae399178d677e67014cc4b7393081d08dab54f",
+ "response": "{\"paraphrase\": \"Hey, I need some help figuring out how to use Zapier with Drupal Commerce to make our digital marketing better. Could you give me some pointers?\"}",
+ "elapsed_s": 8.374130399999558,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16283,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "62ca693e4656b42f6bf3a457d1a804ff650fbdc5f2e2e5a317f3e4a83e4d3add",
+ "response": "{\"paraphrase\":\"Customer Support, we're having a problem where our systems can't access medical data properly. It seems to be because of a software issue with Node.js 14.17 and Ubuntu 20.04. We've already restarted the systems and checked for updates, but the problem still isn't fixed. This is causing us trouble getting important data. We need your help to fix this quickly so we don't have more problems. Can you tell us what to do next?\"}",
+ "elapsed_s": 18.20106370000576,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

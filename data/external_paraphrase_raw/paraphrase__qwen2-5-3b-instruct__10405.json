@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10405,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "7724c4462408e068f0add84c83351dc7fb36702e4d757d88c14118d71866ca10",
+ "response": "{\"paraphrase\":\"Recently had a weird mistake on my latest bill. It might be because of changes in our service deal. I've looked at the bill and talked to customer support. I would really like it if you could check this out and give us a new bill. Let me know if you need any more info. We're hoping to hear back soon.\"}",
+ "elapsed_s": 16.604886000000988,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

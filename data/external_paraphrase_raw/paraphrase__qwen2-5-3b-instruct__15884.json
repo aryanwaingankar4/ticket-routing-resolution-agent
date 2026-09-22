@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15884,
+ "queue": "IT Support",
+ "prompt_sha256": "4884fcc313c7328c4c62bf145557c1887eb011e6f8aaef8368439a53672a1b2f",
+ "response": "{\"paraphrase\": \"Hey Customer Support, I need help with a big problem. Some bad guys tried to get into our medical data and I think it's because our security isn't up to date. My team has already looked at changing some settings to make it harder for them to get in, but they're still trying. I would really appreciate some advice on how to make it even harder for them to get in. Thanks.\"}",
+ "elapsed_s": 15.73333060000732,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

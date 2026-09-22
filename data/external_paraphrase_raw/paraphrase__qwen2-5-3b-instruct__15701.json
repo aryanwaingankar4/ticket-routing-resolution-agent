@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15701,
+ "queue": "Technical Support",
+ "prompt_sha256": "7f69f321248435290b67a637d9d1d5d7cac35a0ee4f2463fd26243ce3aba9ecd",
+ "response": "{\"paraphrase\": \"There were some unauthorized people trying to get into our medical data. We changed some settings on our firewall and updated our software, but the problems still haven't gone away.\"}",
+ "elapsed_s": 7.694051500002388,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

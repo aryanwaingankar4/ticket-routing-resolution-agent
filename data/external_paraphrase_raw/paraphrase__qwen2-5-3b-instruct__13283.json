@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13283,
+ "queue": "Human Resources",
+ "prompt_sha256": "2ecaa36dc81515276070478ac4e542291341b3b02a78d714b335de3824c1f019",
+ "response": "{\"paraphrase\": \"Hey, I want to know more about how new people use that project management software. I'm interested in how it helps teams start projects. Could you tell me more about the onboarding process and if there are any tutorials or guides to help new users get used to the platform?\"}",
+ "elapsed_s": 12.323676100000739,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

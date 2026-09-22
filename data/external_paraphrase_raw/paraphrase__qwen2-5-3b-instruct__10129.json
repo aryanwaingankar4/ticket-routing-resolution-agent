@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10129,
+ "queue": "General Inquiry",
+ "prompt_sha256": "6352c4686f5cf30a75312581a9fb15c13dfea63076333b1e200a636d702a881d",
+ "response": "{\"paraphrase\":\"The ad campaign isn't doing well. People aren't clicking on our ads as much and we can't see our brand as much. We changed who we're showing ads to and made our posts more exciting, but it's still not working. I need help to make the ads work better and make our brand more known.\"}",
+ "elapsed_s": 20.222392700001365,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

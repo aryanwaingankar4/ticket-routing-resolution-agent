@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15861,
+ "queue": "Product Support",
+ "prompt_sha256": "7c059c4fb32acbdfc6239ef4169881b820a7dfc0c78f6da25eda71959d2c34f9",
+ "response": "{\"paraphrase\": \"Hey friend, I need help. There might be a problem with the hospital's computer system where someone could have gotten in without permission. It's possible that patient information could have been seen by people who shouldn't have. It could be because the software isn't set up right or because the settings on the devices aren't secure enough. We've looked at the security rules, updated the software, and checked the logs to see if anyone did anything suspicious. But we still need help to fix everything and make sure the system is safe again. Can you tell us what to do next?\"}",
+ "elapsed_s": 20.831917400006205,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

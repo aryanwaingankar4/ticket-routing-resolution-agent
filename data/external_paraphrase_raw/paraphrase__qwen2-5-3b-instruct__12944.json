@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12944,
+ "queue": "Technical Support",
+ "prompt_sha256": "bf957f4695883b549d717a48a27795400884275c16b5c08046acc059fadbdb3a",
+ "response": "{\"paraphrase\": \"Hey Support, we're having trouble with the SaaS thing. When we try to start it up, it takes forever for stuff to load. It might be because there's too much traffic and not enough servers to handle everything. We tried to make the servers better, but the problem keeps happening. This is making it hard for us to get things done. Could you please look into this and find a way to fix it? If you need more info, let me know.\"}",
+ "elapsed_s": 17.52679210000497,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

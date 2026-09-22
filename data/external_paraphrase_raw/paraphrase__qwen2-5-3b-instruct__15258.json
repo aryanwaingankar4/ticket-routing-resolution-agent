@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15258,
+ "queue": "Customer Service",
+ "prompt_sha256": "c063f17b8f9a0d89583970fe7eb67b892cfa4959981a05a14e2378d091d8c7f1",
+ "response": "{\"paraphrase\":\"Could you tell me about the rules hospitals use to keep patient information safe? I want to know how they protect the important stuff.\"}",
+ "elapsed_s": 9.150949700007914,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

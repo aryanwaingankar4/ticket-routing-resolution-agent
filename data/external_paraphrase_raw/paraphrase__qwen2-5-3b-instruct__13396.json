@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13396,
+ "queue": "Technical Support",
+ "prompt_sha256": "47b02ecb6bff12cd7b0f7f415c3154048bac70d261d77a7a181304f73db46aaf",
+ "response": "{\"paraphrase\": \"Can you explain how digital strategy stuff can help grow a brand?\"}",
+ "elapsed_s": 5.7609056999936,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

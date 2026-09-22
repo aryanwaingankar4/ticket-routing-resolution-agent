@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7880,
+ "queue": "Technical Support",
+ "prompt_sha256": "36a416f08a7c14e6e32681af6aec9c4016453acf8707a9677fc66e32e7e2716f",
+ "response": "{\"paraphrase\": \"We're having trouble with our Smart Thermostat that's connected to Microsoft Azure. It seems like it's not working properly because of some changes they made to our network or when they updated the software. We've already restarted the devices and checked if the firewall was blocking anything, but the problem still won't go away.\"}",
+ "elapsed_s": 14.301253999990877,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

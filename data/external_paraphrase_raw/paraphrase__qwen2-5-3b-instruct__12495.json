@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12495,
+ "queue": "Product Support",
+ "prompt_sha256": "f8ddaac09ee365db2d89149a2f181c9ce5831d2376e5b2453ec21f4c345c3183",
+ "response": "{\"paraphrase\": \"There's a problem with our marketing campaign. It's not getting the leads we expected. It looks like we might be missing our target audience. We looked at the data and changed how much we're spending, but people still aren't engaging much. Can you help us figure out a better way to find our target audience so we can get more leads?\"}",
+ "elapsed_s": 13.211090400000103,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

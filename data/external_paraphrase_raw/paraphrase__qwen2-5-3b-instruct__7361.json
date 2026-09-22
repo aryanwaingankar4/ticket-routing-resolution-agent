@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7361,
+ "queue": "Customer Service",
+ "prompt_sha256": "2626b77e1f22dfd142754765aa6774daf6329781d414c69a45587e8ef4be8dbc",
+ "response": "{\"paraphrase\": \"Hey Support, we need help setting up Smartsheet with Discord for our project stuff. Can you tell us how to do it? Also, what are the good parts and the not-so-good parts? Are there any special things we need to know? And if something goes wrong, can you tell us how to fix it? Thanks a lot, we're looking forward to your help.\"}",
+ "elapsed_s": 26.874254999987897,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

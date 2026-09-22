@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6268,
+ "queue": "Product Support",
+ "prompt_sha256": "c47285a383219ba0f5bf8fe79bed43bfc37c2e2c8f67ae4f4b626a6846dbafce",
+ "response": "{\"paraphrase\": \"The financial analysis tool keeps crashing when it tries to work with big sets of data. It might be because it’s running out of memory. Even though we tried to give it more RAM, it’s still having problems. We need help to fix it so it works well and doesn’t crash anymore.\"}",
+ "elapsed_s": 19.66301449999446,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

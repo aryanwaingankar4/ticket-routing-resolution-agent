@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6075,
+ "queue": "Technical Support",
+ "prompt_sha256": "aecaa3aeb6a6cb5c21ae1634b4759c4123beb9c57eab77a51e3f141b9733d31d",
+ "response": "{\"paraphrase\":\"The marketing stuff on our computer isn't working right and showing wrong numbers. It's messing up how we make decisions. We tried fixing it by changing settings and clearing out some old stuff, but it's still not right. Can you help us fix this?\"}",
+ "elapsed_s": 28.88426669999899,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

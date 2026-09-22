@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14570,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "fe74d2f2592e379d704544e35c14e3301fad9dc6daeec6f3da499dbc97ee83c6",
+ "response": "{\"paraphrase\": \"Hey, the QuickBooks Online stuff isn't working right. I tried to fix it by hand, but it's still not right. It's making my books look different than they should. I need you to check it out and fix it quick, please. Do you need any more info?\"}",
+ "elapsed_s": 16.217680200003088,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

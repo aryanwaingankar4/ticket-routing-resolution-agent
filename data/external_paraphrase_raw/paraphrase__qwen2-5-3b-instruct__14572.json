@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14572,
+ "queue": "Customer Service",
+ "prompt_sha256": "a6cdd30994545e85a7d9ea1adff536aa19451721b3073377514513bc9e12bf69",
+ "response": "{\"paraphrase\":\"Hey Support, I need info on the API options for our project management SaaS platform. Can you tell me about the REST and GraphQL APIs and the endpoints we can use? Also, do you have any SDKs or libraries to make it easier? I'm curious about the ways we can log in and the docs for that. Lastly, do you know if anyone has integrated with popular services yet?\"}",
+ "elapsed_s": 19.994868399997358,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

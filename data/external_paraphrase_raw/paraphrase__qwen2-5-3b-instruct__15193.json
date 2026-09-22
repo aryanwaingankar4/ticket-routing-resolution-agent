@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 15193,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "c857d281e78a4a145fd88c855b16b6bc68e5fd45616f64ba67d6924155291e81",
+ "response": "{\"paraphrase\":\"Hey Support, we're having a problem with our marketing campaign. We changed how we were showing it to people based on what we learned from our numbers, but it's not getting people to like our brand as much as we hoped. We think it might be because we're not showing it to the right people or because the stuff we're showing is old. We'd really appreciate it if you could look into this and tell us how we can make it better.\"}",
+ "elapsed_s": 21.325044100012747,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

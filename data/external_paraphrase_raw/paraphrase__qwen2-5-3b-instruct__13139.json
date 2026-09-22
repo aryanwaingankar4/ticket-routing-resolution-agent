@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13139,
+ "queue": "IT Support",
+ "prompt_sha256": "3ab1ffb06137287a339bd6118ac543acd0f3ca47c2a7dcc17ab4ce6611b2cb6e",
+ "response": "{\"paraphrase\":\"I'm looking for some help on using Ableton Live for digital marketing stuff. Do you have any ideas on how to use it well? I'm especially interested in how it can make our website or social media more popular and get more people talking about us. If you have any tips or places to find more info, that would be super helpful. Thanks for your help.\"}",
+ "elapsed_s": 14.370602900002268,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

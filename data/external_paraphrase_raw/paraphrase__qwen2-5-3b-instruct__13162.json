@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13162,
+ "queue": "Technical Support",
+ "prompt_sha256": "c13519e4040f09f331a694d281317351045aa0118675272213d1d4e065039e03",
+ "response": "{\"paraphrase\":\"Hey Support, we noticed our system is running slow during busy times. It might be because the servers don't have enough juice to handle all the requests, and the way we're asking for information isn't as efficient as it could be. We've tried to make the servers stronger and the way we ask for info better, but the problem still exists. If you could look into this quickly and give us a fix, it would really help our work not get interrupted. The system is making our job really hard right now, and we really need this fixed fast.\"}",
+ "elapsed_s": 19.007866700005252,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

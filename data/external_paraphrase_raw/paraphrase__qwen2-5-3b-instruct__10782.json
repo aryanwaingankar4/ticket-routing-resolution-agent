@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10782,
+ "queue": "Product Support",
+ "prompt_sha256": "ae1c62028f363d06fe2c02de2e6d3debf355a6d2b754653817742ba52e148b59",
+ "response": "{\"paraphrase\": \"Make the security better to keep medical stuff safe and make the hospital buildings stronger. We need to make sure important information is coded up tight, keep the computer stuff current, and teach the people who work there how to be extra careful to stop bad guys from getting in.\"}",
+ "elapsed_s": 18.8557407999906,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

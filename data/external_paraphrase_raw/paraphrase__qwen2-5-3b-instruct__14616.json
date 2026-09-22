@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14616,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "f8b15b9f73c8553a578d81e6435d39f5d83120dfb3f11cc99ff4feba39fb9897",
+ "response": "{\"paraphrase\":\"Hey, we noticed that people aren't liking our stuff as much as before. It's like when you don't get as many friends to play with you anymore. We need to figure out why and how to get more people interested again.\"}",
+ "elapsed_s": 11.235447899991414,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

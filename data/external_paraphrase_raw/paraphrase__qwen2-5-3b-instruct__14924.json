@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 14924,
+ "queue": "Technical Support",
+ "prompt_sha256": "b1fc965a0ecb55ff5c39b8a4709a0691c02aa5d6556313b236113824df2dbd67",
+ "response": "{\"paraphrase\":\"I'm having trouble with Microsoft Dynamics 365. It's not syncing properly with our project management tool. It might be because some of the parts that connect them are out of date. I tried restarting the app and refreshing the connections, but the problem still isn't going away. I need some help to fix it so everything works smoothly.\"}",
+ "elapsed_s": 16.424305699998513,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

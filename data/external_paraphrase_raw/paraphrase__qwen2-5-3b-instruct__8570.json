@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8570,
+ "queue": "IT Support",
+ "prompt_sha256": "cba5e6aece5a0b0edb36a07d6e6f27c698972effd549c72c5ff31e46cd9009dd",
+ "response": "{\"paraphrase\": \"On October 15, the agency had trouble making automation stuff work because Figma and Zapier couldn't be used. Even after restarting their devices, checking their internet and trying to fix the apps, the problem still isn't fixed. It might be because of new software updates or maybe some settings on their Apple MacBook Air were messed up. We need your help to fix this and get the automation stuff working again.\"}",
+ "elapsed_s": 19.526316299990867,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

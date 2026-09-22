@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9235,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "005ff770d1f471d30659c7fe32e09f9580cc13271973188d44330c297977d5c9",
+ "response": "{\"paraphrase\":\"Hey, I'm wondering how we can connect GitLab to our work stuff. Could you tell me how it works, what it gives us, and the steps we need to do it? I'd really like to see any papers or stuff you have on this. Also, I want to know what we need to do and what we can't do with GitLab. Thanks for your help, and I'll check back soon.\"}",
+ "elapsed_s": 27.810369299986633,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

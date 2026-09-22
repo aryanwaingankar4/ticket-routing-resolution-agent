@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10238,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "b93a71372e110f57f4350ba2013b094d8dcbad43e596c983b012b44d1ebe8b36",
+ "response": "{\"paraphrase\": \"Hey, they want us to upgrade the project management software so it works better with some tools in IntelliJ IDEA. They think it will make the whole thing run smoother and make us more efficient.\"}",
+ "elapsed_s": 9.765179699999862,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

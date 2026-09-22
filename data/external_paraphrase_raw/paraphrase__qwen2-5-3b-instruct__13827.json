@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13827,
+ "queue": "Technical Support",
+ "prompt_sha256": "b4f5c71a920742167294d7ee4ee0a452164d60795211684e9b9b266317630cf4",
+ "response": "{\"paraphrase\": \"Hey, I'm trying to find out about those cool tools that help analyze data for making better investment choices. I'm really interested in how they can show trends and patterns in the market, like a map of where the money might go next. Also, I want to know more about how they can guess where the market might go in the future. If you have any case studies or papers about it, that would be great to see.\"}",
+ "elapsed_s": 16.540772099993774,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

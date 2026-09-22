@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10528,
+ "queue": "IT Support",
+ "prompt_sha256": "36c015291eb195054c6fd9650858d7a07400d57f951ea6c61b65b060ef481cfd",
+ "response": "{\"paraphrase\": \"Hey support, a doctor place had a problem where some medical stuff got mixed up or stolen. It might be because they have old computer stuff or not enough security to keep people out. They are checking their system and fixing any problems to make sure it doesn't happen again. They also want to see how bad it is and how to stop it from happening next time.\"}",
+ "elapsed_s": 18.70386179999332,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

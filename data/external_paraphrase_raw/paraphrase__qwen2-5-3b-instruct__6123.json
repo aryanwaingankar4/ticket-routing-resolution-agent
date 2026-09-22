@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6123,
+ "queue": "Product Support",
+ "prompt_sha256": "e480931034a74e012b3c15151b810a14e6cdfedf992fbb3c663cdcf726145c48",
+ "response": "{\"paraphrase\": \"They had a problem with people trying to get into the medical computer systems without permission. They've changed their passwords and looked at the logs, but they're still worried and it's causing problems. They need help to fix it. Could you check it out and give them some advice on how to make the system safer?\"}",
+ "elapsed_s": 18.703723699989496,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

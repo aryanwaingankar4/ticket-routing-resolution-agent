@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10456,
+ "queue": "Product Support",
+ "prompt_sha256": "e02683141a376131780cd61eb6d56cfdd23bf997cd912d101467c85d7381bdb4",
+ "response": "{\"paraphrase\": \"Hey, in hospitals they're trying to make sure that all the medical information is safe and not stolen. They're using special codes to protect this information. It's really important because hospitals have all the personal details of people who are sick. We want to know what they're doing now to keep it safe and if they're planning to make it even safer. We'd really like to know more about this.\"}",
+ "elapsed_s": 22.88531189999776,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

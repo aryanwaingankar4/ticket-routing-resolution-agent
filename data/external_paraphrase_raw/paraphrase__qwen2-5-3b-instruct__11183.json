@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11183,
+ "queue": "Product Support",
+ "prompt_sha256": "fc316d6d53d864476bef5fc48145cceb57781ccf507c91ec39daa4b9abd07b2f",
+ "response": "{\"paraphrase\": \"People are having trouble with stuff loading fast. It might be because the servers are getting really busy.\"}",
+ "elapsed_s": 6.980347499993513,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

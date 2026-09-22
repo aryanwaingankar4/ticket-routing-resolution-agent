@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 11843,
+ "queue": "Product Support",
+ "prompt_sha256": "075723575f10b7d2d5758ac413b72657141b8b50ab9bfc63d2de62cb1e237578",
+ "response": "{\"paraphrase\":\"Hey, I'm curious about how HubSpot's CRM and project management tools work together. I want to know what kind of information gets shared, how often it happens, and if there are any rules we need to follow to make sure everything works well. Also, are there any special steps we need to take to make sure everything is set up right? I'd really appreciate more details on this.\"}",
+ "elapsed_s": 19.053158499998972,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

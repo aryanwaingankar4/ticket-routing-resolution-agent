@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12942,
+ "queue": "IT Support",
+ "prompt_sha256": "e92a965b3d083fb12e1487dc3e6d75141fbb46982a134a2c5967f10b0a26c335",
+ "response": "{\"paraphrase\": \"A user is having trouble logging into the Project Platform and it keeps happening. They tried clearing their cache in a private window but it didn't fix the problem.\"}",
+ "elapsed_s": 7.694439099999727,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10245,
+ "queue": "Technical Support",
+ "prompt_sha256": "d45b8a68b5ec2a0d9b07442a14a1fbb362440454e1f3c7b8c2a43d1bd7599bc9",
+ "response": "{\"paraphrase\": \"Hey, we're looking for help with securing medical data in PostgreSQL 13 for our healthcare stuff to make sure it's all compliant. The data is really sensitive and needs to be handled carefully to keep it private, safe, and available. We need to know how to encrypt and store this data properly in PostgreSQL 13. We also need to set up some specific things to meet the compliance standards. Could you give us some detailed stuff or maybe even have a call at <tel_num> to go over it more?\"}",
+ "elapsed_s": 27.102014300005976,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13202,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "2bfed3b289d244a8499c943f3694f748dbb6f6273bf0541a7ffd4ae39b6b6d32",
+ "response": "{\"paraphrase\":\"Hey Support, I'm looking into some money stuff with different online tools I use. It might be because they're renewing at the same time or something in the computer is broken. I checked my payment and looked at my bills, but the problem is still there. I really need you to help fix this. Can you look into it and give me a fix? I'm counting on you. Thanks for your help.\"}",
+ "elapsed_s": 15.83137080000597,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

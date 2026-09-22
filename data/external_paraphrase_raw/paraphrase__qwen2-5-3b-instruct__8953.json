@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8953,
+ "queue": "Product Support",
+ "prompt_sha256": "6059a9077ffba9de406b72aa4313c638e7622f0981c739a764d8ef5a89d584eb",
+ "response": "{\"paraphrase\": \"Hey Support, there's a big problem with the project management software when I use it with Adobe Audition and Zoom at the same time. It might be because the apps are fighting for too many resources or they just don't get along well. We've tried restarting them, clearing out the cache, and checking the CPU usage, but the issue is still there. We really hope you can help us fix this. Thanks for your help.\"}",
+ "elapsed_s": 21.09586629999103,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10987,
+ "queue": "Technical Support",
+ "prompt_sha256": "641b848bd3c068cfda9d74ce8fecf482ba403ea0903e80812b7eae7f2b41cbdc",
+ "response": "{\"paraphrase\":\"A marketing company is having trouble with different software and hardware stuff. They've tried restarting things, reinstalling apps, and checking for updates, but it didn't fix the problems. We need your help to solve these issues and get things working again.\"}",
+ "elapsed_s": 15.970825699987472,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

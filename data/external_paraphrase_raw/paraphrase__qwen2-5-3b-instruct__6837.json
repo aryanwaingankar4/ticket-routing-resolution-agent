@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6837,
+ "queue": "Returns and Exchanges",
+ "prompt_sha256": "3531752b9be46d06048772b273f144dd906f9cdb3213d1efd0ceb9d5b94790bc",
+ "response": "{\"paraphrase\": \"Hey Support, is there any way to get more info about the SaaS stuff, especially the parts about teamwork and task management? Thanks for helping out quick.\"}",
+ "elapsed_s": 11.62127750000218,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

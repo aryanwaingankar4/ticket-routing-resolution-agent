@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7824,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "1eaadb6f69b26a19f1b33bba2786862646e2eb563d31efc7de435299bc6fab83",
+ "response": "{\"paraphrase\": \"Hey, the SaaS platform we use is having some problems. It's not working well for a few of our products. It looks like it's because the servers are getting too many requests and the network is having some issues. We've already tried rebooting the servers and checking the network settings, and that made things a little better. But we still have big problems with it, and we need help to fix it fast.\"}",
+ "elapsed_s": 19.18887110000651,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

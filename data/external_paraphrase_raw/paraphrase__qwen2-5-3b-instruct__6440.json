@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6440,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "bd58a78d5250fcfc6c26268a6d83bcdc5ef027b18919a4a06056884b40f701a6",
+ "response": "{\"paraphrase\": \"I'm looking for some info on how to grow my brand using digital stuff. I want to know more about the services that can help my business. It would be really helpful if you could share any extra resources or examples. Thanks for your help.\"}",
+ "elapsed_s": 24.81283789999725,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

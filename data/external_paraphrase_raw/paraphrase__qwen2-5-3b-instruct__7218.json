@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7218,
+ "queue": "Billing and Payments",
+ "prompt_sha256": "09a14251e6b0fa767238d8ddd5a0f42b1ab500470f3695cd7964cabddeeffc5d",
+ "response": "{\"paraphrase\": \"Hey, we need to talk about how we pay for stuff and the tools we use for analyzing data. We're having trouble with one of our payment systems and want to know if there are other ways we can pay. Could you tell us what payment options we have and help us change our billing info? Your help would be super useful. We're looking forward to your reply soon. Thanks for your support.\"}",
+ "elapsed_s": 19.69085020000057,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

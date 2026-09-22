@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 5967,
+ "queue": "Technical Support",
+ "prompt_sha256": "d63b73ae84aabac6a1338f3b237890b98d19b1ec44659f11b33ff5f99c045f09",
+ "response": "{\"paraphrase\": \"Urgent: Make Hospital Data Safer Now use strong ways to protect medical information and make sure the hospital is secure. This means keeping track of electronic health records, stopping bad guys from getting into the system, and following the rules. Checking security often and teaching people how to be safe is important. By doing these things, hospitals can keep patient information safe and keep people trusting them.\"}",
+ "elapsed_s": 24.149302000005264,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 3564,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 3564.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

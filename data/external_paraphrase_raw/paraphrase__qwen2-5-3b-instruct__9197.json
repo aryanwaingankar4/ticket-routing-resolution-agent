@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9197,
+ "queue": "Customer Service",
+ "prompt_sha256": "af8d36f2240919103eb1a7c81d3ce27f183439e7ff8868ba0062702239e61509",
+ "response": "{\"paraphrase\": \"Hey, there was a problem where someone tried to get into our medical records system. It happened because we have old security stuff that didn't catch the bad guy. We looked at who tried to get in and changed their passwords, but we're still worried about it. We need to do more to make sure it doesn't happen again.\"}",
+ "elapsed_s": 18.638538300001528,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

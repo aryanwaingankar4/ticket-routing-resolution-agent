@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 6541,
+ "queue": "Product Support",
+ "prompt_sha256": "d688b94473d10f81fcc0d886b27da360239233ad8c7e5067030177b3e8265649",
+ "response": "{\"paraphrase\": \"There's a concern about the drop in how people are engaging with our digital ads. It seems like it might be because of some recent changes to the software that connects everything. We've tried fixing it by updating the software and looking at our strategy again, but the problem still isn't solved. We've checked the settings and looked at the data, but we can't figure out what's causing the issue. We're worried it might be hurting our business, so we need your help to fix it.\"}",
+ "elapsed_s": 33.28668550000293,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

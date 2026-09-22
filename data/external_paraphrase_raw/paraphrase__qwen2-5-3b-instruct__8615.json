@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 8615,
+ "queue": "General Inquiry",
+ "prompt_sha256": "2adbf6be6a42bc7f1fd9db5fd962592c7e3472cde916659f3942061706cc36c1",
+ "response": "{\"paraphrase\":\"We've been having trouble getting people to engage with our ads lately. We think it might be because our strategies are old and we're not reaching the right people. We've tried changing how we talk and looking at numbers, but nothing seems to be working. I need help to make people more interested.\"}",
+ "elapsed_s": 15.578637300000992,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

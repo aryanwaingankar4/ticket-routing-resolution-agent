@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12434,
+ "queue": "Product Support",
+ "prompt_sha256": "69e864f35e7d73c62054c19560f2c5e22944a2eb7f02103b5c1f72e0a7c16604",
+ "response": "{\"paraphrase\":\"They're having trouble with OBS Studio 27 on their Mac running Monterey. It might be because OBS and Mac aren't getting along well. They tried reinstalling OBS and updating Mac, but the problem still won't go away. They really need help to fix this because it's affecting their job. They're asking if there's anything else they can do to fix it, like waiting for a new update that might solve the problem.\"}",
+ "elapsed_s": 16.35382980000577,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

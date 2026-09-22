@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9687,
+ "queue": "Product Support",
+ "prompt_sha256": "f6a1403b94b4c5d691d066a8e370795937d90447d212c1a81c5dd650319914a5",
+ "response": "{\"paraphrase\":\"Customer Support, I'm writing to report a system crash that happened during busy times. It seems like too many requests caused the crash, even after restarting the app and clearing the server cache. My team has been trying to fix it but couldn't. We're worried it might have messed up our data. Could you please help us fix this quickly?\"}",
+ "elapsed_s": 19.413812200000393,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

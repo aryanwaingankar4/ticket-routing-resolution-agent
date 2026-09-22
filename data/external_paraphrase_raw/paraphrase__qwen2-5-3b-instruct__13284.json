@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13284,
+ "queue": "Sales and Pre-Sales",
+ "prompt_sha256": "95941ea45647cdcb437256c6cb51e70e28e1e24b6b521826b369c5ccb5a729ef",
+ "response": "{\"paraphrase\": \"Help with linking WooCommerce and OBS Studio. Want to know about the SaaS stuff, like how it connects these two. Also, I'd like to know about the help they offer. Could you tell me how to get everything set up, what customizations are possible, and where I can find the instructions or help they provide?\"}",
+ "elapsed_s": 12.410937599997851,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

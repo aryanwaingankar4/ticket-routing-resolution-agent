@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 10994,
+ "queue": "Technical Support",
+ "prompt_sha256": "967b544ab9f0685ea06e24e8359e328ad83011b716107f9a64fa9097f3957d60",
+ "response": "{\"paraphrase\":\"Hey Support, some people said our project management thing kept breaking. It might be because of the new changes we made in the back end. We tried rolling back the updates and restarting the devices that were having trouble, but it didn't fix it. Can you please look into this and find a solution? If we need to give you more info or if you want to call me on 1234567890 to talk about it, let me know. Thanks for helping fix this.\"}",
+ "elapsed_s": 26.35727819999738,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

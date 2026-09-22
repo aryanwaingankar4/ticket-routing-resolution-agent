@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7367,
+ "queue": "Technical Support",
+ "prompt_sha256": "b90332cbe5e8fc7a829d2f458c21343b44b814f242a87a43bef8dd99bf5690da",
+ "response": "{\"paraphrase\": \"Hey, there was a security problem where some bad guys tried to get into our medical records system because the security wasn't up to date.\"}",
+ "elapsed_s": 8.541475300007733,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

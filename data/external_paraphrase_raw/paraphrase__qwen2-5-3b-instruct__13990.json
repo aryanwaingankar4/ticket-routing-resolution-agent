@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13990,
+ "queue": "Technical Support",
+ "prompt_sha256": "8fc46611602c14dff6911df377ac65e9aee0b23fa933e433d082634118582e18",
+ "response": "{\"paraphrase\":\"Hey support, there's been a big problem trying to use those data tools on different devices. It might be because the new software update isn't working well with the apps. I already tried to put the apps back the way they were and checked if the internet was working fine, but the problem still won't go away. I need help fixing this right away so we can use the tools again. If you can give me a quick fix and tell me what to do, that would be super helpful.\"}",
+ "elapsed_s": 17.828774499997962,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16100,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "3094bc2a0831d7cf0e049ae159a505d0cfffa2fa4189cc01cee376a91d953bb6",
+ "response": "{\"paraphrase\": \"Hey, I need some help from customer support. I want to know how to keep medical information safe in the hospital. Can you tell me about the things they do to make sure patient info stays private and doesn't get messed up? Any good resources you can recommend to help keep it all secure? Thanks for your help and I'll check back soon.\"}",
+ "elapsed_s": 13.928158199996687,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 16167,
+ "queue": "Technical Support",
+ "prompt_sha256": "3310b7aabfd45ca6e55807975c93702873395afddbecdd67a74e7c7748d41a43",
+ "response": "{\"paraphrase\":\"The marketing agency's plans for the internet aren't working well, making it hard for people to see their brand and talk to them. They think it might be because of new changes to their computer programs or when different programs don't play nice together. They tried fixing it by starting their programs over again and checking their internet, but it didn't help.\"}",
+ "elapsed_s": 12.549382199998945,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

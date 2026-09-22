@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 12677,
+ "queue": "Customer Service",
+ "prompt_sha256": "d06b1b04f4030bf6e522978710ac03b0686aa11e6769d68f8e36b62937244d02",
+ "response": "{\"paraphrase\": \"Could you give some advice on how to keep medical information safe in hospitals? We really need to protect patient details and make sure no one can see them without permission. I would really appreciate any suggestions or ways to do that. Thanks for your help, because this is something that's important to us. We'll be happy to hear from you soon.\"}",
+ "elapsed_s": 13.474759799995809,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

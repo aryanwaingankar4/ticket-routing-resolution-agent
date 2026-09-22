@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 13054,
+ "queue": "Product Support",
+ "prompt_sha256": "24fb92bd690d91fd22e6c93825b3796f0c6241b01fd0f9f3a7a58ab9845c7f5c",
+ "response": "{\"paraphrase\": \"Hey, we've been having trouble with our marketing stuff lately. Our brand isn't getting as much attention as we want. We think it might be because our digital stuff is a bit old and our product ads aren't working well. We've tried making our social media posts better and putting our ads in different places, but it's not helping much. We've also tried making cool content and working with influencers, and that did make people engage more and buy more. Now we're asking for help from experts to make our marketing better so we can do better overall.\"}",
+ "elapsed_s": 20.961586900011753,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 6626,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 6626.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

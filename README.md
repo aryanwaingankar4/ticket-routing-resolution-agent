@@ -2883,6 +2883,198 @@ Scripts: `src/experiments/run_external_conformal_shift.py`,
 [`external_label_noise.json`](data/external_tobibueck/external_label_noise.json),
 [`external_shift_splits.json`](data/external_tobibueck/external_shift_splits.json).
 
+### Phase 7C - Finding 1 under a paraphrase shift: BLOCKED, and the question stays open
+
+**The headline is a non-answer, and it is reported as one.** 7C set out to test
+Finding 1 under the shift it was actually measured under, because 7B's version
+shift may never have exercised TF-IDF's failure mechanism. **The
+pre-registered degeneracy rule fired: the TF-IDF-space cross-fitted domain AUC
+between originals and paraphrases is 0.9972, above the 0.95 line, so the arm is
+BLOCKED and no verdict is drawn on the primary.** The blocked numbers are in
+the CSV marked blocked, as 6B's BGE arm is - not as a result.
+
+**So after 7B and 7C, Finding 1's status is unchanged: it holds under the shift
+it was measured under, on the corpus it was measured on, and has not been shown
+to hold or to fail anywhere else.**
+
+#### The manipulation check, reported before the result
+
+| space | mean cosine | median | cross-fitted domain AUC |
+|---|---|---|---|
+| **BGE** (meaning preserved?) | 0.8462 | 0.8522 | 0.9981 |
+| **TF-IDF** (surface vocabulary moved?) | **0.2489** | 0.2183 | **0.9972** |
+
+The rewrite did exactly what it was asked to do: surface vocabulary is almost
+entirely replaced (TF-IDF cosine 0.2489) while meaning is preserved (BGE cosine
+0.8462). For scale, 7B's version shift sits at a BGE-space domain AUC of 0.8472
+- this manipulation is far stronger.
+
+**Length ratio, pre-registered secondary** (paraphrase / original):
+
+| unit | mean | median | aggregate | mean length |
+|---|---|---|---|---|
+| BGE tokens | 1.0279 | 0.9543 | **0.9417** | 71.7 -> 67.5 |
+| words | 1.0390 | 0.9595 | **0.9344** | 59.7 -> 55.8 |
+
+Length is essentially preserved, about 6% shorter in aggregate, so a length
+confound is not doing the work. The mean sitting above 1 while the median sits
+below says a few pairs grew and pulled the mean; the aggregate is the robust
+read.
+
+#### The pre-registered verdict
+
+**BLOCKED (`blocked_auc_ge_0.95`).** The rule was fixed in advance, by analogy
+with 6B, where a domain AUC of 0.9908 blocked the BGE arm. It fired, so the
+primary is not interpreted and no secondary is promoted to fill the gap.
+
+#### POST-HOC: the blocking rule may be mis-specified for this design
+
+*Added after seeing the result, and labelled as such. It is a question for the
+gate, not a licence to unblock.*
+
+In **6B** the >= 0.95 rule gated a **density-ratio estimate**. Weighted
+conformal divides by `p(cal|x)`, so near-perfect separability makes the ratio
+ill-posed and its weights meaningless. The rule measured the thing it gated.
+
+**7C estimates no density ratio.** It runs plain split conformal and uses the
+domain AUC only as a *manipulation check*. In that role a near-1.0 AUC means
+the manipulation was **strong**, which is what the design wanted. Carrying the
+threshold across may therefore be gating the wrong quantity - the same error
+the project has already named once, when a promotion rule for resolution
+clustering measured recall while claiming to gate precision.
+
+There is a real reading on the other side: a rewrite that a classifier can
+identify with near-certainty is arguably a *different corpus* rather than a
+shifted one, which is a coherent reason to refuse to call it a shift. **Both
+readings are recorded; the choice is a decision for the gate, taken with the
+numbers already visible, and it is not one this write-up makes on its own.**
+
+#### POST-HOC: the mechanism IS visible - in accuracy, not in coverage
+
+*Also added after seeing the result, and the most interesting thing in 7C.*
+
+| arm | Tier-1 accuracy | Tier-2 accuracy |
+|---|---|---|
+| original | 0.3776 | 0.3776 |
+| paraphrased | **0.2727** | **0.3531** |
+| change | **-10.5 points** | **-2.5 points** |
+
+**The paraphrase shift hit the lexical model's accuracy roughly four times
+harder than the dense model's.** That is Finding 1's mechanism, confirmed
+directly: surface-vocabulary change is what TF-IDF cannot absorb. 7B never
+produced this contrast, which supports the diagnosis that its version shift was
+the wrong kind of shift.
+
+**And yet conformal coverage barely moved for either tier** (blocked numbers, in
+the CSV). The candidate explanation is structural and worth carrying into the
+paper: with ten classes and ~35% base accuracy, prediction sets here run **4.9
+to 6.9 labels out of 10**. Sets that large **buffer coverage against a score
+shift** - the true label stays inside them even when the argmax moves. On our
+corpus, seven classes and far higher accuracy give small sets, where the same
+score shift pushes labels out and coverage drops.
+
+If that holds, Finding 1 needs **both** a representation contrast **and** an
+operating regime where sets are small enough for coverage to be sensitive -
+which is a sharper statement of its scope than "it is a property of our
+corpus", and a testable one. It is post-hoc and is offered as a hypothesis, not
+a finding.
+
+The identical original-arm accuracies are a genuine coincidence, checked rather
+than assumed: the two tiers disagree on **87 of 286** tickets and the
+discordant-correct split is exactly **23 / 23**, with different probability
+matrices.
+
+#### Limitations, recorded beside the result
+
+- **The external labels are generator-assigned and unaudited, and base accuracy
+  is ~35%.** A null here is weaker evidence than a null on a well-learned task
+  - and, as the post-hoc note above argues, the low accuracy may not be
+  incidental to the null but the direct cause of it.
+- **The paraphraser is a 3B local model.** Its rewrites carry a recognisable
+  style, which is part of why the domain classifier separates the arms so
+  easily. A stronger or more varied paraphraser would be a different
+  manipulation.
+- Independently generated data, not real production data - both the corpus and
+  now the paraphrases.
+
+#### Run provenance, recorded in full
+
+The generation run was **killed twice by the Claude Code harness for low system
+memory**, and **resumed from cache both times** with no regeneration and no data
+loss:
+
+1. First kill at **168 / 299** responses. The cache is keyed by prompt hash, so
+   the resumed run skipped those and continued.
+2. Second kill after **all 299 generations had completed**, during the
+   post-generation guard step. **The cause was the BGE/Ollama overlap**: Ollama
+   holds its model for five minutes after the last call, so at the exact moment
+   the script loads BGE to compute source-paraphrase similarities, both models
+   are resident. That overlap is the memory peak of the whole phase.
+
+The fix, applied before the final pass: **unload the model first**
+(`ollama stop qwen2.5:3b-instruct`, confirmed against `/api/ps`), then run with
+**`--cached-only`**, which refuses every live call and turns a cache miss or a
+prompt-hash mismatch into a fatal error rather than a silent regeneration. That
+pass verified **299/299 prompt hashes against the rebuilt prompt** and made
+**zero** calls.
+
+#### DEVIATION: the RAM preflight was corrected, not bypassed
+
+5C's `require_free_ram` compares *available* RAM against a floor sized for
+**loading** the weights. Once Ollama already holds the model, that floor
+double-counts - it demands headroom to load something already loaded. Measured
+here: **2,275 MB available with 2,064 MB already resident, refused against a
+3,277 MB floor**, with 4,339 MB genuinely in play.
+
+`--allow-low-ram` would have proceeded, but it stamps every response
+`low_ram_override`, permanently marking these paraphrases as produced under an
+untrustworthy configuration - which would be **false**, and unfixable without
+regenerating all 299. So the **check was made correct instead**: a 7C-local
+preflight reads `/api/ps`, adds the already-resident CPU-side bytes back, and
+reports all three numbers. `run_zeroshot_baselines.py` is untouched and 5C's
+published behaviour is unchanged.
+
+**The conservative direction is preserved**, and that is what the tests pin:
+an unreadable residency reading counts as **zero resident**, so the check falls
+back to 5C's strict behaviour rather than passing on an assumption. Four tests
+cover the ways a relaxed guard could quietly stop refusing - residency
+unreadable, available unreadable, resident-but-still-short, and the genuine
+false-refusal case - plus tests that the reader returns `None` rather than
+`0.0` on failure and counts only the non-VRAM part.
+
+#### Verification
+
+- **7B's models proved unchanged, not assumed**: refit from the 7B manifest
+  reproduces its cached test probabilities at **max |delta| = 0.0** for both
+  tiers, classes identical. A non-zero delta is fatal.
+- **Pairing checked before any statistic**: 286 pairs, identical ticket ids in
+  both arms, labels and source text re-verified against the corpus.
+- **Coverage derived twice** (`cp.coverage` and an independent loop), fatal
+  beyond 1e-12.
+- **Guard counts two ways**: discarded-by-similarity from the mask and from
+  `n_sampled - n_surviving - n_unparseable`.
+- **The band is COMBINED, not just the calibration term.** At n = 286 the
+  test-sampling sd (0.0173 at alpha=0.10) dominates the calibration-draw sd
+  (0.0082); quoting the calibration term alone, as Finding 1 and 7B do on much
+  larger test arms, would understate uncertainty by about a factor of two here.
+  Both are in the CSV.
+- **Isolation check: 27 files** - our dataset, both benchmarks, `models/`,
+  `tests/goldens/`, every published conformal/deferral/ablation CSV **and 7B's
+  own outputs** - byte-identical before and after.
+- **32 unit tests** on the new helpers against constructed ground truth,
+  including the fail-closed RAM tests and a DiD test asserting the statistic
+  stays at zero when paraphrasing hurts both tiers equally.
+- **Gates re-run, not quoted**: `pytest` **372 passed**; adversarial escalation
+  **9/9** with its CSV byte-identical; goldens **45/45** and **9/9**; ablation
+  baseline **32/45**.
+
+Scripts: `src/experiments/paraphrase_external_tickets.py`,
+`src/experiments/run_paraphrase_shift_conformal.py`. Outputs:
+[`external_paraphrase_set.json`](data/external_tobibueck/external_paraphrase_set.json),
+[`external_paraphrase_conformal.csv`](data/external_tobibueck/external_paraphrase_conformal.csv),
+[`external_paraphrase_summary.json`](data/external_tobibueck/external_paraphrase_summary.json),
+and the 299 raw responses under `data/external_paraphrase_raw/`.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`

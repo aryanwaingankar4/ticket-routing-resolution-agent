@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 7047,
+ "queue": "Technical Support",
+ "prompt_sha256": "21ef627dce649f952315defabdec9f2b2a300590d40afe152d39eb83b8810720",
+ "response": "{\"paraphrase\": \"We're having trouble with the video conferencing stuff. It keeps crashing during calls and we think it might be because of how poorly macOS and iOS work together.\"}",
+ "elapsed_s": 10.716508199999225,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}

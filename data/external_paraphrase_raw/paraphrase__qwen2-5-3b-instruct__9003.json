@@ -1,0 +1,21 @@
+{
+ "phase": "7C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "row_index": 9003,
+ "queue": "Service Outages and Maintenance",
+ "prompt_sha256": "ccb4dfa4455f6f84dcaaef28411b6491504e9e9b6e17d2116e143fba9e8b5c90",
+ "response": "{\"paraphrase\":\"The special tools that help us pick the best investments aren't working right now because the computer servers had to be restarted. It might be because they were just fixed. We're trying to fix it by checking the servers again, but people still can't use the tools. We need help to get these tools working again quickly so it doesn't affect how we do our work.\"}",
+ "elapsed_s": 16.848952100001043,
+ "num_predict": 512,
+ "seed": 42,
+ "ram": {
+  "available_mb": 4423,
+  "resident_cpu_mb": 0.0,
+  "resident_readable": true,
+  "effective_mb": 4423.0,
+  "floor_mb": 3277,
+  "check": "corrected_for_resident_model"
+ }
+}
