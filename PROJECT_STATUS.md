@@ -3,6 +3,24 @@
 **Last updated:** 2026-09-23
 **Last commit to move code or a result:** `3885393` — Phase 8B, Docker + CI.
 **All five gates passed.**
+
+> **COMMITTED BUT NOT PUSHED — and NOT because a gate failed.** All five gates
+> passed (see below). `git push origin main` was rejected by GitHub:
+>
+> ```
+> ! [remote rejected] main -> main (refusing to allow a Personal Access Token
+>   to create or update workflow `.github/workflows/ci.yml` without `workflow`
+>   scope)
+> ```
+>
+> The stored credential cannot create files under `.github/workflows/`. Nothing
+> in the repository is wrong and nothing needs re-running. Fix the credential
+> and push: add the **`workflow`** scope to the Personal Access Token at
+> <https://github.com/settings/tokens> (then `git push origin main`), or switch
+> the remote to SSH. Two commits are waiting: `3885393` and `6f776a6`.
+>
+> **`ci.yml`'s measured runtime is unknown until that push lands**, since the
+> workflow cannot run before it exists on GitHub.
 Phase 8A.1 (`d3b8f35`) is gated and PUSHED.
 Phase 8A (`b243a2f`) is gated and PUSHED.
 Phase 6C (`c5497bf`) is also gated and PUSHED.
