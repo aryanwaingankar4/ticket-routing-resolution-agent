@@ -1,10 +1,11 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** `3885393` — Phase 8B, Docker + CI.
-**All five gates passed.**
+**Last commit to move code or a result:** `2a8c8d3` — Phase 8B.1, hashing content
+rather than platform bytes. **All five gates passed.** Phase 8B (`3885393`) is
+gated and pushed.
 
-**Current phase: Phase 8B.1 — COMPLETE and GATED** (2026-09-23). The first
+**Current phase: Phase 8B.1 — COMPLETE and GATED** (`2a8c8d3`, 2026-09-23). The first
 `ci.yml` run on GitHub FAILED, and it was right to. `paper/PROVENANCE.json`
 hashed **raw working-tree bytes**, which are a property of the machine: under
 `core.autocrlf=true` git stores LF and checks out CRLF, so **50 of 51** paper
