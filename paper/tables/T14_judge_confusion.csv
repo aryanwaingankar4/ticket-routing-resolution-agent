@@ -1,0 +1,5 @@
+human_label,judge_label,n
+grounded,grounded,30
+grounded,ungrounded,1
+ungrounded,grounded,2
+ungrounded,ungrounded,0

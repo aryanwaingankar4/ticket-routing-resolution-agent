@@ -1,0 +1,5 @@
+rater_verdict,human_label,n
+INSUFFICIENT,ungrounded,1
+INSUFFICIENT,grounded,20
+SUFFICIENT,ungrounded,1
+SUFFICIENT,grounded,11

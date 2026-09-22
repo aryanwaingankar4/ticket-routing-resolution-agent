@@ -1,0 +1,18 @@
+node_id,label,kind,agent,x,y,w,h,edges_out
+ticket,ticket text,input,-,1.05,6.35,1.9,0.52,tier1
+tier1,Tier 1: TF-IDF + LogReg,stage,ClassifierAgent,1.05,5.35,1.9,0.52,gate1
+gate1,"Tier-1 confidence
+>= 0.5?",gate,orchestrator,1.05,4.25,1.9,0.62,retrieve;tier2
+tier2,Tier 2: BGE + LogReg,stage,ClassifierAgent,3.45,4.25,1.9,0.52,retrieve
+retrieve,FAISS top-5 retrieval,stage,RetrieverAgent,1.05,3.15,1.9,0.52,gate2
+gate2,"top-1 similarity
+>= 0.67?",gate,orchestrator,1.05,2.05,1.9,0.62,escalate;resolve
+resolve,"Gemini drafts a
+grounded resolution",stage,ResolverAgent,3.45,2.05,1.9,0.62,
+escalate,"ESCALATE TO HUMAN
+(Gemini is never called)",terminal,orchestrator,1.05,0.95,1.9,0.62,
+cluster,"resolved tickets -> embed
+resolution -> union-find
+at 0.8",offline,offline analysis,5.85,4.25,2.0,0.8,flags
+flags,"automation candidates
+for human review",offline,offline analysis,5.85,2.85,2.0,0.62,

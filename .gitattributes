@@ -1,0 +1,18 @@
+# paper/ is GENERATED and byte-compared.
+#
+# tests/test_paper_artifacts.py rebuilds paper/ and compares NUMBERS.md, every
+# table CSV and every figure-data CSV byte for byte. The builder always writes
+# LF (newline="\n"). With core.autocrlf=true -- the default on Windows, and
+# what this project is developed under -- git would hand a fresh clone CRLF
+# working copies, and every one of those comparisons would fail for a reason
+# that has nothing to do with a number moving.
+#
+# So: pin the generated text surface to LF in the working tree, and mark the
+# rendered figures binary so git never touches them at all.
+paper/**/*.csv   text eol=lf
+paper/**/*.tex   text eol=lf
+paper/**/*.txt   text eol=lf
+paper/**/*.json  text eol=lf
+paper/*.md       text eol=lf
+paper/**/*.pdf   binary
+paper/**/*.png   binary

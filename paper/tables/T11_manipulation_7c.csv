@@ -1,0 +1,7 @@
+quantity,value
+"TF-IDF mean cosine, original vs paraphrase",0.24887508791367252
+"BGE mean cosine, original vs paraphrase",0.846181302195699
+TF-IDF-space domain AUC (the blocking statistic),0.9971942393271065
+BGE-space domain AUC,0.9980805907379333
+pre-registered blocking floor,0.6
+"7B version-shift BGE AUC, for reference",0.8471736293799147

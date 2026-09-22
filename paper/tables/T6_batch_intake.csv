@@ -1,0 +1,9 @@
+category,volume_received,auto_resolved_count,needs_human_resolution_count,gemini_call_failed_count,classification_accuracy_on_this_batch
+Infrastructure,115,110,0,5,1.0
+Application,100,99,0,1,1.0
+Security,61,60,0,1,1.0
+Database,49,49,0,0,1.0
+Storage,53,50,0,3,1.0
+Network,74,71,0,3,1.0
+Access Management,48,46,0,2,1.0
+escalation_needs_review,0,0,0,0,0.0

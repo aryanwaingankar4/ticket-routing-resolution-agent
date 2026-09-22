@@ -1,0 +1,1 @@
+The vertical line marks the live gate's MEASURED operating coverage. AURC averages over coverages the system never runs at, so it is shown but is not the headline.

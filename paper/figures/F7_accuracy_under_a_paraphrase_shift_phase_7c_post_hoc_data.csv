@@ -1,0 +1,5 @@
+tier,arm,accuracy,n_pairs,post_hoc
+tier1,original,0.3776223776223776,286,True
+tier1,paraphrased,0.2727272727272727,286,True
+tier2,original,0.3776223776223776,286,True
+tier2,paraphrased,0.3531468531468531,286,True

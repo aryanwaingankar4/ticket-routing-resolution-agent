@@ -1,0 +1,4 @@
+secondary,value
+cross-family agreement (Qwen2.5-3B vs Gemini),"{""insufficient_count"": 35, ""model"": ""qwen2.5:3b-instruct"", ""model_digest"": ""357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b"", ""overall_agreement_n"": 39, ""overall_agreement_of"": 54, ""primary_2x2"": {""insufficient_and_grounded"": 20, ""insufficient_and_ungrounded"": 1, ""sufficient_and_grounded"": 11, ""sufficient_and_ungrounded"": 1}, ""prompt_identity_54_54"": true, ""unparseable"": 0}"
+stability at temperature 0,"{""S002"": {""all_identical"": true, ""primary_rep1"": ""INSUFFICIENT"", ""reps"": {""1"": ""INSUFFICIENT"", ""2"": ""INSUFFICIENT"", ""3"": ""INSUFFICIENT""}}, ""S029"": {""all_identical"": true, ""primary_rep1"": ""INSUFFICIENT"", ""reps"": {""1"": ""INSUFFICIENT"", ""2"": ""INSUFFICIENT"", ""3"": ""INSUFFICIENT""}}}"
+agreement with the live RAG gate,"{""agree"": 20, ""of"": 21, ""wilson95"": [0.7733018341376452, 0.9915442305280766]}"

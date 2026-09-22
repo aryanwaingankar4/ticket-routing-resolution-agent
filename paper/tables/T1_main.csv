@@ -1,0 +1,9 @@
+method,kind,benchmark14,benchmark45,benchmark45_pct,benchmark45_ci_low,benchmark45_ci_high,deployment175,note
+TF-IDF + LogReg (Tier-1 only),trained,n/a (no committed source),16/45,35.55555555555556,0.23218891356904045,0.5016445398804781,91/175,
+Fine-tuned DistilBERT,trained,n/a (no committed source),n/a (no committed source),,,,n/a (no committed source),
+all-MiniLM-L6-v2 + LogReg,trained,10/14,32/45,71.11111111111111,0.5663118252773978,0.8227008196809985,n/a (not run),
+intfloat/e5-base-v2 + LogReg,trained,10/14,27/45,60.0,0.4545159420914473,0.7297532055204244,n/a (not run),
+BGE-base-en-v1.5 + LogReg (Tier-2 only),trained,10/14,33/45,73.33333333333333,0.5896088330282472,0.8403525113994538,132/175,production representation
+"Cascade (Tier-1 -> Tier-2), production",trained,10/14,32/45,71.11111111111111,0.5663118252773978,0.8227008196809985,131/175,the shipped configuration
+Zero-shot Gemini flash-lite,zero-shot LLM,14/14,40/45,88.88888888888889,0.7650062450910905,0.9515959956217444,n/a (not run),"0 unparseable on 45, 0 on 14"
+Zero-shot Qwen2.5-3B (local CPU),zero-shot LLM,12/14,34/45,75.55555555555556,0.6132633941520987,0.8576466497449071,n/a (not run),"0 unparseable on 45, 0 on 14"

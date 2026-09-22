@@ -1,0 +1,1 @@
+The shaded span is the adversarial safe range. The gate sits inside it, and it errs in BOTH directions -- see FRAMING.md.

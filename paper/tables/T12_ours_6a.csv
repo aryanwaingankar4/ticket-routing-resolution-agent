@@ -1,0 +1,17 @@
+tier,eval_set,rule,n,live_gate_coverage,degenerate_at_gate,d_risk_at_live_gate,d_risk_at_live_ci_low,d_risk_at_live_ci_high,verdict_at_live_gate,aurc,d_aurc_vs_confidence,d_aurc_ci_low,d_aurc_ci_high,aurc_is_headline
+tier1,benchmark45,aps,45,0.088889,yes,0.056326,-0.1,0.5,no signal on the gated axis,0.535486,0.001295,-0.043902,0.052141,False
+tier1,benchmark45,confidence,45,0.088889,yes,,,,,0.533892,,,,False
+tier1,benchmark45,lac,45,0.088889,yes,0.031292,-0.4,0.5,no signal on the gated axis,0.593503,0.059914,-0.022912,0.155185,False
+tier1,benchmark45,margin,45,0.088889,yes,-0.025508,-0.466667,0.35,no signal on the gated axis,0.545178,0.011772,-0.026927,0.053811,False
+tier1,deployment175,aps,175,0.188571,no,-0.023961,-0.121212,0.067235,no signal on the gated axis,0.289992,-0.001835,-0.020135,0.01719,False
+tier1,deployment175,confidence,175,0.188571,no,,,,,0.291894,,,,False
+tier1,deployment175,lac,175,0.188571,no,0.008533,-0.090909,0.113191,no signal on the gated axis,0.347287,0.05556,0.024242,0.089906,False
+tier1,deployment175,margin,175,0.188571,no,0.009151,-0.058824,0.088235,no signal on the gated axis,0.303921,0.012064,0.000319,0.02486,False
+tier2,benchmark45,aps,45,0.088889,yes,0.014403,0.0,0.25,no signal on the gated axis,0.190292,0.027965,-0.017097,0.083854,False
+tier2,benchmark45,confidence,45,0.088889,yes,,,,,0.162548,,,,False
+tier2,benchmark45,lac,45,0.088889,yes,-0.000462,0.0,0.0,no signal on the gated axis,0.120863,-0.042136,-0.100304,0.003129,False
+tier2,benchmark45,margin,45,0.088889,yes,-0.000345,0.0,0.0,no signal on the gated axis,0.142095,-0.020681,-0.047672,-0.000557,False
+tier2,deployment175,aps,175,0.188571,yes,0.010056,0.0,0.090909,no signal on the gated axis,0.115673,0.013266,-0.003659,0.032591,False
+tier2,deployment175,confidence,175,0.188571,yes,,,,,0.102556,,,,False
+tier2,deployment175,lac,175,0.188571,yes,0.000713,0.0,0.0,no signal on the gated axis,0.10587,0.003242,-0.016694,0.023577,False
+tier2,deployment175,margin,175,0.188571,yes,-0.000244,0.0,0.0,no signal on the gated axis,0.100638,-0.00199,-0.010271,0.006262,False

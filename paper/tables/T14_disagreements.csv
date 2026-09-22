@@ -1,0 +1,4 @@
+item_id,ticket_id,top_similarity,human_label,judge_label,label_reason
+G012,N32,0.689045786857605,grounded,ungrounded,
+G021,N26,0.7010266780853271,ungrounded,grounded,
+G024,N31,0.6747423410415649,ungrounded,grounded,

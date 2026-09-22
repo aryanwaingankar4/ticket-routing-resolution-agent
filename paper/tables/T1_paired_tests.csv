@@ -1,0 +1,9 @@
+comparison,eval_set,left,right,b_left_only_right,c_right_only_right,n_discordant,exact_mcnemar_p,test
+cascade vs Tier-2-only,benchmark45,cascade,Tier-2-only,0,1,1,1.0,exact McNemar (binomial)
+cascade vs Tier-2-only,deployment175,cascade,Tier-2-only,1,2,3,1.0,exact McNemar (binomial)
+zero-shot Gemini vs Tier-2-only,benchmark45,Tier-2-only,zero-shot Gemini,1,8,9,0.0390625,exact McNemar (binomial)
+zero-shot Gemini vs Tier-2-only,benchmark14,Tier-2-only,zero-shot Gemini,0,4,4,0.125,exact McNemar (binomial)
+zero-shot Qwen2.5-3B vs Tier-2-only,benchmark45,Tier-2-only,zero-shot Qwen2.5-3B,6,7,13,1.0,exact McNemar (binomial)
+zero-shot Qwen2.5-3B vs Tier-2-only,benchmark14,Tier-2-only,zero-shot Qwen2.5-3B,2,4,6,0.6875,exact McNemar (binomial)
+zero-shot Qwen2.5-3B vs zero-shot Gemini,benchmark45,zero-shot Qwen2.5-3B,zero-shot Gemini,1,7,8,0.0703125,exact McNemar (binomial)
+zero-shot Qwen2.5-3B vs zero-shot Gemini,benchmark14,zero-shot Qwen2.5-3B,zero-shot Gemini,0,2,2,0.5,exact McNemar (binomial)

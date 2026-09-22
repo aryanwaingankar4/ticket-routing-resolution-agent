@@ -1,0 +1,1 @@
+Signal A. The marginal binomial's 'alpha by construction' holds only at small windows; the calibration-conditional test holds everywhere. The KS curve reads the p-values' discreteness, not drift.

@@ -1,0 +1,8 @@
+category,n_clusters_flagged,n_tickets_in_flagged_clusters,n_tickets,flagged_share
+Infrastructure,17,107,115,0.9304347826086956
+Security,9,56,61,0.9180327868852459
+Storage,10,45,53,0.8490566037735849
+Application,17,84,100,0.84
+Network,14,51,74,0.6891891891891891
+Access Management,9,29,48,0.6041666666666666
+Database,7,24,49,0.4897959183673469

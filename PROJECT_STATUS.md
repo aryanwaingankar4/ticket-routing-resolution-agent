@@ -1,8 +1,9 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `c5497bf` — Phase 6C (the retrieval-sufficiency
-gate). **All four gates passed and it was PUSHED on 2026-09-22.**
+**Last commit to move code or a result:** `PENDING` — Phase 8A (the paper
+artifact builder). **All four gates passed.**
+Phase 6C (`c5497bf`) is also gated and PUSHED.
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
 Phase 7B (`f789b8d`) is also gated and PUSHED.
 Phase 7A (`ba98843`) is also gated and PUSHED. Phase 6B (`8419db6`) is
@@ -11,7 +12,46 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 6C — COMPLETE, GATED and PUSHED** (`c5497bf`, 2026-09-22).
+**Current phase: Phase 8A — COMPLETE and GATED.** Every paper number, table
+and figure now regenerates from committed result files through one script,
+`src/experiments/build_paper_artifacts.py`. Offline: **zero Gemini calls, zero
+Ollama calls, no model load, no training run, no experiment re-run.** It reads
+`data/` and writes only `paper/`.
+
+**What it produced:** 16 tables (T1–T16, 39 CSV frames, each also as booktabs
+LaTeX), 7 figures (F1–F7, PDF + PNG at 300 dpi + the data CSV + the caption
+behind each), `paper/NUMBERS.md` with **161 numbers** (id, value, source file,
+regenerating command, tags), `paper/FRAMING.md` (the agreed write-up framing,
+numbers interpolated from NUMBERS.md), `paper/RECONCILIATION.md` and
+`paper/PROVENANCE.json` (sha256 of all 45 sources). The build is
+**byte-for-byte deterministic including PDF and PNG**.
+
+**The rule is structural, not aspirational.** Every value passes through one
+`emit()` choke point that refuses a source file that does not exist, and
+`tests/test_paper_artifacts.py` runs an **AST lint that fails if any `emit()`
+call passes a numeric literal**. A retyped number cannot reach the paper.
+Paired comparisons use the exact McNemar test; proportions carry a Wilson 95%
+interval except on pre-registered case-study axes, where `emit()` *raises* if
+a CI is requested; a difference inside its own noise band is auto-tagged
+`within-band`. The builder's statistics are cross-checked at build time
+against the three implementations already committed in `src/experiments/`.
+
+**Audit result: 54 anchors, 0 mismatches**, every anchor found in at least one
+document — the four project documents agree with their source files on every
+load-bearing figure. Two things surfaced: **two conventions for a 95% z**
+coexist in the repo (1.96 vs the exact quantile; algebraically identical,
+~3.5e-6 apart, no published figure affected — and a CI a source already
+carries is read verbatim, never recomputed), and **five documented numbers
+have no committed machine-readable source** (TF-IDF 7/14, DistilBERT 7/14,
+DistilBERT on the 45, the cascade threshold-by-target-accuracy table, and the
+5.7% self-retrieval rate). Nothing was invented or re-run to give them one;
+they are flagged for a write-up decision. One write-up correction: the
+reliability ECEs are a **ceiling effect** — observed accuracy is 1.0 in every
+bin, so both tiers are **under-confident**, never "over-confident".
+
+Nothing promoted; production frozen. **Next: Phase 8B (Docker + CI).**
+
+**Phase 6C is COMPLETE, GATED and PUSHED** (`c5497bf`, 2026-09-22).
 **Verdict: a retrieval-sufficiency check catches both 2B misses and is STILL
 NOT USABLE as a second gate.** Primary, as counts over the 33 eligible
 tickets: **caught 2 of 2** human-labelled ungrounded drafts, **flagged 26 of
@@ -119,7 +159,10 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **406 passed** (372 + 34 from 6C), 0 failed/skipped, offline |
+| Test suite | `pytest` | **418 passed** (406 + 12 from 8A), 0 failed/skipped, offline |
+| **Paper artifacts (8A)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **161 numbers**, 45 sources hashed; byte-for-byte deterministic incl. PDF/PNG |
+| Paper parity (8A) | `pytest tests/test_paper_artifacts.py` | 12 passed — NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
+| Document reconciliation (8A) | same script, `RECONCILIATION.md` | **54 anchors, 0 mismatches**; **5 numbers with no committed source**; 2 z-conventions recorded |
 | **Sufficiency gate (6C)** | `score_sufficiency_gate.py` | **caught 2/2, flagged 26/31** — false-flag 0.839, Wilson [0.674, 0.929]; **not usable as a gate** |
 | Sufficiency vs the live gate (6C) | same script | **20/21** agree; the 1 disagreement (N45, 0.6397) is context the gate escalated **although it was adequate** |
 | Sufficiency cross-family (6C) | `run_sufficiency_autorater.py --backend ollama` | Qwen2.5-3B agrees **39/54 (0.722)**, prompts **54/54 byte-identical**, **misses 1 of 2** positives |
@@ -1843,7 +1886,7 @@ reality. Any write-up must say so in those words.
 
 | Sub-phase | Scope |
 |---|---|
-| **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it |
+| **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it — **DONE and GATED**. 16 tables, 7 figures, 161 numbers; audit 54 anchors / 0 mismatches / 5 no-source |
 | **8B** | Docker + CI (the Docker/CI item from the original agreed roadmap) |
 
 8A is the structural answer to this project's recurring bug class: every number
@@ -1897,12 +1940,37 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 8A — `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test
-for it.** Offline, no Gemini quota. Opens in plan mode like every sub-phase.
+**Phase 8B — Docker + CI.** Offline, no Gemini quota. Opens in plan mode like
+every sub-phase.
 
-**6C is GATED and PUSHED, so 8A is unblocked** — every result it must tabulate
-is now finished, and nothing is in flight that could bake a moving number into
-the reproducibility layer.
+**8A is DONE and GATED**, so the reproducibility layer exists and CI has
+something worth enforcing: `pytest` (418), the adversarial gate at 9/9 with
+its CSV byte-identical, goldens 45/45 and 9/9, the ablation baseline at 32/45,
+and now **paper parity** — `tests/test_paper_artifacts.py`, which fails if any
+published number, table CSV or figure-data CSV drifts.
+
+### What 8A left for the write-up to decide
+
+**Five numbers have no committed machine-readable source.** They are flagged
+in `paper/NUMBERS.md` and `paper/RECONCILIATION.md`, never quoted as though
+they had one, and nothing was invented or re-run to manufacture one:
+
+1. **TF-IDF + LogReg, 7/14** — `train_baseline_tfidf.py` and
+   `generalization_test.py` print their results and write no file.
+2. **Fine-tuned DistilBERT, 7/14** — `train_distilbert.py` writes only
+   `label_mapping.json`.
+3. **DistilBERT on the 45-ticket benchmark** — never measured at all.
+4. **The cascade threshold-by-target-accuracy table** (and "three attempts,
+   two rejected") — `train_cascade.py` prints its sweep and writes nothing.
+5. **Self-retrieval contamination 5.7% (10/175)** — computed inside
+   `calibrate_rag_similarity_threshold.py`, never written to a column.
+
+Each is a decision: keep it as a figure whose derivation is a script that must
+be re-executed, drop it from the paper, or add the missing writer in a later
+phase. **Re-running any of them is out of scope for a measurement-only
+phase**, so 8A flagged them rather than fixing them.
+
+**PHASE 7 IS CLOSED and 8A changed nothing about that.**
 
 **PHASE 7 IS CLOSED. NO FURTHER EXTERNAL EXPERIMENTS in this programme.** 7A
 (feasibility), 7B (version shift) and 7C (paraphrase shift) are all gated and

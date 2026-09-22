@@ -1,0 +1,1 @@
+Sequential pipeline with agent boundaries and an HTTP surface. The agents are independently ADDRESSABLE, not independently running: POST /triage orchestrates in process. This is not a distributed or autonomous multi-agent system.

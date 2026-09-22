@@ -3299,6 +3299,181 @@ guarantee at run time.
 
 ---
 
+### Phase 8A - every paper number, table and figure from one committed script
+
+**Why this phase exists.** In Phase 7A two domain AUCs (0.8584, and the range
+0.6706-0.9316) were computed in an interactive session, quoted at a gate, and
+never committed. When Phase 7B specified the recomputation they **did not
+reproduce** - the re-derived values are 0.8727 raw / 0.8472 operating, and five
+variants chasing the recorded figure span 0.8637-0.8727. The conclusions
+survived only because every value cleared the same threshold, but the figures
+were wrong in print for a day.
+
+That is this project's recurring bug class - a value that is internally
+consistent but wrong for its context - reaching the **write-up** rather than
+the code. Load guards answered it for artifacts, goldens answered it for
+routing, `tests/test_contamination_structure.py` answered it for grouping
+keys. Phase 8A is the same answer for the paper.
+
+**The rule, and how it is enforced.** Every number the paper may use is
+regenerated from a committed result file, through code. This is structural,
+not a matter of discipline:
+
+- Every value reaching `paper/NUMBERS.md` passes through one `emit()` choke
+  point, which **refuses a value whose source file does not exist**.
+- `tests/test_paper_artifacts.py` runs an **AST lint over the builder** that
+  fails if any `emit()` call passes a numeric literal as its value. A retyped
+  number cannot enter the paper surface without the build going red.
+- The only numeric literals permitted anywhere in the builder are collected in
+  one reviewable `# --- presentation constants ---` block: figure geometry,
+  fonts, the seed and the CI z.
+
+**What it produced.** One script,
+`src/experiments/build_paper_artifacts.py`, offline, **zero Gemini calls, zero
+Ollama calls, no model load, no training run and no experiment re-run**. It
+reads committed result files under `data/` and writes only under `paper/`:
+
+| Output | Contents |
+|---|---|
+| `paper/tables/` | **16 tables (T1-T16)**, each as `.csv` and as booktabs `.tex`; 39 CSV frames in total |
+| `paper/figures/` | **7 figures (F1-F7)**, each as `.pdf` and `.png` at 300 dpi, with the data behind it as `_data.csv` and its caption as `_caption.txt` |
+| `paper/NUMBERS.md` | **161 numbers**: id, value, source file, regenerating command, tags |
+| `paper/FRAMING.md` | the write-up framing agreed at each phase gate, with every number interpolated from `NUMBERS.md` |
+| `paper/RECONCILIATION.md` | the four project documents audited against their source files |
+| `paper/PROVENANCE.json` | the sha256 of all **45 source files** read |
+
+Figures are sized for IEEE two-column (3.5 in single, 7.16 in full width),
+drawn from the Okabe-Ito colour-blind-safe palette with distinct dash patterns
+so they survive greyscale, and the build is **byte-for-byte deterministic
+including the PDF and PNG bytes** - fixed seed, stable row order, fixed float
+formatting, and creation metadata stripped.
+
+**Golden parity, applied to the write-up.** `tests/test_paper_artifacts.py`
+(12 tests) rebuilds `paper/` into a temporary directory and fails if any
+`NUMBERS.md` value, table CSV or figure-data CSV has moved. PDF and PNG bytes
+are deliberately **not** compared: rendering is not what carries a number, and
+a rasteriser upgrade should not fail the build. `PROVENANCE.json` lets a
+failure say **which** kind of bug it is - a source file changed (the paper is
+stale) or the builder changed.
+
+**Statistical hygiene, enforced in code.** Every paired comparison on the same
+tickets uses the **exact** McNemar test. Every proportion carries a Wilson 95%
+interval **except** on a pre-registered case-study axis, where `emit()`
+*raises* if a CI is requested - Phase 6C's 2-positive axis reports counts, and
+a Wilson interval on two observations would look like a measurement. A
+difference smaller than its own noise band is tagged `within-band`
+automatically rather than editorially. The builder's `wilson_interval()` and
+`exact_mcnemar()` are cross-checked at build time against the three
+implementations already committed in `src/experiments/`, and a disagreement
+beyond 1e-12 is fatal - rule 6's second independent derivation, for free.
+
+#### Two things the audit turned up
+
+**1. The repository holds two conventions for a 95% z.**
+`score_groundedness_set.py` and `score_sufficiency_gate.py` use `1.96`;
+`summarize_zeroshot_baselines.py` uses the exact normal quantile
+`1.959963984540054`. The build asserts that the two implementations are
+otherwise **algebraically identical**, and they differ by about 3.5e-6, so
+**no published figure is affected at reported precision**. The paper adopts
+`1.96`, and - more importantly - **a confidence interval that a source file
+already carries is read verbatim rather than recomputed**, so no published
+interval can be silently restated under a different convention.
+
+**2. Five numbers stated in the documents have no committed
+machine-readable source.** Nothing was invented, re-derived or re-run to give
+them one:
+
+| Number | Where | Why there is no source |
+|---|---|---|
+| TF-IDF + LogReg, **7/14** | README, the three-way classifier comparison and Final Classification Comparison tables | `train_baseline_tfidf.py` and `generalization_test.py` print their results and write no file; no `--mode no-cascade` ablation run exists for benchmark14 |
+| DistilBERT, **7/14** | README, the three-way classifier comparison and Final Classification Comparison tables | `train_distilbert.py` writes only `label_mapping.json` - no metrics file of any kind |
+| DistilBERT on the 45-ticket benchmark | (never measured) | never run; `embedding_model_comparison.csv` has no DistilBERT row |
+| Cascade threshold-by-target-accuracy table, and "three attempts, two rejected" | README, cascade calibration section | `train_cascade.py` prints its sweep and writes no results file |
+| In-domain self-retrieval contamination **5.7% (10/175)** | README, the RAG threshold calibration section and What's Done vs What's Pending | computed inside `calibrate_rag_similarity_threshold.py` but never written to a column in either calibration CSV |
+
+Each is a decision for the write-up: keep it as a figure whose derivation is a
+script that must be re-executed, drop it, or add the missing writer in a later
+phase. They appear in `paper/NUMBERS.md` and `paper/RECONCILIATION.md` under
+"no committed source", never as though they had one. **T1 prints
+`n/a (no committed source)` in those cells rather than the remembered value.**
+
+#### The reconciliation audit
+
+**Pass A - anchored: 54 anchors, 0 mismatches, every anchor found in at least
+one document.** Each anchor compares the value a document states against the
+value the committed file *currently* produces, as a correct rounding at the
+document's own precision. This is the pass that would catch a 7A-style drift.
+It covers the load-bearing figure from every phase: the ablation counts, the
+zero-shot counts and their exact McNemar p-values, both ECEs, the OOD-leakage
+pair, Finding 1's gaps and noise band, 6B's reweighted gap and its blocked BGE
+AUC, Finding 2's corrected template counts, 7A's two near-duplicate rates, 7B's
+gaps and operating AUC, 7C's blocked AUC and post-hoc DiD, 6A's gate
+coverages, the drift eligibility and realistic-traffic rates, 2B's groundedness
+and judge kappa, 6C's 2x2, and the clustering thresholds.
+
+**Pass B - sweep: triage output, not a defect list.** Every statistic-shaped
+token in the four documents (decimals with three or more places, `k/n` counts,
+one-decimal percentages) is classified as matched, do-not-cite, or unmatched.
+A 3,875-line lab notebook contains a great many numbers that are prose, dates,
+line counts and file sizes, so the unmatched column is a list to look through,
+not a list of errors - and it is reported as such. A near-miss heuristic
+(tokens within 2% of an emitted value but not a correct rounding of it) was
+run during the audit and returned **no genuine discrepancy**: every candidate
+turned out to be a different quantity that happens to sit nearby, which is
+exactly why the anchored pass exists.
+
+**Retired numbers still present in the documents are expected and are not
+errors.** The lab notebook records superseded results on purpose. The
+do-not-cite list is emitted into `NUMBERS.md`, and the parity test greps the
+**prose** surface of `paper/` for each retired literal so it cannot re-enter
+the paper. Data CSVs are exempt from that grep: `0.6706` is a retired AUC
+bound *and* a real risk-coverage threshold, and a coincidence in generated
+numbers is not a citation.
+
+#### One correction to the write-up
+
+Drafting F4's caption forced a check of what the reliability data actually
+says. On the 500-ticket in-distribution production batch the **observed
+accuracy is 1.0 in every confidence bin of both tiers**. The reported ECE -
+Tier-1 0.1122, Tier-2 0.0992 - is therefore entirely the distance between the
+model's confidence and a **ceiling**, and both tiers are systematically
+**under-confident** there. It is not evidence that either is well calibrated on
+real traffic. This is the same ceiling effect as the ~100% in-distribution
+accuracy, and it is now stated that way in `paper/FRAMING.md` and in F4's
+caption. The README's existing prose (lines 318, 401, 3477) already said
+"underconfident" and needed no change.
+
+#### Limitations
+
+- **The reconciliation audit's coverage is the anchor set, not the whole
+  document.** Fifty-four anchors is real coverage of the load-bearing figures,
+  but it is not a proof that every number in 10,000 lines of documentation is
+  correct. Pass B narrows the remainder to a triage list; it does not clear it.
+- **A number's provenance is only as good as the script that wrote its source
+  file.** 8A guarantees that the paper matches `data/`. It does not
+  re-validate `data/`. The four published-result bugs this project has already
+  met were bugs in the producing script, and this layer would not have caught
+  any of them.
+- **The five no-source numbers remain in the documents.** They are flagged, not
+  fixed. Fixing them means either re-running the scripts that print them or
+  adding writers to those scripts - both outside 8A's measurement-only remit.
+- **`FRAMING.md` is generated, but the framing itself is still human
+  judgement.** Interpolating its numbers from `NUMBERS.md` prevents the text
+  drifting away from the measurements. It does not make the interpretation
+  right; Phase 9A still settles the named finding's final wording.
+- **The parity test pins the current values, which makes a *deliberate* change
+  slightly more expensive.** That is the intended trade, and it is the same
+  trade `tests/goldens/` already makes for routing.
+
+**Production is untouched.** Cascade 0.50, RAG 0.67, clustering 0.80;
+`settings.conformal.enabled` and `settings.drift.enabled` both `False`. The
+builder refuses to run if either is `True`, and an isolation check confirmed
+that nothing under `data/`, `models/`, `src/` or `tests/goldens/` changed -
+the only additions are the builder and its test.
+
+
+---
+
 ## Final Classification Comparison
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization | 45-Ticket Generalization |
@@ -3309,6 +3484,16 @@ guarantee at run time.
 | Frozen E5 embeddings + Logistic Regression | — | — | 27/45 (60.0%) |
 | Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) | — |
 | Cascade (TF-IDF → embeddings, 70–80% target) | — | 10/14 (71.4%), ~21% resolved by cheap tier | — |
+
+> **Provenance note (Phase 8A).** The two **7/14** cells - TF-IDF and
+> fine-tuned DistilBERT - have **no committed machine-readable source**:
+> `train_baseline_tfidf.py`, `generalization_test.py` and
+> `train_distilbert.py` print their results and write no metrics file, and
+> `data/embedding_comparison/embedding_model_comparison.csv` carries no row
+> for either. They are recorded here as measured at the time and are listed
+> under "no committed source" in `paper/NUMBERS.md` and
+> `paper/RECONCILIATION.md`. Every other cell in this table regenerates from
+> a committed file through `src/experiments/build_paper_artifacts.py`.
 
 BGE is now the production embedding model for classification, RAG
 retrieval, and cascade Tier-2 (swapped from MiniLM on the strength of this

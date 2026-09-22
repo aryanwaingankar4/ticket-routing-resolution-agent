@@ -1,0 +1,4 @@
+variant,status,n_rows
+full_test,ok,60
+held_out_queue,BLOCKED_AUC_GE_0.95,6
+held_out_queue,single_class_test_arm,54

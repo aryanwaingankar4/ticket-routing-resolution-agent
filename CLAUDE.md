@@ -101,6 +101,17 @@ is a regression unless it is deliberate. Regenerate only on purpose:
 python tests/capture_goldens.py
 ```
 
+**Paper parity is the same safety net for the write-up (Phase 8A).** `paper/`
+is GENERATED -- never edit anything in it by hand. `tests/test_paper_artifacts.py`
+rebuilds it and fails if any `NUMBERS.md` value, table CSV or figure-data CSV
+moves; PDF/PNG bytes are deliberately not compared. `paper/PROVENANCE.json`
+carries the sha256 of every source file read, so a failure says which bug it
+is: a result file changed (the paper is stale) or the builder changed.
+
+```powershell
+python src/experiments/build_paper_artifacts.py --force
+```
+
 ### Experiments
 
 ```powershell
@@ -265,6 +276,15 @@ python src/experiments/run_sufficiency_autorater.py --backend gemini \
 python src/experiments/run_sufficiency_autorater.py --backend ollama \
     --model qwen2.5:3b-instruct
 python src/experiments/score_sufficiency_gate.py          # offline, 0 calls
+
+# Phase 8A -- EVERY paper table, figure and number, from committed result
+# files only. Offline: no Gemini, no Ollama, no model load, no training, no
+# experiment re-run. Writes ONLY under paper/ and refuses to overwrite it
+# without --force. The build is byte-for-byte deterministic, PDF and PNG
+# included, so a rebuild differs only when a source file changed.
+python src/experiments/build_paper_artifacts.py
+python src/experiments/build_paper_artifacts.py --force
+python src/experiments/build_paper_artifacts.py --out DIR --no-render
 
 # Resolution clustering -> automation flagging
 python src/experiments/join_scenario_ground_truth.py
@@ -492,6 +512,36 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   the recorded value span 0.8637–0.8727. The conclusions were unaffected
   because every value cleared the same threshold, but the figures were wrong in
   print for a day. This is the concrete motivation for Phase 8A.
+  **Phase 8A is the structural answer and it is now in force:** every number
+  the paper may use lives in `paper/NUMBERS.md` with its source file and the
+  command that regenerates it, emitted through one `emit()` choke point that
+  refuses a value whose source does not exist. `tests/test_paper_artifacts.py`
+  runs an **AST lint that fails if any `emit()` call passes a numeric
+  literal** -- so a retyped number cannot reach the paper surface. A number
+  that is not in `NUMBERS.md` is not a number the paper may use.
+- **Two conventions for a 95% z coexist in this repo**, and that is recorded
+  rather than silently unified: `1.96` in `score_groundedness_set.py` and
+  `score_sufficiency_gate.py`, the exact quantile `1.959963984540054` in
+  `summarize_zeroshot_baselines.py`. The implementations are otherwise
+  algebraically identical (the 8A build asserts it) and differ by ~3.5e-6, so
+  no published figure moves at reported precision. The paper adopts 1.96, and
+  **a CI a source file already carries is read verbatim, never recomputed** --
+  otherwise a published interval could be restated under a different z without
+  anyone noticing.
+- **Five documented numbers have no committed machine-readable source** and
+  must never be quoted as though they did: TF-IDF 7/14 and DistilBERT 7/14
+  (their scripts print and write nothing), DistilBERT on the 45-ticket
+  benchmark (never run), the cascade threshold-by-target-accuracy table, and
+  the 5.7% (10/175) self-retrieval contamination rate. They are listed under
+  "no committed source" in `paper/NUMBERS.md` and `paper/RECONCILIATION.md`.
+  Do not invent a source and do not re-run an experiment to manufacture one --
+  that is a decision for the write-up.
+- **The reliability/ECE numbers are a CEILING effect, not calibration.** On
+  the 500-ticket in-distribution batch the observed accuracy is 1.0 in every
+  bin of both tiers, so Tier-1's 0.1122 and Tier-2's 0.0992 are entirely the
+  distance from confidence to a ceiling and both tiers are **under-confident**
+  there. Never write "over-confident", and never read these as evidence of
+  calibration on real traffic.
 - **The 175-ticket calibration set cannot be de-contaminated.** Its tickets are
   paraphrases of training rows, but memorisation is template-level: **66
   templates, ~62 rows each, and the set touches 62 of them. Removing source

@@ -1,0 +1,7 @@
+quantity,external,our_corpus
+rows parsed (all languages),61765,n/a
+English rows used,28261,4000
+multiple of the 45-ticket benchmark,628.0222222222222,n/a
+distinct texts after exact de-duplication,23747,n/a
+BGE >= 0.95 near-duplicate rate,0.7939209511340717,0.852
+queues meeting the 300-row minimum,10/10,n/a

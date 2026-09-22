@@ -1,0 +1,1 @@
+Split-conformal coverage transfer from the 175-ticket calibration set to the 45-ticket benchmark, on OUR corpus. The shaded band is +/-2 s.d. on the calibration draw. External replication is inconclusive -- see Table T11.
