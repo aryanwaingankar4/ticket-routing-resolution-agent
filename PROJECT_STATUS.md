@@ -1,8 +1,8 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `PENDING` — Phase 8A (the paper
-artifact builder). **All four gates passed.**
+**Last commit to move code or a result:** `b243a2f` — Phase 8A (the paper
+artifact builder). **All four gates passed and it was PUSHED on 2026-09-22.**
 Phase 6C (`c5497bf`) is also gated and PUSHED.
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
 Phase 7B (`f789b8d`) is also gated and PUSHED.
@@ -12,7 +12,7 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 8A — COMPLETE and GATED.** Every paper number, table
+**Current phase: Phase 8A — COMPLETE, GATED and PUSHED** (`b243a2f`, 2026-09-22). Every paper number, table
 and figure now regenerates from committed result files through one script,
 `src/experiments/build_paper_artifacts.py`. Offline: **zero Gemini calls, zero
 Ollama calls, no model load, no training run, no experiment re-run.** It reads
