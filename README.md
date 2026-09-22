@@ -2807,11 +2807,37 @@ ignores AURC is the same either way.
 
 #### What this does to Finding 1
 
-Finding 1 is **not withdrawn and not softened**. Its numbers on our corpus are
-unchanged and were re-verified by 6B. What changes is its **scope**: it is now
-a measured property of our template-generated corpus that **did not reproduce
-on the one other corpus it has been tried on**, and the paper must say so in
-those words rather than presenting it as a general property of representations.
+Finding 1 is **scope-narrowed, not withdrawn.** Its numbers on our corpus are
+unchanged and were re-verified by 6B.
+
+**The paper's claim becomes:** *coverage transfer depends on the
+representation **under paraphrase shift**, on our corpus; untested elsewhere
+until Phase 7C.* The shift mechanism belongs **in the claim**, not only the
+corpus - narrowing to "a property of our corpus" alone would silently assert
+that 7B's shift and Finding 1's shift were equivalent tests, and they may not
+be.
+
+**Two candidate explanations for the null. Both are stated; neither is allowed
+to rescue the finding.**
+
+1. **7B may not be a like-for-like test.** Design A is a **version shift from
+   the same generator**. Finding 1 was measured under a **paraphrase / register
+   shift** - benchmark tickets rewritten out of the training templates' voice.
+   TF-IDF's failure mechanism is **surface-vocabulary change**: when the words
+   move, a bag-of-n-grams model's scores move with them, which is why its
+   conformal quantile stops transferring. A version shift within one generator
+   need not change surface vocabulary at all, so it may simply never exercise
+   the mechanism. **Phase 7C tests exactly this** by paraphrasing version-400
+   tickets into plain register and re-running the same table.
+2. **The corpus has no representation contrast to find.** Tier-1 34.8% vs
+   Tier-2 37.3% - 2.6 points, against 35.6 on ours. Finding 1's mechanism needs
+   a representation that is *better* to be the one that transfers.
+
+Neither explanation makes Finding 1 true beyond its measured scope. Until 7C
+reports, the honest position is that the finding holds under the shift it was
+measured under, on the corpus it was measured on, and **has not been shown to
+hold anywhere else** - and that 7B's null is weaker evidence against it than
+the bare numbers suggest.
 
 The cross-phase named finding is *sharpened*, not damaged. "The
 calibration/reference distribution, not the test or method, is the binding

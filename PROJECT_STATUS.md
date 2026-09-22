@@ -1,28 +1,31 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** *(7B is committed and awaiting its
-gate — SHA recorded on the next refresh.)* Phase 7A (`ba98843`) is gated and
-PUSHED. Phase 6B (`8419db6`) is
+**Last commit to move code or a result:** `f789b8d` — Phase 7B (Finding 1 does
+not replicate under a version shift). **Gate cleared and PUSHED on 2026-09-22.**
+Phase 7A (`ba98843`) is also gated and PUSHED. Phase 6B (`8419db6`) is
 also gated and pushed. Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 7B — COMPLETE, COMMITTED, AWAITING GATE.**
+**Current phase: Phase 7B — COMPLETE, GATED and PUSHED** (`f789b8d`, 2026-09-22).
 **Verdict: FINDING 1 DOES NOT REPLICATE on a different generator's corpus.**
 Under a measured covariate shift (domain AUC 0.8472), TF-IDF and BGE transfer
 coverage **equally well** — Tier-1's gap at α=0.10 is **+0.0009** where ours is
 **−0.2333**. Eleven of twelve pre-registered readings sit inside a band 2.8×
-tighter than the one that measured Finding 1. **Finding 1 is not withdrawn and
-not softened; its SCOPE narrows** to a property of our corpus that did not
-reproduce on the one other corpus it has been tried on. The named cross-phase
-finding is **sharpened** by this, not damaged. Two further results: the **6A
+tighter than the one that measured Finding 1. **Finding 1 is SCOPE-NARROWED,
+NOT WITHDRAWN.** The claim becomes *coverage transfer depends on the
+representation **under paraphrase shift**, on our corpus; untested elsewhere
+until 7C* — 7B applied a **version** shift, and TF-IDF's failure mechanism is
+surface-vocabulary change, which a version shift may not produce. The named
+cross-phase finding is **sharpened** by this, not damaged. Two further results: the **6A
 deferral question resolved for the first time** (3 of 6 comparisons, *all*
 favouring the confidence incumbent — conformal deferral is **worse** there, on
 that corpus only), and a **RECORD CORRECTION** — 7A's ad hoc domain AUCs do not
 reproduce and are replaced. Nothing promoted; `settings.conformal.enabled` and
-`settings.drift.enabled` stay `False`. **Next: Phase 6C, on a fresh-quota day.**
+`settings.drift.enabled` stay `False`. **Next: Phase 7C — added at the 7B
+gate, opening in plan mode, and it runs BEFORE 6C.**
 
 **Phase 7A is COMPLETE, GATED and PUSHED** (2026-09-22). **Design A chosen as
 7B's primary** (version split within the `aa` file, 51+52 → 400, domain AUC
@@ -1451,7 +1454,7 @@ measurable here**.
 
 ---
 
-## Phase 7B — Finding 1 does NOT replicate (COMPLETE, committed, awaiting gate)
+## Phase 7B — Finding 1 does NOT replicate (COMPLETE, gated and pushed in `f789b8d`)
 
 Offline, **zero Gemini calls**, measurement only. Production frozen; both
 `enabled` flags stay `False`. The isolation check was widened from 7A's three
@@ -1483,17 +1486,27 @@ far more coverage than BGE, as on our data?" — is answered NO.**
 
 ### The fixed wordings for 7B
 
-- **Finding 1 is NOT withdrawn and NOT softened.** Its numbers on our corpus
-  are unchanged and were re-verified by 6B. What changes is its **scope**: a
-  measured property of our template-generated corpus that **did not reproduce
-  on the one other corpus it has been tried on**. The paper says that, not
-  "coverage transfer is a property of the representation".
-- **Never write "7B refutes Finding 1."** The corpus has **no representation
-  gap to find** — Tier-1 34.8% vs Tier-2 37.3%, 2.6 points apart, against 35.6
-  points on ours. Finding 1's mechanism needs a better representation to be the
-  one that transfers. That weakens 7B as evidence, and it is a **limitation,
-  not a rescue**: the honest statement is that Finding 1 has not been shown to
-  hold anywhere its originating corpus's structure is absent.
+- **Finding 1 is SCOPE-NARROWED, NOT WITHDRAWN.** Its numbers on our corpus are
+  unchanged and were re-verified by 6B.
+- **The paper's claim is fixed as:** *coverage transfer depends on the
+  representation **under paraphrase shift**, on our corpus; untested elsewhere
+  until 7C.* **The shift mechanism goes in the claim**, not only the corpus —
+  narrowing to "a property of our corpus" alone silently asserts that 7B's
+  shift and Finding 1's shift were equivalent tests.
+- **Two candidate explanations for the null. State BOTH; let NEITHER rescue the
+  finding.**
+  1. **7B may not be like-for-like.** Design A is a **version shift from the
+     same generator**; Finding 1 was measured under a **paraphrase/register
+     shift**. TF-IDF's failure mechanism is **surface-vocabulary change**, and
+     a version shift need not produce any. **Phase 7C tests exactly this.**
+  2. **No representation contrast to find** — Tier-1 34.8% vs Tier-2 37.3%,
+     2.6 points against 35.6 on ours. Finding 1's mechanism needs a better
+     representation to be the one that transfers.
+- **Never write "7B refutes Finding 1."** Until 7C reports, the honest position
+  is that the finding holds under the shift it was measured under, on the
+  corpus it was measured on, and has not been shown to hold anywhere else —
+  and that 7B's null is weaker evidence against it than the bare numbers
+  suggest.
 - **The named cross-phase finding is SHARPENED by this, not damaged.** "The
   calibration/reference distribution, not the test or method, is the binding
   constraint" predicts exactly this outcome. 7B is the **fourth** phase to
@@ -1618,7 +1631,8 @@ not.
 | Sub-phase | Scope |
 |---|---|
 | **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (`ba98843`, gated and pushed) |
-| **7B** | Replicate Finding 1 on it — **DONE**, committed and awaiting gate. **It does NOT replicate.** Design A primary; Design B resolved nothing, twice, for two named reasons |
+| **7B** | Replicate Finding 1 on it — **DONE, GATED and PUSHED** (`f789b8d`). **It does NOT replicate** under a *version* shift. Design B resolved nothing, twice, for two named reasons |
+| **7C** | **Replicate Finding 1 under the shift it was actually measured under** — paraphrase version-400 tickets into plain register via local Ollama (zero Gemini quota) and re-run the same table. **LIVE TASK**, added 2026-09-22 at the 7B gate, **runs BEFORE 6C** |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
 Evaluation-set size at low coverage is now the binding constraint in **four**
@@ -1696,35 +1710,54 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 6C — the retrieval-sufficiency gate, on the 33 groundedness tickets.**
-**~55–110 Gemini calls**, so it runs on a day with **fresh quota** and must not
-share a day with any other quota-spending sub-phase. Opens in plan mode like
-every sub-phase.
+**Phase 7C — does Finding 1 replicate under the shift it was actually measured
+under?** Added 2026-09-22 at the 7B gate and inserted **before 6C**. Offline,
+**zero Gemini calls** (paraphrasing runs on local Ollama). Opens in plan mode
+like every sub-phase.
 
-7B is **committed and awaiting its gate**. Nothing is pushed until "gate
-cleared".
+**Why it exists.** 7B applied a **version shift within one generator** and
+found no tier contrast. Finding 1 was measured under a **paraphrase / register
+shift**. TF-IDF's failure mechanism is **surface-vocabulary change**, and a
+version shift need not produce any — so 7B may not have exercised the mechanism
+at all. 7C supplies the missing like-for-like test.
 
-### What 6C's plan must specify
+### The design, as commissioned
 
-1. **The dry run first**, at `--limit 3`, checking the prompt before the full
-   budget is spent — the rule that caught `build_groundedness_set.py`'s
-   eligibility bug when its 54/0 count was checked against an independently
-   measured 33/21.
-2. **`call_delay_sec` at or above 4.5s**, and **every raw response cached to
-   disk** keyed by prompt hash, so a crash or a re-score never re-spends quota.
-3. **Eligibility derived from `decision.escalated`, never a status enum** —
-   `ESCALATED` belongs to the *filing* gate and a RAG-gate escalation carries
-   `NEEDS_HUMAN_RESOLUTION`. This is occurrence 5 of the recurring bug class.
-4. **The count checked against a second, independent derivation** before any
-   quota is spent.
+- **Sample** ~300 version-400 test tickets, **seeded and queue-stratified**.
+- **Paraphrase** each with local **Ollama `qwen2.5:3b-instruct`** into plain,
+  non-technical everyday English, preserving meaning and queue. **Cache every
+  raw output.** **Dry-run 3 and show them before the full run.**
+- **Guards:** discard any paraphrase at **BGE cosine >= 0.95** to its source
+  (it was not rewritten) and report how many; report **mean source-paraphrase
+  similarity**.
+- **Re-use 7B's models and calibration unchanged** — no refitting, no
+  recalibration.
+- **Evaluate** coverage on the paraphrased set against its unparaphrased
+  originals, in the **same Finding 1 table shape**, band **recomputed for this
+  n**.
+- **Pre-registered primary:** the **Tier-1 minus Tier-2 coverage-gap difference
+  at alpha = 0.10**. Same degeneracy rule as 6A/6B/7B — name the condition and
+  report "no resolution" rather than promoting a secondary metric. Anything
+  added after results is labelled **post-hoc**.
+- **Limitation to write beside the result:** the external labels are unaudited
+  and base accuracy is ~35%, so **a null here is weaker evidence than a null on
+  a well-learned task**.
 
-### Order after 6C
+**Either outcome is reportable.**
 
-**6C → 8A → 8B → 9A–9C.**
+### Order after 7C
 
-**6C must be GATED before 8A starts**, because 8A builds every paper table from
-finished results and starting it while a result is in flight would bake a
-moving number into the reproducibility layer.
+**7C → 6C → 8A → 8B → 9A–9C.**
+
+- **6C** (retrieval-sufficiency gate on the 33 groundedness tickets, **~55–110
+  Gemini calls**) runs on a day with **fresh quota** and must not share a day
+  with any other quota-spending sub-phase. Its plan must specify the
+  `--limit 3` dry run, `call_delay_sec >= 4.5`, per-prompt-hash response
+  caching, eligibility derived from **`decision.escalated` and never a status
+  enum**, and every count checked against a second independent derivation.
+- **6C must be GATED before 8A starts**, because 8A builds every paper table
+  from finished results and starting it while a result is in flight would bake
+  a moving number into the reproducibility layer.
 
 **8A's remit grew because of 7B.** Two recorded design AUCs turned out to be
 ad hoc figures whose derivation was never committed and which do not reproduce
@@ -1752,12 +1785,12 @@ from an interactive session.
    near-duplicated (85.20%) than the external one (79.39%). 7B applies it
    again: its 1.46% boundary-contamination rate is low because the *reference
    set* is 3,305 rows, not because the corpus changed.
-6. **7B's scope correction to Finding 1 is load-bearing and must not be lost.**
-   Finding 1 is presented as a measured property of our corpus that **did not
-   reproduce on the one other corpus it has been tried on** — never as a
-   general property of representations. The limitation goes **beside** it: that
-   corpus has no representation gap to find (2.6 points vs our 35.6), which
-   weakens 7B as evidence and is a limitation, not a rescue.
+6. **Finding 1's claim is scoped BY THE SHIFT MECHANISM, not only by the
+   corpus:** *coverage transfer depends on the representation **under
+   paraphrase shift**, on our corpus.* Both candidate explanations for 7B's
+   null are stated and **neither rescues the finding** — the version-vs-
+   paraphrase shift mismatch, and the absent representation contrast (2.6
+   points vs our 35.6). **7C settles which.**
 7. **7B's deferral reading must not be merged with 6A's.** 6A: "no evidence
    either way on the gated axis", for our data. 7B: conformal deferral is
    **worse** — 3 of 6 resolving comparisons, all favouring the incumbent — on a
