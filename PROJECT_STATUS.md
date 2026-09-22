@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** `PENDING-8B` — Phase 8B, Docker + CI.
+**Last commit to move code or a result:** `3885393` — Phase 8B, Docker + CI.
 **All five gates passed.**
 Phase 8A.1 (`d3b8f35`) is gated and PUSHED.
 Phase 8A (`b243a2f`) is gated and PUSHED.
@@ -14,7 +14,7 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 8B — COMPLETE and GATED** (2026-09-23). Docker + CI, the
+**Current phase: Phase 8B — COMPLETE and GATED** (`3885393`, 2026-09-23). Docker + CI, the
 last item on the agreed roadmap before the paper. Offline: **zero Gemini calls,
 zero Ollama calls.** Production frozen; `conformal.enabled` and `drift.enabled`
 stay `False`.
