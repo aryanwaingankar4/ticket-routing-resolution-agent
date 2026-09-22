@@ -22,7 +22,7 @@ For each anchor, the document's stated value is compared against the value the c
 | cascade, deployment175 | `T1.cascade.deployment175` | 131/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | Tier-2-only, deployment175 | `T1.tier2only.deployment175` | 132/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | Tier-1-only, deployment175 | `T1.tier1only.deployment175` | 91/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
-| TF-IDF baseline, benchmark14 | `T1.tfidf_baseline.benchmark14` | 6/14 | ok | CLAUDE.md, README.md |
+| TF-IDF baseline, benchmark14 | `T1.tfidf_baseline.benchmark14` | 6/14 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | DistilBERT, benchmark14 | `T1.distilbert.benchmark14` | 7/14 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
 | self-retrieval contamination | `T5.self_retrieval_rate` | 10/175 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
 | cascade sweep, threshold at the 70% target | `T4.sweep.threshold.target70` | 0.50 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
@@ -88,16 +88,16 @@ Every statistic-shaped token in the four documents -- decimals with three or mor
 |---|---|---|
 | CLAUDE.md | DO-NOT-CITE literal | 5 |
 | CLAUDE.md | matched to a committed source | 45 |
-| CLAUDE.md | unmatched | 46 |
+| CLAUDE.md | unmatched | 49 |
 | PROJECT_OVERVIEW.md | DO-NOT-CITE literal | 1 |
 | PROJECT_OVERVIEW.md | matched to a committed source | 79 |
 | PROJECT_OVERVIEW.md | unmatched | 153 |
 | PROJECT_STATUS.md | DO-NOT-CITE literal | 8 |
-| PROJECT_STATUS.md | matched to a committed source | 213 |
-| PROJECT_STATUS.md | unmatched | 252 |
+| PROJECT_STATUS.md | matched to a committed source | 238 |
+| PROJECT_STATUS.md | unmatched | 271 |
 | README.md | DO-NOT-CITE literal | 14 |
-| README.md | matched to a committed source | 287 |
-| README.md | unmatched | 563 |
+| README.md | matched to a committed source | 292 |
+| README.md | unmatched | 571 |
 
 ### DO-NOT-CITE literals still present in the documents
 

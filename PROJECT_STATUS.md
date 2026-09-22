@@ -4,35 +4,58 @@
 **Last commit to move code or a result:** `3885393` — Phase 8B, Docker + CI.
 **All five gates passed.**
 
-> **COMMITTED BUT NOT PUSHED — and NOT because a gate failed.** All five gates
-> passed (see below). `git push origin main` was rejected by GitHub:
->
-> ```
-> ! [remote rejected] main -> main (refusing to allow a Personal Access Token
->   to create or update workflow `.github/workflows/ci.yml` without `workflow`
->   scope)
-> ```
->
-> The stored credential cannot create files under `.github/workflows/`. Nothing
-> in the repository is wrong and nothing needs re-running. Fix the credential
-> and push: add the **`workflow`** scope to the Personal Access Token at
-> <https://github.com/settings/tokens> (then `git push origin main`), or switch
-> the remote to SSH. Two commits are waiting: `3885393` and `6f776a6`.
->
-> **`ci.yml`'s measured runtime is unknown until that push lands**, since the
-> workflow cannot run before it exists on GitHub.
-Phase 8A.1 (`d3b8f35`) is gated and PUSHED.
-Phase 8A (`b243a2f`) is gated and PUSHED.
-Phase 6C (`c5497bf`) is also gated and PUSHED.
-Phase 7C (`0c9ff8b`) is also gated and PUSHED.
-Phase 7B (`f789b8d`) is also gated and PUSHED.
-Phase 7A (`ba98843`) is also gated and PUSHED. Phase 6B (`8419db6`) is
-also gated and pushed. Phase 6A
-(`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
-pushed.
-**Branch:** `main`, level with `origin/main`, working tree clean.
+**Current phase: Phase 8B.1 — COMPLETE and GATED** (2026-09-23). The first
+`ci.yml` run on GitHub FAILED, and it was right to. `paper/PROVENANCE.json`
+hashed **raw working-tree bytes**, which are a property of the machine: under
+`core.autocrlf=true` git stores LF and checks out CRLF, so **50 of 51** paper
+sources are CRLF here and LF on a Linux runner, and every recorded hash was a
+Windows hash. The parity test reported all of them as "these RESULT FILES
+changed", `src/agent/config.py` included, **although nothing had changed**.
+**Occurrence #8** of the recurring bug class.
 
-**Current phase: Phase 8B — COMPLETE and GATED** (`3885393`, 2026-09-23). Docker + CI, the
+**Verified before changing anything:** 51/51 hashes matched the Windows working
+tree, 50 differed from the git blob, and **50 of 50 were explained purely by
+CRLF→LF, with nothing left over** (`git ls-files --eol` agrees independently).
+No file was genuinely stale — had one been, the fix would have been wrong.
+
+**Fix:** hash content, not bytes. `sha256_file()` (builder) and `_sha256()`
+(test) normalise CRLF→LF. Nothing skipped, marked `slow` or weakened; **three
+new tests** pin it — CRLF and LF hash identically, a one-character change is
+still caught in both conventions, and the two implementations agree on five
+fixtures. **The rebuild moved 50 hash rows and ZERO of the 188 numbers**, none
+added or removed; the one already-LF source kept its hash.
+
+**Second break, fixed before it could fire:** Python's `csv` module writes
+`lineterminator='
+'` on every platform, so on Linux both gate CSVs are
+rewritten CRLF against an LF blob and `git diff --exit-code` fails on identical
+content. `gates.yml` now uses `--ignore-cr-at-eol`, demonstrated to ignore that
+and nothing else (CRLF-only rewrite passes; `0.318298`→`0.318299` still fails).
+
+**Two latent instances recorded, deliberately NOT changed** — they sit on the
+frozen production path and neither can fire: `train_tier1.dataset_sha256` over
+`data/synthetic_tickets.csv` (`i/lf`, `w/crlf`) in the Tier-1 manifest, and
+`source_sha256` in `data/drift_reference_bge-base-en-v1-5.json`. `models/` is
+gitignored so Tier-1 is always fitted and loaded on one machine, and
+`build_drift_reference.py` runs in no workflow. **`.gitattributes` rules for
+`data/` were considered and rejected**: they would make Windows check out LF
+while `csv` keeps writing CRLF, breaking the local gate ritual for no gain.
+
+**Gates re-run:** `pytest` **425 passed** (422 + 3 new), 0 failed; adversarial
+**9/9** CSV byte-identical; goldens **45/45** and **9/9**; ablation **32/45**
+CSV byte-identical; paper parity **19/19**. Reproduced on a genuine LF checkout
+in the container: **379 passed** and **19 passed**, the two `ci.yml` steps.
+Isolation: only the three deliberately rebuilt `paper/` files changed.
+
+**Method note:** the first reproduction was WRONG — `git archive` applied
+`core.autocrlf` and produced a CRLF tree, the opposite of a runner, which made
+one unrelated file look like the culprit. A reproduction must be checked for
+being what it claims before its result is believed; `git -c
+core.autocrlf=false clone` is the one that matched CI.
+
+---
+
+**Phase 8B is COMPLETE and GATED** (`3885393`, 2026-09-23). Docker + CI, the
 last item on the agreed roadmap before the paper. Offline: **zero Gemini calls,
 zero Ollama calls.** Production frozen; `conformal.enabled` and `drift.enabled`
 stay `False`.
@@ -298,7 +321,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **422 passed** (406 + 12 from 8A + 4 from 8A.1), 0 failed/skipped, offline |
+| Test suite | `pytest` | **425 passed** (406 + 12 from 8A + 4 from 8A.1 + 3 from 8B.1), 0 failed/skipped, offline |
 | **Paper artifacts (8A.1)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **188 numbers**, **51 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
 | Paper parity (8A.1) | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
 | Document reconciliation (8A.1) | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source** (was 5); 2 z-conventions recorded |

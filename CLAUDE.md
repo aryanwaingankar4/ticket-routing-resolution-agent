@@ -107,8 +107,12 @@ CI is two workflows, neither able to spend quota. `ci.yml` (push/PR) runs
 `pytest -m "not slow"` **and `tests/test_paper_artifacts.py` by path**, because
 the marker would otherwise skip all of paper parity. `gates.yml`
 (`workflow_dispatch` only) runs the full suite, the adversarial gate, the
-ablation baseline — both CSVs checked with `git diff --exit-code`, not by eye —
-and a container job that builds the image and verifies it.
+ablation baseline — both CSVs checked with `git diff --ignore-cr-at-eol
+--exit-code`, not by eye — and a container job that builds the image and
+verifies it. **`--ignore-cr-at-eol` is required, not laziness**: Python's `csv`
+module writes `lineterminator='\r\n'` on every platform, so on a Linux runner an
+unchanged file is rewritten CRLF against an LF blob. The flag ignores a CR at
+end of line and nothing else; a changed digit still fails.
 
 ### Tests
 
@@ -855,7 +859,7 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## The recurring bug class
 
-Seven occurrences so far, all the same shape: a value or artifact that is wrong for its
+Eight occurrences so far, all the same shape: a value or artifact that is wrong for its
 context, stays internally consistent, and therefore produces wrong results with no
 error. The first four were model swaps; the fifth and sixth show the shape is not
 limited to those — one was a routing/eligibility test, the other a grouping key.
@@ -898,8 +902,31 @@ limited to those — one was a routing/eligibility test, the other a grouping ke
    model swap, a routing test or a grouping key — it was a *packaging* rule, and
    nothing on the earlier list would have predicted it.
 
+8. **`paper/PROVENANCE.json` hashing raw working-tree bytes.** Working-tree
+   bytes are a property of the *machine*, not of the result: with
+   `core.autocrlf=true` — the default on Windows and what this project is
+   developed under — git stores LF and checks out CRLF, so **50 of the 51**
+   paper sources are CRLF here and LF on a Linux runner. Every recorded hash
+   was a Windows hash, and `tests/test_paper_artifacts.py` reported all 50 as
+   "these RESULT FILES changed" on the first CI run **although nothing had
+   changed** — including `src/agent/config.py`, which no one had touched. The
+   hashes were internally consistent on the machine that wrote them and wrong
+   on every other machine. Verified before it was touched: 51/51 hashes matched
+   the Windows working tree, 50 differed from the git blob, and **50 of 50 were
+   explained purely by CRLF→LF**, with nothing left over — so no file was
+   genuinely stale. Fixed by hashing content with CRLF normalised to LF, in
+   **both** the builder and the test helper, and pinned by three new tests: a
+   CRLF and an LF copy hash identically, a one-character content change is
+   still caught in both conventions, and the two implementations agree.
+   The same shape lives in the gate CSVs: Python's `csv` module writes
+   `lineterminator='\r\n'` on **every** platform, so a plain `git diff
+   --exit-code` on Linux flags an identical file; `gates.yml` uses
+   `--ignore-cr-at-eol`, which ignores a CR at end of line and nothing else.
+   **Never hash working-tree bytes to decide whether a result changed.**
+
 When touching anything model-related — or any routing/eligibility test, any grouping
-key, or any rule about which files reach a build — assume an **eighth** is waiting. Run `pytest` and the adversarial gate before
+key, any rule about which files reach a build, or **any hash of bytes that a
+checkout can rewrite** — assume a **ninth** is waiting. Run `pytest` and the adversarial gate before
 believing a green result, and check any count you rely on against a second, independent
 derivation of it.
 

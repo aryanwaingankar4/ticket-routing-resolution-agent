@@ -87,14 +87,20 @@ jobs:
       - name: Adversarial escalation gate (9/9)
         run: python src/experiments/test_adversarial_escalation.py
 
+      # --ignore-cr-at-eol, and ONLY that. Python's csv module writes
+      # lineterminator='\r\n' on every platform, Linux included, while the blob
+      # is LF -- so a plain `git diff` here reports a change in a file whose
+      # content is identical. Ignoring a CR at end of line ignores exactly that
+      # and nothing else: any changed digit, column or row still fails.
       - name: Adversarial CSV must be byte-identical
-        run: git diff --exit-code -- data/adversarial_escalation_results.csv
+        run: git diff --ignore-cr-at-eol --exit-code -- data/adversarial_escalation_results.csv
 
       - name: Ablation baseline (32/45)
         run: python src/experiments/run_ablation_study.py --mode baseline
 
+      # Same reason as the adversarial CSV above.
       - name: Ablation baseline CSV must be byte-identical
-        run: git diff --exit-code -- data/ablation_baseline_results.csv
+        run: git diff --ignore-cr-at-eol --exit-code -- data/ablation_baseline_results.csv
 
       # The artifacts this job rebuilt (index, metadata, joblib bundles) are
       # tracked files, so they will show as modified whenever a rebuild is not

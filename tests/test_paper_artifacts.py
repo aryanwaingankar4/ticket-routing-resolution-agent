@@ -38,11 +38,17 @@ pytestmark = pytest.mark.skipif(
 
 
 def _sha256(path):
-    h = hashlib.sha256()
+    """Content hash with CRLF normalised to LF.
+
+    Must match build_paper_artifacts.sha256_file exactly, or this test compares
+    against hashes the builder never produced. See the long note there: raw
+    working-tree bytes are a property of the machine (git stores LF and checks
+    out CRLF under core.autocrlf=true), so hashing them made every source look
+    changed on the first Linux CI run when nothing had changed.
+    """
     with open(path, "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
+        data = fh.read()
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
 
 
 # RECONCILIATION.md is an audit OF THE FOUR PROJECT DOCUMENTS, not a
@@ -429,3 +435,74 @@ def test_every_clause_group_in_numbers_md_carries_its_clause():
         assert first_sentence.split(" -- ")[0][:40] in text.replace("\n> ",
                                                                    " "), (
             f"clause group {group_id} lost its clause text")
+
+
+# ---------------------------------------------------------------------------
+# Provenance hashing must describe CONTENT, not the machine it was run on
+# (Phase 8B.1, occurrence #8 of the recurring bug class)
+# ---------------------------------------------------------------------------
+def test_provenance_hash_ignores_line_endings(tmp_path):
+    """The same content with CRLF and with LF must hash identically.
+
+    git stores LF and, under core.autocrlf=true, checks out CRLF on Windows.
+    Hashing raw working-tree bytes therefore recorded a Windows-only value:
+    every source looked changed on a Linux runner although nothing had. This
+    is the check that keeps the parity gate portable.
+    """
+    sys.path.insert(0, PROJECT_ROOT)
+    from src.experiments.build_paper_artifacts import sha256_file
+
+    body = "ticket_id,accuracy\nN01,0.7111\nN02,0.6400\n"
+    lf = tmp_path / "lf.csv"
+    crlf = tmp_path / "crlf.csv"
+    lf.write_bytes(body.encode("utf-8"))
+    crlf.write_bytes(body.replace("\n", "\r\n").encode("utf-8"))
+
+    assert lf.read_bytes() != crlf.read_bytes(), (
+        "the fixture is wrong: the two files must differ in raw bytes, "
+        "otherwise this test proves nothing")
+    assert sha256_file(str(lf)) == sha256_file(str(crlf)), (
+        "a CRLF checkout and an LF checkout of the same result file must "
+        "produce the same provenance hash")
+
+
+def test_provenance_hash_still_detects_a_content_change(tmp_path):
+    """Normalising line endings must not blunt the gate it protects.
+
+    A one-character change to a published number has to be caught, in both
+    line-ending conventions -- otherwise the fix for occurrence #8 would have
+    quietly disabled the check that caught the TF-IDF 7/14 error.
+    """
+    sys.path.insert(0, PROJECT_ROOT)
+    from src.experiments.build_paper_artifacts import sha256_file
+
+    original = "ticket_id,accuracy\nN01,0.7111\n"
+    edited = "ticket_id,accuracy\nN01,0.7112\n"      # one character
+
+    for newline in ("\n", "\r\n"):
+        a = tmp_path / f"a{len(newline)}.csv"
+        b = tmp_path / f"b{len(newline)}.csv"
+        a.write_bytes(original.replace("\n", newline).encode("utf-8"))
+        b.write_bytes(edited.replace("\n", newline).encode("utf-8"))
+        assert sha256_file(str(a)) != sha256_file(str(b)), (
+            f"a one-character content change went undetected with "
+            f"{newline!r} line endings")
+
+
+def test_the_test_helper_and_the_builder_hash_identically(tmp_path):
+    """Two implementations of the same hash are two chances to drift apart.
+
+    tests/ carries its own _sha256 so the test can run without importing the
+    builder. If they ever disagree, this file would compare against hashes the
+    builder never produced -- which is precisely the failure mode the paper
+    parity gate exists to catch, reintroduced inside the gate itself.
+    """
+    sys.path.insert(0, PROJECT_ROOT)
+    from src.experiments.build_paper_artifacts import sha256_file
+
+    for content in (b"a,b\r\n1,2\r\n", b"a,b\n1,2\n", b"\x00\x01binary\xff",
+                    b"", b"no-trailing-newline"):
+        probe = tmp_path / "probe.bin"
+        probe.write_bytes(content)
+        assert _sha256(str(probe)) == sha256_file(str(probe)), (
+            f"the test helper and the builder disagree on {content!r}")

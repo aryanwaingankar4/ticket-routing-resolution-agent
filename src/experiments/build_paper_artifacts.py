@@ -148,10 +148,33 @@ def src(*parts: str) -> str:
 
 
 def sha256_file(path: str) -> str:
+    """Content hash of a source file, with CRLF normalised to LF.
+
+    WHY NORMALISE (Phase 8B.1, occurrence #8 of the recurring bug class)
+    --------------------------------------------------------------------
+    This hashed raw working-tree bytes, and working-tree bytes are a property
+    of the MACHINE, not of the result. With `core.autocrlf=true` -- the default
+    on Windows and what this project is developed under -- git stores LF and
+    checks out CRLF, so 50 of the 51 sources are CRLF here and LF on a Linux
+    runner. Every recorded hash was therefore a Windows hash, and
+    tests/test_paper_artifacts.py reported all 50 as "these RESULT FILES
+    changed" on the first CI run, although nothing had changed.
+
+    Internally consistent on the machine that wrote it, wrong everywhere else:
+    the exact shape this project keeps hitting. Phase 8A pinned paper/ to LF in
+    .gitattributes for the same reason, but the SOURCES it reads were never
+    covered.
+
+    Normalising is what makes the check mean "the content changed" rather than
+    "someone checked this out on a different operating system". The trade-off
+    is deliberate and narrow: a change that alters ONLY line endings is no
+    longer flagged. Any change to a byte that is not part of a CRLF still is --
+    tests/test_paper_artifacts.py proves both directions.
+    """
     h = hashlib.sha256()
     with open(path, "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
+        data = fh.read()
+    h.update(data.replace(b"\r\n", b"\n"))
     return h.hexdigest()
 
 

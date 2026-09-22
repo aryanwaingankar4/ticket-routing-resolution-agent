@@ -3725,6 +3725,84 @@ golden, paper and model files hashed before and after — **none changed**.
 
 ---
 
+### Phase 8B.1 - the first CI run failed, and it was right to
+
+`ci.yml`'s first run on GitHub failed
+`test_source_files_still_hash_to_what_the_paper_was_built_from`, reporting
+essentially every paper source as changed — including `src/agent/config.py`,
+which nothing had touched. **Nothing was stale.** `paper/PROVENANCE.json`
+hashed *raw working-tree bytes*, and working-tree bytes are a property of the
+machine: with `core.autocrlf=true` git stores LF and checks out CRLF, so **50
+of the 51** sources are CRLF on this Windows machine and LF on a Linux runner.
+Every recorded hash was a Windows hash. **Occurrence #8** of the recurring bug
+class — internally consistent where it was written, wrong everywhere else.
+
+**Verified before anything was changed**, because "it's probably line endings"
+is a hypothesis, not a finding:
+
+| | |
+|---|---|
+| Recorded hash matches the Windows working tree | 51 / 51 |
+| git blob differs from the working tree | 50 |
+| …explained purely by CRLF→LF | **50 / 50** |
+| Differing for any **other** reason | **none** |
+
+`git ls-files --eol` confirms the same 50 independently. Had even one file
+survived normalisation it would have been real staleness, and the fix would
+have been wrong.
+
+**The fix is to hash content, not bytes.** `sha256_file()` in the builder and
+`_sha256()` in the test now normalise CRLF→LF. The trade-off is explicit and
+narrow — a change that alters *only* line endings is no longer flagged — and
+three new tests pin it: a CRLF and an LF copy hash identically; a
+one-character content change is still caught **in both conventions**; and the
+two implementations agree on five fixtures including binary and empty input.
+Nothing was skipped, marked `slow`, or weakened.
+
+**Rebuilding `paper/` moved 50 hash rows and not one number:** 188 number ids
+before, 188 after, **zero** whose value moved, none added or removed. The 51st
+source (`src/agent/orchestrator.py`, already LF in the working tree) kept its
+hash — a free internal consistency check.
+
+**A second break, found by the same reasoning and fixed before it could fire.**
+Python's `csv` module writes `lineterminator='\r\n'` on **every** platform, so
+on a Linux runner both gate CSVs are rewritten CRLF against an LF blob and
+`git diff --exit-code` fails on a file whose content is identical. `gates.yml`
+now uses `--ignore-cr-at-eol`, demonstrated to ignore that and nothing else: a
+CRLF-only rewrite passes, and changing `0.318298` to `0.318299` still fails.
+
+**Two latent instances are recorded but NOT changed**, because neither can fire
+and both sit on the production path this programme has frozen:
+`train_tier1.dataset_sha256` hashes `data/synthetic_tickets.csv` (which is
+`i/lf`, `w/crlf`) into the Tier-1 manifest, and
+`data/drift_reference_bge-base-en-v1-5.json` carries a `source_sha256` of a
+text file. Neither bites today because `models/` is gitignored, so Tier-1 is
+always fitted and loaded on the same machine, and `build_drift_reference.py`
+runs in no workflow. Both would misfire if an artifact were carried between
+platforms.
+
+**`.gitattributes` rules for `data/` were considered and rejected.** Pinning
+those files to LF would make Windows check them out as LF while the `csv`
+module keeps writing CRLF, so the *local* gate ritual would start reporting a
+diff on every run. With the hash normalised and the CI comparison
+`--ignore-cr-at-eol`, the rules would add churn and buy nothing.
+
+**Gates re-run:** `pytest` **425 passed** (422 + 3 new), 0 failed; adversarial
+**9/9**, CSV byte-identical; goldens **45/45** and **9/9**; ablation baseline
+**32/45**, CSV byte-identical; paper parity **19/19**. Reproduced on a genuine
+LF checkout in the container — **379 passed** and **19 passed**, the two
+`ci.yml` steps.
+
+**A note on method.** The first reproduction was wrong: `git archive` on this
+machine applied `core.autocrlf` and produced a CRLF tree, i.e. the *opposite*
+of a runner, which made a single unrelated file look like the culprit. A
+reproduction has to be checked for being the thing it claims to reproduce
+before its result is believed — the LF clone (`git -c core.autocrlf=false
+clone`) is the one that matched CI.
+
+
+---
+
 ## Final Classification Comparison
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization | 45-Ticket Generalization |
