@@ -1,0 +1,83 @@
+# Every push and every PR. Fast, offline, no API quota.
+#
+# WHY THESE TWO STEPS AND NOT MORE
+# --------------------------------
+# The gates that need BGE (the full suite, the adversarial regression gate, the
+# ablation baseline) first have to build ~500 MB of artifacts, which is minutes
+# rather than seconds. They live in gates.yml behind workflow_dispatch so that
+# the push check stays fast enough that nobody is tempted to skip it.
+#
+# WHY PAPER PARITY IS A SEPARATE STEP
+# -----------------------------------
+# tests/test_paper_artifacts.py is marked `slow`, so `pytest -m "not slow"`
+# silently skips ALL of it. It is not actually slow -- 16 tests in under four
+# seconds, no model load, reading only committed files under data/ -- and it is
+# the check that would have caught the number Phase 8A.1 found wrong (a TF-IDF
+# benchmark score that had been misreported for as long as the dataset had been
+# 4,000 rows, because nothing re-derived it). Naming the file explicitly is what
+# makes it run on every push.
+#
+# -m gemini is never run here: pytest.ini deselects it by default and no
+# GEMINI_API_KEY exists in this workflow. That is deliberate, not an omission.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast:
+    name: fast tests + paper parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 3.14 matches the interpreter the published results were produced under
+      # and the one the Dockerfile pins.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      # The CPU wheel at the SAME pinned version. The default PyPI torch pulls
+      # the CUDA stack, which is gigabytes of download for a job that runs on
+      # two CPU cores.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.13.0
+          pip install -r requirements.txt
+
+      - name: Fast test subset (no model loading)
+        run: pytest -m "not slow" -q
+
+      # Explicit path: these tests are marked slow and the step above skips
+      # them. See the header.
+      - name: Paper parity (every published number, table and figure datum)
+        run: pytest tests/test_paper_artifacts.py -q
+
+      # Production is frozen for Phases 5-9. A change to a calibrated constant
+      # fails tests/test_config.py above, but this says so in one line at the
+      # point a reviewer is looking.
+      - name: Report the served configuration
+        run: |
+          python -c "from src.agent.config import config_fingerprint, settings; \
+          print('config_fingerprint:', config_fingerprint()); \
+          print('cascade:', settings.cascade.confidence_threshold); \
+          print('rag:', settings.rag.similarity_threshold); \
+          print('clustering:', settings.clustering.resolution_similarity_threshold); \
+          print('conformal.enabled:', settings.conformal.enabled); \
+          print('drift.enabled:', settings.drift.enabled)"

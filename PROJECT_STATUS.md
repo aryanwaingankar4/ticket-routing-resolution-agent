@@ -1,9 +1,9 @@
 # Project Status
 
-**Last updated:** 2026-09-22
-**Last commit to move code or a result:** `d3b8f35` — Phase 8A.1, giving the five
-"no committed source" numbers a source. **All five gates passed and it was
-PUSHED on 2026-09-22.**
+**Last updated:** 2026-09-23
+**Last commit to move code or a result:** `PENDING-8B` — Phase 8B, Docker + CI.
+**All five gates passed.**
+Phase 8A.1 (`d3b8f35`) is gated and PUSHED.
 Phase 8A (`b243a2f`) is gated and PUSHED.
 Phase 6C (`c5497bf`) is also gated and PUSHED.
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
@@ -14,7 +14,73 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 8A.1 — COMPLETE, GATED and PUSHED** (`d3b8f35`, 2026-09-22). The five numbers 8A
+**Current phase: Phase 8B — COMPLETE and GATED** (2026-09-23). Docker + CI, the
+last item on the agreed roadmap before the paper. Offline: **zero Gemini calls,
+zero Ollama calls.** Production frozen; `conformal.enabled` and `drift.enabled`
+stay `False`.
+
+**What landed.** A digest-pinned `Dockerfile`
+(`python:3.14.3-slim@sha256:5e59aae3…`, the interpreter the published results
+were produced under, not the floating `3.14-slim`) that builds its own
+artifacts in the documented order and serves `uvicorn src.service.api:app`;
+`.dockerignore`; two workflows (`ci.yml` on push/PR, `gates.yml` manual); and
+`src/service/verify_deployment.py`, a committed verifier for a *running*
+deployment — because a number quoted at a gate comes from a committed script.
+
+**THE FINDING: occurrence #7 of the recurring bug class, in the packaging
+rule.** The first image built clean, ran clean and answered correctly, and was
+wrong. `.dockerignore` said `*.npy`; those patterns use Go's `filepath.Match`,
+where `*` does not cross `/`, so nothing under `data/` was excluded. The
+developer's local 12 MB embedding cache was copied in,
+`train_embeddings.py` printed **`[cache HIT]`**, and the image's Tier-2
+classifier and FAISS index were derived from a file encoded on another machine
+in August — byte-identical hash, original mtime. **It was not a model swap, a
+routing/eligibility test or a grouping key**, the three shapes the list had
+generalised to, and it was caught by *reading a build log*, which is not a
+control. It is a control now: a `RUN` guard after `COPY` fails the build if any
+pre-built artifact reaches the context, and the patterns are written `**/`. The
+rebuild reports `[cache MISS] … Computing embeddings from scratch` and spends
+~508 s encoding its own 4,000 rows.
+
+**Container verification (all checks pass).** `config_fingerprint`
+**`9c9a5cbcb53f`** served by the container, **`9c9a5cbcb53f`** computed from
+`src/agent/config.py` — identical. Index/metadata 4,000 = 4,000. No-key
+surface: `/health`, `/agents/classify`, `/agents/retrieve`, `/policy/rag-gate`
+and `/triage` all 200 with **no** `GEMINI_API_KEY`; `/agents/resolve` 503, as
+documented. adv_08 over HTTP: **tier 2**, Tier-1 confidence
+**0.3182984770932253** (*exactly* the golden, delta 0.000e+00), similarity
+**0.6123799085617065**, escalated, Infrastructure, no draft.
+
+**SECOND FINDING: an embedding-derived number is not bit-reproducible across
+platforms; a TF-IDF one is.** The container's similarity differs from the
+Windows goldens' 0.6123800277709961 by a fixed **-1.192e-07**, identical on
+every repeated call — float32 BGE + FAISS accumulate in an order set by the
+BLAS kernel and SIMD width. Tier-1 (float64) matched exactly. The published
+6-dp figure is unchanged and the decision is untouched: the distance to the
+0.67 gate is +5.762e-02, **483,352x** the offset. The verifier's first version
+asserted full-precision equality and failed; **the goldens were not
+regenerated** — the *check* was mis-specified, asserting a guarantee the
+pipeline does not make. It now checks Tier-1 exactly and the similarity at a
+documented float32 tolerance, printing the delta every run.
+
+**Gates, re-run and not quoted:** `pytest` **422 passed**, 0 failed (68.6 s);
+adversarial **9/9**, CSV byte-identical (22 s); goldens **45/45** and **9/9**
+(45.9 s); ablation baseline **32/45**, CSV byte-identical (15 s); paper parity
+**16/16** (3.8 s). **Isolation: 771 tracked result, golden, paper and model
+files hashed before and after — none changed.**
+
+**Not measured, and stated as such:** `gates.yml` is `workflow_dispatch` and
+this machine has no `gh` CLI or token, so its CI runtime is unknown; the local
+timings above are the proxy. The image is 4.2 GB, ~476 MB of it a duplicated
+copy of the weights from `chown -R` in the non-root layer — known, fixable,
+left alone because size gates nothing. adv_08 is one ticket, not a full
+in-container golden run.
+
+**Next: Phase 9A — the IEEE draft.**
+
+---
+
+**Phase 8A.1 is COMPLETE, GATED and PUSHED** (`d3b8f35`, 2026-09-22). The five numbers 8A
 flagged as having no committed machine-readable source now have one, except
 the one that cannot. Each script that printed a number got a **writer**, and
 each was re-run in its **original configuration** (seed 42, same split, same
@@ -214,7 +280,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **418 passed** (406 + 12 from 8A), 0 failed/skipped, offline |
+| Test suite | `pytest` | **422 passed** (406 + 12 from 8A + 4 from 8A.1), 0 failed/skipped, offline |
 | **Paper artifacts (8A.1)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **188 numbers**, **51 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
 | Paper parity (8A.1) | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
 | Document reconciliation (8A.1) | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source** (was 5); 2 z-conventions recorded |
@@ -1948,7 +2014,7 @@ reality. Any write-up must say so in those words.
 |---|---|
 | **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it — **DONE and GATED**. 16 tables, 7 figures, 161 numbers; audit 54 anchors / 0 mismatches / 5 no-source |
 | **8A.1** | Give the five "no committed source" numbers a source — **DONE**. 4 sourced, 1 unsourceable, and **1 non-reproduction (TF-IDF 6/14, not 7/14)**. 188 numbers / 51 sources / 59 anchors / 0 mismatches |
-| **8B** | Docker + CI (the Docker/CI item from the original agreed roadmap) |
+| **8B** | Docker + CI — **DONE and GATED** (2026-09-23). Digest-pinned image that builds its own artifacts, two workflows, a committed deployment verifier. Found **occurrence #7** of the recurring bug class in the `.dockerignore` rule |
 
 8A is the structural answer to this project's recurring bug class: every number
 in the paper regenerated from one script, with a parity test that fails when a
@@ -2001,14 +2067,29 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 8B — Docker + CI.** Offline, no Gemini quota. Opens in plan mode like
-every sub-phase.
+**Phase 9A — the IEEE draft.** Opens in plan mode like every sub-phase. It
+builds on the **named finding** recorded above rather than re-deriving it, and
+keeps Phase 2A as a *related* corpus limitation rather than a third instance of
+the mechanism. Phase 9A must also settle Finding 1's final wording, whose three
+clauses travel together (measured on our corpus; external replication
+inconclusive; post-hoc mechanism evidence in accuracy).
 
-**8A and 8A.1 are DONE**, so the reproducibility layer exists and CI has
-something worth enforcing: `pytest`, the adversarial gate at 9/9 with
-its CSV byte-identical, goldens 45/45 and 9/9, the ablation baseline at 32/45,
-and **paper parity** — `tests/test_paper_artifacts.py`, which fails if any
-published number, table CSV or figure-data CSV drifts.
+Two things Phase 8B hands it. **A seventh instance of the recurring bug
+class**, which is now a *packaging* rule rather than a model swap, a
+routing/eligibility test or a grouping key — the paper's "recurring bug class"
+narrative should say the shape generalises further than the first six
+suggested, and that this one was caught by reading a log rather than by a
+control. And **a cross-platform reproducibility fact**: Tier-1's confidence is
+bit-identical between Windows and a Linux container, the BGE/FAISS similarity
+is not (fixed -1.192e-07), which belongs in the reproducibility section beside
+the container.
+
+**Phase 8B is DONE and GATED** (see the top of this file). Docker + CI landed:
+`pytest`, the adversarial gate at 9/9 with its CSV byte-identical, goldens
+45/45 and 9/9, the ablation baseline at 32/45, and **paper parity** —
+`tests/test_paper_artifacts.py`, which fails if any published number, table CSV
+or figure-data CSV drifts — now run in CI, the first two in `ci.yml` on every
+push and the rest in `gates.yml` on demand.
 
 **8A.1 is the argument for putting paper parity in CI.** The number it caught
 (TF-IDF 7/14 → 6/14) had been wrong in the README for as long as the dataset

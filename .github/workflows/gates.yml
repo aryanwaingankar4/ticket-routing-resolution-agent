@@ -1,0 +1,157 @@
+# The five gates, on demand.
+#
+# Manual (workflow_dispatch) rather than on-push because every gate here needs
+# the production artifacts, and building them means downloading BGE and encoding
+# 4,000 tickets on two CPU cores. That is minutes, not seconds. ci.yml keeps the
+# push path fast; this workflow is what gets run before declaring a phase gate
+# cleared, and it runs the SAME commands the project's rules name:
+#
+#     pytest                                            (full suite, offline)
+#     python src/experiments/test_adversarial_escalation.py   9/9, CSV unchanged
+#     goldens 45/45 and 9/9                    (tests/test_pipeline_parity.py)
+#     run_ablation_study.py --mode baseline             32/45, CSV unchanged
+#     tests/test_paper_artifacts.py                     paper parity
+#
+# "CSV unchanged" is checked with `git diff --exit-code` rather than by reading
+# the printed summary. A gate that passes while its recorded output moves is the
+# failure this project keeps having; git compares the bytes.
+#
+# NOTHING HERE SPENDS GEMINI QUOTA. pytest.ini deselects -m gemini by default
+# and no GEMINI_API_KEY is configured for this workflow.
+
+name: gates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: full suite, adversarial 9/9, ablation 32/45
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.13.0
+          pip install -r requirements.txt
+
+      # Only the MODEL DOWNLOAD is cached, and it is content-addressed by
+      # revision inside the hub cache.
+      #
+      # The 4,000-row embedding cache (data/ticket_embeddings_*.npy) is
+      # deliberately NOT cached. train_embeddings.py and build_vector_index.py
+      # validate that cache by ROW COUNT only, and a silent stale embedding
+      # cache during the MiniLM->BGE swap is occurrence #1 of this project's
+      # recurring bug class. Re-encoding costs minutes; a cache that is wrong
+      # for its context and internally consistent costs a published result.
+      - name: Cache the BGE download
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-bge-base-en-v1.5-${{ runner.os }}
+
+      - name: Build artifacts (the documented order)
+        run: |
+          python data/generate_dataset.py
+          python src/classification/train_tier1.py
+          python src/classification/train_embeddings.py
+          python src/rag/build_vector_index.py
+
+      - name: Report the configuration under test
+        run: |
+          python -c "from src.agent.config import config_fingerprint, settings; \
+          print('config_fingerprint:', config_fingerprint()); \
+          print('cascade:', settings.cascade.confidence_threshold); \
+          print('rag:', settings.rag.similarity_threshold); \
+          print('conformal.enabled:', settings.conformal.enabled); \
+          print('drift.enabled:', settings.drift.enabled)"
+
+      # Includes tests/test_pipeline_parity.py (goldens 45/45 and 9/9) and
+      # tests/test_paper_artifacts.py. -m gemini stays deselected.
+      - name: Full test suite
+        run: pytest -q
+
+      - name: Adversarial escalation gate (9/9)
+        run: python src/experiments/test_adversarial_escalation.py
+
+      - name: Adversarial CSV must be byte-identical
+        run: git diff --exit-code -- data/adversarial_escalation_results.csv
+
+      - name: Ablation baseline (32/45)
+        run: python src/experiments/run_ablation_study.py --mode baseline
+
+      - name: Ablation baseline CSV must be byte-identical
+        run: git diff --exit-code -- data/ablation_baseline_results.csv
+
+      # The artifacts this job rebuilt (index, metadata, joblib bundles) are
+      # tracked files, so they will show as modified whenever a rebuild is not
+      # bit-identical to the committed copy. That is informational -- the gates
+      # above are what pass or fail -- but it is worth seeing.
+      - name: Report any other file the rebuild moved
+        if: always()
+        run: git status --porcelain
+
+  container:
+    name: docker build + deployment verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          df -h /
+
+      - name: Build the image
+        run: docker build -t ticket-triage:ci .
+
+      - name: Image size
+        run: docker images ticket-triage:ci --format '{{.Repository}}:{{.Tag}} {{.Size}}'
+
+      # NO GEMINI_API_KEY is passed. The whole point of the check below is that
+      # classification, retrieval, the policy gate and /triage all work without
+      # one, and that /agents/resolve -- the only endpoint that spends quota --
+      # refuses with 503 rather than crashing or inventing a draft.
+      - name: Start the container (no API key)
+        run: |
+          docker run -d --name triage -p 8000:8000 ticket-triage:ci
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8000/health > /dev/null; then
+              echo "service up after ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "service did not become healthy in 60s"; docker logs triage; exit 1
+
+      # verify_deployment.py talks HTTP with the stdlib. Its only third-party
+      # import is pydantic, by way of src/agent/config.py -- which is exactly
+      # what has to be imported, since the fingerprint it compares against must
+      # be computed from this checkout's config rather than trusted from the
+      # container.
+      - name: Verify the deployment (fingerprint, no-key surface, adv_08)
+        run: |
+          pip install pydantic==2.13.4
+          python src/service/verify_deployment.py --base-url http://localhost:8000
+
+      - name: Container logs
+        if: always()
+        run: docker logs triage

@@ -3642,6 +3642,89 @@ repeats the first two when it reads the files.
 
 ---
 
+### Phase 8B - Docker + CI, and the seventh instance of the recurring bug
+
+**The deliverable.** A digest-pinned container that builds its own artifacts,
+two GitHub Actions workflows, and a committed verifier that checks a *running*
+deployment against this repository. Offline throughout: **zero Gemini calls,
+zero Ollama calls.** Production frozen; nothing promoted.
+
+**The finding, and it is not the container.** The first image built clean, ran
+clean, answered correctly — and was wrong. `.dockerignore` said `*.npy`, and
+those patterns are matched with Go's `filepath.Match`, where `*` does not cross
+`/`. So it excluded nothing under `data/`, the developer's local 12 MB
+embedding cache was copied into the build context, and `train_embeddings.py`
+printed `[cache HIT]` and skipped encoding entirely. The image's Tier-2
+classifier and FAISS index were therefore derived from a file encoded on
+another machine in August, not from the image's own work. The hash inside the
+image matched the local file byte for byte, mtime included.
+
+That is **occurrence #7** of this project's recurring bug class, and it is
+instructive for two reasons. It was not a model swap, a routing/eligibility
+test or a grouping key — the three shapes the list had generalised to — it was
+a *packaging rule*, which none of them would have predicted. And it was caught
+by **reading a build log**, which is not a control. It is a control now: a
+`RUN` guard immediately after `COPY` fails the build if any pre-built artifact
+reaches the context, and the ignore patterns are written `**/`. The rebuilt
+image reports `[cache MISS] No cache found. Computing embeddings from scratch`
+and spends ~508 s encoding its own 4,000 rows.
+
+**What the container verification measured.**
+
+| Check | Result |
+|---|---|
+| `config_fingerprint`, container vs repo | `9c9a5cbcb53f` = `9c9a5cbcb53f` |
+| Index / metadata alignment | 4,000 = 4,000 |
+| No-key surface | `/health`, `/agents/classify`, `/agents/retrieve`, `/policy/rag-gate`, `/triage` all 200; `/agents/resolve` 503 |
+| adv_08 tier | 2 (cascade fell through), as recorded |
+| adv_08 Tier-1 confidence | 0.3182984770932253 — **exactly** the golden, delta 0.000e+00 |
+| adv_08 similarity | 0.6123799085617065 vs golden 0.6123800277709961 — **delta -1.192e-07** |
+| adv_08 decision | escalated, Infrastructure, no draft generated |
+
+**A second finding, smaller but worth writing down: an embedding-derived number
+is not bit-reproducible across platforms, and a TF-IDF one is.** Tier-1 runs in
+float64 and matched the Windows goldens exactly from a Linux container. The
+BGE/FAISS similarity did not, and the offset was *identical on every repeated
+call* — so it is a fixed property of the platform's BLAS kernel and SIMD width,
+not noise. The published 6-decimal figure is unchanged and the decision is
+untouched: the distance from that value to the 0.67 gate is +5.762e-02, about
+**483,352x** the offset.
+
+The first version of the verifier asserted full-precision equality on that
+number and failed. **The goldens were not regenerated to make it pass** — they
+are the Windows reference the published results were produced on. The *check*
+was wrong: it asserted a guarantee the pipeline does not make. It now compares
+Tier-1 exactly and the similarity at a documented float32 tolerance, and prints
+the measured delta on every run, passing or failing.
+
+**Gates, re-run rather than quoted:** `pytest` **422 passed**, 0 failed;
+adversarial **9/9** with `data/adversarial_escalation_results.csv`
+byte-identical; goldens **45/45** and **9/9**; ablation baseline **32/45** with
+its CSV byte-identical; paper parity 16/16. Isolation: 771 tracked result,
+golden, paper and model files hashed before and after — **none changed**.
+
+**Limitations, beside the result:**
+
+- **The container reproduces the decision, not the bits.** Two of the three
+  numbers it was checked on are bit-identical; the similarity is not, and
+  cannot be. Any future cross-platform parity claim has to say which kind of
+  number it is talking about.
+- **One ticket is not a parity suite.** adv_08 was chosen because it exercises
+  both gates, but the container was not run over all 45 benchmark tickets. A
+  full in-container golden run is possible and was not done.
+- **The image is 4.2 GB**, of which ~476 MB is a duplicated copy of the model
+  weights created by `chown -R` in the non-root user layer. That is a known,
+  fixable inefficiency; it was left alone rather than trigger another
+  build-and-verify cycle, since image size gates nothing.
+- **CI runtimes for the manual workflow are unmeasured.** `gates.yml` is
+  `workflow_dispatch` and this session has no `gh` CLI or token to trigger it.
+  Local timings stand in as a proxy and are labelled as such.
+- **The `train_distilbert.py` path is not covered anywhere in CI** — ~90 min on
+  CPU, deliberately excluded from both the image and the workflows.
+
+
+---
+
 ## Final Classification Comparison
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization | 45-Ticket Generalization |
@@ -4125,6 +4208,124 @@ alias for `Invoke-WebRequest` and does not accept `-X` or `-d`.)
 
 `POST /triage` defaults to `generate_resolution=false`, so it spends no Gemini
 quota unless asked. The interactive API docs are at `/docs`.
+
+### Running it in a container (Phase 8B)
+
+```powershell
+docker build -t ticket-triage:8b .
+docker run --rm -p 8000:8000 ticket-triage:8b            # no API key needed
+docker run --rm -p 8000:8000 -e GEMINI_API_KEY=... ticket-triage:8b
+```
+
+The image **builds its own artifacts** — `generate_dataset.py` →
+`train_tier1.py` → `train_embeddings.py` → `build_vector_index.py`, in that
+order, at build time. `.dockerignore` excludes the committed FAISS index,
+metadata and `.joblib` bundles precisely so that it cannot be serving a copy of
+someone's local files — and a `RUN` guard straight after `COPY` fails the build
+if one gets in anyway. That guard exists because the first build of this image
+did not have it: `.dockerignore` patterns are matched with Go's
+`filepath.Match`, where `*` does not cross `/`, so `*.npy` excluded nothing
+under `data/`, the developer's 12 MB embedding cache was copied in, and
+`train_embeddings.py` reported `[cache HIT]` instead of encoding. The image was
+plausible and nothing failed — occurrence #7 of this project's recurring bug
+class, caught by reading a build log and now prevented by a check. (`train_distilbert.py` is *not* run: ~90 minutes on CPU,
+and it is on no production path.) The build then calls
+`src.service.api.startup()` as its own last step, so all three artifact guards
+run before the image is finished — a stale-artifact image fails the *build*
+rather than serving confident wrong answers.
+
+The base image is pinned by digest to `python:3.14.3-slim`, the interpreter the
+published results were produced under, rather than the floating `3.14-slim` tag.
+
+`GEMINI_API_KEY` is never baked in. `/health`, `/agents/classify`,
+`/agents/retrieve`, `/policy/rag-gate` and `/triage` all work without one;
+`/agents/resolve` is the only endpoint that needs a key, and without one it
+answers 503.
+
+To check a *running* deployment against this repository:
+
+```powershell
+python src/service/verify_deployment.py --base-url http://localhost:8000
+```
+
+It compares `/health`'s `config_fingerprint` against the one computed from
+`src/agent/config.py`, confirms the no-key surface, and runs adversarial ticket
+`adv_08` end to end over HTTP — comparing the result against **two**
+independently recorded derivations of the same decision
+(`data/adversarial_escalation_results.csv` at 6 dp and
+`tests/goldens/adversarial_baseline.json` at full precision). `adv_08` is the
+ticket that exercises both gates: Tier-1 confidence below 0.50, so the cascade
+falls through to Tier-2, and top similarity below 0.67, so it escalates.
+
+**What that check measured (Phase 8B).** From a Linux container, Tier-1's
+confidence reproduces the Windows goldens **exactly** — 0.3182984770932253,
+delta 0.000e+00 — because TF-IDF + LogReg runs in float64. The BGE/FAISS
+similarity does **not**: the container returns 0.6123799085617065 where the
+goldens record 0.6123800277709961, a fixed **-1.192e-07** offset that is
+identical on every repeated call. float32 inference accumulates in an order set
+by the machine's BLAS kernel and SIMD width, so the last digits of an
+embedding-derived number are platform-specific. The routing decision is
+untouched — the distance from that value to the 0.67 gate is +5.762e-02, some
+**483,352x** the offset — and the published 6-decimal figure is unchanged. The
+verifier therefore checks Tier-1 exactly and the similarity at a documented
+float32 tolerance, and prints the delta on every run. The goldens are not
+regenerated to make a cross-platform comparison pass.
+
+### Continuous integration
+
+- `.github/workflows/ci.yml` — every push and PR: `pytest -m "not slow"` plus
+  **paper parity**. Paper parity is named as its own step on purpose: the tests
+  in `tests/test_paper_artifacts.py` are marked `slow`, so `-m "not slow"`
+  skips every one of them, and they are the check that re-derives every
+  published number.
+- `.github/workflows/gates.yml` — manual (`workflow_dispatch`): the full suite,
+  the adversarial gate at 9/9, the ablation baseline at 32/45, and a container
+  job that builds the image and runs `verify_deployment.py` against it. Both
+  CSV gates are confirmed byte-identical with `git diff --exit-code` rather
+  than by reading a printed summary.
+
+Neither workflow can spend Gemini quota: `pytest.ini` deselects `-m gemini` and
+no key is configured for either.
+
+### Reproduce the paper
+
+Every table, figure and number in the write-up is generated from committed
+result files by one script. Nothing in `paper/` is written by hand.
+
+```powershell
+git clone https://github.com/aryanwaingankar4/ticket-routing-resolution-agent
+cd ticket-routing-resolution-agent
+
+# Either: the venv
+python -m venv venv; .\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# Or: the container, with the clone mounted (no local Python needed)
+docker build -t ticket-triage:8b .
+docker run --rm -v "${PWD}:/repo" -w /repo ticket-triage:8b `
+    python src/experiments/build_paper_artifacts.py --out /tmp/paper --no-render
+
+# Rebuild and compare in one command
+pytest tests/test_paper_artifacts.py
+
+# Or rebuild explicitly and diff
+python src/experiments/build_paper_artifacts.py --out out_paper --no-render
+fc out_paper\NUMBERS.md paper\NUMBERS.md
+```
+
+The build is offline — no Gemini, no Ollama, no model load, no training, no
+experiment re-run — and byte-for-byte deterministic, PDF and PNG included, so a
+rebuild differs only when a source file changed. `paper/PROVENANCE.json` carries
+the sha256 of every source read, which is what tells the two failure modes
+apart: a result file changed (the paper is stale) or the builder changed.
+
+**One documented number has no committed source**, and it is not hiding: cascade
+calibration *attempt 2*'s "34 of 35 tickets in one bucket". That 35-ticket
+hand-written set was never committed and is absent from every revision in this
+repository's history, so it cannot be re-run. It is recorded as
+`status=no_artifact` in `data/cascade_calibration_attempts.csv` and listed under
+"no committed source" in `paper/NUMBERS.md`. Do not go looking for the file —
+and nothing was invented to stand in for it.
 
 ### Running the imbalance experiments
 

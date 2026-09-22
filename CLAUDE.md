@@ -72,6 +72,44 @@ is 500 calls/day and a looping workflow would drain it, so spending quota is
 opt-in. `/agents/resolve` spends quota by definition — it is the only endpoint
 that does.
 
+### Container and CI (Phase 8B)
+
+```powershell
+docker build -t ticket-triage:8b .
+docker run --rm -p 8000:8000 ticket-triage:8b        # no API key needed
+python src/service/verify_deployment.py --base-url http://localhost:8000
+```
+
+The image **builds its own artifacts** in the documented order at build time.
+`.dockerignore` excludes the *committed* `data/ticket_index*.faiss`,
+`data/ticket_metadata*.json` and `**/*.joblib` on purpose, so a container can
+never be serving a copy of someone's local files — it must build them. **Write
+nested ignore patterns with `**/`**: `.dockerignore` matches with Go's
+`filepath.Match`, where `*` does not cross `/`, so a bare `*.npy` excludes
+nothing under `data/` — that mistake shipped occurrence #7 of the recurring bug
+class. A `RUN` guard immediately after `COPY` now fails the build if any
+pre-built artifact reaches the context, so the ignore rule is not the only thing
+enforcing this. The base
+is pinned by digest to `python:3.14.3-slim` (the interpreter the published
+results were produced under), not the floating `3.14-slim`. `train_distilbert.py`
+is **not** run: ~90 min on CPU and on no production path. The build's last step
+calls `src.service.api.startup()`, so all three artifact guards run before the
+image exists — a stale-artifact image fails the build.
+
+`verify_deployment.py` is the committed answer to "a number quoted at a gate
+comes from a committed script". It compares `/health`'s `config_fingerprint`
+against this checkout's, confirms the no-key surface (`/agents/resolve` → 503,
+everything else 200), and runs `adv_08` over HTTP against **two** recorded
+derivations — the 6-dp CSV and the full-precision golden. Never widen its
+tolerances: a moved routing number is a finding.
+
+CI is two workflows, neither able to spend quota. `ci.yml` (push/PR) runs
+`pytest -m "not slow"` **and `tests/test_paper_artifacts.py` by path**, because
+the marker would otherwise skip all of paper parity. `gates.yml`
+(`workflow_dispatch` only) runs the full suite, the adversarial gate, the
+ablation baseline — both CSVs checked with `git diff --exit-code`, not by eye —
+and a container job that builds the image and verifies it.
+
 ### Tests
 
 ```powershell
@@ -82,6 +120,16 @@ pytest tests/test_pipeline_parity.py -v
 
 `pytest.ini` deselects `-m gemini` by default so the suite never spends API quota.
 Markers: `slow` (loads BGE + fits Tier-1), `gemini` (live API call).
+
+**`-m "not slow"` skips ALL of paper parity.** Every test in
+`tests/test_paper_artifacts.py` is marked `slow`, although it loads no model and
+finishes in under four seconds — it only reads committed files under `data/`.
+Run it by path whenever you run the fast subset, which is what `ci.yml` does:
+
+```powershell
+pytest -m "not slow"                      # then, always:
+pytest tests/test_paper_artifacts.py      # paper parity, ~4s, no model
+```
 
 The standalone regression gate still exists and produces the CSV report:
 
@@ -690,6 +738,20 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## Known inconsistencies
 
+- **An embedding-derived number is NOT bit-reproducible across platforms; a
+  TF-IDF one is.** Measured in Phase 8B on adv_08. Tier-1 confidence matches
+  the Windows goldens **exactly** (0.3182984770932253, delta 0.000e+00) from a
+  Linux container, because TF-IDF + LogReg runs in float64. The retrieval
+  similarity does not: the container returns **0.6123799085617065** against the
+  goldens' **0.6123800277709961**, a fixed **-1.192e-07** offset, identical on
+  every repeat — float32 BGE plus a FAISS inner product accumulate in an order
+  set by the BLAS kernel and SIMD width. Nothing about the decision moves: the
+  distance to the 0.67 gate is +5.762e-02, **483,352x** the offset. So
+  `verify_deployment.py` checks Tier-1 exactly and the similarity at a float32
+  tolerance, documented at the constant. **Do not "fix" a cross-platform
+  parity failure by regenerating the goldens** — they are the Windows
+  reference the published numbers were produced on.
+
 - **Decision logs can be persisted, but nothing persists them yet.** Phase 4A added
   `configure_logging(decision_log_path=...)`, a JSONL sink for `pipeline_decision`
   records only. It is **off by default** and no script, test, service or demo turns it
@@ -793,7 +855,7 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## The recurring bug class
 
-Six occurrences so far, all the same shape: a value or artifact that is wrong for its
+Seven occurrences so far, all the same shape: a value or artifact that is wrong for its
 context, stays internally consistent, and therefore produces wrong results with no
 error. The first four were model swaps; the fifth and sixth show the shape is not
 limited to those — one was a routing/eligibility test, the other a grouping key.
@@ -822,9 +884,22 @@ limited to those — one was a routing/eligibility test, the other a grouping ke
    untouched because that measurement excludes by row **id**, not by template. Caught
    by auditing the docs against the generator's own comment, not by any test; now
    pinned by `tests/test_contamination_structure.py`. Corrected in Phase 5A.
+7. **Phase 8B's first container image**, whose `.dockerignore` said `*.npy` and
+   therefore excluded nothing: those patterns are matched with Go's
+   `filepath.Match` against the whole relative path, and `*` does not cross `/`,
+   so `data/ticket_embeddings_bge-base-en-v1-5.npy` was copied straight in. The
+   build ran clean, `train_embeddings.py` printed `[cache HIT]`, and the image's
+   Tier-2 classifier and FAISS index were derived from a 12 MB cache encoded on
+   the developer's machine months earlier rather than from the image's own
+   encode — the same silent stale embedding cache as occurrence #1, arriving by
+   a new route. **Caught before any result, by reading the build log**, which is
+   not a control. It is now a control: a `RUN` guard after `COPY` fails the build
+   if any pre-built artifact reaches the context. Note that this one was not a
+   model swap, a routing test or a grouping key — it was a *packaging* rule, and
+   nothing on the earlier list would have predicted it.
 
-When touching anything model-related — or any routing/eligibility test, or any grouping
-key — assume a **seventh** is waiting. Run `pytest` and the adversarial gate before
+When touching anything model-related — or any routing/eligibility test, any grouping
+key, or any rule about which files reach a build — assume an **eighth** is waiting. Run `pytest` and the adversarial gate before
 believing a green result, and check any count you rely on against a second, independent
 derivation of it.
 

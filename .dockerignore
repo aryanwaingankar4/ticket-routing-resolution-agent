@@ -1,0 +1,57 @@
+# Build context hygiene, and one deliberate guarantee.
+#
+# THE DELIBERATE PART: data/ticket_index*.faiss, data/ticket_metadata*.json and
+# data/*.joblib are COMMITTED files, and they are excluded anyway. If they were
+# copied in, the container could be serving the developer's artifacts while
+# appearing to have built its own -- this project's recurring bug class exactly.
+# Excluding them makes "the image built its own artifacts" a structural fact,
+# and makes the adv_08 check in src/service/verify_deployment.py a real test of
+# a from-scratch build.
+#
+# PATTERNS ARE ANCHORED AND `*` DOES NOT CROSS `/`.
+# .dockerignore is matched with Go's filepath.Match against the whole relative
+# path, so `*.npy` matches ONLY a .npy at the context root -- it does NOT match
+# data/ticket_embeddings_bge-base-en-v1-5.npy. The first build of this image
+# proved it the hard way: the developer's local 12 MB embedding cache was
+# copied in, train_embeddings.py reported `[cache HIT]`, and the image's
+# Tier-2 classifier and FAISS index were built from that cache instead of from
+# its own encode. It ran clean and produced a plausible image -- the exact
+# shape of this project's recurring bug, and occurrence #1 of it was a silent
+# stale embedding cache. Nested patterns must be written `**/`.
+
+# --- Never in an image -----------------------------------------------------
+.env
+venv/
+.git/
+.github/
+**/__pycache__
+**/*.pyc
+.pytest_cache/
+
+# --- Local model artifacts: rebuilt inside the image ------------------------
+models/
+data/ticket_index*.faiss
+data/ticket_metadata*.json
+**/*.joblib
+**/*.npy
+**/*.npz
+
+# --- Generated write-up surface: not a runtime dependency -------------------
+paper/
+
+# --- Bulk experiment data the service does not serve ------------------------
+data/external_tobibueck/
+data/category_stores/
+data/skewed/
+data/zeroshot_raw/
+data/sufficiency_raw/
+data/embedding_comparison/
+data/batch_intake/
+**/*.png
+**/*.pdf
+
+# --- Editor / OS noise ------------------------------------------------------
+.vscode/
+.idea/
+**/Thumbs.db
+**/.DS_Store
