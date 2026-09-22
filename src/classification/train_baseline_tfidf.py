@@ -35,6 +35,7 @@ Run from the project root:
     python src/classification/train_baseline_tfidf.py
 """
 
+import csv
 import os
 import sys
 
@@ -58,6 +59,11 @@ MIN_CATEGORIES = 7
 EXPECTED_COLUMNS = ["id", "title", "description", "category", "resolution", "priority"]
 NEAR_PERFECT_THRESHOLD = 0.97
 
+# Phase 8A.1: this script printed its in-distribution metrics and wrote
+# nothing, so the "100.0% in-distribution" figure in the README's classifier
+# comparison had no committed machine-readable source. It now writes one.
+RESULTS_CSV_NAME = "baseline_tfidf_indistribution.csv"
+
 
 # ---------------------------------------------------------------------------
 # Path resolution
@@ -77,6 +83,22 @@ def resolve_csv_path():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
     return os.path.join(project_root, "data", "synthetic_tickets.csv")
+
+
+def resolve_results_path():
+    """Where the in-distribution metrics file is written (same rule)."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    return os.path.join(project_root, "data", RESULTS_CSV_NAME)
+
+
+def write_results_csv(path, rows):
+    """One metric per row: metric,value. Long form keeps the reader trivial."""
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["metric", "value"])
+        for metric, value in rows:
+            writer.writerow([metric, value])
 
 
 # ---------------------------------------------------------------------------
@@ -264,6 +286,22 @@ def main():
     print(f"Accuracy    : {accuracy:.4f}")
     print(f"Macro F1    : {macro_f1:.4f}")
     print(f"Weighted F1 : {weighted_f1:.4f}")
+
+    # ---- Phase 8A.1: write the metrics this script already computed -----
+    results_path = resolve_results_path()
+    write_results_csv(results_path, [
+        ("accuracy", f"{accuracy:.6f}"),
+        ("macro_f1", f"{macro_f1:.6f}"),
+        ("weighted_f1", f"{weighted_f1:.6f}"),
+        ("n_train", len(y_train)),
+        ("n_test", len(y_test)),
+        ("n_correct", int((y_pred == y_test).sum())),
+        ("n_categories", len(labels)),
+        ("test_size", TEST_SIZE),
+        ("random_state", RANDOM_STATE),
+        ("fit_scope", "split3200"),
+    ])
+    print(f"\n[write] In-distribution metrics -> {results_path}")
 
     print("\nPer-category classification report:\n")
     print(classification_report(y_test, y_pred, labels=labels, digits=4, zero_division=0))

@@ -286,6 +286,32 @@ python src/experiments/build_paper_artifacts.py
 python src/experiments/build_paper_artifacts.py --force
 python src/experiments/build_paper_artifacts.py --out DIR --no-render
 
+# Phase 8A.1 -- the writers that gave the "no committed source" numbers a
+# source. Offline, no quota. Each re-runs its ORIGINAL configuration; the
+# only new behaviour is that it now writes a result file.
+#   generalization_test.py    -> data/baseline_tfidf_benchmark14.csv
+#     Two arms. full4000 is the ORIGINAL config (fit on all 4,000 rows) and
+#     the one the paper cites; split3200 is an 80/20-fit secondary arm added
+#     in 8A.1 and is a NEW measurement, never the published figure.
+#   train_baseline_tfidf.py   -> data/baseline_tfidf_indistribution.csv
+#   train_cascade.py          -> data/cascade_threshold_sweep.csv
+#                             +  data/cascade_calibration_attempts.csv
+#     Loads BGE for the 14 + 45 benchmark tickets; the 4,000-row embedding
+#     cache makes the rest a cache hit. Fits both tiers locally -- a declared
+#     rule-7 exception, because reproducing the original calibration is the
+#     point.
+python src/classification/generalization_test.py
+python src/classification/train_baseline_tfidf.py
+python src/classification/train_cascade.py
+
+# DistilBERT. WITHOUT --backup-existing the script RESUMES from whatever is
+# in models/distilbert_ticket_classifier/ and re-reports those checkpoints;
+# with it, the directory is MOVED aside (never deleted) and training starts
+# from scratch. --append-metrics keeps both runs in one CSV.
+python src/classification/train_distilbert.py                    # evaluate existing
+python src/classification/train_distilbert.py --backup-existing \
+    --run-label fresh_retrain --append-metrics                   # retrain, ~25 min CPU
+
 # Resolution clustering -> automation flagging
 python src/experiments/join_scenario_ground_truth.py
 python src/experiments/explore_resolution_clustering.py
@@ -528,14 +554,27 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   **a CI a source file already carries is read verbatim, never recomputed** --
   otherwise a published interval could be restated under a different z without
   anyone noticing.
-- **Five documented numbers have no committed machine-readable source** and
-  must never be quoted as though they did: TF-IDF 7/14 and DistilBERT 7/14
-  (their scripts print and write nothing), DistilBERT on the 45-ticket
-  benchmark (never run), the cascade threshold-by-target-accuracy table, and
-  the 5.7% (10/175) self-retrieval contamination rate. They are listed under
-  "no committed source" in `paper/NUMBERS.md` and `paper/RECONCILIATION.md`.
-  Do not invent a source and do not re-run an experiment to manufacture one --
-  that is a decision for the write-up.
+- **Phase 8A.1 closed four of 8A's five "no committed source" numbers, and
+  one of the four did not reproduce.** Each script that printed a number now
+  writes a result file, and each was re-run in its ORIGINAL configuration.
+  Reproduced exactly: DistilBERT's **7/14**, the cascade
+  threshold-by-target-accuracy sweep (1.00 / 0.50 / 0.50 at the 90/80/70
+  bars), and the **5.7% (10/175)** self-retrieval rate. **Did NOT reproduce:
+  the TF-IDF baseline's 14-ticket score, which is 6/14, not 7/14** —
+  corroborated by three independent derivations (the full-4,000-row fit, an
+  80/20-split fit, and the persisted production Tier-1 artifact). **Never
+  quote TF-IDF 7/14**; it is on the do-not-cite list, and the likely cause —
+  that it was measured on the 1,000-ticket corpus and never re-measured after
+  the scale-up — is recorded as an unconfirmable hypothesis, not a cause.
+  **DistilBERT on the 45-ticket benchmark is a NEW measurement**, tagged
+  `new-measurement`, never written up as a reproduction.
+- **One documented number still has no committed source**: cascade
+  calibration attempt 2's "34 of 35 tickets in one bucket". The 35-ticket
+  hand-written set was never committed and is absent from every revision in
+  the repository's history, so it cannot be re-run. It is recorded as
+  `status=no_artifact` in `data/cascade_calibration_attempts.csv` and listed
+  under "no committed source" in `paper/NUMBERS.md`. Do not invent a source
+  for it.
 - **The reliability/ECE numbers are a CEILING effect, not calibration.** On
   the 500-ticket in-distribution batch the observed accuracy is 1.0 in every
   bin of both tiers, so Tier-1's 0.1122 and Tier-2's 0.0992 are entirely the

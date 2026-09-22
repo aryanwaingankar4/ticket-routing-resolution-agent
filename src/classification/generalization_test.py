@@ -32,17 +32,40 @@ Run from the project root:
     python src/classification/generalization_test.py
 """
 
+import csv
 import os
 import sys
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 EXPECTED_COLUMNS = ["id", "title", "description", "category", "resolution", "priority"]
+
+# --- Phase 8A.1: the result file this script now writes --------------------
+#
+# Until 8A.1 this script printed its score and wrote nothing, so the published
+# "TF-IDF + LogReg, 7/14" had no committed machine-readable source and could
+# not be checked by tests/test_paper_artifacts.py. It now writes one.
+#
+# TWO ARMS, and the distinction is load-bearing:
+#
+#   full4000  - the PRIMARY arm and the ORIGINAL configuration. It fits on all
+#               4,000 rows, which is what produced the published 7/14. This is
+#               a LOCAL baseline fit; it is NOT the production Tier-1 artifact
+#               (models/tier1_tfidf_logreg.joblib), which is a different model
+#               serving a different purpose.
+#   split3200 - a SECONDARY arm added in 8A.1, fitting the same pipeline on the
+#               80/20 stratified training split every other classification
+#               script uses. It is a NEW measurement for comparison and is
+#               never the source for the published figure.
+RANDOM_STATE = 42
+TEST_SIZE = 0.2
+RESULTS_CSV_NAME = "baseline_tfidf_benchmark14.csv"
 
 # ---------------------------------------------------------------------------
 # Hand-written novel test tickets.
@@ -148,6 +171,76 @@ def resolve_csv_path():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
     return os.path.join(project_root, "data", "synthetic_tickets.csv")
+
+
+def resolve_results_path():
+    """Where the per-ticket result file is written (same two-levels-up rule)."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    return os.path.join(project_root, "data", RESULTS_CSV_NAME)
+
+
+def fit_tfidf_logreg(fit_texts, fit_labels):
+    """The baseline pipeline, in ONE place so both arms are provably identical.
+
+    Same settings as train_baseline_tfidf.py: a purely lexical representation
+    (unigrams + bigrams, 5,000 features, English stop words) under a plain
+    logistic regression. Only the ROWS FITTED differ between the two arms.
+    """
+    vectorizer = TfidfVectorizer(
+        max_features=5000,
+        ngram_range=(1, 2),
+        stop_words="english",
+    )
+    fitted = vectorizer.fit_transform(fit_texts)
+    clf = LogisticRegression(max_iter=1000)
+    clf.fit(fitted, fit_labels)
+    return vectorizer, clf
+
+
+def write_results_csv(path, arms):
+    """Write per-ticket rows plus a TOTAL row per arm.
+
+    `arms` is a list of (fit_scope, n_fitted, predictions) tuples. The TOTAL
+    row's n_correct is recomputed here from the per-ticket rows rather than
+    passed in, so the file carries a second, independent derivation of the
+    headline count (this project's recurring bug class is a count that is wrong
+    but internally consistent).
+    """
+    fieldnames = ["fit_scope", "n_rows_fitted", "ticket_index", "expected",
+                  "predicted", "correct", "n_correct", "n_total"]
+    totals = {}
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for fit_scope, n_fitted, predictions in arms:
+            n_correct = 0
+            for i, (ticket, predicted) in enumerate(
+                    zip(NOVEL_TICKETS, predictions), start=1):
+                is_correct = int(predicted == ticket["expected"])
+                n_correct += is_correct
+                writer.writerow({
+                    "fit_scope": fit_scope,
+                    "n_rows_fitted": n_fitted,
+                    "ticket_index": i,
+                    "expected": ticket["expected"],
+                    "predicted": predicted,
+                    "correct": is_correct,
+                    "n_correct": "",
+                    "n_total": "",
+                })
+            writer.writerow({
+                "fit_scope": fit_scope,
+                "n_rows_fitted": n_fitted,
+                "ticket_index": "TOTAL",
+                "expected": "",
+                "predicted": "",
+                "correct": "",
+                "n_correct": n_correct,
+                "n_total": len(NOVEL_TICKETS),
+            })
+            totals[fit_scope] = n_correct
+    return totals
 
 
 # ---------------------------------------------------------------------------
@@ -291,6 +384,63 @@ def main():
     print("SUMMARY")
     print("=" * 75)
     print(f"Correct: {correct}/{total}  ({pct:.1f}%)")
+
+    # -----------------------------------------------------------------------
+    # SECONDARY ARM (Phase 8A.1). Same pipeline, fitted on the 80/20 stratified
+    # TRAINING split instead of all 4,000 rows, evaluated on the same 14
+    # tickets. This is a NEW measurement recorded for comparison - it is NOT
+    # the configuration that produced the historically published number, and
+    # the results file labels it so.
+    # -----------------------------------------------------------------------
+    X_train, _X_test, y_train, _y_test = train_test_split(
+        X_text,
+        y,
+        test_size=TEST_SIZE,
+        random_state=RANDOM_STATE,
+        stratify=y,
+    )
+    split_vectorizer, split_clf = fit_tfidf_logreg(X_train, y_train)
+    split_pred = split_clf.predict(split_vectorizer.transform(novel_texts))
+    split_correct = sum(
+        1 for expected, predicted in zip(novel_expected, split_pred)
+        if predicted == expected
+    )
+
+    print("\n" + "-" * 75)
+    print("SECONDARY ARM (80/20 training split, NOT the original "
+          "configuration)")
+    print("-" * 75)
+    print(f"Fitted on {len(X_train)} of {len(X_text)} rows.")
+    print(f"Correct: {split_correct}/{total}  "
+          f"({(split_correct / total * 100.0) if total else 0.0:.1f}%)")
+
+    # -----------------------------------------------------------------------
+    # Write the result file (Phase 8A.1). Both arms, per ticket, plus a TOTAL
+    # row per arm whose count is recomputed from the rows themselves.
+    # -----------------------------------------------------------------------
+    results_path = resolve_results_path()
+    written = write_results_csv(results_path, [
+        ("full4000", len(X_text), list(novel_pred)),
+        ("split3200", len(X_train), list(split_pred)),
+    ])
+
+    # Second, independent derivation of the headline count (project rule: a
+    # count that is wrong but internally consistent is this repo's recurring
+    # bug). `correct` was accumulated in the per-ticket print loop above;
+    # written["full4000"] is recounted from the rows that reached the file.
+    if written["full4000"] != correct:
+        print(f"[ERROR] full4000 count disagrees: loop said {correct}, "
+              f"the results file says {written['full4000']}.")
+        sys.exit(1)
+    if written["split3200"] != split_correct:
+        print(f"[ERROR] split3200 count disagrees: loop said {split_correct}, "
+              f"the results file says {written['split3200']}.")
+        sys.exit(1)
+
+    print(f"\n[write] Per-ticket results -> {results_path}")
+    print(f"[check] Counts agree with an independent recount: "
+          f"full4000 {written['full4000']}/{total}, "
+          f"split3200 {written['split3200']}/{total}.")
 
     print("\nINTERPRETATION")
     print("-" * 75)

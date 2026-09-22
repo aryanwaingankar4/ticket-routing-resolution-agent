@@ -17,11 +17,11 @@ So: **every number the paper uses is regenerated from a committed result file, t
 
 ## What is here
 
-- `NUMBERS.md` -- 161 numbers, each with its source file, the command that regenerates that file, and its tags. A number that is not in this file is not a number the paper may use. It also carries the **do-not-cite list** and the **no committed source** list.
+- `NUMBERS.md` -- 188 numbers, each with its source file, the command that regenerates that file, and its tags. A number that is not in this file is not a number the paper may use. It also carries the **do-not-cite list** and the **no committed source** list.
 - `FRAMING.md` -- the write-up framing agreed at each phase gate, with its numbers interpolated from `NUMBERS.md` so the text cannot drift from the measurements.
 - `RECONCILIATION.md` -- the four project documents audited against their source files.
 - `PROVENANCE.json` -- the sha256 of every source file read, so a parity failure can distinguish 'the builder changed' from 'a result file changed'.
-- `tables/` -- 78 files: each table as `.csv` and as booktabs `.tex`.
+- `tables/` -- 84 files: each table as `.csv` and as booktabs `.tex`.
 - `figures/` -- 7 figures, each as `.pdf` and `.png` at 300 dpi, with the data behind it as `_data.csv` and its caption as `_caption.txt`.
 
 ## Conventions

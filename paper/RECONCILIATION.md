@@ -22,6 +22,10 @@ For each anchor, the document's stated value is compared against the value the c
 | cascade, deployment175 | `T1.cascade.deployment175` | 131/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | Tier-2-only, deployment175 | `T1.tier2only.deployment175` | 132/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | Tier-1-only, deployment175 | `T1.tier1only.deployment175` | 91/175 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
+| TF-IDF baseline, benchmark14 | `T1.tfidf_baseline.benchmark14` | 6/14 | ok | CLAUDE.md, README.md |
+| DistilBERT, benchmark14 | `T1.distilbert.benchmark14` | 7/14 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
+| self-retrieval contamination | `T5.self_retrieval_rate` | 10/175 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
+| cascade sweep, threshold at the 70% target | `T4.sweep.threshold.target70` | 0.50 | ok | CLAUDE.md, PROJECT_OVERVIEW.md, PROJECT_STATUS.md, README.md |
 | zero-shot Gemini, benchmark45 | `T1.zeroshot_gemini.benchmark45` | 40/45 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
 | zero-shot Gemini, benchmark14 | `T1.zeroshot_gemini.benchmark14` | 14/14 | ok | PROJECT_STATUS.md, README.md |
 | zero-shot Qwen, benchmark45 | `T1.zeroshot_qwen.benchmark45` | 34/45 | ok | CLAUDE.md, PROJECT_STATUS.md, README.md |
@@ -83,17 +87,17 @@ Every statistic-shaped token in the four documents -- decimals with three or mor
 | document | verdict | occurrences |
 |---|---|---|
 | CLAUDE.md | DO-NOT-CITE literal | 5 |
-| CLAUDE.md | matched to a committed source | 40 |
+| CLAUDE.md | matched to a committed source | 45 |
 | CLAUDE.md | unmatched | 46 |
 | PROJECT_OVERVIEW.md | DO-NOT-CITE literal | 1 |
-| PROJECT_OVERVIEW.md | matched to a committed source | 74 |
-| PROJECT_OVERVIEW.md | unmatched | 158 |
+| PROJECT_OVERVIEW.md | matched to a committed source | 79 |
+| PROJECT_OVERVIEW.md | unmatched | 153 |
 | PROJECT_STATUS.md | DO-NOT-CITE literal | 8 |
-| PROJECT_STATUS.md | matched to a committed source | 208 |
-| PROJECT_STATUS.md | unmatched | 257 |
+| PROJECT_STATUS.md | matched to a committed source | 213 |
+| PROJECT_STATUS.md | unmatched | 252 |
 | README.md | DO-NOT-CITE literal | 14 |
-| README.md | matched to a committed source | 244 |
-| README.md | unmatched | 555 |
+| README.md | matched to a committed source | 287 |
+| README.md | unmatched | 563 |
 
 ### DO-NOT-CITE literals still present in the documents
 
@@ -126,8 +130,4 @@ Nothing below was invented, re-derived or re-run. Each is a decision about the p
 
 | number | stated in the docs | where | why there is no source |
 |---|---|---|---|
-| Cascade threshold table by target accuracy (the three calibration attempts, two rejected) | three attempts; 0.50 chosen at a 70-80% target | README.md, cascade calibration section | train_cascade.py prints its sweep and writes no results file, so the threshold-by-target-accuracy table cannot be regenerated. |
-| Fine-tuned DistilBERT, 14-ticket benchmark | 7/14 (50.0%) | README.md, the three-way classifier comparison and Final Classification Comparison tables | train_distilbert.py writes only label_mapping.json -- no metrics file of any kind. |
-| Fine-tuned DistilBERT, 45-ticket benchmark | (absent) | (never measured) | DistilBERT was never run against the 45-ticket benchmark, and the embedding comparison CSV has no DistilBERT row. |
-| In-domain self-retrieval contamination rate 5.7% (10/175) | 5.7% (10/175) | README.md, the RAG threshold calibration section and What's Done vs What's Pending | calibrate_rag_similarity_threshold.py computes it but writes no column for it in either calibration CSV. |
-| TF-IDF + LogReg, 14-ticket benchmark | 7/14 (50.0%) | README.md, the three-way classifier comparison and Final Classification Comparison tables | train_baseline_tfidf.py and generalization_test.py print their results and write no file; no ablation --mode no-cascade run exists for benchmark14. |
+| Cascade calibration attempt 2: 34 of 35 hand-written tickets collapsed into one confidence bucket | 34/35 in one bucket | README.md, cascade calibration section | The 35-ticket hand-written calibration set was never committed and is absent from every revision in this repository's history, so the attempt cannot be re-run and its bucket counts cannot be regenerated. Phase 8A.1 sourced attempts 1 and 3 and recorded this one as status=no_artifact in data/cascade_calibration_attempts.csv rather than inventing it. |

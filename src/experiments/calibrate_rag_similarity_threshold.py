@@ -69,6 +69,15 @@ OUTPUT_COMBINED_CSV_PATH = os.path.join(
     DATA_DIR, "rag_similarity_calibration_combined.csv"
 )
 
+# Phase 8A.1. The in-domain self-retrieval contamination rate has always been
+# computed here and printed as a headline caveat, but was never written to a
+# column in either calibration CSV -- so the published "5.7% (10/175)" had no
+# committed machine-readable source. This file is a NEW, ADDITIONAL output:
+# neither CSV above changes, and the sweep is not touched.
+OUTPUT_SELF_RETRIEVAL_CSV_PATH = os.path.join(
+    DATA_DIR, "rag_self_retrieval_check.csv"
+)
+
 EMBED_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
 # Provenance markers for the printed comparison at the end.
@@ -848,6 +857,61 @@ def run():
     ok(f"Wrote {OUTPUT_COMBINED_CSV_PATH}")
     step(f"(Original {os.path.basename(OUTPUT_CSV_PATH)} intentionally left "
          "untouched.)")
+
+    # ---- Phase 8A.1: persist the self-retrieval contamination check. ----
+    # Per-ticket rows plus a TOTAL row. The TOTAL is RECOUNTED from the rows
+    # rather than copied from the counters computed during retrieval, and the
+    # two are compared below: a count that is wrong but internally consistent
+    # is this project's recurring bug, and a second derivation is the cheapest
+    # guard against it.
+    sr_fieldnames = [
+        "index", "own_id", "retrieved_id", "top_similarity",
+        "gt_category", "retrieved_category",
+        "exact_checkable", "is_exact_source_match",
+        "self_retrieval_hits", "self_retrieval_checkable",
+        "self_retrieval_rate",
+    ]
+    recount_hits = sum(1 for r in per_ticket if r["is_exact_source_match"])
+    recount_checkable = sum(1 for r in per_ticket if r["exact_checkable"])
+    if (recount_hits != self_retrieval_hits
+            or recount_checkable != self_retrieval_checkable):
+        raise CalibrationError(
+            "Self-retrieval counts disagree between the retrieval loop "
+            f"({self_retrieval_hits}/{self_retrieval_checkable}) and an "
+            f"independent recount of the per-ticket rows "
+            f"({recount_hits}/{recount_checkable}). Do not trust either "
+            "number until this is understood."
+        )
+    with open(OUTPUT_SELF_RETRIEVAL_CSV_PATH, "w", encoding="utf-8",
+              newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=sr_fieldnames)
+        writer.writeheader()
+        for r in per_ticket:
+            writer.writerow({
+                "index": r["index"],
+                "own_id": r["own_id"],
+                "retrieved_id": r["retrieved_id"],
+                "top_similarity": csv_cell(r["top_similarity"]),
+                "gt_category": r["gt_category"],
+                "retrieved_category": r["retrieved_category"],
+                "exact_checkable": int(bool(r["exact_checkable"])),
+                "is_exact_source_match": int(bool(r["is_exact_source_match"])),
+                "self_retrieval_hits": "",
+                "self_retrieval_checkable": "",
+                "self_retrieval_rate": "",
+            })
+        writer.writerow({
+            "index": "TOTAL",
+            "own_id": "", "retrieved_id": "", "top_similarity": "",
+            "gt_category": "", "retrieved_category": "",
+            "exact_checkable": "", "is_exact_source_match": "",
+            "self_retrieval_hits": recount_hits,
+            "self_retrieval_checkable": recount_checkable,
+            "self_retrieval_rate": csv_cell(self_retrieval_rate),
+        })
+    ok(f"Wrote {OUTPUT_SELF_RETRIEVAL_CSV_PATH}")
+    step(f"(Self-retrieval: {recount_hits}/{recount_checkable}, confirmed by "
+         "an independent recount of the per-ticket rows.)")
 
     # ---- Find cliff-edge on the COMBINED metric + recommendation. ----
     banner("RECOMMENDATION (from COMBINED metric)")

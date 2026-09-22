@@ -7,8 +7,8 @@
 \toprule
 method & kind & benchmark14 & benchmark45 & benchmark45\_pct & benchmark45\_ci\_low & benchmark45\_ci\_high & deployment175 & note \\
 \midrule
-TF-IDF + LogReg (Tier-1 only) & trained & n/a (no committed source) & 16/45 & 35.5556 & 0.232189 & 0.501645 & 91/175 &  \\
-Fine-tuned DistilBERT & trained & n/a (no committed source) & n/a (no committed source) & -- & -- & -- & n/a (no committed source) &  \\
+TF-IDF + LogReg (Tier-1 only) & trained & 6/14 & 16/45 & 35.5556 & 0.232189 & 0.501645 & 91/175 &  \\
+Fine-tuned DistilBERT & trained & 7/14 & 18/45 & 40 & 0.270247 & 0.545484 & n/a (not run) & best-generalizing epoch 1 of fresh\_retrain; the 45-ticket cell is a NEW measurement and two runs of this configuration differ by three tickets on it \\
 all-MiniLM-L6-v2 + LogReg & trained & 10/14 & 32/45 & 71.1111 & 0.566312 & 0.822701 & n/a (not run) &  \\
 intfloat/e5-base-v2 + LogReg & trained & 10/14 & 27/45 & 60 & 0.454516 & 0.729753 & n/a (not run) &  \\
 BGE-base-en-v1.5 + LogReg (Tier-2 only) & trained & 10/14 & 33/45 & 73.3333 & 0.589609 & 0.840353 & 132/175 & production representation \\

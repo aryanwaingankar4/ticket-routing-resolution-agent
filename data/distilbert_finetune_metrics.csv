@@ -1,0 +1,9 @@
+run,epoch,val_accuracy,benchmark14_correct,benchmark14_total,benchmark45_correct,benchmark45_total,is_best_epoch,batch_size,device,learning_rate,max_length,num_epochs,seed,torch_version,transformers_version,weight_decay
+existing_checkpoints,1,,7,14,21,45,1,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+existing_checkpoints,2,,7,14,21,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+existing_checkpoints,3,,7,14,21,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+existing_checkpoints,4,,7,14,21,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+fresh_retrain,1,1.000000,7,14,18,45,1,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+fresh_retrain,2,1.000000,7,14,18,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+fresh_retrain,3,1.000000,7,14,19,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01
+fresh_retrain,4,1.000000,7,14,19,45,0,16,cpu,2e-05,128,4,42,2.13.0+cpu,5.14.1,0.01

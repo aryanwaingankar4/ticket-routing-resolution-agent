@@ -79,6 +79,7 @@ more errors in exchange for Y% fewer expensive-tier calls.
 
 from __future__ import annotations
 
+import csv
 import os
 import sys
 import json
@@ -145,6 +146,20 @@ TIER1_ACCEPT_ACCURACY_TARGET = 0.90  # accept-tier accuracy we want to hold at
 # reproduces the single-threshold result; the lower bars characterize the
 # accuracy/efficiency tradeoff of relaxing the accept-tier accuracy requirement.
 ACCURACY_TARGETS_TO_TEST = [0.90, 0.80, 0.70]
+
+# Confidence buckets used by every calibration table and by the threshold
+# derivation. Defined ONCE (Phase 8A.1) -- previously duplicated in three
+# places. Same values as before.
+CONFIDENCE_BIN_EDGES = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
+CONFIDENCE_BIN_LABELS = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%",
+                         "90-100%"]
+
+# Phase 8A.1 result files. Until 8A.1 this script printed its sweep and wrote
+# nothing, so the README's threshold-by-target-accuracy table and the
+# "three attempts, two rejected" calibration story had no committed
+# machine-readable source.
+SWEEP_CSV_NAME = "cascade_threshold_sweep.csv"
+ATTEMPTS_CSV_NAME = "cascade_calibration_attempts.csv"
 
 EMBED_MODEL_NAME = "BAAI/bge-base-en-v1.5"
 
@@ -621,6 +636,90 @@ def train_tier2_from_embeddings(train_emb, y_train):
     clf.fit(train_emb, y_train)
     return clf
 
+def results_path(name):
+    """data/<name>, resolved two directories up from this file (project rule)."""
+    return os.path.join(get_project_root(), "data", name)
+
+
+def bucket_stats(tier1_conf, correct):
+    """Per-bucket count and observed accuracy, over the shared bin edges.
+
+    A pure read of the same numbers the calibration tables print. It derives
+    nothing and decides nothing -- it exists so the printed table can be
+    written to a file without touching the derivation.
+    """
+    tier1_conf = np.asarray(tier1_conf)
+    correct = np.asarray(correct)
+    out = []
+    for i, label in enumerate(CONFIDENCE_BIN_LABELS):
+        lo, hi = CONFIDENCE_BIN_EDGES[i], CONFIDENCE_BIN_EDGES[i + 1]
+        mask = (tier1_conf >= lo) & (tier1_conf < hi)
+        cnt = int(mask.sum())
+        out.append({
+            "bucket": label,
+            "bucket_low": lo,
+            "bucket_high": min(hi, 1.0),
+            "count": cnt,
+            "observed_accuracy": (float(correct[mask].mean()) if cnt else ""),
+        })
+    return out
+
+
+def write_sweep_csv(rows, path=None):
+    """The threshold-by-target-accuracy sweep, exactly as run_tradeoff_analysis
+    computed it. No value is recomputed here."""
+    path = path or results_path(SWEEP_CSV_NAME)
+    fieldnames = ["target_accuracy", "derived_threshold",
+                  "held_out_tier1_pct", "held_out_cascade_accuracy",
+                  "novel_tier1_pct", "novel_cascade_accuracy",
+                  "expanded45_tier1_pct", "expanded45_cascade_accuracy"]
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: row[k] for k in fieldnames})
+    return path
+
+
+def write_calibration_attempts_csv(attempts, path=None):
+    """The three calibration attempts, one row per confidence bucket.
+
+    Attempt 2 (35 hand-written tickets) is recorded as `status=no_artifact`
+    with no numbers: that set was never committed and is absent from every
+    revision in the repository's history, so it cannot be re-run. It is listed
+    rather than omitted so the gap is visible in the file itself.
+    """
+    path = path or results_path(ATTEMPTS_CSV_NAME)
+    fieldnames = ["attempt", "attempt_name", "status", "verdict", "n_tickets",
+                  "bucket", "bucket_low", "bucket_high", "count",
+                  "observed_accuracy", "derived_threshold", "target_accuracy"]
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for attempt in attempts:
+            base = {
+                "attempt": attempt["attempt"],
+                "attempt_name": attempt["attempt_name"],
+                "status": attempt["status"],
+                "verdict": attempt["verdict"],
+                "n_tickets": attempt.get("n_tickets", ""),
+                "derived_threshold": attempt.get("derived_threshold", ""),
+                "target_accuracy": attempt.get("target_accuracy", ""),
+            }
+            buckets = attempt.get("buckets")
+            if not buckets:
+                row = dict(base)
+                row.update({"bucket": "", "bucket_low": "", "bucket_high": "",
+                            "count": "", "observed_accuracy": ""})
+                writer.writerow(row)
+                continue
+            for bucket in buckets:
+                row = dict(base)
+                row.update(bucket)
+                writer.writerow(row)
+    return path
+
+
 def derive_threshold_for_target(tier1_conf, correct, target_accuracy):
     """Derive a cascade confidence threshold for an EXPLICIT target accuracy.
 
@@ -655,8 +754,8 @@ def derive_threshold_for_target(tier1_conf, correct, target_accuracy):
     tier1_conf = np.asarray(tier1_conf)
     correct = np.asarray(correct)
 
-    edges = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
-    labels = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]
+    edges = CONFIDENCE_BIN_EDGES
+    labels = CONFIDENCE_BIN_LABELS
 
     bin_stats = []
     for i in range(len(labels)):
@@ -701,8 +800,8 @@ def run_calibration_analysis(y_true, tier1_preds, tier1_conf):
     tier1_conf = np.asarray(tier1_conf)
     correct = (tier1_preds == y_true).astype(int)
 
-    edges = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
-    labels = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]
+    edges = CONFIDENCE_BIN_EDGES
+    labels = CONFIDENCE_BIN_LABELS
 
     print("\n" + "=" * 66)
     print("TIER-1 CONFIDENCE CALIBRATION (held-out test split)")
@@ -795,8 +894,8 @@ def run_calibration_analysis_on_calibration_set(y_true, tier1_preds, tier1_conf)
     tier1_conf = np.asarray(tier1_conf)
     correct = (tier1_preds == y_true).astype(int)
 
-    edges = [0.0, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0001]
-    labels = ["<50%", "50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]
+    edges = CONFIDENCE_BIN_EDGES
+    labels = CONFIDENCE_BIN_LABELS
 
     print("\n" + "=" * 66)
     print("TIER-1 CONFIDENCE CALIBRATION (separate paraphrased calibration set)")
@@ -1460,6 +1559,92 @@ def main():
         expanded45_expected=expanded45_expected,
         expanded45_emb=expanded45_emb,
     )
+
+    # ---------------------------------------------------------------------- #
+    # Phase 8A.1: write what this script has always printed.                  #
+    #                                                                        #
+    # Nothing below derives a threshold. Every value written is one that was  #
+    # already computed above; the only new work is the INDEPENDENT SECOND     #
+    # DERIVATION that guards it, because this project's recurring bug is a    #
+    # number that is wrong for its context and internally consistent.         #
+    # ---------------------------------------------------------------------- #
+    heldout_correct = (np.asarray(t1_preds_test) == np.asarray(y_test)).astype(int)
+    recheck_heldout, _ = derive_threshold_for_target(
+        t1_conf_test, heldout_correct, TIER1_ACCEPT_ACCURACY_TARGET)
+    recheck_calib, _ = derive_threshold_for_target(
+        calib_conf, calib_correct, TIER1_ACCEPT_ACCURACY_TARGET)
+    # Both analysis functions cap the same way: values at or below 1.0 are
+    # clamped to 1.0, and the 1.0001 "escalate everything" sentinel is passed
+    # through unchanged. Mirror that here rather than re-inventing it.
+    def _cap(value):
+        return float(min(value, 1.0)) if value <= 1.0 else float(value)
+
+    recheck_heldout = _cap(recheck_heldout)
+    recheck_calib = _cap(recheck_calib)
+    if abs(recheck_heldout - heldout_threshold) > 1e-9:
+        print(f"[ERROR] Held-out threshold disagrees with an independent "
+              f"re-derivation: {heldout_threshold} vs {recheck_heldout}.")
+        sys.exit(1)
+    if abs(recheck_calib - calib_threshold) > 1e-9:
+        print(f"[ERROR] Calibration-set threshold disagrees with an "
+              f"independent re-derivation: {calib_threshold} vs "
+              f"{recheck_calib}.")
+        sys.exit(1)
+
+    for row in tradeoff_rows:
+        again, _ = derive_threshold_for_target(
+            calib_conf, calib_correct, row["target_accuracy"])
+        again = min(again, 1.0) if again <= 1.0 else again
+        if abs(again - row["derived_threshold"]) > 1e-9:
+            print(f"[ERROR] Sweep row for target "
+                  f"{row['target_accuracy']:.0%} disagrees with an "
+                  f"independent re-derivation: {row['derived_threshold']} "
+                  f"vs {again}.")
+            sys.exit(1)
+
+    attempts = [
+        {
+            "attempt": 1,
+            "attempt_name": "in-distribution held-out split",
+            "status": "run",
+            "verdict": "rejected - every bucket ~100% accurate, so the "
+                       "derived threshold looked trustworthy but missed "
+                       "confidently-wrong out-of-distribution predictions",
+            "n_tickets": len(t1_conf_test),
+            "derived_threshold": heldout_threshold,
+            "target_accuracy": TIER1_ACCEPT_ACCURACY_TARGET,
+            "buckets": bucket_stats(t1_conf_test, heldout_correct),
+        },
+        {
+            "attempt": 2,
+            "attempt_name": "35 hand-written calibration tickets",
+            "status": "no_artifact",
+            "verdict": "rejected at the time as too sparse (34 of 35 collapsed "
+                       "into one bucket). The set itself was never committed "
+                       "and is absent from every revision in this "
+                       "repository's history, so it cannot be re-run and its "
+                       "numbers have no source.",
+        },
+        {
+            "attempt": 3,
+            "attempt_name": "175 Gemini-paraphrased calibration tickets",
+            "status": "run",
+            "verdict": "adopted - dense enough to reveal Tier-1's real "
+                       "overconfidence on non-template phrasing; this is the "
+                       "threshold the cascade applies",
+            "n_tickets": len(calib_conf),
+            "derived_threshold": calib_threshold,
+            "target_accuracy": TIER1_ACCEPT_ACCURACY_TARGET,
+            "buckets": bucket_stats(calib_conf, calib_correct),
+        },
+    ]
+
+    sweep_path = write_sweep_csv(tradeoff_rows)
+    attempts_path = write_calibration_attempts_csv(attempts)
+    print(f"\n[write] Threshold sweep          -> {sweep_path}")
+    print(f"[write] Calibration attempts     -> {attempts_path}")
+    print("[check] Every derived threshold reproduced by an independent "
+          "second derivation.")
 
     print("\n[done] Cascade pipeline complete.")
 

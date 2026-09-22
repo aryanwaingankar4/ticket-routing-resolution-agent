@@ -1,8 +1,10 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `b243a2f` — Phase 8A (the paper
-artifact builder). **All four gates passed and it was PUSHED on 2026-09-22.**
+**Last commit to move code or a result:** Phase 8A.1 — giving the five "no
+committed source" numbers a source. See the 8A.1 block below for the SHA and
+the gate outcome.
+Phase 8A (`b243a2f`) is gated and PUSHED.
 Phase 6C (`c5497bf`) is also gated and PUSHED.
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
 Phase 7B (`f789b8d`) is also gated and PUSHED.
@@ -12,7 +14,60 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 8A — COMPLETE, GATED and PUSHED** (`b243a2f`, 2026-09-22). Every paper number, table
+**Current phase: Phase 8A.1 — COMPLETE (2026-09-22).** The five numbers 8A
+flagged as having no committed machine-readable source now have one, except
+the one that cannot. Each script that printed a number got a **writer**, and
+each was re-run in its **original configuration** (seed 42, same split, same
+settings). Offline: **zero Gemini calls, zero Ollama calls.** Production
+frozen; `conformal.enabled` and `drift.enabled` stay `False`.
+
+**Reproduced exactly (4):** the cascade threshold-by-target-accuracy sweep
+(1.0001 / 0.50 / 0.50 at the 90/80/70 bars; 14-ticket Tier-1 share
+0.0% / 21.4% / 21.4%; 14-ticket accuracy 71.4% throughout), the
+self-retrieval contamination rate (**10/175 = 5.7%**, with both existing
+calibration CSVs byte-identical afterwards), fine-tuned DistilBERT's
+**7/14** (on a from-scratch retrain, at every epoch of both runs), and both
+**100.0%** in-distribution figures.
+
+**DID NOT REPRODUCE (1): the TF-IDF baseline's 14-ticket score is 6/14
+(42.9%), not 7/14.** Three independent derivations agree — the original
+full-4,000-row fit, an 80/20-split fit added as a secondary arm, and the
+persisted production Tier-1 artifact (same hyperparameters, different script,
+saved months earlier). 7/14 is on the **do-not-cite** list and the documents
+are corrected. Likely cause: it was measured on the earlier **1,000-ticket**
+corpus and never re-measured after the scale-up — the DistilBERT row in the
+same table still carries its "at 1,000 tickets" caveat and the TF-IDF row
+never did. **Unconfirmable** (that corpus was never committed), so it is
+recorded as a hypothesis, not a cause. The conclusion is unchanged and
+slightly strengthened: the gap to frozen embeddings is four tickets, not
+three.
+
+**NEW MEASUREMENT: DistilBERT on the 45-ticket benchmark**, never run before.
+**It does not carry a single-ticket reading** — the retrain's best epoch
+scores **18/45 (40.0%)** and the original checkpoints score **21/45 (46.7%)**.
+Two runs of an identical configuration differ by three tickets, so CPU
+fine-tuning reproduces exactly on the 14-ticket axis and **not** on this one.
+Both are committed; **no ordered comparison** between them — two draws do not
+measure a difference.
+
+**Still no source (1):** cascade calibration **attempt 2**, "34 of 35
+hand-written tickets in one bucket". That set was never committed and is
+absent from every revision in the repository's history, so it cannot be
+re-run. Recorded as `status=no_artifact` in the attempts CSV. Nothing was
+invented.
+
+**Paper surface:** `paper/NUMBERS.md` goes **161 → 188 numbers** over
+**45 → 51 hashed sources**, 42 table CSV frames, no-source list **5 → 1**,
+**0 anchored mismatches**. Six new committed result files under `data/`.
+Three cleanups landed with it: `train_cascade.py`'s three duplicate copies of
+the confidence bin edges collapsed to one constant (values unchanged),
+`train_distilbert.py`'s hardcoded `7/14` replaced by a read of the committed
+baseline file, and both benchmarks scored by one loop so they cannot drift
+apart.
+
+**Next: Phase 8B (Docker + CI).**
+
+**Phase 8A is COMPLETE, GATED and PUSHED** (`b243a2f`, 2026-09-22). Every paper number, table
 and figure now regenerates from committed result files through one script,
 `src/experiments/build_paper_artifacts.py`. Offline: **zero Gemini calls, zero
 Ollama calls, no model load, no training run, no experiment re-run.** It reads
@@ -49,7 +104,7 @@ they are flagged for a write-up decision. One write-up correction: the
 reliability ECEs are a **ceiling effect** — observed accuracy is 1.0 in every
 bin, so both tiers are **under-confident**, never "over-confident".
 
-Nothing promoted; production frozen. **Next: Phase 8B (Docker + CI).**
+Nothing promoted; production frozen. **Followed by Phase 8A.1 above.**
 
 **Phase 6C is COMPLETE, GATED and PUSHED** (`c5497bf`, 2026-09-22).
 **Verdict: a retrieval-sufficiency check catches both 2B misses and is STILL
@@ -160,9 +215,14 @@ first. Everything between is the record of what has already landed.
 | Check | Command | Current |
 |---|---|---|
 | Test suite | `pytest` | **418 passed** (406 + 12 from 8A), 0 failed/skipped, offline |
-| **Paper artifacts (8A)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **161 numbers**, 45 sources hashed; byte-for-byte deterministic incl. PDF/PNG |
-| Paper parity (8A) | `pytest tests/test_paper_artifacts.py` | 12 passed — NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
-| Document reconciliation (8A) | same script, `RECONCILIATION.md` | **54 anchors, 0 mismatches**; **5 numbers with no committed source**; 2 z-conventions recorded |
+| **Paper artifacts (8A.1)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **188 numbers**, **51 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
+| Paper parity (8A.1) | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
+| Document reconciliation (8A.1) | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source** (was 5); 2 z-conventions recorded |
+| **TF-IDF baseline, benchmark14 (8A.1)** | `generalization_test.py` | **6/14 (42.9%)** — the published 7/14 **does not reproduce**; 3 independent derivations agree |
+| DistilBERT, benchmark14 (8A.1) | `train_distilbert.py --backup-existing` | **7/14** — reproduces exactly, every epoch of both runs |
+| DistilBERT, benchmark45 (8A.1) | same | **18/45** retrain vs **21/45** original checkpoints — NEW measurement, ±3 tickets between runs |
+| Cascade threshold sweep (8A.1) | `train_cascade.py` | **1.0001 / 0.50 / 0.50** at the 90/80/70 bars — reproduces exactly |
+| Self-retrieval contamination (8A.1) | `calibrate_rag_similarity_threshold.py` | **10/175 (5.7%)** — reproduces exactly; existing CSVs byte-identical |
 | **Sufficiency gate (6C)** | `score_sufficiency_gate.py` | **caught 2/2, flagged 26/31** — false-flag 0.839, Wilson [0.674, 0.929]; **not usable as a gate** |
 | Sufficiency vs the live gate (6C) | same script | **20/21** agree; the 1 disagreement (N45, 0.6397) is context the gate escalated **although it was adequate** |
 | Sufficiency cross-family (6C) | `run_sufficiency_autorater.py --backend ollama` | Qwen2.5-3B agrees **39/54 (0.722)**, prompts **54/54 byte-identical**, **misses 1 of 2** positives |
@@ -1887,6 +1947,7 @@ reality. Any write-up must say so in those words.
 | Sub-phase | Scope |
 |---|---|
 | **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it — **DONE and GATED**. 16 tables, 7 figures, 161 numbers; audit 54 anchors / 0 mismatches / 5 no-source |
+| **8A.1** | Give the five "no committed source" numbers a source — **DONE**. 4 sourced, 1 unsourceable, and **1 non-reproduction (TF-IDF 6/14, not 7/14)**. 188 numbers / 51 sources / 59 anchors / 0 mismatches |
 | **8B** | Docker + CI (the Docker/CI item from the original agreed roadmap) |
 
 8A is the structural answer to this project's recurring bug class: every number
@@ -1943,13 +2004,25 @@ endpoint.
 **Phase 8B — Docker + CI.** Offline, no Gemini quota. Opens in plan mode like
 every sub-phase.
 
-**8A is DONE and GATED**, so the reproducibility layer exists and CI has
-something worth enforcing: `pytest` (418), the adversarial gate at 9/9 with
+**8A and 8A.1 are DONE**, so the reproducibility layer exists and CI has
+something worth enforcing: `pytest`, the adversarial gate at 9/9 with
 its CSV byte-identical, goldens 45/45 and 9/9, the ablation baseline at 32/45,
-and now **paper parity** — `tests/test_paper_artifacts.py`, which fails if any
+and **paper parity** — `tests/test_paper_artifacts.py`, which fails if any
 published number, table CSV or figure-data CSV drifts.
 
-### What 8A left for the write-up to decide
+**8A.1 is the argument for putting paper parity in CI.** The number it caught
+(TF-IDF 7/14 → 6/14) had been wrong in the README for as long as the dataset
+had been 4,000 rows, and nothing could have caught it, because no file
+recorded it. Now one does, and the parity test compares it on every run.
+
+### What 8A left for the write-up to decide — SETTLED BY 8A.1
+
+**Superseded.** 8A.1 took the third option for four of the five (add the
+missing writer and re-run the original configuration) and established that the
+fifth cannot be sourced at all. One of the four **did not reproduce**: the
+TF-IDF baseline's 14-ticket score is **6/14**, not 7/14. See the 8A.1 block at
+the top of this file. The original list is kept below as the record of what
+8A found.
 
 **Five numbers have no committed machine-readable source.** They are flagged
 in `paper/NUMBERS.md` and `paper/RECONCILIATION.md`, never quoted as though

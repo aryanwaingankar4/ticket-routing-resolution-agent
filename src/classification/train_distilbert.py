@@ -33,6 +33,10 @@ Run from the project root:
 import os
 import sys
 import json
+import argparse
+import csv
+import json
+import shutil
 import time
 import random
 
@@ -80,11 +84,33 @@ SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
+# Phase 8A.1: seed everything else that is reachable. CPU fine-tuning is not
+# guaranteed to be bit-reproducible across library versions even so, which is
+# exactly why the metrics file records the torch/transformers versions beside
+# every number it carries.
+os.environ.setdefault("PYTHONHASHSEED", str(SEED))
+try:
+    torch.cuda.manual_seed_all(SEED)
+except Exception:
+    pass
 # Keep torch deterministic-ish on CPU; harmless if already default.
 try:
     torch.use_deterministic_algorithms(False)  # avoid errors on ops without det impl
 except Exception:
     pass
+
+
+def seeded_generator():
+    """A DataLoader shuffle generator with its own fixed seed.
+
+    Without this, shuffling draws from the global torch RNG, whose state
+    depends on everything that consumed it earlier in the process -- so the
+    batch order changes if anything upstream changes. Pinning it here is the
+    difference between "seeded" and "reproducible".
+    """
+    gen = torch.Generator()
+    gen.manual_seed(SEED)
+    return gen
 
 
 # ----------------------------------------------------------------------------
@@ -106,6 +132,18 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 CSV_PATH = os.path.join(PROJECT_ROOT, "data", "synthetic_tickets.csv")
 MODEL_DIR = os.path.join(PROJECT_ROOT, "models", "distilbert_ticket_classifier")
+
+# Phase 8A.1. This script wrote only label_mapping.json, so the published
+# "fine-tuned DistilBERT, 7/14" had no committed machine-readable source and
+# the 45-ticket benchmark had never been run against it at all. It now writes
+# a metrics file covering both benchmarks, for every epoch.
+#
+# The 45-ticket set is READ-ONLY, like every benchmark in this project.
+EXPANDED_JSON_PATH = os.path.join(PROJECT_ROOT, "data",
+                                  "novel_tickets_expanded.json")
+METRICS_CSV_PATH = os.path.join(PROJECT_ROOT, "data",
+                                "distilbert_finetune_metrics.csv")
+EXPECTED_EXPANDED_COUNT = 45
 
 MODEL_NAME = "distilbert-base-uncased"
 
@@ -206,6 +244,127 @@ NOVEL_TICKETS = [
 def epoch_dir(n):
     """Folder for a specific epoch's checkpoint."""
     return os.path.join(MODEL_DIR, "epoch_{}".format(n))
+
+
+# ----------------------------------------------------------------------------
+# Phase 8A.1: the 45-ticket benchmark, and the metrics file.
+# ----------------------------------------------------------------------------
+def load_expanded_benchmark():
+    """Load the read-only 45-ticket benchmark, with the project's count gate.
+
+    The count check is not decoration: silently scoring 44 or 46 tickets would
+    produce a plausible, internally-consistent, wrong number -- this repo's
+    recurring bug class.
+    """
+    if not os.path.exists(EXPANDED_JSON_PATH):
+        print("[ERROR] 45-ticket benchmark not found at:\n        {}".format(
+            EXPANDED_JSON_PATH))
+        print("        This file is read-only project data and must exist.")
+        sys.exit(1)
+    try:
+        with open(EXPANDED_JSON_PATH, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception as e:  # noqa: BLE001
+        print("[ERROR] Failed to read {}: {}".format(EXPANDED_JSON_PATH, e))
+        sys.exit(1)
+    if not isinstance(data, list) or len(data) != EXPECTED_EXPANDED_COUNT:
+        print("[ERROR] {} must contain exactly {} records, found {}.".format(
+            EXPANDED_JSON_PATH, EXPECTED_EXPANDED_COUNT,
+            len(data) if isinstance(data, list) else "a non-list"))
+        sys.exit(1)
+    for i, rec in enumerate(data):
+        if not isinstance(rec, dict) or "text" not in rec \
+                or "expected" not in rec:
+            print("[ERROR] {} record #{} is missing 'text' or "
+                  "'expected'.".format(EXPANDED_JSON_PATH, i))
+            sys.exit(1)
+        if rec["expected"] not in EXPECTED_CATEGORIES:
+            print("[ERROR] {} record #{} has expected label {!r}, which is "
+                  "not a training category.".format(
+                      EXPANDED_JSON_PATH, i, rec["expected"]))
+            sys.exit(1)
+    return data
+
+
+def score_benchmark(model, tokenizer, id2label, tickets, verbose=False):
+    """Score a model against a list of {text, expected} tickets.
+
+    ONE implementation for both benchmarks, so the 14- and 45-ticket numbers
+    cannot drift apart through a copied-and-edited scoring loop.
+    """
+    texts = [t["text"] for t in tickets]
+    expected = [t["expected"] for t in tickets]
+    pred_ids = predict_ids(model, tokenizer, texts)
+    pred_labels = [id2label[i] for i in pred_ids]
+
+    correct = 0
+    for want, got, text in zip(expected, pred_labels, texts):
+        is_correct = (want == got)
+        if is_correct:
+            correct += 1
+        if verbose:
+            tag = "[CORRECT]" if is_correct else "[WRONG]  "
+            print("{} expected={} predicted={}".format(tag, want, got))
+            print("    {}".format(text))
+
+    n = len(tickets)
+    pct = 100.0 * correct / n if n else 0.0
+    return correct, n, pct
+
+
+def environment_stamp():
+    """Library versions that can move a fine-tuning result on their own."""
+    try:
+        import transformers
+        transformers_version = transformers.__version__
+    except Exception:  # noqa: BLE001
+        transformers_version = "unknown"
+    return {
+        "torch_version": torch.__version__,
+        "transformers_version": transformers_version,
+        "seed": SEED,
+        "device": str(DEVICE),
+        "num_epochs": NUM_EPOCHS,
+        "batch_size": BATCH_SIZE,
+        "max_length": MAX_LENGTH,
+        "learning_rate": LEARNING_RATE,
+        "weight_decay": WEIGHT_DECAY,
+    }
+
+
+def write_metrics_csv(run_label, epoch_records, path=METRICS_CSV_PATH,
+                      append=False):
+    """One row per epoch, with the environment stamped on every row.
+
+    `append` lets the evaluate-existing pass and the fresh retrain land in one
+    file without either overwriting the other.
+    """
+    stamp = environment_stamp()
+    fieldnames = ["run", "epoch", "val_accuracy",
+                  "benchmark14_correct", "benchmark14_total",
+                  "benchmark45_correct", "benchmark45_total",
+                  "is_best_epoch"] + sorted(stamp)
+    exists = os.path.exists(path)
+    mode = "a" if (append and exists) else "w"
+    with open(path, mode, encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames)
+        if mode == "w":
+            writer.writeheader()
+        for rec in epoch_records:
+            row = {
+                "run": run_label,
+                "epoch": rec["epoch"],
+                "val_accuracy": ("" if rec.get("val_acc") is None
+                                 else "{:.6f}".format(rec["val_acc"])),
+                "benchmark14_correct": rec["gen_correct"],
+                "benchmark14_total": rec["gen_n"],
+                "benchmark45_correct": rec.get("gen45_correct", ""),
+                "benchmark45_total": rec.get("gen45_n", ""),
+                "is_best_epoch": int(bool(rec.get("is_best"))),
+            }
+            row.update(stamp)
+            writer.writerow(row)
+    return path
 
 
 # ============================================================================
@@ -437,32 +596,39 @@ def print_confusion_matrix(y_true, y_pred, label_names):
 #                    per-epoch summary line
 # ============================================================================
 def run_generalization_test(model, tokenizer, id2label, verbose=False):
-    novel_texts = [t["text"] for t in NOVEL_TICKETS]
-    novel_expected = [t["expected"] for t in NOVEL_TICKETS]
-    novel_pred_ids = predict_ids(model, tokenizer, novel_texts)
-    novel_pred_labels = [id2label[i] for i in novel_pred_ids]
-
-    correct = 0
-    for expected, predicted, text in zip(
-            novel_expected, novel_pred_labels, novel_texts):
-        is_correct = (expected == predicted)
-        if is_correct:
-            correct += 1
-        if verbose:
-            tag = "[CORRECT]" if is_correct else "[WRONG]  "
-            print("{} expected={} predicted={}".format(tag, expected, predicted))
-            print("    {}".format(text))
-
-    n = len(NOVEL_TICKETS)
-    pct = 100.0 * correct / n
-    return correct, n, pct
+    # Phase 8A.1: delegates to score_benchmark() so the 14- and 45-ticket
+    # numbers come from one scoring loop rather than two copies of it.
+    return score_benchmark(model, tokenizer, id2label, NOVEL_TICKETS,
+                           verbose=verbose)
 
 
 # ============================================================================
 # Final 3-way comparison, computed against a chosen (best) epoch's score.
 # ============================================================================
+def read_tfidf_benchmark14():
+    """The TF-IDF baseline's 14-ticket score, READ FROM ITS RESULT FILE.
+
+    Phase 8A.1: this was a hardcoded 7/14 -- a retyped number with no source,
+    and re-running the baseline showed it is now 6/14. Reading the committed
+    file means this comparison cannot silently go stale again. Returns None if
+    the baseline has not been run, and the caller says so rather than guessing.
+    """
+    path = os.path.join(PROJECT_ROOT, "data", "baseline_tfidf_benchmark14.csv")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for row in csv.DictReader(fh):
+                if row["fit_scope"] == "full4000" \
+                        and row["ticket_index"] == "TOTAL":
+                    return int(row["n_correct"]), int(row["n_total"])
+    except Exception:  # noqa: BLE001
+        return None
+    return None
+
+
 def print_three_way_comparison(correct, n, pct, best_epoch):
-    tfidf_correct, tfidf_pct = 7, 50.0
+    tfidf = read_tfidf_benchmark14()
     minilm_correct, minilm_pct = 10, 71.4
 
     print("\n" + "=" * 70)
@@ -470,18 +636,26 @@ def print_three_way_comparison(correct, n, pct, best_epoch):
     print("=" * 70)
     print("(DistilBERT figure below is the BEST-GENERALIZING epoch: "
           "epoch {})".format(best_epoch))
-    print("TF-IDF baseline:            {}/14 ({:.1f}%)".format(
-        tfidf_correct, tfidf_pct))
+    if tfidf is None:
+        print("TF-IDF baseline:            not available -- run "
+              "generalization_test.py to produce "
+              "data/baseline_tfidf_benchmark14.csv")
+    else:
+        tfidf_correct, tfidf_n = tfidf
+        tfidf_pct = 100.0 * tfidf_correct / tfidf_n
+        print("TF-IDF baseline:            {}/{} ({:.1f}%)".format(
+            tfidf_correct, tfidf_n, tfidf_pct))
     print("Frozen embeddings (MiniLM): {}/14 ({:.1f}%)".format(
         minilm_correct, minilm_pct))
     print("Fine-tuned DistilBERT:      {}/{} ({:.1f}%)".format(
         correct, n, pct))
 
     print("\nDeltas (Fine-tuned DistilBERT vs each baseline):")
-    d_tfidf = correct - tfidf_correct
+    if tfidf is not None:
+        print("  vs TF-IDF:            {:+d} tickets  "
+              "({:+.1f} pct points)".format(
+                  correct - tfidf_correct, pct - tfidf_pct))
     d_minilm = correct - minilm_correct
-    print("  vs TF-IDF:            {:+d} tickets  ({:+.1f} pct points)".format(
-        d_tfidf, pct - tfidf_pct))
     print("  vs MiniLM embeddings: {:+d} tickets  ({:+.1f} pct points)".format(
         d_minilm, pct - minilm_pct))
 
@@ -542,7 +716,9 @@ def print_summary_and_pick_best(epoch_records):
 # Rebuild the summary from whatever epoch_N folders already exist on disk
 # (used by the "training already completed" resume path).
 # ============================================================================
-def summarize_existing_checkpoints():
+def summarize_existing_checkpoints(run_label="existing_checkpoints",
+                                   append_metrics=False):
+    expanded = load_expanded_benchmark()
     epoch_records = []
     found_any = False
     for n in range(1, NUM_EPOCHS + 1):
@@ -558,17 +734,24 @@ def summarize_existing_checkpoints():
             continue
         gen_correct, gen_n, gen_pct = run_generalization_test(
             model, tokenizer, id2label, verbose=False)
+        gen45_correct, gen45_n, gen45_pct = score_benchmark(
+            model, tokenizer, id2label, expanded, verbose=False)
         # In-dist val acc is not recomputed here (no split reload needed for
         # the resume summary); mark as n/a.
         print("Epoch {}/{}: in-dist val_acc=n/a (resumed) | "
-              "generalization={}/{} ({:.1f}%)".format(
-                  n, NUM_EPOCHS, gen_correct, gen_n, gen_pct))
+              "benchmark14={}/{} ({:.1f}%) | benchmark45={}/{} "
+              "({:.1f}%)".format(
+                  n, NUM_EPOCHS, gen_correct, gen_n, gen_pct,
+                  gen45_correct, gen45_n, gen45_pct))
         epoch_records.append({
             "epoch": n,
             "val_acc": None,
             "gen_correct": gen_correct,
             "gen_n": gen_n,
             "gen_pct": gen_pct,
+            "gen45_correct": gen45_correct,
+            "gen45_n": gen45_n,
+            "gen45_pct": gen45_pct,
         })
         # free memory between checkpoints
         del model, tokenizer
@@ -579,6 +762,11 @@ def summarize_existing_checkpoints():
         sys.exit(1)
 
     best = print_summary_and_pick_best(epoch_records)
+    for rec in epoch_records:
+        rec["is_best"] = (rec["epoch"] == best["epoch"])
+    path = write_metrics_csv(run_label, epoch_records,
+                             append=append_metrics)
+    print("\n[write] Per-epoch metrics ({}) -> {}".format(run_label, path))
 
     # Re-run the verbose generalization report + 3-way comparison on the best.
     best_dir = epoch_dir(best["epoch"])
@@ -595,7 +783,31 @@ def summarize_existing_checkpoints():
 # ============================================================================
 # Main
 # ============================================================================
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Fine-tune DistilBERT for IT-support ticket "
+                    "classification (CPU).")
+    parser.add_argument(
+        "--backup-existing", action="store_true",
+        help="Move an existing models/distilbert_ticket_classifier/ aside "
+             "(never delete it) and train from scratch, instead of resuming "
+             "from it. Added in Phase 8A.1 so a reproduction run cannot "
+             "silently re-report the previous run's checkpoints.")
+    parser.add_argument(
+        "--run-label", default=None,
+        help="Label recorded in the 'run' column of "
+             "data/distilbert_finetune_metrics.csv. Defaults to "
+             "'existing_checkpoints' when resuming and 'fresh_retrain' when "
+             "training.")
+    parser.add_argument(
+        "--append-metrics", action="store_true",
+        help="Append to the metrics CSV instead of overwriting it, so the "
+             "evaluate-existing pass and a later retrain land in one file.")
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
     print("=" * 70)
     print(" Fine-tune DistilBERT for IT-support ticket classification (CPU)")
     print("=" * 70)
@@ -629,6 +841,22 @@ def main():
     print("[split] Train: {}  |  Test (held-out): {}".format(
         len(X_train), len(X_test)))
 
+    # Phase 8A.1: the 45-ticket benchmark, loaded (and count-gated) up front
+    # so a missing or malformed file fails before any training time is spent.
+    expanded_benchmark = load_expanded_benchmark()
+    print("[benchmark] Loaded {} expanded benchmark tickets.".format(
+        len(expanded_benchmark)))
+
+    # ---- Phase 8A.1: optionally move an existing run aside --------------
+    if args.backup_existing and os.path.isdir(MODEL_DIR):
+        stamp = time.strftime("%Y%m%d-%H%M%S")
+        backup = "{}.pre-8a1-{}".format(MODEL_DIR, stamp)
+        shutil.move(MODEL_DIR, backup)
+        print("[backup] Moved the previous checkpoints to:\n"
+              "         {}".format(backup))
+        print("         They are MOVED, not deleted -- the previous run's "
+              "artifacts remain on disk.")
+
     # ---- Resume path: last-epoch folder already complete? ---------------
     last_epoch_dir = epoch_dir(NUM_EPOCHS)
     if checkpoint_is_valid(last_epoch_dir):
@@ -638,7 +866,9 @@ def main():
               "comparison across existing epoch_N/ folders.")
         print("                   Delete the models/distilbert_ticket_classifier "
               "folder if you want to force a full retrain.")
-        summarize_existing_checkpoints()
+        summarize_existing_checkpoints(
+            run_label=args.run_label or "existing_checkpoints",
+            append_metrics=args.append_metrics)
         print("\n[done] All results printed above.")
         return
 
@@ -669,7 +899,11 @@ def main():
     # ---- Datasets / loaders ---------------------------------------------
     train_ds = TicketDataset(X_train, y_train, tokenizer, MAX_LENGTH)
     val_ds = TicketDataset(X_test, y_test, tokenizer, MAX_LENGTH)
-    train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
+    # Phase 8A.1: the shuffle draws from an explicitly seeded generator rather
+    # than the global RNG, so batch order does not depend on what consumed the
+    # global stream earlier in the process.
+    train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True,
+                              generator=seeded_generator())
     val_loader = DataLoader(val_ds, batch_size=BATCH_SIZE, shuffle=False)
 
     optimizer = torch.optim.AdamW(
@@ -745,13 +979,19 @@ def main():
             ep_model, ep_tok, ep_l2i, ep_i2l = load_checkpoint(ckpt_dir)
             gen_correct, gen_n, gen_pct = run_generalization_test(
                 ep_model, ep_tok, ep_i2l, verbose=False)
+            # Phase 8A.1: the 45-ticket benchmark, scored from the same
+            # reloaded checkpoint by the same scoring loop.
+            gen45_correct, gen45_n, gen45_pct = score_benchmark(
+                ep_model, ep_tok, ep_i2l, expanded_benchmark, verbose=False)
             del ep_model, ep_tok  # free the reloaded copy
 
             # ---- (3) Live per-epoch summary line -------------------------
             print("Epoch {}/{}: in-dist val_acc={:.2f}% | "
-                  "generalization={}/{} ({:.1f}%)".format(
+                  "benchmark14={}/{} ({:.1f}%) | benchmark45={}/{} "
+                  "({:.1f}%)".format(
                       epoch, NUM_EPOCHS, val_acc * 100.0,
-                      gen_correct, gen_n, gen_pct))
+                      gen_correct, gen_n, gen_pct,
+                      gen45_correct, gen45_n, gen45_pct))
 
             epoch_records.append({
                 "epoch": epoch,
@@ -759,6 +999,9 @@ def main():
                 "gen_correct": gen_correct,
                 "gen_n": gen_n,
                 "gen_pct": gen_pct,
+                "gen45_correct": gen45_correct,
+                "gen45_n": gen45_n,
+                "gen45_pct": gen45_pct,
             })
 
     except (MemoryError, RuntimeError) as e:
@@ -819,10 +1062,31 @@ def main():
     correct, n, pct = run_generalization_test(b_model, b_tok, b_i2l, verbose=True)
     print("\nGeneralization score: {}/{} ({:.1f}%)".format(correct, n, pct))
 
+    # Second, independent derivation of the best epoch's 14-ticket count: the
+    # loop above recorded it from a checkpoint reloaded mid-training, and this
+    # is a fresh scoring pass over the same saved checkpoint. They must agree.
+    recorded14 = next(r["gen_correct"] for r in epoch_records
+                      if r["epoch"] == best["epoch"])
+    if recorded14 != correct:
+        print("[ERROR] Best epoch's 14-ticket count disagrees between the "
+              "training loop ({}) and this re-scoring pass ({}).".format(
+                  recorded14, correct))
+        sys.exit(1)
+
     # ========================================================================
     # 7c. FINAL 3-WAY COMPARISON (against the BEST-generalizing epoch)
     # ========================================================================
     print_three_way_comparison(correct, n, pct, best["epoch"])
+
+    # ---- Phase 8A.1: write the per-epoch metrics ------------------------
+    for rec in epoch_records:
+        rec["is_best"] = (rec["epoch"] == best["epoch"])
+    metrics_path = write_metrics_csv(
+        args.run_label or "fresh_retrain", epoch_records,
+        append=args.append_metrics)
+    print("\n[write] Per-epoch metrics -> {}".format(metrics_path))
+    print("[check] Best epoch's 14-ticket count confirmed by an independent "
+          "re-scoring pass.")
 
     print("\n[done] All results printed above.")
 

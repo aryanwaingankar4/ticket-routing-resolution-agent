@@ -107,9 +107,9 @@ Results against it:
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization |
 |---|---|---|
-| TF-IDF + Logistic Regression | 100.0% | 7/14 (50.0%) |
+| TF-IDF + Logistic Regression | 100.0% | **6/14 (42.9%)** — corrected in Phase 8A.1, was 7/14 |
 | Frozen MiniLM embeddings + Logistic Regression | 100.0% | 10/14 (71.4%) |
-| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) at 1,000 tickets; 7/14 (tie, epoch-1 best) after re-testing at 4,000 tickets |
+| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) at 1,000 tickets; 7/14 (tie, epoch-1 best) after re-testing at 4,000 tickets; 7/14 again on a Phase 8A.1 from-scratch retrain |
 
 DistilBERT showed a classic overfitting signature at every dataset size
 tested — 100% in-distribution accuracy within 1–2 epochs while
@@ -121,6 +121,26 @@ MiniLM was selected for production ahead of the later BGE swap (see
 "Embedding Model: MiniLM → BGE" below) on measured generalization
 performance, not in-distribution accuracy — the same standard later applied
 to the BGE decision.
+
+**Phase 8A.1 correction — the TF-IDF row is now 6/14, not 7/14.** The
+baseline's 14-ticket score had no committed machine-readable source;
+`generalization_test.py` printed it and wrote nothing. 8A.1 added the writer
+and re-ran the script in its original configuration (TF-IDF + LogReg on all
+4,000 rows, seed 42, the same vectoriser settings). It scores **6/14
+(42.9%)**, and three independent derivations agree on that: the full-dataset
+fit, the 80/20-split fit added as a secondary arm, and the persisted
+production Tier-1 artifact — which has the same hyperparameters, was fitted by
+a different script, and was saved months earlier. The most likely explanation
+is that 7/14 was measured on the earlier **1,000-ticket** dataset and never
+re-measured after the corpus was scaled to 4,000; the DistilBERT row in this
+very table still carries its "at 1,000 tickets" caveat, and the TF-IDF row
+never did. That cannot be confirmed, because the 1,000-ticket corpus was never
+committed, so it is recorded as a hypothesis rather than a cause. **7/14 is on
+the do-not-cite list; the measured value is 6/14, from
+`data/baseline_tfidf_benchmark14.csv`.** The conclusion the row supports is
+unchanged and in fact slightly strengthened: the lexical baseline generalizes
+poorly to non-template phrasing, and the gap to frozen embeddings is 4 tickets
+rather than 3.
 
 ### RAG layer (retrieval + Gemini-grounded resolutions)
 
@@ -208,6 +228,17 @@ Final accuracy/efficiency tradeoff, swept across target-reliability bars:
 | 80% | 0.50 | 21.4% | 71.4% |
 | 70% | 0.50 | 21.4% | 71.4% |
 
+*(Phase 8A.1 gave this table a committed source:
+`data/cascade_threshold_sweep.csv`, written by `train_cascade.py`. Re-running
+the sweep in its original configuration reproduces every cell exactly. The
+1.00 at the 90% bar is the "escalate everything" sentinel 1.0001, printed to
+two decimals. The three calibration attempts are recorded in
+`data/cascade_calibration_attempts.csv` — attempts 1 and 3 with their full
+bucket tables, and attempt 2 as `status=no_artifact`, because the 35-ticket
+hand-written set was never committed and is absent from every revision in this
+repository's history. Its "34 of 35 in one bucket" therefore remains the one
+figure in this project with no committed source.)*
+
 At a strict 90% bar, no benefit exists — the cascade collapses to pure
 Tier-2. At a relaxed 70–80% bar, a real threshold (0.50) emerges, routing
 ~21% of real-world tickets through the cheap tier at zero accuracy cost.
@@ -277,6 +308,9 @@ project's history of stale-constant and silent-mismatch bugs:**
   their own source ticket as the top-1 match. Not dominant, but real —
   the in-domain precision numbers are somewhat inflated, and this
   threshold's final derivation deliberately did not rely on that curve.
+  *(Phase 8A.1 gave this figure a committed source:
+  `data/rag_self_retrieval_check.csv`, per ticket plus a recounted total.
+  It reproduces exactly.)*
 - **Exact-source-match diagnostic** — a strictly stronger relevance
   signal (`retrieved.id == calibration_ticket.id`) computed and reported
   side by side with the original category-agreement proxy, for
@@ -3397,6 +3431,11 @@ phase. They appear in `paper/NUMBERS.md` and `paper/RECONCILIATION.md` under
 "no committed source", never as though they had one. **T1 prints
 `n/a (no committed source)` in those cells rather than the remembered value.**
 
+> **Superseded by Phase 8A.1 (2026-09-22).** Four of these five now have a
+> committed source; the fifth cannot have one. See the
+> "Phase 8A.1" section below for what reproduced and what did not. This table
+> is left in place because the lab notebook records what was true at the time.
+
 #### The reconciliation audit
 
 **Pass A - anchored: 54 anchors, 0 mismatches, every anchor found in at least
@@ -3471,6 +3510,135 @@ builder refuses to run if either is `True`, and an isolation check confirmed
 that nothing under `data/`, `models/`, `src/` or `tests/goldens/` changed -
 the only additions are the builder and its test.
 
+### Phase 8A.1 - giving the "no committed source" numbers a source
+
+8A flagged **five numbers stated in the documents that no committed file could
+produce**, and deliberately did not fix them: fixing meant running scripts,
+which is outside a measurement-only phase. 8A.1 is that follow-up. The rule
+for every item was the same — **add a writer, re-run the ORIGINAL
+configuration (seed 42, the same split and script settings that produced the
+published number), and commit the result file.** Where a re-run reproduced,
+the number got its source. Where it did not, the new measured value wins, the
+old one is retired, and the documents are corrected to match the file.
+
+Offline throughout: **zero Gemini calls, zero Ollama calls.** Production
+frozen. Nothing under `data/`, `models/*.joblib` or `tests/goldens/` that
+existed before the phase changed - 50 protected files were hashed before the
+first re-run and after the last.
+
+#### What reproduced, and what did not
+
+| Number | Original config re-run | Result |
+|---|---|---|
+| Cascade threshold-by-target-accuracy table | `train_cascade.py`, 175 paraphrased calibration tickets | **Reproduces exactly** - 1.0001/0.50/0.50 at the 90/80/70 bars, 14-ticket Tier-1 share 0.0%/21.4%/21.4%, 14-ticket accuracy 71.4% throughout |
+| Self-retrieval contamination **5.7% (10/175)** | `calibrate_rag_similarity_threshold.py` | **Reproduces exactly** - 10/175, and both existing calibration CSVs came back byte-identical |
+| Fine-tuned DistilBERT **7/14** | `train_distilbert.py`, from-scratch retrain, seed 42 | **Reproduces exactly** - 7/14 at every epoch of both the retrain and the original checkpoints |
+| DistilBERT in-distribution **100.0%** | same run | **Reproduces exactly** - 100.00% validation accuracy from epoch 1 |
+| TF-IDF in-distribution **100.0%** | `train_baseline_tfidf.py`, 80/20 split | **Reproduces exactly** |
+| **TF-IDF + LogReg, 7/14** | `generalization_test.py`, fit on all 4,000 rows | **DOES NOT REPRODUCE - it is 6/14 (42.9%)** |
+| DistilBERT on the 45-ticket benchmark | new writer | **First measurement**, and not reproducible to better than 3 tickets (see below) |
+
+#### The non-reproduction: TF-IDF is 6/14
+
+The 14-ticket baseline score was never written to a file, so nothing had
+checked it since it was first recorded. Re-running the script that produced it
+gives **6/14**, and **three independent derivations agree**:
+
+1. the original configuration - TF-IDF + LogReg fitted on all 4,000 rows;
+2. a secondary arm added in 8A.1 that fits the same pipeline on the 80/20
+   training split instead;
+3. the **persisted production Tier-1 artifact** - the same hyperparameters,
+   fitted by a different script (`train_tier1.py`) and saved months earlier.
+
+The most likely explanation is that 7/14 was measured on the earlier
+**1,000-ticket** dataset and never re-measured after the corpus was scaled to
+4,000. The DistilBERT row in the same README table still carries its "at 1,000
+tickets" caveat; the TF-IDF row never did. **That cannot be confirmed**,
+because the 1,000-ticket corpus was never committed, so it is recorded as a
+hypothesis and not as a cause. 7/14 is on the do-not-cite list.
+
+**The conclusion the number supports is unchanged**, and marginally
+strengthened: the lexical baseline generalizes poorly to non-template
+phrasing, and the gap to frozen embeddings is four tickets rather than three.
+Note also that the 80/20 arm scores 6/14 as well - on this benchmark the
+baseline is insensitive to whether it saw 3,200 rows or 4,000, which is
+consistent with the "representation-limited, not data-limited" reading already
+recorded for MiniLM.
+
+#### The new measurement: DistilBERT on the 45-ticket benchmark
+
+DistilBERT had never been run against the 45-ticket benchmark. It now is, and
+the result is reported as a **first measurement, never a reproduction**
+(`new-measurement` in `paper/NUMBERS.md`). **It does not carry a
+single-ticket reading:** the from-scratch retrain's best epoch scores
+**18/45 (40.0%)** and the original checkpoints score **21/45 (46.7%)**. Two
+runs of an identical configuration - same seed, same split, same
+hyperparameters, seeded DataLoader - differ by three tickets. So CPU
+fine-tuning reproduces exactly on the 14-ticket axis and **not** on this one.
+Both values are committed; **neither is presented as better than the other**,
+because two draws do not measure a difference. Whatever the exact figure,
+DistilBERT sits far below the frozen-embedding classifiers on this benchmark
+(33/45 for BGE), which is the same story the 14-ticket column tells.
+
+#### The one number that still has no source
+
+Cascade calibration **attempt 2** - "34 of 35 hand-written tickets collapsed
+into one bucket". The 35-ticket set was never committed and is absent from
+every revision in this repository's history, so the attempt cannot be re-run.
+It is recorded as `status=no_artifact` in
+`data/cascade_calibration_attempts.csv` and remains on the no-source list.
+Nothing was invented to fill it.
+
+#### What this cost, structurally
+
+Five new committed result files
+(`baseline_tfidf_benchmark14.csv`, `baseline_tfidf_indistribution.csv`,
+`cascade_threshold_sweep.csv`, `cascade_calibration_attempts.csv`,
+`rag_self_retrieval_check.csv`) plus `distilbert_finetune_metrics.csv`.
+`paper/NUMBERS.md` grows from **161 to 187 numbers** over **51 hashed
+sources**, and the no-source list shrinks from five entries to one.
+
+Three smaller cleanups came with it, each removing a place where a number
+could go stale unnoticed:
+
+- `train_cascade.py` held **three identical copies** of the confidence bin
+  edges and 8A.1 would have added a fourth. They are now one constant. The
+  values are unchanged.
+- `train_distilbert.py`'s three-way comparison printed a **hardcoded 7/14**
+  for the TF-IDF baseline. It now reads
+  `data/baseline_tfidf_benchmark14.csv`, and says so plainly when the file is
+  absent rather than printing a remembered number.
+- Both benchmarks are scored by **one** loop in `train_distilbert.py`, so the
+  14- and 45-ticket numbers cannot drift apart through a copied scoring path.
+
+Every count that the phase relies on is checked against a second, independent
+derivation inside the script that writes it: the 14-ticket totals are
+recounted from the per-ticket rows, the self-retrieval total is recounted from
+the `is_exact_source_match` column, each derived cascade threshold is
+re-derived by calling `derive_threshold_for_target()` directly, and the best
+epoch's 14-ticket count is re-scored from the saved checkpoint. The builder
+repeats the first two when it reads the files.
+
+#### Limitations
+
+- **A reproduction is only as good as the configuration it re-runs.** 8A.1
+  shows each number can be regenerated *today*; it does not show that the
+  original run was correct. The TF-IDF case is exactly this - the script
+  reproduces itself perfectly and still disagrees with what was written down,
+  and the reason is a change in the *inputs* that nobody re-measured against.
+- **The 1,000-ticket hypothesis is untestable.** The corpus that would confirm
+  it was never committed. Re-generating a 1,000-row subsample would be a
+  different dataset and would prove nothing, so it was not done.
+- **DistilBERT's 45-ticket figure carries run-to-run variance of at least
+  three tickets** and should never be quoted to a single ticket. Two runs are
+  not enough to put an interval on it; quantifying that variance properly
+  would need repeated trainings, which is a separate measurement.
+- **The checkpoints arm is not regenerable from a clean clone.** `models/` is
+  gitignored, so `existing_checkpoints` is a reference recorded in a committed
+  file, not a source someone else can reproduce. The retrain arm is the one
+  the paper cites for that reason.
+- **One number remains unsourced** and is expected to stay that way.
+
 
 ---
 
@@ -3478,22 +3646,34 @@ the only additions are the builder and its test.
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization | 45-Ticket Generalization |
 |---|---|---|---|
-| TF-IDF + Logistic Regression | 100.0% | 7/14 (50.0%) | — |
+| TF-IDF + Logistic Regression | 100.0% | **6/14 (42.9%)** | — |
 | Frozen MiniLM embeddings + Logistic Regression | 100.0% | 10/14 (71.4%) | 32/45 (71.1%) |
 | **Frozen BGE embeddings + Logistic Regression** | — | — | **33/45 (73.3%) — production choice** |
 | Frozen E5 embeddings + Logistic Regression | — | — | 27/45 (60.0%) |
-| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) | — |
+| Fine-tuned DistilBERT (best epoch) | 100.0% | 7/14 (50.0%) | 18/45 (40.0%) — new in 8A.1 |
 | Cascade (TF-IDF → embeddings, 70–80% target) | — | 10/14 (71.4%), ~21% resolved by cheap tier | — |
 
-> **Provenance note (Phase 8A).** The two **7/14** cells - TF-IDF and
-> fine-tuned DistilBERT - have **no committed machine-readable source**:
-> `train_baseline_tfidf.py`, `generalization_test.py` and
-> `train_distilbert.py` print their results and write no metrics file, and
-> `data/embedding_comparison/embedding_model_comparison.csv` carries no row
-> for either. They are recorded here as measured at the time and are listed
-> under "no committed source" in `paper/NUMBERS.md` and
-> `paper/RECONCILIATION.md`. Every other cell in this table regenerates from
-> a committed file through `src/experiments/build_paper_artifacts.py`.
+> **Provenance note, updated in Phase 8A.1.** Every cell in this table now
+> regenerates from a committed file through
+> `src/experiments/build_paper_artifacts.py`. Three changes from the Phase 8A
+> version of this note:
+>
+> - **TF-IDF is 6/14, not 7/14.** Re-running `generalization_test.py` in its
+>   original configuration gives 6/14, and so do two independent
+>   re-derivations. 7/14 is retired — see the correction above.
+> - **DistilBERT's 7/14 reproduced exactly**, on a from-scratch retrain with
+>   every reachable seed pinned: 7/14 at all four epochs of the retrain and
+>   all four of the original checkpoints, with 100.0% in-distribution
+>   validation accuracy from epoch 1 — the overfitting signature this table
+>   has always described.
+> - **The DistilBERT 45-ticket cell is a first measurement, not a
+>   reproduction**, and it does not carry a single-ticket reading: the
+>   retrain's best epoch scores 18/45 while the original checkpoints score
+>   21/45. Two runs of an identical configuration differing by three tickets
+>   is the honest characterisation — CPU fine-tuning reproduces exactly on the
+>   14-ticket axis and not on this one. Both values are in
+>   `data/distilbert_finetune_metrics.csv`; neither is presented as better
+>   than the other, because two draws do not measure a difference.
 
 BGE is now the production embedding model for classification, RAG
 retrieval, and cascade Tier-2 (swapped from MiniLM on the strength of this

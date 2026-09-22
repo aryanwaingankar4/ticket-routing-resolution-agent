@@ -263,9 +263,12 @@ TAG_NO_RESOLUTION = "no-resolution"
 TAG_DEGENERATE = "degenerate"
 TAG_CASE_STUDY = "case-study"
 TAG_WITHIN_BAND = "within-band"
+# Phase 8A.1: a value measured for the first time, which must never be written
+# up as a reproduction of a previously published figure.
+TAG_NEW = "new-measurement"
 
 VALID_TAGS = {TAG_POST_HOC, TAG_BLOCKED, TAG_NO_RESOLUTION, TAG_DEGENERATE,
-              TAG_CASE_STUDY, TAG_WITHIN_BAND}
+              TAG_CASE_STUDY, TAG_WITHIN_BAND, TAG_NEW}
 
 
 @dataclass
@@ -517,6 +520,15 @@ def zs_summary(backend_slug, model_slug, bench):
 GEMINI_SLUG = ("gemini", "gemini-flash-lite-latest")
 QWEN_SLUG = ("ollama", "qwen2-5-3b-instruct")
 
+# Phase 8A.1. data/distilbert_finetune_metrics.csv carries two runs: the
+# checkpoints the original result was measured on, and a from-scratch retrain
+# with every reachable seed pinned. The paper cites the RETRAIN, because that
+# is the arm a clean clone can regenerate -- the checkpoints are gitignored
+# model weights and cannot be a source. The other arm stays in the file as the
+# reference the retrain was judged against.
+DISTILBERT_PUBLISHED_RUN = "fresh_retrain"
+DISTILBERT_REFERENCE_RUN = "existing_checkpoints"
+
 NO_SOURCE = []
 
 
@@ -540,6 +552,9 @@ def no_source(label, where, why, value_in_docs):
         "data/ablation_baseline_results.csv",
         "data/ablation_tier2-only_results.csv",
         "data/ablation_no-cascade_results.csv",
+        "data/baseline_tfidf_benchmark14.csv",
+        "data/baseline_tfidf_indistribution.csv",
+        "data/distilbert_finetune_metrics.csv",
         "data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark45.csv",
         "data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark45.csv"],
        "python src/experiments/run_ablation_study.py --mode baseline; "
@@ -596,21 +611,37 @@ def build_t1(emit):
     minilm = emb[emb["model_name"] == "all-MiniLM-L6-v2"].iloc[0]
     e5 = emb[emb["model_name"] == "intfloat/e5-base-v2"].iloc[0]
 
-    tfidf14 = no_source(
-        "TF-IDF + LogReg, 14-ticket benchmark",
-        "README.md, the three-way classifier comparison and Final Classification Comparison tables",
-        "train_baseline_tfidf.py and generalization_test.py print their "
-        "results and write no file; no ablation --mode no-cascade run exists "
-        "for benchmark14.", "7/14 (50.0%)")
-    distil14 = no_source(
-        "Fine-tuned DistilBERT, 14-ticket benchmark",
-        "README.md, the three-way classifier comparison and Final Classification Comparison tables",
-        "train_distilbert.py writes only label_mapping.json -- no metrics "
-        "file of any kind.", "7/14 (50.0%)")
-    distil45 = no_source(
-        "Fine-tuned DistilBERT, 45-ticket benchmark", "(never measured)",
-        "DistilBERT was never run against the 45-ticket benchmark, and the "
-        "embedding comparison CSV has no DistilBERT row.", "(absent)")
+    # ---- Phase 8A.1: these three had no committed source until 8A.1 ------
+    # The writers now exist, the scripts were re-run in their original
+    # configuration, and every value below is READ from the file.
+    tfidf14_path = src("baseline_tfidf_benchmark14.csv")
+    tfidf_bench = pd.read_csv(tfidf14_path, keep_default_na=False)
+    tfidf_total = tfidf_bench[
+        (tfidf_bench["fit_scope"] == "full4000")
+        & (tfidf_bench["ticket_index"] == "TOTAL")].iloc[0]
+    tfidf14 = (int(tfidf_total["n_correct"]), int(tfidf_total["n_total"]))
+    # Second, independent derivation: recount the per-ticket rows.
+    tfidf14_recount = int(tfidf_bench[
+        (tfidf_bench["fit_scope"] == "full4000")
+        & (tfidf_bench["ticket_index"] != "TOTAL")]["correct"].astype(int).sum())
+    if tfidf14_recount != tfidf14[0]:
+        raise ValueError(
+            f"T1: baseline_tfidf_benchmark14.csv TOTAL row says "
+            f"{tfidf14[0]} but its per-ticket rows sum to {tfidf14_recount}.")
+
+    tfidf_indist_path = src("baseline_tfidf_indistribution.csv")
+    tfidf_indist = dict(
+        pd.read_csv(tfidf_indist_path, keep_default_na=False)
+        [["metric", "value"]].itertuples(index=False, name=None))
+
+    distil_path = src("distilbert_finetune_metrics.csv")
+    distil = pd.read_csv(distil_path)
+    distil_best = distil[(distil["run"] == DISTILBERT_PUBLISHED_RUN)
+                         & (distil["is_best_epoch"] == 1)].iloc[0]
+    distil14 = (int(distil_best["benchmark14_correct"]),
+                int(distil_best["benchmark14_total"]))
+    distil45 = (int(distil_best["benchmark45_correct"]),
+                int(distil_best["benchmark45_total"]))
 
     rows = []
 
@@ -633,7 +664,11 @@ def build_t1(emit):
 
     add("TF-IDF + LogReg (Tier-1 only)", "trained", tfidf14, t1_45, t1_175)
     add("Fine-tuned DistilBERT", "trained", distil14, distil45,
-        "n/a (no committed source)")
+        "n/a (not run)",
+        f"best-generalizing epoch {int(distil_best['epoch'])} of "
+        f"{DISTILBERT_PUBLISHED_RUN}; the 45-ticket cell is a NEW "
+        f"measurement and two runs of this configuration differ by three "
+        f"tickets on it")
     add("all-MiniLM-L6-v2 + LogReg", "trained",
         (int(minilm["benchmark_correct_count"]), 14),
         (int(minilm["bench46_correct_count"]), 45), "n/a (not run)")
@@ -719,6 +754,68 @@ def build_t1(emit):
     emit("T1.tier2only.benchmark14", frac(*t2_14), rel(b14_t2))
     emit("T1.tier2only.deployment175", frac(*t2_175), rel(d175_t2),
          ci=wilson_interval(*t2_175, Z_95))
+    # ---- Phase 8A.1: newly sourced ---------------------------------------
+    emit("T1.tfidf_baseline.benchmark14", frac(*tfidf14), rel(tfidf14_path),
+         command="python src/classification/generalization_test.py",
+         note="TF-IDF + LogReg fitted on all 4,000 rows -- the ORIGINAL "
+              "configuration of the 14-ticket baseline, and a local baseline "
+              "fit rather than the production Tier-1 artifact. Phase 8A.1 "
+              "gave it a writer and re-ran it: the historically published "
+              "7/14 DOES NOT REPRODUCE. See the do-not-cite list.")
+    emit("T1.tfidf_baseline.benchmark14.split_arm",
+         frac(int(tfidf_bench[(tfidf_bench["fit_scope"] == "split3200")
+                              & (tfidf_bench["ticket_index"] == "TOTAL")]
+                  .iloc[0]["n_correct"]), 14),
+         rel(tfidf14_path),
+         command="python src/classification/generalization_test.py",
+         tags=[TAG_NEW],
+         note="Secondary arm added in 8A.1: the same pipeline fitted on the "
+              "80/20 training split instead of all 4,000 rows. A NEW "
+              "measurement, never the source for the published figure.")
+    emit("T1.tfidf_baseline.in_distribution_accuracy",
+         float(tfidf_indist["accuracy"]), rel(tfidf_indist_path),
+         command="python src/classification/train_baseline_tfidf.py",
+         note="The '100% in-distribution' red flag. Template-generated data "
+              "makes this uninformative -- see FRAMING.md.")
+    emit("T1.distilbert.benchmark14", frac(*distil14), rel(distil_path),
+         command="python src/classification/train_distilbert.py "
+                 "--backup-existing",
+         note=f"Best-generalizing epoch of the {DISTILBERT_PUBLISHED_RUN} "
+              f"run. Phase 8A.1 gave train_distilbert.py a metrics writer "
+              f"and re-ran the fine-tuning from scratch.")
+    distil_ref = distil[(distil["run"] == DISTILBERT_REFERENCE_RUN)
+                        & (distil["is_best_epoch"] == 1)].iloc[0]
+    emit("T1.distilbert.benchmark45", frac(*distil45), rel(distil_path),
+         command="python src/classification/train_distilbert.py "
+                 "--backup-existing",
+         tags=[TAG_NEW],
+         note="A NEW MEASUREMENT. DistilBERT had never been evaluated on the "
+              "45-ticket benchmark before Phase 8A.1 -- this is not a "
+              "reproduction of anything. READ IT WITH "
+              "T1.distilbert.reference.benchmark45: two independent "
+              "fine-tuning runs of the same configuration disagree by three "
+              "tickets on this axis, so it does not carry a single-ticket "
+              "reading. No ordered comparison between the two runs -- they "
+              "are two draws, not a measurement of a difference.")
+    emit("T1.distilbert.reference.benchmark14",
+         frac(int(distil_ref["benchmark14_correct"]), 14), rel(distil_path),
+         command="python src/classification/train_distilbert.py",
+         note="The checkpoints the ORIGINAL DistilBERT result was measured "
+              "on, scored by the same code. They are gitignored model "
+              "weights, so this arm is the reference the retrain is judged "
+              "against, not a source a clean clone can regenerate. The "
+              "14-ticket score is IDENTICAL across both runs and all eight "
+              "epochs, which is what makes it a reproduction.")
+    emit("T1.distilbert.reference.benchmark45",
+         frac(int(distil_ref["benchmark45_correct"]),
+              int(distil_ref["benchmark45_total"])), rel(distil_path),
+         command="python src/classification/train_distilbert.py",
+         tags=[TAG_NEW],
+         note="The same new measurement on the original checkpoints. It "
+              "differs from the retrain's by three tickets -- the honest "
+              "reading is that CPU fine-tuning reproduces exactly on the "
+              "14-ticket axis and not on this one.")
+
     emit("T1.tier1only.benchmark45", frac(*t1_45), rel(b45_t1),
          ci=wilson_interval(*t1_45, Z_95),
          note="Tier-1 answering everything -- the TF-IDF representation, NOT "
@@ -973,8 +1070,11 @@ def build_t3(emit):
 # T4 -- cascade calibration and reliability
 # ---------------------------------------------------------------------------
 @table("T4", "Cascade threshold calibration and tier reliability",
-       ["data/calibration_reliability_data.csv"],
-       "python src/experiments/plot_calibration_curves.py")
+       ["data/calibration_reliability_data.csv",
+        "data/cascade_threshold_sweep.csv",
+        "data/cascade_calibration_attempts.csv"],
+       "python src/experiments/plot_calibration_curves.py; "
+       "python src/classification/train_cascade.py")
 def build_t4(emit):
     path = src("calibration_reliability_data.csv")
     bins = pd.read_csv(path)
@@ -1008,12 +1108,78 @@ def build_t4(emit):
     # The live gate, read from config rather than retyped.
     gate = float(settings.cascade.confidence_threshold)
 
+    # ---- Phase 8A.1: the sweep and the calibration attempts, from file ----
+    sweep_path = src("cascade_threshold_sweep.csv")
+    sweep = pd.read_csv(sweep_path).sort_values(
+        "target_accuracy", ascending=False).reset_index(drop=True)
+    attempts_path = src("cascade_calibration_attempts.csv")
+    attempts = pd.read_csv(attempts_path, keep_default_na=False)
+
+    def sweep_row(target):
+        matched = sweep[(sweep["target_accuracy"] - target).abs() < 1e-9]
+        if len(matched) != 1:
+            raise ValueError(
+                f"T4: cascade_threshold_sweep.csv has {len(matched)} rows at "
+                f"target {target}; expected exactly one.")
+        return matched.iloc[0]
+
+    for target in sorted(sweep["target_accuracy"], reverse=True):
+        row = sweep_row(target)
+        key = f"{int(round(target * 100))}"
+        emit(f"T4.sweep.threshold.target{key}",
+             float(row["derived_threshold"]), rel(sweep_path))
+        emit(f"T4.sweep.benchmark14_tier1_share.target{key}",
+             float(row["novel_tier1_pct"]), rel(sweep_path))
+        emit(f"T4.sweep.benchmark14_accuracy.target{key}",
+             float(row["novel_cascade_accuracy"]), rel(sweep_path))
+        emit(f"T4.sweep.benchmark45_tier1_share.target{key}",
+             float(row["expanded45_tier1_pct"]), rel(sweep_path))
+        emit(f"T4.sweep.benchmark45_accuracy.target{key}",
+             float(row["expanded45_cascade_accuracy"]), rel(sweep_path))
+
+    # The calibration story: three attempts, two rejected. Attempt 2's set was
+    # never committed, so it has numbers nowhere -- that gap is recorded in
+    # the file itself and repeated here rather than papered over.
+    attempt_status = dict(
+        attempts[["attempt", "status"]].drop_duplicates()
+        .itertuples(index=False, name=None))
+    emit("T4.calibration.attempts_total", len(attempt_status),
+         rel(attempts_path),
+         note="Three attempts, two rejected: the in-distribution held-out "
+              "split (every bucket ~100% accurate, so the threshold looked "
+              "trustworthy), 35 hand-written tickets (too sparse), and the "
+              "175 paraphrased tickets that were adopted.")
+    emit("T4.calibration.attempts_with_data",
+         sum(1 for v in attempt_status.values() if v == "run"),
+         rel(attempts_path),
+         note="Attempt 2's 35-ticket set was never committed and is absent "
+              "from every revision in the repository's history, so it cannot "
+              "be re-run. Its numbers remain uncited.")
     no_source(
-        "Cascade threshold table by target accuracy (the three calibration "
-        "attempts, two rejected)", "README.md, cascade calibration section",
-        "train_cascade.py prints its sweep and writes no results file, so the "
-        "threshold-by-target-accuracy table cannot be regenerated.",
-        "three attempts; 0.50 chosen at a 70-80% target")
+        "Cascade calibration attempt 2: 34 of 35 hand-written tickets "
+        "collapsed into one confidence bucket",
+        "README.md, cascade calibration section",
+        "The 35-ticket hand-written calibration set was never committed and "
+        "is absent from every revision in this repository's history, so the "
+        "attempt cannot be re-run and its bucket counts cannot be "
+        "regenerated. Phase 8A.1 sourced attempts 1 and 3 and recorded this "
+        "one as status=no_artifact in "
+        "data/cascade_calibration_attempts.csv rather than inventing it.",
+        "34/35 in one bucket")
+
+    attempt1 = attempts[attempts["attempt"] == 1]
+    attempt3 = attempts[attempts["attempt"] == 3]
+    emit("T4.calibration.attempt1.threshold",
+         float(attempt1.iloc[0]["derived_threshold"]), rel(attempts_path),
+         note="Derived on the in-distribution held-out split and REJECTED: "
+              "observed accuracy is 1.0 in every populated bucket there, so "
+              "the derivation has nothing to bite on.")
+    emit("T4.calibration.attempt3.threshold",
+         float(attempt3.iloc[0]["derived_threshold"]), rel(attempts_path),
+         note="Derived at the 90% target on the 175 paraphrased tickets. "
+              "1.0001 is the 'escalate everything' sentinel: at a 90% bar no "
+              "confidence band is trustworthy. The live 0.50 comes from the "
+              "70-80% bar in the sweep above.")
 
     emit("T4.tier1.ece", eces[1], rel(path),
          note="Count-weighted binned ECE, recomputed from the committed "
@@ -1031,7 +1197,8 @@ def build_t4(emit):
     emit("T4.reliability.n_tickets", int(
         bins[bins.tier == 1]["n_tickets_in_bin"].sum()), rel(path))
 
-    return {"main": df, "bins": bins}
+    return {"main": df, "bins": bins, "threshold_sweep": sweep,
+            "calibration_attempts": attempts}
 
 
 # ---------------------------------------------------------------------------
@@ -1040,7 +1207,8 @@ def build_t4(emit):
 @table("T5", "RAG similarity threshold: the in-domain/OOD trade-off around "
              "the chosen 0.67",
        ["data/rag_similarity_calibration.csv",
-        "data/rag_similarity_calibration_combined.csv"],
+        "data/rag_similarity_calibration_combined.csv",
+        "data/rag_self_retrieval_check.csv"],
        "python -m src.experiments.calibrate_rag_similarity_threshold")
 def build_t5(emit):
     comb_path = src("rag_similarity_calibration_combined.csv")
@@ -1071,11 +1239,28 @@ def build_t5(emit):
     leak_below = float(lower_row.iloc[1]["ood_leakage_rate"])
     thr_below = float(lower_row.iloc[1]["threshold"])
 
-    no_source(
-        "In-domain self-retrieval contamination rate 5.7% (10/175)",
-        "README.md, the RAG threshold calibration section and What's Done vs What's Pending",
-        "calibrate_rag_similarity_threshold.py computes it but writes no "
-        "column for it in either calibration CSV.", "5.7% (10/175)")
+    # ---- Phase 8A.1: the self-retrieval check, now written to a file -----
+    sr_path = src("rag_self_retrieval_check.csv")
+    sr = pd.read_csv(sr_path, keep_default_na=False)
+    sr_total = sr[sr["index"] == "TOTAL"].iloc[0]
+    sr_hits = int(sr_total["self_retrieval_hits"])
+    sr_checkable = int(sr_total["self_retrieval_checkable"])
+    # Second, independent derivation from the per-ticket rows.
+    sr_rows = sr[sr["index"] != "TOTAL"]
+    sr_recount = int(sr_rows["is_exact_source_match"].astype(int).sum())
+    sr_recount_checkable = int(sr_rows["exact_checkable"].astype(int).sum())
+    if (sr_recount, sr_recount_checkable) != (sr_hits, sr_checkable):
+        raise ValueError(
+            f"T5: rag_self_retrieval_check.csv TOTAL says "
+            f"{sr_hits}/{sr_checkable} but its per-ticket rows give "
+            f"{sr_recount}/{sr_recount_checkable}.")
+
+    emit("T5.self_retrieval_rate", frac(sr_hits, sr_checkable), rel(sr_path),
+         command="python -m src.experiments."
+                 "calibrate_rag_similarity_threshold",
+         note="In-domain calibration tickets whose top-1 retrieval is their "
+              "OWN source row. Phase 8A.1 added the writer; the rate itself "
+              "was always computed here and reproduces exactly.")
 
     emit("T5.gate", gate, "src/agent/config.py")
     emit("T5.ood_leakage_at_gate", float(at_gate["ood_leakage_rate"]),
@@ -1095,7 +1280,8 @@ def build_t5(emit):
               "0.67 sits inside this band, and it errs in BOTH directions -- "
               "see FRAMING.md.")
 
-    return {"main": df, "raw_in_domain": pd.read_csv(base_path)}
+    return {"main": df, "raw_in_domain": pd.read_csv(base_path),
+            "self_retrieval": sr}
 
 
 # ---------------------------------------------------------------------------
@@ -2739,6 +2925,20 @@ DO_NOT_CITE = [
             "0.9972, so NO verdict was drawn on the primary. A blocked arm "
             "is not a null.",
      "use_instead": "T11's 7C rows, every one tagged post-hoc and BLOCKED."},
+    {"retired": "TF-IDF + LogReg scores 7/14 on the 14-ticket benchmark",
+     "literals": [],
+     "why": "Phase 8A.1 gave generalization_test.py a writer and re-ran it in "
+            "its original configuration (TF-IDF + LogReg fitted on all 4,000 "
+            "rows, seed 42). It scores 6/14, and so does the 80/20-fit arm, "
+            "and so does the production Tier-1 artifact -- three independent "
+            "derivations agreeing against the documented figure. The most "
+            "likely explanation is that 7/14 was measured on the earlier "
+            "1,000-ticket dataset and never re-measured after the corpus was "
+            "scaled to 4,000; that cannot be confirmed, because the "
+            "1,000-ticket corpus was never committed. It is recorded as a "
+            "hypothesis, not a cause.",
+     "use_instead": "T1.tfidf_baseline.benchmark14 -- 6/14 (42.9%), from "
+                    "data/baseline_tfidf_benchmark14.csv."},
 ]
 
 
@@ -3135,6 +3335,15 @@ ANCHORS = [
      r"\b132\s*/\s*175\b", "132/175"),
     ("Tier-1-only, deployment175", "T1.tier1only.deployment175",
      r"\b91\s*/\s*175\b", "91/175"),
+    # --- Phase 8A.1: the four newly sourced numbers ---
+    ("TF-IDF baseline, benchmark14", "T1.tfidf_baseline.benchmark14",
+     r"\b6\s*/\s*14\b", "6/14"),
+    ("DistilBERT, benchmark14", "T1.distilbert.benchmark14",
+     r"\b7\s*/\s*14\b", "7/14"),
+    ("self-retrieval contamination", "T5.self_retrieval_rate",
+     r"\b10\s*/\s*175\b", "10/175"),
+    ("cascade sweep, threshold at the 70% target",
+     "T4.sweep.threshold.target70", r"\b0\.50\b", "0.50"),
     ("zero-shot Gemini, benchmark45", "T1.zeroshot_gemini.benchmark45",
      r"\b40\s*/\s*45\b", "40/45"),
     ("zero-shot Gemini, benchmark14", "T1.zeroshot_gemini.benchmark14",

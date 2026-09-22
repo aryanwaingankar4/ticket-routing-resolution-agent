@@ -1,0 +1,11 @@
+metric,value
+accuracy,1.000000
+macro_f1,1.000000
+weighted_f1,1.000000
+n_train,3200
+n_test,800
+n_correct,800
+n_categories,7
+test_size,0.2
+random_state,42
+fit_scope,split3200

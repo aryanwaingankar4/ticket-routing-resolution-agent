@@ -1,6 +1,6 @@
 method,kind,benchmark14,benchmark45,benchmark45_pct,benchmark45_ci_low,benchmark45_ci_high,deployment175,note
-TF-IDF + LogReg (Tier-1 only),trained,n/a (no committed source),16/45,35.55555555555556,0.23218891356904045,0.5016445398804781,91/175,
-Fine-tuned DistilBERT,trained,n/a (no committed source),n/a (no committed source),,,,n/a (no committed source),
+TF-IDF + LogReg (Tier-1 only),trained,6/14,16/45,35.55555555555556,0.23218891356904045,0.5016445398804781,91/175,
+Fine-tuned DistilBERT,trained,7/14,18/45,40.0,0.27024679447957545,0.5454840579085527,n/a (not run),best-generalizing epoch 1 of fresh_retrain; the 45-ticket cell is a NEW measurement and two runs of this configuration differ by three tickets on it
 all-MiniLM-L6-v2 + LogReg,trained,10/14,32/45,71.11111111111111,0.5663118252773978,0.8227008196809985,n/a (not run),
 intfloat/e5-base-v2 + LogReg,trained,10/14,27/45,60.0,0.4545159420914473,0.7297532055204244,n/a (not run),
 BGE-base-en-v1.5 + LogReg (Tier-2 only),trained,10/14,33/45,73.33333333333333,0.5896088330282472,0.8403525113994538,132/175,production representation

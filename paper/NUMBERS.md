@@ -186,6 +186,20 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | `T1.tier2only.benchmark45` | 33/45 [95% CI 0.589609, 0.840353] | `data/ablation_tier2-only_results.csv` | `python src/experiments/run_ablation_study.py --mode baseline; python src/experiments/summarize_zeroshot_baselines.py` |  |
 | `T1.tier2only.benchmark14` | 10/14 | `data/ablation_tier2-only_results_benchmark14.csv` | `python src/experiments/run_ablation_study.py --mode baseline; python src/experiments/summarize_zeroshot_baselines.py` |  |
 | `T1.tier2only.deployment175` | 132/175 [95% CI 0.685491, 0.812156] | `data/ablation_tier2-only_results_deployment175.csv` | `python src/experiments/run_ablation_study.py --mode baseline; python src/experiments/summarize_zeroshot_baselines.py` |  |
+| `T1.tfidf_baseline.benchmark14` | 6/14 | `data/baseline_tfidf_benchmark14.csv` | `python src/classification/generalization_test.py` |  |
+| | *TF-IDF + LogReg fitted on all 4,000 rows -- the ORIGINAL configuration of the 14-ticket baseline, and a local baseline fit rather than the production Tier-1 artifact. Phase 8A.1 gave it a writer and re-ran it: the historically published 7/14 DOES NOT REPRODUCE. See the do-not-cite list.* | | | |
+| `T1.tfidf_baseline.benchmark14.split_arm` | 6/14 | `data/baseline_tfidf_benchmark14.csv` | `python src/classification/generalization_test.py` | `new-measurement` |
+| | *Secondary arm added in 8A.1: the same pipeline fitted on the 80/20 training split instead of all 4,000 rows. A NEW measurement, never the source for the published figure.* | | | |
+| `T1.tfidf_baseline.in_distribution_accuracy` | 1 | `data/baseline_tfidf_indistribution.csv` | `python src/classification/train_baseline_tfidf.py` |  |
+| | *The '100% in-distribution' red flag. Template-generated data makes this uninformative -- see FRAMING.md.* | | | |
+| `T1.distilbert.benchmark14` | 7/14 | `data/distilbert_finetune_metrics.csv` | `python src/classification/train_distilbert.py --backup-existing` |  |
+| | *Best-generalizing epoch of the fresh_retrain run. Phase 8A.1 gave train_distilbert.py a metrics writer and re-ran the fine-tuning from scratch.* | | | |
+| `T1.distilbert.benchmark45` | 18/45 | `data/distilbert_finetune_metrics.csv` | `python src/classification/train_distilbert.py --backup-existing` | `new-measurement` |
+| | *A NEW MEASUREMENT. DistilBERT had never been evaluated on the 45-ticket benchmark before Phase 8A.1 -- this is not a reproduction of anything. READ IT WITH T1.distilbert.reference.benchmark45: two independent fine-tuning runs of the same configuration disagree by three tickets on this axis, so it does not carry a single-ticket reading. No ordered comparison between the two runs -- they are two draws, not a measurement of a difference.* | | | |
+| `T1.distilbert.reference.benchmark14` | 7/14 | `data/distilbert_finetune_metrics.csv` | `python src/classification/train_distilbert.py` |  |
+| | *The checkpoints the ORIGINAL DistilBERT result was measured on, scored by the same code. They are gitignored model weights, so this arm is the reference the retrain is judged against, not a source a clean clone can regenerate. The 14-ticket score is IDENTICAL across both runs and all eight epochs, which is what makes it a reproduction.* | | | |
+| `T1.distilbert.reference.benchmark45` | 21/45 | `data/distilbert_finetune_metrics.csv` | `python src/classification/train_distilbert.py` | `new-measurement` |
+| | *The same new measurement on the original checkpoints. It differs from the retrain's by three tickets -- the honest reading is that CPU fine-tuning reproduces exactly on the 14-ticket axis and not on this one.* | | | |
 | `T1.tier1only.benchmark45` | 16/45 [95% CI 0.232189, 0.501645] | `data/ablation_no-cascade_results.csv` | `python src/experiments/run_ablation_study.py --mode baseline; python src/experiments/summarize_zeroshot_baselines.py` |  |
 | | *Tier-1 answering everything -- the TF-IDF representation, NOT a measure of what cascading is worth.* | | | |
 | `T1.tier1only.deployment175` | 91/175 [95% CI 0.446347, 0.592794] | `data/ablation_no-cascade_results_deployment175.csv` | `python src/experiments/run_ablation_study.py --mode baseline; python src/experiments/summarize_zeroshot_baselines.py` |  |
@@ -223,19 +237,44 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 
 | id | value | source file | regenerating command | tags |
 |---|---|---|---|---|
-| `T4.tier1.ece` | 0.112214 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py` |  |
+| `T4.sweep.threshold.target90` | 1.0001 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_tier1_share.target90` | 0 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_accuracy.target90` | 0.714286 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_tier1_share.target90` | 0 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_accuracy.target90` | 0.733333 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.threshold.target80` | 0.5 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_tier1_share.target80` | 0.214286 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_accuracy.target80` | 0.714286 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_tier1_share.target80` | 0.088889 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_accuracy.target80` | 0.711111 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.threshold.target70` | 0.5 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_tier1_share.target70` | 0.214286 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark14_accuracy.target70` | 0.714286 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_tier1_share.target70` | 0.088889 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.sweep.benchmark45_accuracy.target70` | 0.711111 | `data/cascade_threshold_sweep.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.calibration.attempts_total` | 3 | `data/cascade_calibration_attempts.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| | *Three attempts, two rejected: the in-distribution held-out split (every bucket ~100% accurate, so the threshold looked trustworthy), 35 hand-written tickets (too sparse), and the 175 paraphrased tickets that were adopted.* | | | |
+| `T4.calibration.attempts_with_data` | 2 | `data/cascade_calibration_attempts.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| | *Attempt 2's 35-ticket set was never committed and is absent from every revision in the repository's history, so it cannot be re-run. Its numbers remain uncited.* | | | |
+| `T4.calibration.attempt1.threshold` | 0.7 | `data/cascade_calibration_attempts.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| | *Derived on the in-distribution held-out split and REJECTED: observed accuracy is 1.0 in every populated bucket there, so the derivation has nothing to bite on.* | | | |
+| `T4.calibration.attempt3.threshold` | 1.0001 | `data/cascade_calibration_attempts.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| | *Derived at the 90% target on the 175 paraphrased tickets. 1.0001 is the 'escalate everything' sentinel: at a 90% bar no confidence band is trustworthy. The live 0.50 comes from the 70-80% bar in the sweep above.* | | | |
+| `T4.tier1.ece` | 0.112214 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
 | | *Count-weighted binned ECE, recomputed from the committed bins, on the 500-ticket IN-DISTRIBUTION production batch.* | | | |
-| `T4.tier2.ece` | 0.099248 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py` |  |
-| `T4.observed_accuracy_every_bin` | 1 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py` |  |
+| `T4.tier2.ece` | 0.099248 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
+| `T4.observed_accuracy_every_bin` | 1 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
 | | *The MINIMUM observed accuracy across all bins of both tiers. It is 1.0, so both tiers are systematically UNDER-confident here and the ECE is entirely the distance to a ceiling. In-distribution accuracy is uninformative on template-generated data -- treat a new 100% as a red flag.* | | | |
-| `T4.cascade.threshold` | 0.5 | `src/agent/config.py` | `python src/experiments/plot_calibration_curves.py` |  |
+| `T4.cascade.threshold` | 0.5 | `src/agent/config.py` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
 | | *The live gate. Frozen; Phases 5-9 are measurement only.* | | | |
-| `T4.reliability.n_tickets` | 500 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py` |  |
+| `T4.reliability.n_tickets` | 500 | `data/calibration_reliability_data.csv` | `python src/experiments/plot_calibration_curves.py; python src/classification/train_cascade.py` |  |
 
 ### T5
 
 | id | value | source file | regenerating command | tags |
 |---|---|---|---|---|
+| `T5.self_retrieval_rate` | 10/175 | `data/rag_self_retrieval_check.csv` | `python -m src.experiments.calibrate_rag_similarity_threshold` |  |
+| | *In-domain calibration tickets whose top-1 retrieval is their OWN source row. Phase 8A.1 added the writer; the rate itself was always computed here and reproduces exactly.* | | | |
 | `T5.gate` | 0.67 | `src/agent/config.py` | `python -m src.experiments.calibrate_rag_similarity_threshold` |  |
 | `T5.ood_leakage_at_gate` | 0.133333 | `data/rag_similarity_calibration_combined.csv` | `python -m src.experiments.calibrate_rag_similarity_threshold` |  |
 | `T5.ood_leakage_below_gate` | 0.377778 | `data/rag_similarity_calibration_combined.csv` | `python -m src.experiments.calibrate_rag_similarity_threshold` |  |
@@ -429,6 +468,11 @@ Each of these was published at some point and is now retired. The parity test gr
 - **Why it is retired:** The pre-registered rule fired at a TF-IDF-space domain AUC of 0.9972, so NO verdict was drawn on the primary. A blocked arm is not a null.
 - **Use instead:** T11's 7C rows, every one tagged post-hoc and BLOCKED.
 
+### TF-IDF + LogReg scores 7/14 on the 14-ticket benchmark
+
+- **Why it is retired:** Phase 8A.1 gave generalization_test.py a writer and re-ran it in its original configuration (TF-IDF + LogReg fitted on all 4,000 rows, seed 42). It scores 6/14, and so does the 80/20-fit arm, and so does the production Tier-1 artifact -- three independent derivations agreeing against the documented figure. The most likely explanation is that 7/14 was measured on the earlier 1,000-ticket dataset and never re-measured after the corpus was scaled to 4,000; that cannot be confirmed, because the 1,000-ticket corpus was never committed. It is recorded as a hypothesis, not a cause.
+- **Use instead:** T1.tfidf_baseline.benchmark14 -- 6/14 (42.9%), from data/baseline_tfidf_benchmark14.csv.
+
 ---
 
 ## Numbers in the documents with NO committed source
@@ -437,11 +481,7 @@ These appear in the project's documents but cannot be regenerated from any commi
 
 | number | stated in the docs | where | why there is no source |
 |---|---|---|---|
-| Cascade threshold table by target accuracy (the three calibration attempts, two rejected) | three attempts; 0.50 chosen at a 70-80% target | README.md, cascade calibration section | train_cascade.py prints its sweep and writes no results file, so the threshold-by-target-accuracy table cannot be regenerated. |
-| Fine-tuned DistilBERT, 14-ticket benchmark | 7/14 (50.0%) | README.md, the three-way classifier comparison and Final Classification Comparison tables | train_distilbert.py writes only label_mapping.json -- no metrics file of any kind. |
-| Fine-tuned DistilBERT, 45-ticket benchmark | (absent) | (never measured) | DistilBERT was never run against the 45-ticket benchmark, and the embedding comparison CSV has no DistilBERT row. |
-| In-domain self-retrieval contamination rate 5.7% (10/175) | 5.7% (10/175) | README.md, the RAG threshold calibration section and What's Done vs What's Pending | calibrate_rag_similarity_threshold.py computes it but writes no column for it in either calibration CSV. |
-| TF-IDF + LogReg, 14-ticket benchmark | 7/14 (50.0%) | README.md, the three-way classifier comparison and Final Classification Comparison tables | train_baseline_tfidf.py and generalization_test.py print their results and write no file; no ablation --mode no-cascade run exists for benchmark14. |
+| Cascade calibration attempt 2: 34 of 35 hand-written tickets collapsed into one confidence bucket | 34/35 in one bucket | README.md, cascade calibration section | The 35-ticket hand-written calibration set was never committed and is absent from every revision in this repository's history, so the attempt cannot be re-run and its bucket counts cannot be regenerated. Phase 8A.1 sourced attempts 1 and 3 and recorded this one as status=no_artifact in data/cascade_calibration_attempts.csv rather than inventing it. |
 
 ---
 
@@ -455,8 +495,12 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/ablation_tier2-only_results.csv` | `44d2537043d5b0e8bb16c28767c82f553f84707c4ec52f19f710666c86fa0ef4` |
 | `data/automation_candidates.json` | `54c63f88c29a0bc0fb36d4497efed47132aaf9620fb8d959f60828acb16dc99b` |
 | `data/automation_flag_validation_pilot_results.csv` | `9ccb3b2b035f717c0d2792f4d5e308675e677e020360f0076cde4fb2c0082407` |
+| `data/baseline_tfidf_benchmark14.csv` | `7220a118b93314b8c811d4b538eb6f8fbf09da24ad9ffaeb2ad7fd911625d35c` |
+| `data/baseline_tfidf_indistribution.csv` | `8125d2ff721fb63231236e3f29ab63011828e5b83b3f5564ae64dbb2f14c3f9d` |
 | `data/batch_intake/batch_summary.csv` | `4133cbfd0f7af4e5e14912cd78a2219648bd8a86eb60d43b4bef3f5e65b2468b` |
 | `data/calibration_reliability_data.csv` | `9e8931d71b77e7796226db38c4d5062489e7815b08000c11b2a7d86cabef48a1` |
+| `data/cascade_calibration_attempts.csv` | `9f84828e59f6efcb7f90f36ae8f93d48e6332aa589bfc93fe0a80bf90c73fe98` |
+| `data/cascade_threshold_sweep.csv` | `e0e1962fd00e037503b3f2892649fe7ebbfe5a8c82d997b0e60165f1bbc28614` |
 | `data/cascade_vs_tier2_mcnemar_benchmark45.csv` | `2a9584376d1793751cb5c123a91e0b661a9cb9c0693493a913931b360f53348c` |
 | `data/conformal_calibration_corrected_bge-base-en-v1-5.json` | `6709be36246a02fda1b46b0c19ab5bf73b4843e70384fa3f5264ced67f522ee2` |
 | `data/conformal_calibration_results.csv` | `b7cebd98f38857ac5177f214daea895e21aa9e5fe575d703c584349f394bece2` |
@@ -464,6 +508,7 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/deferral_conformal_operating_points.csv` | `83b01e5ebc826d50afe2e7233f193d71bfdc9336fb582a703818706ee4a1818b` |
 | `data/deferral_risk_coverage.csv` | `15b34c04ea5721cb2bf80af38b7ab448f08daa0a673c995d5a8b0c60aaa317b0` |
 | `data/deferral_rule_summary.csv` | `87287eb7aa803a5a5150795a3a8a581d924b53d69e83bced875c2a7f602f3b25` |
+| `data/distilbert_finetune_metrics.csv` | `cb75f1d9d8c2812ed5ac02cbfbd409a61cd39990b8a9155ba76b38391d563d60` |
 | `data/drift_evaluation_null.csv` | `a3f208a650df86e19d8c758f6bd7e7b8881eca1788bc2f613e070c9b7725e2e4` |
 | `data/drift_evaluation_power.csv` | `413b871f337da46b6f940d8b28861fe6c8c80be3d3c70a451f71ac0b84c2bcdb` |
 | `data/drift_evaluation_summary.json` | `517cb60c693a30fe1605a862ec1e0b73fdbd4fdff4aa0fc72c188238ec193066` |
@@ -479,6 +524,7 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/external_tobibueck/profile_summary.json` | `eb91c538b2fc1379ba53b6e8bbccff5761a21d2576b2756f8bd524ab2e021c3a` |
 | `data/groundedness_results.csv` | `0022b79ca69537b96cddc416bf95e14edb535d0829c2000e1994f8a5c3d31302` |
 | `data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv` | `089b3df69e40414b60d5e26d9afa2e6211c47ad031a86470a06ed840f3ce0b65` |
+| `data/rag_self_retrieval_check.csv` | `c63899078fa94f9b1608abed7410925dbdba0b205bc858653bdf0a6b7891d181` |
 | `data/rag_similarity_calibration.csv` | `69a2888b11b837d39a92da232332d50d338787c16d75ee447a13f75ccbee11e7` |
 | `data/rag_similarity_calibration_combined.csv` | `63edb9663735e0ba169f1ca295d7b926678e2cfa1a48d7ca1c0bfd65d0d882cb` |
 | `data/resolution_clustering_calibration_percategory_summary.csv` | `0767f84983ee548354e4b0e94805e610b3eebcecf2663adce8f29ffe99f5aef1` |

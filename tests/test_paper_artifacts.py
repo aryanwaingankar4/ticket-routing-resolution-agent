@@ -326,6 +326,93 @@ def test_paper_records_the_frozen_production_gates():
     assert gates["drift_enabled"] is False
 
 
+def test_the_phase_8a1_sources_exist_and_are_readable():
+    """Phase 8A.1 gave four documented numbers a committed source.
+
+    If one of these files goes missing, emit() will refuse the number and the
+    build fails -- but it fails deep inside a table builder. Checking here
+    says plainly which file is gone.
+    """
+    expected = {
+        "data/baseline_tfidf_benchmark14.csv":
+            "TF-IDF + LogReg on the 14-ticket benchmark",
+        "data/baseline_tfidf_indistribution.csv":
+            "the TF-IDF baseline's in-distribution metrics",
+        "data/cascade_threshold_sweep.csv":
+            "the cascade threshold-by-target-accuracy sweep",
+        "data/cascade_calibration_attempts.csv":
+            "the three cascade calibration attempts",
+        "data/rag_self_retrieval_check.csv":
+            "the in-domain self-retrieval contamination check",
+        "data/distilbert_finetune_metrics.csv":
+            "the DistilBERT per-epoch metrics on both benchmarks",
+    }
+    missing = [f"{path} ({what})" for path, what in expected.items()
+               if not os.path.isfile(os.path.join(PROJECT_ROOT, path))]
+    assert not missing, (
+        "these Phase 8A.1 result files are gone, so the numbers they source "
+        f"have no committed source again: {missing}")
+
+
+def test_the_previously_unsourced_numbers_are_now_emitted():
+    """The point of Phase 8A.1, pinned.
+
+    Each id below replaced an entry on 8A's 'no committed source' list. If one
+    disappears, a number has quietly gone back to being unsourced.
+    """
+    with open(os.path.join(PAPER_DIR, "NUMBERS.md"), "r",
+              encoding="utf-8") as fh:
+        text = fh.read()
+
+    for number_id in ("T1.tfidf_baseline.benchmark14",
+                      "T1.tfidf_baseline.in_distribution_accuracy",
+                      "T1.distilbert.benchmark14",
+                      "T1.distilbert.benchmark45",
+                      "T4.sweep.threshold.target70",
+                      "T4.calibration.attempt3.threshold",
+                      "T5.self_retrieval_rate"):
+        assert number_id in text, (
+            f"{number_id} is no longer in NUMBERS.md -- a number that Phase "
+            f"8A.1 sourced has lost its source")
+
+    # The 45-ticket DistilBERT score is a FIRST measurement, not a
+    # reproduction, and must stay labelled as one.
+    for line in text.splitlines():
+        if line.startswith("| `T1.distilbert.benchmark45`"):
+            assert "new-measurement" in line, (
+                "T1.distilbert.benchmark45 lost its new-measurement tag; it "
+                "has never been measured before and must not read as a "
+                "reproduction")
+            break
+    else:
+        raise AssertionError("T1.distilbert.benchmark45 row not found")
+
+
+def test_the_remaining_no_source_gap_is_only_the_35_ticket_set():
+    """8A listed five numbers with no committed source; 8A.1 closed four.
+
+    What remains is cascade calibration attempt 2, whose 35-ticket set was
+    never committed and cannot be re-run. If anything else joins that list,
+    it should be a deliberate decision, not a silent regression.
+    """
+    with open(os.path.join(PAPER_DIR, "NUMBERS.md"), "r",
+              encoding="utf-8") as fh:
+        text = fh.read()
+
+    marker = "## Numbers in the documents with NO committed source"
+    assert marker in text, "NUMBERS.md lost its no-committed-source section"
+    section = text.split(marker, 1)[1].split("\n## ", 1)[0]
+    rows = [line for line in section.splitlines()
+            if line.startswith("| ") and "|---" not in line
+            and not line.startswith("| number |")]
+    assert len(rows) == 1, (
+        "expected exactly one remaining unsourced number (cascade "
+        f"calibration attempt 2); found {len(rows)}:\n" + "\n".join(rows))
+    assert "35" in rows[0], (
+        "the one remaining unsourced number should be the 35-ticket "
+        f"calibration attempt; found: {rows[0]}")
+
+
 def test_every_clause_group_in_numbers_md_carries_its_clause():
     """A number in a clause group may never be lifted out of its clause."""
     sys.path.insert(0, PROJECT_ROOT)
