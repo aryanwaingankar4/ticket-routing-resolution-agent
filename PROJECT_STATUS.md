@@ -1,9 +1,9 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** Phase 8A.1 — giving the five "no
-committed source" numbers a source. See the 8A.1 block below for the SHA and
-the gate outcome.
+**Last commit to move code or a result:** `d3b8f35` — Phase 8A.1, giving the five
+"no committed source" numbers a source. **All five gates passed and it was
+PUSHED on 2026-09-22.**
 Phase 8A (`b243a2f`) is gated and PUSHED.
 Phase 6C (`c5497bf`) is also gated and PUSHED.
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
@@ -14,7 +14,7 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 8A.1 — COMPLETE (2026-09-22).** The five numbers 8A
+**Current phase: Phase 8A.1 — COMPLETE, GATED and PUSHED** (`d3b8f35`, 2026-09-22). The five numbers 8A
 flagged as having no committed machine-readable source now have one, except
 the one that cannot. Each script that printed a number got a **writer**, and
 each was re-run in its **original configuration** (seed 42, same split, same
