@@ -3682,8 +3682,13 @@ and spends ~508 s encoding its own 4,000 rows.
 | adv_08 decision | escalated, Infrastructure, no draft generated |
 
 **A second finding, smaller but worth writing down: an embedding-derived number
-is not bit-reproducible across platforms, and a TF-IDF one is.** Tier-1 runs in
-float64 and matched the Windows goldens exactly from a Linux container. The
+is not bit-reproducible across platforms, and a TF-IDF one is far tighter but
+also not exact.** (The "and a TF-IDF one is [bit-reproducible]" half of this
+sentence was **wrong when first written** and is corrected in Phase 8B.2 below:
+it generalised from adv_08, the one ticket where the delta happened to be 0.0.
+Across all 54 golden tickets Tier-1 agrees to 1.2e-15, which is float64
+rounding, not bit-identity.) Tier-1 runs in float64 and matched the Windows
+goldens exactly *on adv_08* from a Linux container. The
 BGE/FAISS similarity did not, and the offset was *identical on every repeated
 call* — so it is a fixed property of the platform's BLAS kernel and SIMD width,
 not noise. The published 6-decimal figure is unchanged and the decision is
@@ -3799,6 +3804,69 @@ of a runner, which made a single unrelated file look like the culprit. A
 reproduction has to be checked for being the thing it claims to reproduce
 before its result is believed — the LF clone (`git -c core.autocrlf=false
 clone`) is the one that matched CI.
+
+
+---
+
+### Phase 8B.2 - decisions are portable, the floats behind them are not
+
+`gates.yml`'s full-suite job failed golden parity on Linux with a similarity
+mismatch on essentially every benchmark ticket. The cause is the float32 effect
+8B had already measured in the container, meeting a test that asserted equality
+to `TOL = 1e-9` -- one tolerance for every number in the file.
+
+**Measured first, on a Linux container, over all 54 golden tickets:**
+
+| Quantity | Arithmetic | Max Windows/Linux delta |
+|---|---|---|
+| category, tier, escalated, `n_retrieved` | discrete | **0** |
+| `tier1_conf` | TF-IDF + LogReg, float64 | **1.166e-15** |
+| `top_similarity` | BGE + FAISS inner product, float32 | **2.384e-07** (= 2^-22, float32 eps) |
+
+**Not one decision differs on any ticket in either set.** The similarity delta
+is exactly float32 epsilon, which is what a float32 forward pass accumulated in
+a different BLAS/SIMD order is expected to produce. So this is a property of
+the pipeline, not a regression -- and the goldens were **not** regenerated.
+
+**A correction to Phase 8B.** 8B wrote that Tier-1's confidence is
+*bit-identical* across platforms. It is not. That claim came from adv_08, where
+the delta happened to be exactly 0.0, and one ticket is not a population. Over
+54 tickets Tier-1 agrees to **1.2e-15** -- float64 rounding, far tighter than
+the similarity, and still not bit-identity. The 8B entry above is corrected in
+place rather than quietly edited.
+
+**The fix is the kind of comparison, not a looser number.** Every *decision*
+field is now compared exactly -- category, tier, escalated, `n_retrieved`, plus
+an invariant on the escalation reason, which the goldens predate and do not
+record. Only the two float quantities carry a tolerance, each sized to its own
+arithmetic: `tier1_conf` at 1e-12 (858x the measured worst case) and similarity
+at 1e-6 (4.2x).
+
+**Two things keep that honest.** The max deltas are **printed on every run**, so
+a drift from 2.4e-07 to 2.4e-05 is visible even though it would still pass --
+`gates.yml` runs the parity test with `-s` for exactly this. And the test
+**fails if any golden value sits within its own tolerance of the gate it
+feeds**, because there a tolerance could swallow a flipped decision instead of
+reporting it. Measured headroom: the closest similarity is **1.458e-04** from
+the 0.67 RAG gate (146x the tolerance), the closest `tier1_conf` **1.264e-02**
+from the 0.50 cascade.
+
+**The gate CSVs were checked for the same cause and are fine -- by luck, not by
+construction.** Both write 6 decimal places and both regenerate
+**byte-identical on Linux** (run in the container, not assumed). But adv_05's
+similarity, 0.6765815019607544, sits **0.0020** of a unit in the 6th decimal
+from a rounding boundary while the platform offset is **0.2384** of that unit
+-- about 120x larger. A different kernel could flip that digit and fail a byte
+comparison over nothing. Recorded as a known inconsistency with the ticket
+named, and deliberately not "fixed": rounding to fewer places would rewrite
+committed published files, and a tolerance-aware comparator would weaken a gate
+that currently passes strictly.
+
+**Gates re-run:** `pytest` **425 passed**, 0 failed; adversarial **9/9**, CSV
+byte-identical; goldens **45/45** and **9/9**; ablation **32/45**, CSV
+byte-identical; paper parity **19/19**. On Linux in the container: golden parity
+**4 passed** with the deltas above, and both gate CSVs byte-identical after
+regeneration.
 
 
 ---

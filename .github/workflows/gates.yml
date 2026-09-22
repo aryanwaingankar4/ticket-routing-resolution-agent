@@ -84,6 +84,15 @@ jobs:
       - name: Full test suite
         run: pytest -q
 
+      # Run again on its own with -s so the cross-platform deltas are VISIBLE
+      # on a passing run. They are the early warning: 2.4e-07 is float32
+      # epsilon and expected, 2.4e-05 would still pass the tolerance while
+      # telling you something about this machine had changed. A number nobody
+      # sees cannot warn anyone. Artifacts and the BGE weights are already
+      # warm from the step above, so this costs ~40s.
+      - name: Golden parity, with the cross-platform deltas printed
+        run: pytest tests/test_pipeline_parity.py -q -s
+
       - name: Adversarial escalation gate (9/9)
         run: python src/experiments/test_adversarial_escalation.py
 

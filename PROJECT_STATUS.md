@@ -5,7 +5,52 @@
 rather than platform bytes. **All five gates passed.** Phase 8B (`3885393`) is
 gated and pushed.
 
-**Current phase: Phase 8B.1 — COMPLETE and GATED** (`2a8c8d3`, 2026-09-23). The first
+**Current phase: Phase 8B.2 — COMPLETE and GATED** (2026-09-23).
+`gates.yml`'s full-suite job failed golden parity on Linux with a similarity
+mismatch on essentially every benchmark ticket. **No regression**: the test
+asserted `TOL = 1e-9` for every number in the file, and an embedding similarity
+is a float32 BGE pass plus a FAISS inner product, accumulated in an order set
+by the machine's BLAS kernel and SIMD width.
+
+**Measured first, in a Linux container, over all 54 golden tickets:** category,
+tier, escalated and `n_retrieved` differ on **zero** tickets; `tier1_conf` by at
+most **1.166e-15** (float64 rounding); `top_similarity` by at most
+**2.384e-07** — exactly 2^-22, float32 epsilon. **The goldens were NOT
+regenerated.**
+
+**Correction to Phase 8B:** 8B claimed Tier-1's confidence is *bit-identical*
+across platforms. **It is not**, and the claim is withdrawn in place. It came
+from adv_08, the one ticket whose delta happened to be 0.0; over 54 tickets
+Tier-1 agrees to 1.2e-15 — far tighter than the similarity, not bit-identity.
+One ticket is not a population.
+
+**Fix: the KIND of comparison, not a looser number.** Every decision field is
+compared **exactly** (category, tier, escalated, `n_retrieved`, plus an
+invariant on the escalation reason the goldens predate). Only the two floats
+carry a tolerance, each sized to its own arithmetic — `tier1_conf` 1e-12 (858x
+the worst case), similarity 1e-6 (4.2x). The max deltas **print on every run**
+(`gates.yml` runs parity with `-s`), and the test **fails if any golden value
+sits within its tolerance of the gate it feeds**, so a tolerance can never hide
+a flipped decision. Headroom: closest similarity **1.458e-04** from the 0.67
+gate (146x), closest `tier1_conf` **1.264e-02** from 0.50.
+
+**Gate CSVs checked for the same cause: fine, by luck not construction.** Both
+write 6 dp and both regenerate **byte-identical on Linux** (measured in the
+container). But adv_05's similarity sits **0.0020** of a unit in the 6th decimal
+from a rounding boundary against a **0.2384**-unit offset — ~120x larger. Named
+in "Known inconsistencies"; deliberately not fixed, since rounding differently
+would rewrite committed files and a tolerant comparator would weaken a gate that
+passes strictly today.
+
+**Gates re-run:** `pytest` **425 passed**, 0 failed; adversarial **9/9** CSV
+byte-identical; goldens **45/45** and **9/9**; ablation **32/45** CSV
+byte-identical; paper parity **19/19**. On Linux: golden parity **4 passed**,
+both gate CSVs byte-identical after regeneration. Isolation: **nothing**
+changed.
+
+---
+
+**Phase 8B.1 is COMPLETE and GATED** (`2a8c8d3`, 2026-09-23). The first
 `ci.yml` run on GitHub FAILED, and it was right to. `paper/PROVENANCE.json`
 hashed **raw working-tree bytes**, which are a property of the machine: under
 `core.autocrlf=true` git stores LF and checks out CRLF, so **50 of 51** paper

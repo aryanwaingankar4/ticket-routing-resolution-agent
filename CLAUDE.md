@@ -101,7 +101,15 @@ comes from a committed script". It compares `/health`'s `config_fingerprint`
 against this checkout's, confirms the no-key surface (`/agents/resolve` → 503,
 everything else 200), and runs `adv_08` over HTTP against **two** recorded
 derivations — the 6-dp CSV and the full-precision golden. Never widen its
-tolerances: a moved routing number is a finding.
+tolerances: a moved routing number is a finding. Note its Tier-1 check is
+**exact only because adv_08's delta happens to be 0.0**; across all 54 golden
+tickets Tier-1 agrees to 1.2e-15, not bit-exactly (see "Known inconsistencies").
+
+**Seeing the cross-platform deltas locally:**
+
+```powershell
+pytest tests/test_pipeline_parity.py -q -s   # -s, or the deltas stay captured
+```
 
 CI is two workflows, neither able to spend quota. `ci.yml` (push/PR) runs
 `pytest -m "not slow"` **and `tests/test_paper_artifacts.py` by path**, because
@@ -742,19 +750,47 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## Known inconsistencies
 
-- **An embedding-derived number is NOT bit-reproducible across platforms; a
-  TF-IDF one is.** Measured in Phase 8B on adv_08. Tier-1 confidence matches
-  the Windows goldens **exactly** (0.3182984770932253, delta 0.000e+00) from a
-  Linux container, because TF-IDF + LogReg runs in float64. The retrieval
-  similarity does not: the container returns **0.6123799085617065** against the
-  goldens' **0.6123800277709961**, a fixed **-1.192e-07** offset, identical on
-  every repeat — float32 BGE plus a FAISS inner product accumulate in an order
-  set by the BLAS kernel and SIMD width. Nothing about the decision moves: the
-  distance to the 0.67 gate is +5.762e-02, **483,352x** the offset. So
-  `verify_deployment.py` checks Tier-1 exactly and the similarity at a float32
-  tolerance, documented at the constant. **Do not "fix" a cross-platform
-  parity failure by regenerating the goldens** — they are the Windows
-  reference the published numbers were produced on.
+- **The gate CSVs survive a platform change by luck, not by construction.**
+  `data/adversarial_escalation_results.csv` and
+  `data/ablation_baseline_results.csv` write floats at **6 decimal places**, and
+  both regenerate **byte-identical on Linux** — measured in the container, not
+  assumed. But the margin is thin: adv_05's similarity (0.6765815019607544)
+  sits **0.0020** of a unit in the 6th decimal from a rounding boundary, while
+  the cross-platform offset is **0.2384** of that unit — about 120x larger. A
+  different BLAS kernel could flip that last digit and fail the byte
+  comparison for a value that never changed. **If a gate CSV ever fails on a
+  new machine, check the 6th decimal of adv_05 before believing a regression.**
+  Not fixed: rounding to fewer places would change committed published files,
+  and a tolerance-aware comparator would weaken a gate that currently passes
+  strictly.
+
+- **DECISIONS are reproducible across platforms; the FLOATS behind them are
+  not.** This is a property of the pipeline, not a bug, and it is now measured
+  over the whole of both golden sets rather than inferred from one ticket
+  (Phase 8B.2, correcting 8B):
+
+  | Quantity | Arithmetic | Max Windows-vs-Linux delta, 54 tickets |
+  |---|---|---|
+  | category, tier, escalated, n_retrieved | discrete | **0 — always compare these EXACTLY** |
+  | `tier1_conf` | TF-IDF + LogReg, float64 | **1.17e-15** (float64 rounding) |
+  | `top_similarity` | BGE + FAISS inner product, float32 | **2.38e-07** (= 2^-22, float32 eps) |
+
+  **Phase 8B's claim that Tier-1 is "bit-identical" was wrong and is
+  withdrawn.** It rested on adv_08 alone, where the delta happened to be
+  exactly 0.0. Over 54 tickets TF-IDF agrees to float64 rounding — far tighter
+  than the similarity, but not bit-identity. One ticket is not a population.
+
+  `tests/test_pipeline_parity.py` therefore compares every decision exactly,
+  `tier1_conf` at 1e-12 and similarity at 1e-6, **prints the max delta on every
+  run** (visible with `-s`; `gates.yml` has a step for it), and **fails if any
+  golden value sits within its tolerance of the gate it feeds** — otherwise the
+  tolerance could hide a flipped decision. Measured headroom: the closest
+  similarity is **1.458e-04** from the 0.67 gate (146x the tolerance) and the
+  closest `tier1_conf` **1.264e-02** from 0.50.
+
+  **Never "fix" a cross-platform parity failure by regenerating the goldens.**
+  They are the Windows reference the published numbers were produced on.
+  Widening a tolerance is equally wrong: fix the KIND of comparison instead.
 
 - **Decision logs can be persisted, but nothing persists them yet.** Phase 4A added
   `configure_logging(decision_log_path=...)`, a JSONL sink for `pipeline_decision`
