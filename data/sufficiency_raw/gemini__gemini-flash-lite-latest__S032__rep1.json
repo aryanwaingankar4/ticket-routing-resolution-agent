@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S032",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "35c7e7c8a1b2bd3201b9bcd3c283fce1f1b60deaf708c6de1b640db161d636f9",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address server-side file share service crashes, whereas the new ticket describes a client-side network connectivity issue indicated by a yellow triangle on the taskbar.\"}",
+ "timestamp": "2026-09-22T16:12:22",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

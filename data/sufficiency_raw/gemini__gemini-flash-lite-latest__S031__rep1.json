@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S031",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "5508c4df91bc81804cfb98fd3220c6f058fd5521dd281f0ceb85f7d401bc8dc3",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The new ticket simply says 'Broken again' without providing any details about what is broken, making it impossible to determine if the retrieved tickets apply.\"}",
+ "timestamp": "2026-09-22T16:12:16",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

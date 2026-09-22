@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S045",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7eeb15fa1449bde2bcfc4bd4dc536d1ce9558fe4243a521dcf9237ebb413dfbf",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address datacenter and office-wide network drops caused by faulty uplink switches, whereas the new ticket describes an individual computer losing connection specifically when left idle for lunch.\"}",
+ "timestamp": "2026-09-22T16:14:50",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

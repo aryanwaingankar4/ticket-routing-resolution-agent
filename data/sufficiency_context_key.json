@@ -1,0 +1,1362 @@
+{
+  "_meta": {
+    "phase": "6C",
+    "purpose": "Provenance key for sufficiency_context_bundle.json.",
+    "warning": "Do not put any field from this file into a rater prompt.",
+    "items": 54,
+    "seed": 42,
+    "config_fingerprint": "9c9a5cbcb53f"
+  },
+  "items": [
+    {
+      "item_id": "S001",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N23",
+      "groundedness_item_id": null,
+      "predicted_category": "Storage",
+      "top_similarity": 0.626513659954071,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "519",
+        "2707",
+        "3002",
+        "376",
+        "1476"
+      ],
+      "retrieved_similarities": [
+        0.626513659954071,
+        0.6252708435058594,
+        0.6249408721923828,
+        0.6246611475944519,
+        0.6240984797477722
+      ]
+    },
+    {
+      "item_id": "S002",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N31",
+      "groundedness_item_id": "G024",
+      "predicted_category": "Storage",
+      "top_similarity": 0.6747423410415649,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1708",
+        "662",
+        "1457",
+        "35",
+        "3934"
+      ],
+      "retrieved_similarities": [
+        0.6747423410415649,
+        0.6720408201217651,
+        0.6648105978965759,
+        0.6642556190490723,
+        0.6634896397590637
+      ]
+    },
+    {
+      "item_id": "S003",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N42",
+      "groundedness_item_id": null,
+      "predicted_category": "Infrastructure",
+      "top_similarity": 0.6121569871902466,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "235",
+        "622",
+        "1434",
+        "1673",
+        "3873"
+      ],
+      "retrieved_similarities": [
+        0.6121569871902466,
+        0.605464518070221,
+        0.6046426296234131,
+        0.6042910814285278,
+        0.6035658717155457
+      ]
+    },
+    {
+      "item_id": "S004",
+      "arm": "eligible",
+      "source": "adversarial-9",
+      "ticket_id": "A03",
+      "groundedness_item_id": "G026",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.6704270839691162,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3953",
+        "3803",
+        "3480",
+        "2246",
+        "3724"
+      ],
+      "retrieved_similarities": [
+        0.6704270839691162,
+        0.667811393737793,
+        0.6473280191421509,
+        0.6459860801696777,
+        0.6452356576919556
+      ]
+    },
+    {
+      "item_id": "S005",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N27",
+      "groundedness_item_id": "G011",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7543913125991821,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "329",
+        "662",
+        "880",
+        "1205",
+        "617"
+      ],
+      "retrieved_similarities": [
+        0.7543913125991821,
+        0.748735249042511,
+        0.742929995059967,
+        0.7414283752441406,
+        0.7408473491668701
+      ]
+    },
+    {
+      "item_id": "S006",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A01",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.5176095962524414,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3096",
+        "2765",
+        "2645",
+        "2607",
+        "1167"
+      ],
+      "retrieved_similarities": [
+        0.5176095962524414,
+        0.5126445889472961,
+        0.511520266532898,
+        0.5111345052719116,
+        0.5108396410942078
+      ]
+    },
+    {
+      "item_id": "S007",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N24",
+      "groundedness_item_id": "G004",
+      "predicted_category": "Storage",
+      "top_similarity": 0.699328601360321,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "288",
+        "1506",
+        "2524",
+        "2980",
+        "2707"
+      ],
+      "retrieved_similarities": [
+        0.699328601360321,
+        0.696823239326477,
+        0.6962774991989136,
+        0.6958587169647217,
+        0.6954714059829712
+      ]
+    },
+    {
+      "item_id": "S008",
+      "arm": "eligible",
+      "source": "adversarial-9",
+      "ticket_id": "A05",
+      "groundedness_item_id": "G019",
+      "predicted_category": "Application",
+      "top_similarity": 0.6765815019607544,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3803",
+        "434",
+        "1100",
+        "233",
+        "3953"
+      ],
+      "retrieved_similarities": [
+        0.6765815019607544,
+        0.6617802381515503,
+        0.659014105796814,
+        0.6567245125770569,
+        0.6565062999725342
+      ]
+    },
+    {
+      "item_id": "S009",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N39",
+      "groundedness_item_id": "G028",
+      "predicted_category": "Database",
+      "top_similarity": 0.7392354607582092,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2272",
+        "2100",
+        "3462",
+        "3566",
+        "848"
+      ],
+      "retrieved_similarities": [
+        0.7392354607582092,
+        0.7367703914642334,
+        0.7305928468704224,
+        0.7299779653549194,
+        0.7270808219909668
+      ]
+    },
+    {
+      "item_id": "S010",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N11",
+      "groundedness_item_id": "G013",
+      "predicted_category": "Application",
+      "top_similarity": 0.7324777245521545,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2237",
+        "2028",
+        "2000",
+        "1717",
+        "1088"
+      ],
+      "retrieved_similarities": [
+        0.7324777245521545,
+        0.7197765111923218,
+        0.7193865776062012,
+        0.7161188125610352,
+        0.7140977382659912
+      ]
+    },
+    {
+      "item_id": "S011",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N17",
+      "groundedness_item_id": "G003",
+      "predicted_category": "Application",
+      "top_similarity": 0.671837329864502,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "574",
+        "1119",
+        "3096",
+        "1209",
+        "1662"
+      ],
+      "retrieved_similarities": [
+        0.671837329864502,
+        0.6702755689620972,
+        0.6682990789413452,
+        0.6679714322090149,
+        0.6637352108955383
+      ]
+    },
+    {
+      "item_id": "S012",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N33",
+      "groundedness_item_id": "G031",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7361786365509033,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3540",
+        "1272",
+        "410",
+        "2196",
+        "2996"
+      ],
+      "retrieved_similarities": [
+        0.7361786365509033,
+        0.735920786857605,
+        0.7356395721435547,
+        0.7323518991470337,
+        0.7309004068374634
+      ]
+    },
+    {
+      "item_id": "S013",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N40",
+      "groundedness_item_id": "G014",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7361388206481934,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "681",
+        "1936",
+        "3678",
+        "3245",
+        "2050"
+      ],
+      "retrieved_similarities": [
+        0.7361388206481934,
+        0.735644519329071,
+        0.727507472038269,
+        0.7257283329963684,
+        0.7213813662528992
+      ]
+    },
+    {
+      "item_id": "S014",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A02",
+      "groundedness_item_id": null,
+      "predicted_category": "Storage",
+      "top_similarity": 0.5228346586227417,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "2809",
+        "1265",
+        "2832",
+        "2226",
+        "1262"
+      ],
+      "retrieved_similarities": [
+        0.5228346586227417,
+        0.5147967338562012,
+        0.5071351528167725,
+        0.5048743486404419,
+        0.503465473651886
+      ]
+    },
+    {
+      "item_id": "S015",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N06",
+      "groundedness_item_id": null,
+      "predicted_category": "Storage",
+      "top_similarity": 0.6395179629325867,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "63",
+        "288",
+        "3785",
+        "1172",
+        "3176"
+      ],
+      "retrieved_similarities": [
+        0.6395179629325867,
+        0.6387550830841064,
+        0.6367219090461731,
+        0.6364393830299377,
+        0.6357706785202026
+      ]
+    },
+    {
+      "item_id": "S016",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N04",
+      "groundedness_item_id": "G025",
+      "predicted_category": "Application",
+      "top_similarity": 0.7591496706008911,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3606",
+        "3960",
+        "1997",
+        "2700",
+        "2256"
+      ],
+      "retrieved_similarities": [
+        0.7591496706008911,
+        0.7572548389434814,
+        0.7564557790756226,
+        0.7476693391799927,
+        0.7476005554199219
+      ]
+    },
+    {
+      "item_id": "S017",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N29",
+      "groundedness_item_id": "G007",
+      "predicted_category": "Security",
+      "top_similarity": 0.7032899856567383,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1855",
+        "1093",
+        "3072",
+        "1463",
+        "2118"
+      ],
+      "retrieved_similarities": [
+        0.7032899856567383,
+        0.6970497369766235,
+        0.6947537064552307,
+        0.6900535821914673,
+        0.6896875500679016
+      ]
+    },
+    {
+      "item_id": "S018",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N43",
+      "groundedness_item_id": null,
+      "predicted_category": "Infrastructure",
+      "top_similarity": 0.6624911427497864,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3024",
+        "2941",
+        "2317",
+        "436",
+        "2232"
+      ],
+      "retrieved_similarities": [
+        0.6624911427497864,
+        0.655644953250885,
+        0.6546282172203064,
+        0.6532448530197144,
+        0.6522602438926697
+      ]
+    },
+    {
+      "item_id": "S019",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N05",
+      "groundedness_item_id": "G027",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7308734059333801,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1985",
+        "3197",
+        "3868",
+        "550",
+        "376"
+      ],
+      "retrieved_similarities": [
+        0.7308734059333801,
+        0.7298116683959961,
+        0.7293685674667358,
+        0.727753221988678,
+        0.7273001670837402
+      ]
+    },
+    {
+      "item_id": "S020",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A08",
+      "groundedness_item_id": null,
+      "predicted_category": "Infrastructure",
+      "top_similarity": 0.6123800277709961,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "891",
+        "903",
+        "3361",
+        "1172",
+        "2660"
+      ],
+      "retrieved_similarities": [
+        0.6123800277709961,
+        0.6075255274772644,
+        0.6069630980491638,
+        0.6044809818267822,
+        0.6040611267089844
+      ]
+    },
+    {
+      "item_id": "S021",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N16",
+      "groundedness_item_id": "G009",
+      "predicted_category": "Application",
+      "top_similarity": 0.7240623235702515,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3106",
+        "2927",
+        "1242",
+        "2398",
+        "2343"
+      ],
+      "retrieved_similarities": [
+        0.7240623235702515,
+        0.7207241058349609,
+        0.7153635025024414,
+        0.7150694131851196,
+        0.696830153465271
+      ]
+    },
+    {
+      "item_id": "S022",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N14",
+      "groundedness_item_id": null,
+      "predicted_category": "Infrastructure",
+      "top_similarity": 0.6108201742172241,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3803",
+        "3480",
+        "271",
+        "57",
+        "3205"
+      ],
+      "retrieved_similarities": [
+        0.6108201742172241,
+        0.5932114720344543,
+        0.5857381820678711,
+        0.5834157466888428,
+        0.5787047743797302
+      ]
+    },
+    {
+      "item_id": "S023",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N32",
+      "groundedness_item_id": "G012",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.689045786857605,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2709",
+        "2237",
+        "1372",
+        "1427",
+        "1284"
+      ],
+      "retrieved_similarities": [
+        0.689045786857605,
+        0.6890381574630737,
+        0.6885855197906494,
+        0.6873412132263184,
+        0.6870357394218445
+      ]
+    },
+    {
+      "item_id": "S024",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N30",
+      "groundedness_item_id": null,
+      "predicted_category": "Storage",
+      "top_similarity": 0.6552321314811707,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "2180",
+        "2847",
+        "2159",
+        "2808",
+        "570"
+      ],
+      "retrieved_similarities": [
+        0.6552321314811707,
+        0.6549350023269653,
+        0.6524968147277832,
+        0.6456702947616577,
+        0.6450541019439697
+      ]
+    },
+    {
+      "item_id": "S025",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N34",
+      "groundedness_item_id": "G015",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7052785158157349,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "900",
+        "653",
+        "2237",
+        "3761",
+        "2097"
+      ],
+      "retrieved_similarities": [
+        0.7052785158157349,
+        0.7051671147346497,
+        0.7030197381973267,
+        0.7020280957221985,
+        0.6988368630409241
+      ]
+    },
+    {
+      "item_id": "S026",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N01",
+      "groundedness_item_id": "G018",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.6753429174423218,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3333",
+        "1855",
+        "3200",
+        "859",
+        "3999"
+      ],
+      "retrieved_similarities": [
+        0.6753429174423218,
+        0.6657286882400513,
+        0.6655986309051514,
+        0.6635074615478516,
+        0.66264808177948
+      ]
+    },
+    {
+      "item_id": "S027",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N35",
+      "groundedness_item_id": "G017",
+      "predicted_category": "Access Management",
+      "top_similarity": 0.7036538124084473,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1185",
+        "2649",
+        "2881",
+        "2545",
+        "1124"
+      ],
+      "retrieved_similarities": [
+        0.7036538124084473,
+        0.6970452666282654,
+        0.6948280334472656,
+        0.6943725347518921,
+        0.6933677792549133
+      ]
+    },
+    {
+      "item_id": "S028",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N44",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.6527823209762573,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3953",
+        "632",
+        "1444",
+        "2398",
+        "3803"
+      ],
+      "retrieved_similarities": [
+        0.6527823209762573,
+        0.6431790590286255,
+        0.6296854019165039,
+        0.624906063079834,
+        0.6241371631622314
+      ]
+    },
+    {
+      "item_id": "S029",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N26",
+      "groundedness_item_id": "G021",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7010266780853271,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2212",
+        "3369",
+        "587",
+        "3128",
+        "2685"
+      ],
+      "retrieved_similarities": [
+        0.7010266780853271,
+        0.700791597366333,
+        0.697013258934021,
+        0.6968164443969727,
+        0.6918256878852844
+      ]
+    },
+    {
+      "item_id": "S030",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N13",
+      "groundedness_item_id": null,
+      "predicted_category": "Database",
+      "top_similarity": 0.6554906368255615,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3480",
+        "1262",
+        "3953",
+        "789",
+        "2036"
+      ],
+      "retrieved_similarities": [
+        0.6554906368255615,
+        0.6498385071754456,
+        0.6459981799125671,
+        0.6456803679466248,
+        0.6456565260887146
+      ]
+    },
+    {
+      "item_id": "S031",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A07",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.5862715244293213,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3480",
+        "3803",
+        "1483",
+        "434",
+        "1110"
+      ],
+      "retrieved_similarities": [
+        0.5862715244293213,
+        0.5795228481292725,
+        0.5793229341506958,
+        0.5751912593841553,
+        0.5739693641662598
+      ]
+    },
+    {
+      "item_id": "S032",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N37",
+      "groundedness_item_id": "G005",
+      "predicted_category": "Network",
+      "top_similarity": 0.7308971881866455,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3245",
+        "1936",
+        "681",
+        "3420",
+        "284"
+      ],
+      "retrieved_similarities": [
+        0.7308971881866455,
+        0.7288306355476379,
+        0.728765606880188,
+        0.7257863879203796,
+        0.7252794504165649
+      ]
+    },
+    {
+      "item_id": "S033",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N19",
+      "groundedness_item_id": "G006",
+      "predicted_category": "Storage",
+      "top_similarity": 0.6701457500457764,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2933",
+        "3270",
+        "2322",
+        "164",
+        "1428"
+      ],
+      "retrieved_similarities": [
+        0.6701457500457764,
+        0.6691107749938965,
+        0.6629567742347717,
+        0.661949872970581,
+        0.6615311503410339
+      ]
+    },
+    {
+      "item_id": "S034",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N18",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.6631547212600708,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "3724",
+        "2232",
+        "1025",
+        "2612",
+        "3715"
+      ],
+      "retrieved_similarities": [
+        0.6631547212600708,
+        0.6613730192184448,
+        0.6597365736961365,
+        0.6594964265823364,
+        0.6592088937759399
+      ]
+    },
+    {
+      "item_id": "S035",
+      "arm": "eligible",
+      "source": "adversarial-9",
+      "ticket_id": "A09",
+      "groundedness_item_id": "G029",
+      "predicted_category": "Security",
+      "top_similarity": 0.6896988153457642,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3589",
+        "3985",
+        "3908",
+        "2413",
+        "1200"
+      ],
+      "retrieved_similarities": [
+        0.6896988153457642,
+        0.6856029033660889,
+        0.6838580965995789,
+        0.6801137924194336,
+        0.6788879632949829
+      ]
+    },
+    {
+      "item_id": "S036",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A04",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.6195766925811768,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "1602",
+        "2811",
+        "1843",
+        "3100",
+        "2804"
+      ],
+      "retrieved_similarities": [
+        0.6195766925811768,
+        0.617756724357605,
+        0.6170240640640259,
+        0.6133525967597961,
+        0.6130679845809937
+      ]
+    },
+    {
+      "item_id": "S037",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N20",
+      "groundedness_item_id": "G020",
+      "predicted_category": "Application",
+      "top_similarity": 0.6982809901237488,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "796",
+        "3020",
+        "2372",
+        "57",
+        "909"
+      ],
+      "retrieved_similarities": [
+        0.6982809901237488,
+        0.6959514021873474,
+        0.695110559463501,
+        0.6951038837432861,
+        0.6941618323326111
+      ]
+    },
+    {
+      "item_id": "S038",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N36",
+      "groundedness_item_id": null,
+      "predicted_category": "Access Management",
+      "top_similarity": 0.636327862739563,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "1855",
+        "1171",
+        "1214",
+        "3072",
+        "1167"
+      ],
+      "retrieved_similarities": [
+        0.636327862739563,
+        0.6358281373977661,
+        0.6349191665649414,
+        0.6346009969711304,
+        0.6314383149147034
+      ]
+    },
+    {
+      "item_id": "S039",
+      "arm": "escalated",
+      "source": "adversarial-9",
+      "ticket_id": "A06",
+      "groundedness_item_id": null,
+      "predicted_category": "Storage",
+      "top_similarity": 0.604331374168396,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "1172",
+        "1096",
+        "360",
+        "903",
+        "3393"
+      ],
+      "retrieved_similarities": [
+        0.604331374168396,
+        0.6037593483924866,
+        0.6035313606262207,
+        0.603046178817749,
+        0.6015892028808594
+      ]
+    },
+    {
+      "item_id": "S040",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N03",
+      "groundedness_item_id": "G022",
+      "predicted_category": "Network",
+      "top_similarity": 0.7057803869247437,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1262",
+        "2036",
+        "2832",
+        "2226",
+        "1265"
+      ],
+      "retrieved_similarities": [
+        0.7057803869247437,
+        0.7033942937850952,
+        0.6891247034072876,
+        0.6850746273994446,
+        0.6800951957702637
+      ]
+    },
+    {
+      "item_id": "S041",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N38",
+      "groundedness_item_id": "G001",
+      "predicted_category": "Network",
+      "top_similarity": 0.6950258016586304,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2875",
+        "2036",
+        "1262",
+        "2832",
+        "2226"
+      ],
+      "retrieved_similarities": [
+        0.6950258016586304,
+        0.6941072940826416,
+        0.6936610341072083,
+        0.6917965412139893,
+        0.6866390109062195
+      ]
+    },
+    {
+      "item_id": "S042",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N15",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.6563721895217896,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "2212",
+        "587",
+        "1560",
+        "1096",
+        "3472"
+      ],
+      "retrieved_similarities": [
+        0.6563721895217896,
+        0.6423218846321106,
+        0.6405207514762878,
+        0.6404179930686951,
+        0.6386902928352356
+      ]
+    },
+    {
+      "item_id": "S043",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N07",
+      "groundedness_item_id": "G002",
+      "predicted_category": "Database",
+      "top_similarity": 0.8307088017463684,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1940",
+        "1565",
+        "2625",
+        "1181",
+        "2223"
+      ],
+      "retrieved_similarities": [
+        0.8307088017463684,
+        0.8232513070106506,
+        0.8177131414413452,
+        0.8150460720062256,
+        0.8127326965332031
+      ]
+    },
+    {
+      "item_id": "S044",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N12",
+      "groundedness_item_id": null,
+      "predicted_category": "Database",
+      "top_similarity": 0.6463056802749634,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "2037",
+        "3134",
+        "2028",
+        "2000",
+        "1242"
+      ],
+      "retrieved_similarities": [
+        0.6463056802749634,
+        0.6460281014442444,
+        0.6456022262573242,
+        0.6453288793563843,
+        0.6446496248245239
+      ]
+    },
+    {
+      "item_id": "S045",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N41",
+      "groundedness_item_id": null,
+      "predicted_category": "Network",
+      "top_similarity": 0.6541284322738647,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "462",
+        "3030",
+        "393",
+        "1582",
+        "2175"
+      ],
+      "retrieved_similarities": [
+        0.6541284322738647,
+        0.6538636088371277,
+        0.6520888805389404,
+        0.6505658030509949,
+        0.6495615839958191
+      ]
+    },
+    {
+      "item_id": "S046",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N08",
+      "groundedness_item_id": "G016",
+      "predicted_category": "Database",
+      "top_similarity": 0.7711212038993835,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3480",
+        "2998",
+        "1717",
+        "434",
+        "1490"
+      ],
+      "retrieved_similarities": [
+        0.7711212038993835,
+        0.7506755590438843,
+        0.7462297677993774,
+        0.7444025278091431,
+        0.7432699203491211
+      ]
+    },
+    {
+      "item_id": "S047",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N10",
+      "groundedness_item_id": "G030",
+      "predicted_category": "Security",
+      "top_similarity": 0.6733653545379639,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2678",
+        "3731",
+        "645",
+        "3596",
+        "3338"
+      ],
+      "retrieved_similarities": [
+        0.6733653545379639,
+        0.6732670068740845,
+        0.6636064052581787,
+        0.6613088250160217,
+        0.6602494716644287
+      ]
+    },
+    {
+      "item_id": "S048",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N21",
+      "groundedness_item_id": "G010",
+      "predicted_category": "Application",
+      "top_similarity": 0.6754908561706543,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "2484",
+        "2651",
+        "76",
+        "1717",
+        "2743"
+      ],
+      "retrieved_similarities": [
+        0.6754908561706543,
+        0.6654465794563293,
+        0.6606438159942627,
+        0.658312201499939,
+        0.657080888748169
+      ]
+    },
+    {
+      "item_id": "S049",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N22",
+      "groundedness_item_id": "G008",
+      "predicted_category": "Database",
+      "top_similarity": 0.6996182203292847,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1369",
+        "2343",
+        "3182",
+        "2578",
+        "1816"
+      ],
+      "retrieved_similarities": [
+        0.6996182203292847,
+        0.6859225034713745,
+        0.681694507598877,
+        0.681515097618103,
+        0.6810867786407471
+      ]
+    },
+    {
+      "item_id": "S050",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N25",
+      "groundedness_item_id": "G023",
+      "predicted_category": "Storage",
+      "top_similarity": 0.7354455590248108,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "1669",
+        "1987",
+        "1593",
+        "141",
+        "1428"
+      ],
+      "retrieved_similarities": [
+        0.7354455590248108,
+        0.7334055304527283,
+        0.7302807569503784,
+        0.7250021696090698,
+        0.7247226238250732
+      ]
+    },
+    {
+      "item_id": "S051",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N45",
+      "groundedness_item_id": null,
+      "predicted_category": "Application",
+      "top_similarity": 0.6396739482879639,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "574",
+        "2505",
+        "199",
+        "2633",
+        "8"
+      ],
+      "retrieved_similarities": [
+        0.6396739482879639,
+        0.6255526542663574,
+        0.6232869029045105,
+        0.6231764554977417,
+        0.622861385345459
+      ]
+    },
+    {
+      "item_id": "S052",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N02",
+      "groundedness_item_id": "G032",
+      "predicted_category": "Storage",
+      "top_similarity": 0.8112151622772217,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "213",
+        "1320",
+        "3901",
+        "1802",
+        "2634"
+      ],
+      "retrieved_similarities": [
+        0.8112151622772217,
+        0.8088757991790771,
+        0.8055725693702698,
+        0.8054701089859009,
+        0.7887563705444336
+      ]
+    },
+    {
+      "item_id": "S053",
+      "arm": "eligible",
+      "source": "novel-45",
+      "ticket_id": "N09",
+      "groundedness_item_id": "G033",
+      "predicted_category": "Security",
+      "top_similarity": 0.7071911096572876,
+      "escalated": false,
+      "escalation_reason": "none",
+      "retrieved_ids": [
+        "3099",
+        "1801",
+        "1327",
+        "3989",
+        "3306"
+      ],
+      "retrieved_similarities": [
+        0.7071911096572876,
+        0.7064197063446045,
+        0.7044321298599243,
+        0.7035045027732849,
+        0.7022813558578491
+      ]
+    },
+    {
+      "item_id": "S054",
+      "arm": "escalated",
+      "source": "novel-45",
+      "ticket_id": "N28",
+      "groundedness_item_id": null,
+      "predicted_category": "Security",
+      "top_similarity": 0.6182001829147339,
+      "escalated": true,
+      "escalation_reason": "low_retrieval_similarity",
+      "retrieved_ids": [
+        "435",
+        "2240",
+        "2008",
+        "1436",
+        "3308"
+      ],
+      "retrieved_similarities": [
+        0.6182001829147339,
+        0.6181803345680237,
+        0.6180237531661987,
+        0.6177529692649841,
+        0.6170302629470825
+      ]
+    }
+  ]
+}

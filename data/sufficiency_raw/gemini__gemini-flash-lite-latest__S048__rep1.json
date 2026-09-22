@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S048",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "01a839f94b98556b767f8de9710be5d4c869ef2a586ad1da60fbc7f37c9c3daf",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved context lacks a solution for client tracker address entry loss and blank search pages, focusing instead on Expense Tracker DNS, database connection, and search index issues.\"}",
+ "timestamp": "2026-09-22T16:15:08",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

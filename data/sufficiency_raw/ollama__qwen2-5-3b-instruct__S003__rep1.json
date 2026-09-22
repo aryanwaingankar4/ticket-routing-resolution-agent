@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S003",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "6499b41b73af7d51cf5b1fc9299b009bbaee3d7f4dcc50f68cd45c96cc5e79e4",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets do not address the issue of the system freezing up during a big rush of users.\"}",
+ "timestamp": "2026-09-22T16:30:33",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

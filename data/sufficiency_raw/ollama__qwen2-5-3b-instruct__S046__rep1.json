@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S046",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "8b5fcc9ece4437bff2060580bd0602b63ae9735bf013e51c2c609a6d0257e8df",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address Payroll issues, but the new ticket reports an issue with a different tool (the report tool) and does not mention any connection issues, only a broken connection to where the data is kept.\"}",
+ "timestamp": "2026-09-22T16:52:42",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

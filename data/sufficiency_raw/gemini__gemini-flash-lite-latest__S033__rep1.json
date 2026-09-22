@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S033",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "e7facf4a8ade66b795342688e41659c117f9d47b6f689b5c9c1c35a74264c000",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved context lacks any tickets addressing spreadsheet formula corruption during file sharing, containing only payroll upload crashes and file share mounting issues.\"}",
+ "timestamp": "2026-09-22T16:12:28",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

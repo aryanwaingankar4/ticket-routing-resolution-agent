@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S021",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "e26cf0fca57d3892cfdc3950587f6e862b2655f8a3dd9627a9e269b8a701057d",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all relate to database issues, while the new ticket is about a timeout error in an application (company video tool).\"}",
+ "timestamp": "2026-09-22T16:39:43",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

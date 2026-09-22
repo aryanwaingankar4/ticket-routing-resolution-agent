@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S002",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "3305986faeb9fc85ffe896f0a41a00219e8496864adf7ab143198a9b4e67eab0",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with folders \\\\fs01\\\\*, \\\\fs02\\\\*, \\\\nas03\\\\*, and \\\\fs02\\\\*. The new ticket does not mention any of these folders, so a resolution cannot be directly applied.\"}",
+ "timestamp": "2026-09-22T16:29:58",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S037",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "0bacaebba44f9fdb06633e82c97a8130ca80749600915ebbb509fec22dd9eb9a",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"At least one retrieved ticket addresses the same underlying problem the new ticket reports, specifically the issue with Inventory Manager showing an error mentioning a broken connection to the data source and no records loading.\"}",
+ "timestamp": "2026-09-22T16:48:01",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

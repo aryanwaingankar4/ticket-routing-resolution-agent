@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S028",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "56b545f7190be2057e6f7a65dc51f1a82604af1647ce962310b4916ed7d32471",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The new ticket is about the core customer portal being unreachable, while the retrieved tickets are about issues with specific applications (Billing Portal and Inventory Manager) or database connectivity problems.\"}",
+ "timestamp": "2026-09-22T16:43:18",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

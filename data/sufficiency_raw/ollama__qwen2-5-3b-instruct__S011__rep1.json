@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S011",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "440c6dbec3825802910f4ef9443d20c0e7369812c071d187f74de98923980b2b",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with stale data in the Field Service App and Payroll, but do not address the issue with the submit button being grayed out in the time-tracking app.\"}",
+ "timestamp": "2026-09-22T16:34:45",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

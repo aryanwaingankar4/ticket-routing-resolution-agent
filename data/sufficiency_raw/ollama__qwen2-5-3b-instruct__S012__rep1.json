@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S012",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "11ccf855e01ccae1758af22610885b6b570913d367e15184c782e717d00e2e77",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"All retrieved tickets address the same underlying problem of a misconfigured HR Self-Service session cookie domain.\"}",
+ "timestamp": "2026-09-22T16:35:15",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

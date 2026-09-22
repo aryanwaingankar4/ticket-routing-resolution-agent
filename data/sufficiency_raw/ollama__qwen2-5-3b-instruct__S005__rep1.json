@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S005",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "2beded2f8c53b4259bb6619c75fcbb33aec34caa54067bc9bf3de43a8734f664",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with the \\\\fs02\\folder, not the \\\\fs01\\folder mentioned in the new ticket.\"}",
+ "timestamp": "2026-09-22T16:31:37",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

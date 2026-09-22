@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S052",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "837f27c46b6dbfdeb00c165722c7b48b68b0f9392dfc363bbc4390d87d5e82d7",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"All retrieved tickets address the issue of users getting 'access denied' when trying to open files in the \\\\fs01\\finance shared folder.\"}",
+ "timestamp": "2026-09-22T16:55:53",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

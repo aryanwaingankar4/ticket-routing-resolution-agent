@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S018",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "54693eb60f37e3811bbc733d05af0bf0802179b5db9c91748ef436305cb402f5",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with server unresponsiveness after reboot, but do not address login issues.\"}",
+ "timestamp": "2026-09-22T16:38:16",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

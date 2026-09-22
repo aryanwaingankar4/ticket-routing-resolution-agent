@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S010",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "daed45620ceedaf4d8be3005f728fdc7d5cc316cf20967ac631a7b3857991f8c",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets cover login failures, database connection errors, and slow page loads, but none address the application freezing on the loading screen and crashing.\"}",
+ "timestamp": "2026-09-22T16:10:13",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

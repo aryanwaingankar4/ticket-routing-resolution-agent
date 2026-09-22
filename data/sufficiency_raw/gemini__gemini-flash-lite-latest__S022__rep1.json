@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S022",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "130e73f047db96497ecce4c3b9fc8c86f7f613aeafb7901440bd6cdcd56fb5d3",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"None of the retrieved tickets address a server overheating and shutting off in the server room causing a total outage of internal tools.\"}",
+ "timestamp": "2026-09-22T16:11:23",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

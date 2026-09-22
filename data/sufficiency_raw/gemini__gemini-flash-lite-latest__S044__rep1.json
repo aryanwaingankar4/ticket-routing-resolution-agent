@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S044",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "33d7f2927d4f122e83db473b128d173f2f5739443f1343f9e9a0781d7e92fa3e",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets deal with database connection exhaustion, credential rotations, and missing query indexes, whereas the new ticket describes a software crash specifically triggered by clicking the print button in the invoicing software.\"}",
+ "timestamp": "2026-09-22T16:14:44",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

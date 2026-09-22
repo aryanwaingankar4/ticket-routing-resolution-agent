@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S019",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "01ac25686de278a2075b719a082185aad4860c4fb1fe302ecd4701ce80060f14",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\n  \"verdict\": \"INSUFFICIENT\",\n  \"reason\": \"The retrieved tickets address server-side storage volume capacity issues affecting multiple services, whereas the new ticket describes a local client-side drive full error preventing an individual user from downloading a report.\"\n}",
+ "timestamp": "2026-09-22T16:11:05",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

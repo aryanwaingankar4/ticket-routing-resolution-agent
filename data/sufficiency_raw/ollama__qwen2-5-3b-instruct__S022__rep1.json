@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S022",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "130e73f047db96497ecce4c3b9fc8c86f7f613aeafb7901440bd6cdcd56fb5d3",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets do not address the issue of a server overheating and shutting off, which is the core problem reported in the new ticket.\"}",
+ "timestamp": "2026-09-22T16:40:14",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S026",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "bdbed63608848ffe1ab9dc8e8f4ef5fadef1999ecc0b45ed08f6c64444f2a616",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets all address password reset requests for users, including s.khan, which matches the new ticket's issue.\"}",
+ "timestamp": "2026-09-22T16:42:15",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

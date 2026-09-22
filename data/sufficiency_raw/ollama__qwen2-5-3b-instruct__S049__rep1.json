@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S049",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "af08ea0dcef9848f4e547d25f78f69ec56278e6e569c1f03fcbdfb51ca11416d",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets all address the issue of stale data in the Vendor Portal, which matches the new ticket's problem.\"}",
+ "timestamp": "2026-09-22T16:54:13",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

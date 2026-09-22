@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S029",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "72819c7aefb6c53077bfbfb2847794f564bdcc61e0162e73b3ab2a8d1ec02466",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets all address slow read/write issues on specific folders, which is similar to the new ticket's problem of a jammed hard drive with old files.\"}",
+ "timestamp": "2026-09-22T16:43:51",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

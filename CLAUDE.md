@@ -244,6 +244,28 @@ python -m src.classification.generate_deployment_calibration_set \
     --per-category 1
 python -m src.classification.generate_deployment_calibration_set
 
+# Phase 6C -- the retrieval-sufficiency gate. Step 1 is OFFLINE and persists
+# the context precisely so steps 2-4 load NO embedding model: BGE and a local
+# generator can never be co-resident (the 7C memory lesson, enforced
+# structurally). Step 2 SPENDS QUOTA -- always --limit 3 first. Every raw
+# response is cached under data/sufficiency_raw/ keyed by prompt hash, with
+# temperature recorded, so a re-score costs nothing.
+python src/experiments/build_sufficiency_context.py
+python src/experiments/run_sufficiency_autorater.py --backend gemini --limit 3
+python src/experiments/run_sufficiency_autorater.py --backend gemini
+
+# The stability secondary. --only writes *.repeats.json and --limit writes
+# *.partial.json, so neither can overwrite the other or the full pass -- the
+# dry-run record is the provenance for what was seen before the full pass.
+python src/experiments/run_sufficiency_autorater.py --backend gemini \
+    --repeats 3 --only S002,S029
+
+# Cross-family arm, zero quota. THEN `ollama stop qwen2.5:3b-instruct` and
+# confirm /api/ps is empty before anything touches BGE again.
+python src/experiments/run_sufficiency_autorater.py --backend ollama \
+    --model qwen2.5:3b-instruct
+python src/experiments/score_sufficiency_gate.py          # offline, 0 calls
+
 # Resolution clustering -> automation flagging
 python src/experiments/join_scenario_ground_truth.py
 python src/experiments/explore_resolution_clustering.py
@@ -508,6 +530,31 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   significant. The benchmark is Gemini-generated, so **the Qwen arm is the
   partial control for authorship** and Gemini's extra margin cannot be
   attributed to capability over authorship.
+- **A retrieval-sufficiency check is NOT a usable second gate on this corpus
+  (Phase 6C).** A rater seeing only the ticket and its top-5 context — never a
+  draft — caught **both** 2B misses (2 of 2) but flagged **26 of the 31**
+  grounded drafts as well. **Quote the false-flag count, never the catch
+  alone**: a gate escalating 28 of 33 eligible tickets suppresses ~85% of
+  auto-resolution to recover two bad drafts, and there is nothing to tune —
+  the rater has no threshold and its verdicts are stable 3/3 at temperature 0.
+  The mirror-image case matters too: of the 21 the gate escalates, the rater
+  agreed on 20 and found **one (N45, top-sim 0.6397) whose context was
+  adequate**, so the scalar errs in both directions. Qwen2.5-3B, on
+  byte-identical prompts, is less aggressive and **misses one positive** — not
+  a vendor artifact, and not a usable gate either.
+- **6C is NOT an instance of the named finding, and the near-duplicate
+  explanation is a REJECTED hypothesis.** It contradicts 2B's own diagnostic on
+  these same tickets: 71.1% of benchmark-45 and 88.9% of adversarial-9
+  retrievals carry 2+ distinct fixes, so the context is heterogeneous. The
+  mechanism is a **measurement-target mismatch** — sufficiency and groundedness
+  are different questions — not a corpus register mismatch. The post-hoc
+  "declining drafts explain it" reading is **not supported** either: 3 of 3
+  declining but 23 of 28 non-declining, so the flags are everywhere and n=3
+  cannot carry a comparison.
+- **6C's binding limitation is the label, not the rater.** The 2B groundedness
+  labels are an **outcome proxy** — they say whether the *draft* was supported,
+  not whether the *context* was sufficient. The 26 flags are false only against
+  that proxy. Direct sufficiency labels are human work and have not been made.
 - **In-distribution accuracy is uninformative here.** Template-generated data makes
   every model score ~100% in-distribution. Only the 14- and 45-ticket benchmarks measure
   anything real. Treat a new 100% in-distribution number as a red flag, not a success.

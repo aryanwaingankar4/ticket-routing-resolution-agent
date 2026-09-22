@@ -1,8 +1,9 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `0c9ff8b` — Phase 7C (Finding 1 under a
-paraphrase shift: BLOCKED). **Gate cleared and PUSHED on 2026-09-22.**
+**Last commit to move code or a result:** Phase 6C (the retrieval-sufficiency
+gate). **All four gates passed and it was PUSHED on 2026-09-22.**
+Phase 7C (`0c9ff8b`) is also gated and PUSHED.
 Phase 7B (`f789b8d`) is also gated and PUSHED.
 Phase 7A (`ba98843`) is also gated and PUSHED. Phase 6B (`8419db6`) is
 also gated and pushed. Phase 6A
@@ -10,7 +11,29 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 7C — COMPLETE, GATED and PUSHED** (`0c9ff8b`, 2026-09-22).
+**Current phase: Phase 6C — COMPLETE, GATED and PUSHED** (2026-09-22).
+**Verdict: a retrieval-sufficiency check catches both 2B misses and is STILL
+NOT USABLE as a second gate.** Primary, as counts over the 33 eligible
+tickets: **caught 2 of 2** human-labelled ungrounded drafts, **flagged 26 of
+the 31** grounded ones (false-flag proportion 0.839, Wilson [0.674, 0.929]; no
+rate is reported on the 2-positive axis, by pre-registration). A gate that
+escalates 28 of 33 tickets currently reaching the resolver suppresses ~85% of
+auto-resolution to recover two bad drafts, and **nothing can be tuned** — the
+rater has no threshold and its verdicts are stable 3/3 at temperature 0.0.
+Secondaries: **20 of 21** agreement with the live gate, with **one ticket
+(N45, top-sim 0.6397) the gate escalated although its context was adequate** —
+the scalar errs in both directions; cross-family **Qwen2.5-3B agrees 39/54
+(0.722)** on **54/54 byte-identical prompts** and **misses one positive**, so
+this is not a vendor artifact. **6C is NOT an instance of the named finding**,
+and the near-duplicate explanation is a **recorded REJECTED hypothesis** (it
+contradicts 2B's 71.1% / 88.9% distinct-fix diagnostic). The post-hoc
+declining-draft reading is **not supported** (3/3 vs 23/28; n=3 carries no
+comparison). **The binding limitation is the label, not the rater**: 2B's
+groundedness labels are an outcome proxy for draft support, not context
+sufficiency. 58 Gemini calls, cap 70. Nothing promoted; production frozen.
+**Next: Phase 8A.**
+
+**Phase 7C is COMPLETE, GATED and PUSHED** (`0c9ff8b`, 2026-09-22).
 **Verdict: BLOCKED** (`blocked_auc_ge_0.95`) — the pre-registered degeneracy
 rule fired at a TF-IDF-space domain AUC of **0.9972**, so **no verdict is drawn
 on the primary**. 7C set out to test Finding 1 under the shift it was actually
@@ -96,7 +119,10 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **372 passed** (340 + 32 from 7C), 0 failed/skipped, offline |
+| Test suite | `pytest` | **406 passed** (372 + 34 from 6C), 0 failed/skipped, offline |
+| **Sufficiency gate (6C)** | `score_sufficiency_gate.py` | **caught 2/2, flagged 26/31** — false-flag 0.839, Wilson [0.674, 0.929]; **not usable as a gate** |
+| Sufficiency vs the live gate (6C) | same script | **20/21** agree; the 1 disagreement (N45, 0.6397) is context the gate escalated **although it was adequate** |
+| Sufficiency cross-family (6C) | `run_sufficiency_autorater.py --backend ollama` | Qwen2.5-3B agrees **39/54 (0.722)**, prompts **54/54 byte-identical**, **misses 1 of 2** positives |
 | External corpus (7A) | `profile_external_dataset.py` | 28,261 English rows (628× benchmark45); **12,500 distinct** after dedup; near-dup **79.39%** vs **our own 85.20%** |
 | **Finding 1 on external data (7B)** | `run_external_conformal_shift.py` | **does NOT replicate** — Tier-1 gap **+0.0009** vs Tier-2 **−0.0072** at α=0.10, band 0.0165, n_cal 1,327 / n_test 10,441 |
 | Boundary contamination (7B) | same script | **1.46%** of test tickets have a BGE≥0.95 neighbour in train∪cal; full and no-neighbour readings agree to 0.0011 |
@@ -1772,7 +1798,7 @@ calls**; dry-run first and cache every raw response.
 |---|---|
 | **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE** (`8f2f5e1`, gated and pushed) |
 | **6B** | Weighted conformal under shift, with a domain-classifier density ratio — **DONE** (`8419db6`, gated and pushed) |
-| **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **~55–110 Gemini calls** |
+| **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **DONE, GATED and PUSHED**. Caught 2/2, flagged 26/31: **not usable as a gate**. 58 Gemini calls |
 
 6A is the experiment that makes Phase 1's conformal work operational without
 promoting it: it asks whether deferring on set size beats deferring on a
@@ -1871,10 +1897,12 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 6C — the retrieval-sufficiency gate, on the 33 groundedness tickets.**
-**~55–110 Gemini calls**, so it runs on a day with **fresh quota** and must not
-share a day with any other quota-spending sub-phase. Opens in plan mode like
-every sub-phase.
+**Phase 8A — `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test
+for it.** Offline, no Gemini quota. Opens in plan mode like every sub-phase.
+
+**6C is GATED and PUSHED, so 8A is unblocked** — every result it must tabulate
+is now finished, and nothing is in flight that could bake a moving number into
+the reproducibility layer.
 
 **PHASE 7 IS CLOSED. NO FURTHER EXTERNAL EXPERIMENTS in this programme.** 7A
 (feasibility), 7B (version shift) and 7C (paraphrase shift) are all gated and
@@ -1882,32 +1910,24 @@ pushed. External replication of Finding 1 is **inconclusive** and is written up
 as such; the set-size question raised post-hoc in 7C is **future work**, not a
 7D.
 
-### What 6C's plan must specify
+### What 8A must cover
 
-1. **The dry run first**, at `--limit 3`, checking the prompt before the full
-   budget is spent — the rule that caught `build_groundedness_set.py`'s
-   eligibility bug when its 54/0 count was checked against an independently
-   measured 33/21.
-2. **`call_delay_sec` at or above 4.5s**, and **every raw response cached to
-   disk** keyed by prompt hash, so a crash or a re-score never re-spends quota.
-3. **Eligibility derived from `decision.escalated`, never a status enum** —
-   `ESCALATED` belongs to the *filing* gate and a RAG-gate escalation carries
-   `NEEDS_HUMAN_RESOLUTION`. This is occurrence 5 of the recurring bug class.
-4. **Every count checked against a second, independent derivation** before any
-   quota is spent.
-5. **Any degeneracy or blocking rule justified by what 6C itself estimates** —
-   not copied from an earlier phase. 7C's rule was carried over from 6B, where
-   it guarded a density-ratio estimate that 7C never computed, and the gate
-   declined to unblock rather than revise it after the fact. The cost of a
-   mis-specified rule is a phase that cannot answer its own question.
+**8A's remit grew because of 7B and 7C.** Two recorded design AUCs turned out to
+be ad hoc figures whose derivation was never committed and which do not
+reproduce (the 7B record correction). **Any number quoted at a gate must come
+from a committed script**, not from an interactive session. 8A is the structural
+answer: every number in the paper regenerated from one script, with a parity
+test that fails when a published figure drifts — the goldens pattern applied to
+the write-up.
 
-### Order after 6C
+6C adds two figures to that surface: the **2×2 counts (2/2 caught, 26/31
+flagged)** and the **cross-family agreement (39/54)**. Both are in
+`data/sufficiency_gate_summary.json` and must be read from there, never
+retyped.
 
-**6C → 8A → 8B → 9A–9C.**
+### Order after 8A
 
-**6C must be GATED before 8A starts**, because 8A builds every paper table from
-finished results and starting it while a result is in flight would bake a
-moving number into the reproducibility layer.
+**8A → 8B → 9A–9C.**
 
 **8A's remit grew because of 7B and 7C.** Two recorded design AUCs turned out to
 be ad hoc figures whose derivation was never committed and which do not
@@ -1947,7 +1967,20 @@ from a committed script**, not from an interactive session.
 8. **The 7B record correction belongs in the reproducibility section**, as the
    concrete motivation for 8A: a number quoted at a gate and never regenerated
    from a committed script is a number that can stop being true.
-9. **7C's spec error belongs in the methods section**, as the concrete case for
+9. **6C's wordings are fixed.** The headline is **"catches both, and is still
+   not usable as a gate"** — never "the sufficiency check caught the two cases
+   the gate missed", which is true and misleading alone. **6C is NOT an
+   instance of the named finding**; the near-duplicate explanation is a
+   **rejected hypothesis** (2B's own 71.1% / 88.9% distinct-fix diagnostic
+   refutes it), and the mechanism is a **measurement-target mismatch** between
+   sufficiency and groundedness. The **binding limitation is the label** — 2B's
+   groundedness labels are an outcome proxy for draft support, not context
+   sufficiency, so the 26 flags are false only against that proxy. The
+   **N45 counter-case** (the gate escalated a ticket whose context was
+   adequate) travels with the result: the scalar errs in both directions.
+   **No ordered comparison** in the post-hoc declining-draft split — 3/3
+   against 23/28 with n=3 carries none.
+10. **7C's spec error belongs in the methods section**, as the concrete case for
    pre-registration discipline: the rule was kept even though the critique of it
    was sound, because revising a rule after seeing results is what the
    discipline exists to prevent. **A degeneracy rule must be justified by what

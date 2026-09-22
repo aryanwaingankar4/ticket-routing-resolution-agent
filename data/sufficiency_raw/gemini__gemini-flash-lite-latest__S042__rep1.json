@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S042",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "150a07c38fc25563ef8ee72618ba8e3860b4e0cfd5c7c270116643214c722a35",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved past tickets only address performance issues and folder restorations on a file server, whereas the new ticket concerns a meeting notes application wiping out typed content upon saving.\"}",
+ "timestamp": "2026-09-22T16:13:21",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

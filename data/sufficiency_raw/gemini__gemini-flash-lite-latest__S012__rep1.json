@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S012",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "11ccf855e01ccae1758af22610885b6b570913d367e15184c782e717d00e2e77",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address a session cookie misconfiguration causing login redirect loops, whereas the new ticket involves a locked profile and an unconfigured security code for remote access.\"}",
+ "timestamp": "2026-09-22T16:10:25",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

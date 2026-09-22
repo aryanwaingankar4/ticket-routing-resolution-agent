@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S032",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "35c7e7c8a1b2bd3201b9bcd3c283fce1f1b60deaf708c6de1b640db161d636f9",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address the \\\\fs01\\file share, but the new ticket reports an issue with \\\\fs01\\folders and websites, which are different.\"}",
+ "timestamp": "2026-09-22T16:45:23",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

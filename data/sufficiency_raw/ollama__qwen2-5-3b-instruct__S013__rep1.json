@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S013",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "a088b611020bc993f1a89d0e9ea386240739a8895131a56ff7ba1c7664faeb51",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets only address issues with file shares on \\\\fs01 and \\\\fs02, but the new ticket reports issues with \\\\fs01\\team and \\\\fs01\\team\\files.\"}",
+ "timestamp": "2026-09-22T16:35:49",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

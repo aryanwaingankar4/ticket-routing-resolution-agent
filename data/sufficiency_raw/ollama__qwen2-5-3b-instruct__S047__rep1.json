@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S047",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "545cfd827c5eb6063e589195f6d2230412fd2ece1213b95cff42b917897a19f1",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address the same issue but involve different users. The new ticket does not specify the user affected, so the resolution cannot be directly applied.\"}",
+ "timestamp": "2026-09-22T16:53:14",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

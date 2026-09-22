@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S041",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "669534458bd3d0371dc34dbbf70749bf0348401988283c2191c2537fe9fdd2d0",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address Wi-Fi outages at the Hyderabad Office, but the new ticket reports a laptop not connecting to the office network, which is a different issue.\"}",
+ "timestamp": "2026-09-22T16:50:04",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

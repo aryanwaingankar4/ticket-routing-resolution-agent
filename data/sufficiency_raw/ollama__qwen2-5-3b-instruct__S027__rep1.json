@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S027",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "bf7ddf436565b7f38389de4e1e819f7736c5a67db81cf4ec0043df903d551d13",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all involve users with permissions from their previous roles in the Billing Portal, which is different from the new ticket's issue of account non-existence due to department transfer.\"}",
+ "timestamp": "2026-09-22T16:42:48",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

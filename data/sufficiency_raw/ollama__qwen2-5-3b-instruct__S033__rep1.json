@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S033",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "e7facf4a8ade66b795342688e41659c117f9d47b6f689b5c9c1c35a74264c000",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with mounting the \\\\fs01\\finance share, which is unrelated to the spreadsheet program's formula scrambling issue.\"}",
+ "timestamp": "2026-09-22T16:45:55",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

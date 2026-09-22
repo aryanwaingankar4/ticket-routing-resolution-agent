@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S005",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "2beded2f8c53b4259bb6619c75fcbb33aec34caa54067bc9bf3de43a8734f664",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets deal with permission errors when opening files, whereas the new ticket reports a storage quota or permission issue specifically preventing saving new files to a shared folder.\"}",
+ "timestamp": "2026-09-22T16:09:43",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

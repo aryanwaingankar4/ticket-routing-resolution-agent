@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S038",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "080dd16fbe03f94890646ba00cdda13082442902ff509ea2898ca1e06d7ccfc8",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address password reset and SSO access issues, which are different from the new ticket's issue of needing a side entrance unlocked for a badge holder.\"}",
+ "timestamp": "2026-09-22T16:48:34",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

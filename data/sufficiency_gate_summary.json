@@ -1,0 +1,409 @@
+{
+  "phase": "6C",
+  "question": "Does a rater that sees only the ticket and its retrieved context flag the cases the 0.67 similarity gate let through?",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "production_unchanged": {
+    "cascade": 0.5,
+    "rag": 0.67,
+    "clustering": 0.8,
+    "conformal_enabled": false,
+    "drift_enabled": false
+  },
+  "population": {
+    "eligible": 33,
+    "escalated": 21,
+    "total": 54
+  },
+  "primary": {
+    "rule": "rep 1 only; counts not rates; no majority vote over repeats",
+    "two_by_two": {
+      "insufficient_and_ungrounded": 2,
+      "insufficient_and_grounded": 26,
+      "sufficient_and_ungrounded": 0,
+      "sufficient_and_grounded": 5
+    },
+    "caught_of_ungrounded": [
+      2,
+      2
+    ],
+    "flagged_of_grounded": [
+      26,
+      31
+    ],
+    "false_flag_proportion": 0.8387096774193549,
+    "false_flag_wilson95": [
+      0.6736529727502113,
+      0.9290748009456006
+    ],
+    "no_rate_on_positive_axis": true,
+    "disagreements": [
+      {
+        "item_id": "S004",
+        "ticket_id": "A03",
+        "groundedness_item_id": "G026",
+        "top_similarity": 0.6704270839691162,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address specific database connection errors and application login issues for named portals, whereas the new ticket is extremely vague and reports a total inability to access anything without specifying the underlying cause or system involved.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S005",
+        "ticket_id": "N27",
+        "groundedness_item_id": "G011",
+        "top_similarity": 0.7543913125991821,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets deal with permission errors when opening files, whereas the new ticket reports a storage quota or permission issue specifically preventing saving new files to a shared folder.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S007",
+        "ticket_id": "N24",
+        "groundedness_item_id": "G004",
+        "top_similarity": 0.699328601360321,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved context deals with organizational data center storage quotas and primary storage volume capacity, whereas the new ticket is about an individual user's cloud account storage being full.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S008",
+        "ticket_id": "A05",
+        "groundedness_item_id": "G019",
+        "top_similarity": 0.6765815019607544,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The new ticket provides no details about the specific problem, application, or error, whereas the retrieved tickets address specific connection issues for named applications.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S009",
+        "ticket_id": "N39",
+        "groundedness_item_id": "G028",
+        "top_similarity": 0.7392354607582092,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address general VPN connection timeouts for specific office pools or remote user groups, whereas the new ticket describes an inability to open the company portal over the new VPN from home.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S010",
+        "ticket_id": "N11",
+        "groundedness_item_id": "G013",
+        "top_similarity": 0.7324777245521545,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets cover login failures, database connection errors, and slow page loads, but none address the application freezing on the loading screen and crashing.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S011",
+        "ticket_id": "N17",
+        "groundedness_item_id": "G003",
+        "top_similarity": 0.671837329864502,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address NTP drift and stale data issues, but none address a grayed-out submit button preventing time-sheet submission in the time-tracking app.",
+        "draft_declines_posthoc": true
+      },
+      {
+        "item_id": "S012",
+        "ticket_id": "N33",
+        "groundedness_item_id": "G031",
+        "top_similarity": 0.7361786365509033,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address a session cookie misconfiguration causing login redirect loops, whereas the new ticket involves a locked profile and an unconfigured security code for remote access.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S013",
+        "ticket_id": "N40",
+        "groundedness_item_id": "G014",
+        "top_similarity": 0.7361388206481934,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "None of the retrieved tickets address the printer unavailability issue mentioned in the new ticket.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S016",
+        "ticket_id": "N04",
+        "groundedness_item_id": "G025",
+        "top_similarity": 0.7591496706008911,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address slowness for specific applications like Payroll, Learning Management System, and Billing Portal, but the new ticket does not specify which application or service is experiencing the slowness.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S017",
+        "ticket_id": "N29",
+        "groundedness_item_id": "G007",
+        "top_similarity": 0.7032899856567383,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address user lockouts and bulk brute-force attacks, but lack instructions for proactively securing an account after a suspected credential compromise attempt reported by the user.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S019",
+        "ticket_id": "N05",
+        "groundedness_item_id": "G027",
+        "top_similarity": 0.7308734059333801,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address server-side storage volume capacity issues affecting multiple services, whereas the new ticket describes a local client-side drive full error preventing an individual user from downloading a report.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S021",
+        "ticket_id": "N16",
+        "groundedness_item_id": "G009",
+        "top_similarity": 0.7240623235702515,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets deal with report generation timeouts due to database missing indexes and stale cache data, whereas the new ticket describes a session expiration error when uploading presentation slides to the company video tool.",
+        "draft_declines_posthoc": true
+      },
+      {
+        "item_id": "S023",
+        "ticket_id": "N32",
+        "groundedness_item_id": "G012",
+        "top_similarity": 0.689045786857605,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address app-wide login loop errors caused by cookie misconfigurations, whereas the new ticket is a new user needing account setup and permissions to access the application.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S025",
+        "ticket_id": "N34",
+        "groundedness_item_id": "G015",
+        "top_similarity": 0.7052785158157349,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address site-wide login redirect loops due to cookie misconfigurations, whereas the new ticket reports an individual user account being disabled.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S032",
+        "ticket_id": "N37",
+        "groundedness_item_id": "G005",
+        "top_similarity": 0.7308971881866455,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address server-side file share service crashes, whereas the new ticket describes a client-side network connectivity issue indicated by a yellow triangle on the taskbar.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S033",
+        "ticket_id": "N19",
+        "groundedness_item_id": "G006",
+        "top_similarity": 0.6701457500457764,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved context lacks any tickets addressing spreadsheet formula corruption during file sharing, containing only payroll upload crashes and file share mounting issues.",
+        "draft_declines_posthoc": true
+      },
+      {
+        "item_id": "S035",
+        "ticket_id": "A09",
+        "groundedness_item_id": "G029",
+        "top_similarity": 0.6896988153457642,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address individual user SSO assignment failures, whereas the new ticket reports a persistent authentication failure across all provisioned endpoints requiring global remediation.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S040",
+        "ticket_id": "N03",
+        "groundedness_item_id": "G022",
+        "top_similarity": 0.7057803869247437,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address a complete Wi-Fi outage affecting an entire office due to a controller configuration loss, whereas the new ticket describes intermittent Wi-Fi drops localized to a single meeting room while the rest of the building is fine.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S041",
+        "ticket_id": "N38",
+        "groundedness_item_id": "G001",
+        "top_similarity": 0.6950258016586304,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address an office-wide Wi-Fi outage caused by a wireless controller configuration loss, whereas the new ticket describes a single laptop's inability to connect to the network.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S046",
+        "ticket_id": "N08",
+        "groundedness_item_id": "G016",
+        "top_similarity": 0.7711212038993835,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address connection errors for specific named applications (Payroll, Procurement Portal, Expense Tracker, HR Self-Service), but the new ticket refers generally to 'the report tool' without specifying which application or backend data store is affected.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S047",
+        "ticket_id": "N10",
+        "groundedness_item_id": "G030",
+        "top_similarity": 0.6733653545379639,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets deal with confirmed trojans detected and quarantined by the EDR agent on specific endpoints, whereas the new ticket is a user-reported antivirus warning about a potentially blocked suspicious item without confirmation of an active infection.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S048",
+        "ticket_id": "N21",
+        "groundedness_item_id": "G010",
+        "top_similarity": 0.6754908561706543,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved context lacks a solution for client tracker address entry loss and blank search pages, focusing instead on Expense Tracker DNS, database connection, and search index issues.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S049",
+        "ticket_id": "N22",
+        "groundedness_item_id": "G008",
+        "top_similarity": 0.6996182203292847,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets deal with data caching and connection issues rather than deleted entries reappearing due to persistence or save failures in a lookup list.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S050",
+        "ticket_id": "N25",
+        "groundedness_item_id": "G023",
+        "top_similarity": 0.7354455590248108,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets address failing to mount or map file shares on new machines due to SMB protocol settings, whereas the new ticket is about running out of disk space when copying folders.",
+        "draft_declines_posthoc": false
+      },
+      {
+        "item_id": "S052",
+        "ticket_id": "N02",
+        "groundedness_item_id": "G032",
+        "top_similarity": 0.8112151622772217,
+        "human_label": "grounded",
+        "rater_verdict": "INSUFFICIENT",
+        "rater_reason": "The retrieved tickets deal with users who can see the folder but get 'access denied' when opening files inside it, whereas the new ticket describes a user who cannot access the folder at all and needs permissions granted to open it.",
+        "draft_declines_posthoc": false
+      }
+    ]
+  },
+  "secondary_rag_gate_agreement": {
+    "agree": 20,
+    "of": 21,
+    "wilson95": [
+      0.7733018341376452,
+      0.9915442305280766
+    ]
+  },
+  "secondary_cross_family": {
+    "model": "qwen2.5:3b-instruct",
+    "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+    "overall_agreement_n": 39,
+    "overall_agreement_of": 54,
+    "unparseable": 0,
+    "insufficient_count": 35,
+    "primary_2x2": {
+      "insufficient_and_ungrounded": 1,
+      "insufficient_and_grounded": 20,
+      "sufficient_and_ungrounded": 1,
+      "sufficient_and_grounded": 11
+    },
+    "prompt_identity_54_54": true
+  },
+  "secondary_stability": {
+    "S002": {
+      "reps": {
+        "1": "INSUFFICIENT",
+        "2": "INSUFFICIENT",
+        "3": "INSUFFICIENT"
+      },
+      "primary_rep1": "INSUFFICIENT",
+      "all_identical": true
+    },
+    "S029": {
+      "reps": {
+        "1": "INSUFFICIENT",
+        "2": "INSUFFICIENT",
+        "3": "INSUFFICIENT"
+      },
+      "primary_rep1": "INSUFFICIENT",
+      "all_identical": true
+    }
+  },
+  "post_hoc": {
+    "declined_draft_crosstab": {
+      "declined": {
+        "n": 3,
+        "flagged_insufficient": 3,
+        "rate": 1.0
+      },
+      "not_declined": {
+        "n": 28,
+        "flagged_insufficient": 23,
+        "rate": 0.8214285714285714
+      }
+    },
+    "declined_detector_phrases": [
+      "do not match",
+      "does not match",
+      "not match",
+      "do not appear to match",
+      "does not appear to match",
+      "not directly applicable",
+      "not applicable",
+      "none of the retrieved",
+      "no retrieved",
+      "do not fit",
+      "does not fit",
+      "poor fit",
+      "differ from",
+      "different from the retrieved",
+      "unrelated to",
+      "not related to",
+      "human should verify",
+      "a human should",
+      "human review",
+      "recommend that a human",
+      "escalate",
+      "manual investigation",
+      "manually investigate",
+      "further investigation",
+      "insufficient",
+      "cannot be resolved using",
+      "limited applicability"
+    ],
+    "note": "Exploratory. Reported beside the primary, never in place of it. 2B's rubric states that declining is not an unsupported claim, so a declining draft is labelled grounded even when its context is insufficient -- if the false flags concentrate there, the two measures are answering different questions.",
+    "context_distinct_fixes_source": "reused from groundedness_results.csv, not recomputed"
+  },
+  "rejected_hypothesis": {
+    "claim": "The rater's aggressiveness is explained by near-duplicate retrieved neighbours leaving nothing to distinguish.",
+    "verdict": "REJECTED",
+    "why": "It contradicts Phase 2B's own diagnostic on these same tickets: 71.1% of benchmark-45 and 88.9% of adversarial-9 retrievals contain 2+ DISTINCT fixes, so the context is heterogeneous.",
+    "twob_distinct_fix_rates": {
+      "novel-45": 0.711,
+      "adversarial-9": 0.889
+    },
+    "consequence": "6C is NOT claimed as an instance of the project's named finding on this basis."
+  },
+  "provenance": {
+    "dry_run_included_one_positive": true,
+    "detail": "The --limit 3 dry run happened to include one of the two human-labelled positives (S002); the other landed at S029, outside the window. Its primary verdict was therefore seen before the full pass was launched. Nothing was revised on seeing it: rubric, output schema, population and primary rule were all fixed beforehand and the prompt hash is cached.",
+    "probability_at_least_one_of_two_in_first_three_of_54": 0.109,
+    "shuffle_audit": "seed-42 permutation independently re-derived from benchmark order + 2B's escalated_ids; identical for all 54; arms interleaved",
+    "gemini_calls_spent": 58,
+    "gemini_cache_files": 58,
+    "total_cache_files": 112
+  }
+}

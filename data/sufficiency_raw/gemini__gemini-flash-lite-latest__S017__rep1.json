@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S017",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "a5a44856c8b4abe932e17931cf2074f22bd57a9d776192f484894c2c50cd9b0c",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address user lockouts and bulk brute-force attacks, but lack instructions for proactively securing an account after a suspected credential compromise attempt reported by the user.\"}",
+ "timestamp": "2026-09-22T16:10:54",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "phase": "6C",
+    "purpose": "Sufficiency verdicts. rep 1 is the pre-registered primary; higher repeats are the stability secondary and never revise it.",
+    "backend": "gemini",
+    "model": "gemini-flash-lite-latest",
+    "model_digest": null,
+    "temperature": 0.0,
+    "dry_run": true,
+    "items": 3,
+    "records": 3,
+    "live_calls": 3,
+    "cached": 0,
+    "unparseable": 0,
+    "repeats_requested": 1,
+    "distinct_prompt_hashes": 3,
+    "rubric_source": "run_sufficiency_autorater.SUFFICIENCY_RUBRIC (verbatim, shared by both backends)",
+    "bundle_fingerprint": "9c9a5cbcb53f",
+    "config_fingerprint": "9c9a5cbcb53f",
+    "primary_rule": "rep 1 only; no majority vote; a differing repeat at temperature 0 is a determinism finding, not a reason to revise the primary"
+  },
+  "records": [
+    {
+      "item_id": "S001",
+      "repeat": 1,
+      "is_primary": true,
+      "verdict": "INSUFFICIENT",
+      "reason": "The retrieved tickets address server and storage volume capacity issues, whereas the new ticket requires clearing local junk files on a user's workstation to free up space for photo editing software.",
+      "parse_error": "",
+      "temperature": 0.0,
+      "backend": "gemini",
+      "model": "gemini-flash-lite-latest",
+      "model_digest": null,
+      "prompt_sha256": "ee4c9d1739debf0197e0d0773c5cf278eaa9f9704ff0b009e53f69e63bf87e8c",
+      "timestamp": "2026-09-22T16:02:03"
+    },
+    {
+      "item_id": "S002",
+      "repeat": 1,
+      "is_primary": true,
+      "verdict": "INSUFFICIENT",
+      "reason": "The retrieved tickets address NTFS permission issues and file access errors, whereas the new ticket describes a ransomware infection demanding payment.",
+      "parse_error": "",
+      "temperature": 0.0,
+      "backend": "gemini",
+      "model": "gemini-flash-lite-latest",
+      "model_digest": null,
+      "prompt_sha256": "3305986faeb9fc85ffe896f0a41a00219e8496864adf7ab143198a9b4e67eab0",
+      "timestamp": "2026-09-22T16:02:09"
+    },
+    {
+      "item_id": "S003",
+      "repeat": 1,
+      "is_primary": true,
+      "verdict": "INSUFFICIENT",
+      "reason": "The retrieved context lacks a ticket addressing general system freezing or automatic scaling failures under load for the specific system, as the scaling ticket only covers a stale metric on a single host (PRD-APP-04).",
+      "parse_error": "",
+      "temperature": 0.0,
+      "backend": "gemini",
+      "model": "gemini-flash-lite-latest",
+      "model_digest": null,
+      "prompt_sha256": "6499b41b73af7d51cf5b1fc9299b009bbaee3d7f4dcc50f68cd45c96cc5e79e4",
+      "timestamp": "2026-09-22T16:02:15"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S030",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "da42014afd090907c845b156dd81a4b92d865e26f98df61c9a5001fe8886c844",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets cover database connection issues and office Wi-Fi outages, but none address company-wide website outages or a down main server.\"}",
+ "timestamp": "2026-09-22T16:12:10",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

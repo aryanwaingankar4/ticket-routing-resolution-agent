@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S003",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "6499b41b73af7d51cf5b1fc9299b009bbaee3d7f4dcc50f68cd45c96cc5e79e4",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved context lacks a ticket addressing general system freezing or automatic scaling failures under load for the specific system, as the scaling ticket only covers a stale metric on a single host (PRD-APP-04).\"}",
+ "timestamp": "2026-09-22T16:02:15",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

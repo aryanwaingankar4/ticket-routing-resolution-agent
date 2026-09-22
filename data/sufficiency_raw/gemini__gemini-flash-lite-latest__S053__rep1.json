@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S053",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "eb9c505685da527b1f86c04cc296acfe50856edc4c59c2fa9a1b758697e4ca1d",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"Retrieved past tickets such as TCK-71782 address users clicking a phishing credential-harvesting link and provide the necessary resolution of removing the email, blocking the domain, and resetting passwords.\"}",
+ "timestamp": "2026-09-22T16:15:37",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

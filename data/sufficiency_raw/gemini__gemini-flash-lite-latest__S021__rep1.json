@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S021",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "e26cf0fca57d3892cfdc3950587f6e862b2655f8a3dd9627a9e269b8a701057d",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets deal with report generation timeouts due to database missing indexes and stale cache data, whereas the new ticket describes a session expiration error when uploading presentation slides to the company video tool.\"}",
+ "timestamp": "2026-09-22T16:11:17",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

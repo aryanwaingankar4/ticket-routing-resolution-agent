@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S041",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "669534458bd3d0371dc34dbbf70749bf0348401988283c2191c2537fe9fdd2d0",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address an office-wide Wi-Fi outage caused by a wireless controller configuration loss, whereas the new ticket describes a single laptop's inability to connect to the network.\"}",
+ "timestamp": "2026-09-22T16:13:14",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

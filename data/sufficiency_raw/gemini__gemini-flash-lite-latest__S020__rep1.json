@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S020",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "99cbcebe8e283f0551db1ad3fad6d3adcd737d344a9802a0cd22b6482f686d51",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved context only contains tickets about restoring accidentally deleted network folders, whereas the new ticket reports a completely dead laptop.\"}",
+ "timestamp": "2026-09-22T16:11:11",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

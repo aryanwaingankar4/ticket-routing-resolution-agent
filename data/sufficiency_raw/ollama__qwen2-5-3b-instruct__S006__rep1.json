@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S006",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7f8942951b541165ebd1ee030a094a2a1419f1ee05630de94364de88843de8c5",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues related to Payroll or Workday access, but do not address the weather query.\"}",
+ "timestamp": "2026-09-22T16:32:07",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

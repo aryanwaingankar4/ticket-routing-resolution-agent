@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S029",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "72819c7aefb6c53077bfbfb2847794f564bdcc61e0162e73b3ab2a8d1ec02466",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address network storage performance issues caused by failing hardware disks, whereas the new ticket is about a local laptop hard drive running out of space due to old files.\"}",
+ "timestamp": "2026-09-22T16:12:04",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

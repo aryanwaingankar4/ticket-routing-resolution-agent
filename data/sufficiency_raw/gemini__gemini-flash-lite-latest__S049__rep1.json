@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S049",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "af08ea0dcef9848f4e547d25f78f69ec56278e6e569c1f03fcbdfb51ca11416d",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets deal with data caching and connection issues rather than deleted entries reappearing due to persistence or save failures in a lookup list.\"}",
+ "timestamp": "2026-09-22T16:15:14",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

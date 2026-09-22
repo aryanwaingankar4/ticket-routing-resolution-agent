@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S023",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "9f4f23371822f04032c0726eec14491afc1d18eec8e1aba6a4ba5cf200168e35",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"All retrieved tickets address the same issue with the Field Service App login page redirecting back to itself.\"}",
+ "timestamp": "2026-09-22T16:40:44",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

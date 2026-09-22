@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S039",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "3ce9deb198014745feb466310d41820c1a57c1402826cfd055efd93d0719dda1",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets address issues related to file system backups and restores, which is relevant to the new ticket's request for a backup restore.\"}",
+ "timestamp": "2026-09-22T16:49:04",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

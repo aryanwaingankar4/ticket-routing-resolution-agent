@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S031",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "5508c4df91bc81804cfb98fd3220c6f058fd5521dd281f0ceb85f7d401bc8dc3",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"One relevant retrieved ticket among five addresses the same underlying problem as the new ticket.\"}",
+ "timestamp": "2026-09-22T16:44:50",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

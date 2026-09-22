@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S054",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "968566a9ddf399e8259347dc53bf4cc545ccc632b6fd82758c0b5eac4207c18d",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets all address security issues related to secrets and credentials, which is topical overlap with the new ticket's security concern.\"}",
+ "timestamp": "2026-09-22T16:56:54",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

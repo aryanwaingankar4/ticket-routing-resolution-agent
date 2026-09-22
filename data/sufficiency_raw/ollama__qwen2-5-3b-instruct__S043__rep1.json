@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S043",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7aa8a82511e55a9366306790719a87ab6a00fdb5a96a55d7f2808df273b7337b",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"At least one retrieved ticket addresses the same underlying problem the new ticket reports, specifically about the records system.\"}",
+ "timestamp": "2026-09-22T16:51:08",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

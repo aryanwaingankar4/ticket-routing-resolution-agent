@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S048",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "01a839f94b98556b767f8de9710be5d4c869ef2a586ad1da60fbc7f37c9c3daf",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address issues with DNS resolution for Expense Tracker, while the new ticket reports a blank page and missing client entries in the tracker.\"}",
+ "timestamp": "2026-09-22T16:53:44",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

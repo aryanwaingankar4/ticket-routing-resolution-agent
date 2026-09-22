@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S025",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "2137808de571288668a4378f18cb35f4dcad87d114dc637ec1b485c251995285",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\n  \"verdict\": \"INSUFFICIENT\",\n  \"reason\": \"The retrieved tickets address site-wide login redirect loops due to cookie misconfigurations, whereas the new ticket reports an individual user account being disabled.\"\n}",
+ "timestamp": "2026-09-22T16:11:41",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

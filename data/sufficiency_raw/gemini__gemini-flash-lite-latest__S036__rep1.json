@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S036",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7ed3508a59771f888f29157da5a97a2e4b36dbe3d5a52d09f0cdf55cfe987e72",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The new ticket describes a vague general issue without specifying what is acting strange or identifying any particular problem, whereas the retrieved tickets address specific issues like NTP time drift and CRM stale data.\"}",
+ "timestamp": "2026-09-22T16:12:46",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S034",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "d250497c0a40e6d4e4801ec345a580a9aef2d6e2ea4b62f4e099c31ba2531ee6",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets all address brute-force attack issues on CRM and Ticketing System logins, not the login issue on the messaging program.\"}",
+ "timestamp": "2026-09-22T16:46:26",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

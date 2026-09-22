@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S011",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "440c6dbec3825802910f4ef9443d20c0e7369812c071d187f74de98923980b2b",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address NTP drift and stale data issues, but none address a grayed-out submit button preventing time-sheet submission in the time-tracking app.\"}",
+ "timestamp": "2026-09-22T16:10:19",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

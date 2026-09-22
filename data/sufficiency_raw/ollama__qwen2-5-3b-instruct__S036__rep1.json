@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S036",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7ed3508a59771f888f29157da5a97a2e4b36dbe3d5a52d09f0cdf55cfe987e72",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets all address NTP time drift issues, which is the same category and family of problems as the new ticket's NTP time drift issue.\"}",
+ "timestamp": "2026-09-22T16:47:28",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

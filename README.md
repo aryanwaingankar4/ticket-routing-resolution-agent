@@ -3121,6 +3121,146 @@ Scripts: `src/experiments/paraphrase_external_tickets.py`,
 [`external_paraphrase_summary.json`](data/external_tobibueck/external_paraphrase_summary.json),
 and the 299 raw responses under `data/external_paraphrase_raw/`.
 
+### Phase 6C - a retrieval-sufficiency gate: catches both, but unusable as a gate
+
+**The question.** The production RAG gate is one scalar: top-1 BGE cosine
+>= 0.67, else escalate. Phase 2B found two tickets that cleared it where the
+retrieval was useless - **G021** (N26, top-sim 0.7010) and **G024** (N31,
+0.6747). Both produced a draft the human labelled **ungrounded**, and 2B's LLM
+judge, which *saw the draft*, called both `grounded`. 6C asks whether a rater
+that sees **only the ticket and its retrieved context, never a draft** flags
+them. This is the failure mode Joren et al. (2024) name: a strong model answers
+instead of abstaining when context is insufficient.
+
+**Verdict: it catches both - and flags 26 of the 31 it should not.** A
+sufficiency autorater is **not usable as a second gate on this corpus.** The
+headline is the false-flag count, not the catch.
+
+#### The primary, as counts (2 positives - no rate is estimable, by design)
+
+|  | human `ungrounded` (n=2) | human `grounded` (n=31) |
+|---|---|---|
+| rater `INSUFFICIENT` | **2** | **26** |
+| rater `SUFFICIENT` | 0 | 5 |
+
+**Caught 2 of 2. Flagged 26 of 31.** The false-flag proportion on the
+31-ticket axis is **0.839, Wilson 95% [0.674, 0.929]** - reported because that
+axis *can* carry one; **no rate, interval, kappa or significance test is
+reported on the 2-positive axis**, which was pre-registered as a case study by
+construction. 26 of 33 eligible tickets are disagreements, every one quoted in
+the summary JSON.
+
+A gate that escalates 28 of 33 tickets that currently reach the resolver would
+suppress ~85% of auto-resolution to recover two bad drafts. That is not a
+tuning problem to be fixed by a threshold: the rater has no threshold, and its
+verdicts are **stable** (see below), so there is nothing to move.
+
+#### What the disagreements actually are
+
+The rater is not malfunctioning - its reasons are specific and factually
+correct about the retrieval. On **S052** (N02/G032, top-sim **0.8112**, the
+highest in the eligible arm) it wrote: *"the retrieved tickets deal with users
+who can see the folder but get 'access denied' when opening files inside it,
+whereas the new ticket describes a user who cannot access the folder at all."*
+That is a real distinction. The 2B human still labelled the resulting draft
+`grounded`, because the draft's prescribed steps were traceable to the
+retrieved resolutions. **Both readings are defensible**, which is the finding:
+the two measures are not the same question, and a high cosine does not make
+them agree.
+
+#### POST-HOC: the "different questions" hypothesis is NOT supported
+
+2B's rubric states that **declining is not an unsupported claim** - a draft
+that says the retrieved examples do not fit and recommends a human is
+`grounded`. So the false flags might concentrate on declining drafts, which
+would mean the rater and the label were simply answering different questions.
+Split (post-hoc, transparent phrase detector, every match recorded):
+
+| 2B draft | n | flagged `INSUFFICIENT` |
+|---|---|---|
+| declines / hedges mismatch | 3 | 3 |
+| does not | 28 | 23 |
+
+**No concentration.** At n=3 the declining group cannot be compared with the
+other - and the non-declining group is flagged at 23 of 28 regardless, so the
+false flags are **everywhere**, not localised to a rubric artifact. The
+hypothesis is recorded as **not supported**; it does not explain the result and
+does not soften it.
+
+#### Secondaries, all pre-registered
+
+- **Agreement with the live gate on the 21 it already escalates: 20 of 21**
+  (0.952, Wilson [0.773, 0.992]). The one disagreement is **S051** (N45,
+  top-sim 0.6397): the rater found an NTP/chrony resolution that squarely
+  addresses the ticket, so the **similarity gate escalated a ticket whose
+  context was adequate**. A single case, but it is the mirror image of the two
+  2B misses - the scalar errs in both directions.
+- **Cross-family, Qwen2.5-3B, zero quota:** 54/54 parseable, overall agreement
+  with Gemini **39/54 = 0.722**, and prompt identity **54/54 byte-identical by
+  sha256 in both directions**, so the two arms provably answered the same
+  question. Qwen's own 2x2: caught **1 of 2**, flagged **20 of 31**. It is less
+  aggressive (35 vs 48 `INSUFFICIENT` of 54) and it **misses one of the two
+  positives** - so the result is not an artifact of one vendor's prior, and the
+  weaker model is not a usable gate either.
+- **Stability:** both positives' items re-rated at 3 repeats, temperature 0.0 -
+  `INSUFFICIENT` **3/3 on both**. **No determinism finding.** The primary is
+  rep 1 by pre-registration regardless; repeats never revise it and are never
+  majority-voted.
+
+#### A rejected hypothesis, recorded so it is not re-proposed
+
+The aggressiveness is **not** explained by near-duplicate retrieved neighbours
+leaving nothing to distinguish. That contradicts 2B's own diagnostic on these
+same tickets: **71.1%** of benchmark-45 and **88.9%** of adversarial-9
+retrievals contain **2+ distinct fixes**. The context is heterogeneous.
+**6C is therefore NOT claimed as an instance of the project's named finding**
+about the calibration/reference distribution - the mechanism here is a
+measurement-target mismatch between sufficiency and groundedness, not a
+register mismatch in the corpus.
+
+#### Limitations, beside the result
+
+- **The 2B labels are an outcome proxy.** They record whether the *draft* was
+  supported, not whether a human would call the *context* sufficient. The 26
+  "false" flags are false only against that proxy; no human has labelled
+  sufficiency directly. **That, not the rater, is the binding limitation** -
+  and producing those labels is human work, not something to be substituted.
+- **2 positives.** The catch is a case study, not an estimate.
+- Gemini rates its own vendor's family but **never its own draft** (the draft
+  is absent from the prompt), which is why the Qwen arm is the control for
+  vendor prior rather than for self-preference.
+
+#### Provenance, stated in full
+
+The `--limit 3` dry run happened to include **one** of the two positives (G024
+at S002; G021 landed at S029), so **its primary verdict was seen before the
+full pass was launched.** Nothing was revised on seeing it: the rubric, output
+schema, population and primary rule were all fixed at the plan gate before any
+call, and the prompt hash is in the cache. P(at least one of two positives in
+the first three of 54) = **0.109, about 1 in 9**. The seed-42 ordering was
+audited: the permutation was independently re-derived from the benchmark order
+plus 2B's own `escalated_ids` and matched **all 54** assignments, with the two
+arms interleaved - a genuine shuffle, uncorrelated with the labels.
+
+**No degeneracy or blocking rule was pre-registered, deliberately.** 6C
+estimates no density ratio and fits no model, so there is no ill-posedness
+threshold to import - the 7C lesson applied rather than repeated.
+
+**Gates re-run, not quoted:** `pytest` **406 passed** (372 + 34 new);
+adversarial escalation **9/9** with its CSV byte-identical
+(`d53e40c6...` before and after); goldens **45** and **9** rows exact; ablation
+baseline **32/45 (71.11%)**. Production unchanged: cascade **0.50**, RAG
+**0.67**, clustering **0.80**; `conformal.enabled` and `drift.enabled` both
+`False`. **58 Gemini calls** (54 + 4 repeats), in-code cap 70.
+
+Scripts: `src/experiments/build_sufficiency_context.py`,
+`src/experiments/run_sufficiency_autorater.py`,
+`src/experiments/score_sufficiency_gate.py`. Outputs:
+[`sufficiency_gate_results.csv`](data/sufficiency_gate_results.csv),
+[`sufficiency_gate_summary.json`](data/sufficiency_gate_summary.json),
+the context bundle and key, and the raw responses under
+`data/sufficiency_raw/`.
+
 ### Automation-flagging feature
 
 The production payoff of the calibration above: `flag_automation_candidates.py`

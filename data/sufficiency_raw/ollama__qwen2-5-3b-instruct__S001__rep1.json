@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S001",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "ee4c9d1739debf0197e0d0773c5cf278eaa9f9704ff0b009e53f69e63bf87e8c",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"The retrieved tickets address issues related to disk fullness and I/O saturation, which are similar to the new ticket's problem of a nearly full hard drive and freezing software.\"}",
+ "timestamp": "2026-09-22T16:29:15",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

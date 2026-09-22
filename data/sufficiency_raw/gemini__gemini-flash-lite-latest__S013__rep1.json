@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S013",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "a088b611020bc993f1a89d0e9ea386240739a8895131a56ff7ba1c7664faeb51",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"None of the retrieved tickets address the printer unavailability issue mentioned in the new ticket.\"}",
+ "timestamp": "2026-09-22T16:10:31",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

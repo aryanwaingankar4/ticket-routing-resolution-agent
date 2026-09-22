@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S014",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "3ec5b054287eb0f33d0cc217c88785f7b1eb253f21cbc1fbb5b2563656f9a833",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"All retrieved tickets address the same underlying problem of a Wi-Fi outage at the Hyderabad Office.\"}",
+ "timestamp": "2026-09-22T16:36:16",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

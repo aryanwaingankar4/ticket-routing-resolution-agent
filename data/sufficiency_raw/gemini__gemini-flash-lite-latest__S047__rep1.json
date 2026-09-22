@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S047",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "545cfd827c5eb6063e589195f6d2230412fd2ece1213b95cff42b917897a19f1",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\n  \"verdict\": \"INSUFFICIENT\",\n  \"reason\": \"The retrieved tickets deal with confirmed trojans detected and quarantined by the EDR agent on specific endpoints, whereas the new ticket is a user-reported antivirus warning about a potentially blocked suspicious item without confirmation of an active infection.\"\n}",
+ "timestamp": "2026-09-22T16:15:02",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

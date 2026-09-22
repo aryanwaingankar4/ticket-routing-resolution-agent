@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "ollama",
+ "model": "qwen2.5:3b-instruct",
+ "model_digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+ "item_id": "S019",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "01ac25686de278a2075b719a082185aad4860c4fb1fe302ecd4701ce80060f14",
+ "temperature": 0.0,
+ "seed": 42,
+ "raw": "{\"verdict\": \"SUFFICIENT\", \"reason\": \"All retrieved tickets address the same underlying problem of a storage volume nearly full, impacting daily work.\"}",
+ "timestamp": "2026-09-22T16:38:43",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

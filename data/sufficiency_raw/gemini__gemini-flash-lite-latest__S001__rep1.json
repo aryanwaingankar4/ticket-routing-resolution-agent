@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S001",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "ee4c9d1739debf0197e0d0773c5cf278eaa9f9704ff0b009e53f69e63bf87e8c",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\"verdict\": \"INSUFFICIENT\", \"reason\": \"The retrieved tickets address server and storage volume capacity issues, whereas the new ticket requires clearing local junk files on a user's workstation to free up space for photo editing software.\"}",
+ "timestamp": "2026-09-22T16:02:03",
+ "config_fingerprint": "9c9a5cbcb53f"
+}

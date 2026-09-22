@@ -1,0 +1,15 @@
+{
+ "phase": "6C",
+ "backend": "gemini",
+ "model": "gemini-flash-lite-latest",
+ "model_digest": null,
+ "item_id": "S006",
+ "repeat": 1,
+ "is_primary": true,
+ "prompt_sha256": "7f8942951b541165ebd1ee030a094a2a1419f1ee05630de94364de88843de8c5",
+ "temperature": 0.0,
+ "seed": null,
+ "raw": "{\n  \"verdict\": \"INSUFFICIENT\",\n  \"reason\": \"The retrieved context lacks any tickets addressing weather inquiries or meteorological information.\"\n}",
+ "timestamp": "2026-09-22T16:09:49",
+ "config_fingerprint": "9c9a5cbcb53f"
+}
