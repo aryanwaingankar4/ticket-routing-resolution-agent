@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** Phase 6C (the retrieval-sufficiency
+**Last commit to move code or a result:** `c5497bf` — Phase 6C (the retrieval-sufficiency
 gate). **All four gates passed and it was PUSHED on 2026-09-22.**
 Phase 7C (`0c9ff8b`) is also gated and PUSHED.
 Phase 7B (`f789b8d`) is also gated and PUSHED.
@@ -11,7 +11,7 @@ also gated and pushed. Phase 6A
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 6C — COMPLETE, GATED and PUSHED** (2026-09-22).
+**Current phase: Phase 6C — COMPLETE, GATED and PUSHED** (`c5497bf`, 2026-09-22).
 **Verdict: a retrieval-sufficiency check catches both 2B misses and is STILL
 NOT USABLE as a second gate.** Primary, as counts over the 33 eligible
 tickets: **caught 2 of 2** human-labelled ungrounded drafts, **flagged 26 of
@@ -1798,7 +1798,7 @@ calls**; dry-run first and cache every raw response.
 |---|---|
 | **6A** | Conformal deferral vs a confidence threshold — risk–coverage curves and AURC — **DONE** (`8f2f5e1`, gated and pushed) |
 | **6B** | Weighted conformal under shift, with a domain-classifier density ratio — **DONE** (`8419db6`, gated and pushed) |
-| **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **DONE, GATED and PUSHED**. Caught 2/2, flagged 26/31: **not usable as a gate**. 58 Gemini calls |
+| **6C** | Retrieval-sufficiency gate, on the 33 groundedness tickets — **DONE, GATED and PUSHED** (`c5497bf`). Caught 2/2, flagged 26/31: **not usable as a gate**. 58 Gemini calls |
 
 6A is the experiment that makes Phase 1's conformal work operational without
 promoting it: it asks whether deferring on set size beats deferring on a
