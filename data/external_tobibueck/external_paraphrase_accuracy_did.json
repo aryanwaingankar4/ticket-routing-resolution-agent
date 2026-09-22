@@ -1,0 +1,35 @@
+{
+  "phase": "7C",
+  "post_hoc": true,
+  "supersedes_nothing": true,
+  "pre_registered_primary_status": "blocked_auc_ge_0.95",
+  "statistic": "accuracy difference-in-differences, (para T1 - para T2) - (orig T1 - orig T2)",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "seed": 42,
+  "bootstrap_draws": 10000,
+  "n_pairs": 286,
+  "accuracy": {
+    "original_tier1": 0.3776223776223776,
+    "original_tier2": 0.3776223776223776,
+    "paraphrased_tier1": 0.2727272727272727,
+    "paraphrased_tier2": 0.3531468531468531
+  },
+  "tier1_accuracy_change": -0.1048951048951049,
+  "tier2_accuracy_change": -0.024475524475524476,
+  "did_point": -0.08041958041958042,
+  "did_bootstrap_mean": -0.08022307692307691,
+  "did_ci_lo": -0.1363636363636364,
+  "did_ci_hi": -0.020979020979021046,
+  "did_signal": true,
+  "paraphrased_t1_minus_t2": -0.08041958041958042,
+  "paraphrased_ci": [
+    -0.1258741258741259,
+    -0.03496503496503495
+  ],
+  "original_t1_minus_t2": 0.0,
+  "original_ci": [
+    -0.04545454545454547,
+    0.04545454545454547
+  ],
+  "limitation": "External queue labels are generator-assigned and unaudited; this is a post-hoc exploratory statistic and does not substitute for the blocked primary."
+}

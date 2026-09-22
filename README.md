@@ -2897,6 +2897,13 @@ the CSV marked blocked, as 6B's BGE arm is - not as a result.
 it was measured under, on the corpus it was measured on, and has not been shown
 to hold or to fail anywhere else.**
 
+> **The paper's framing for Finding 1, fixed at the 7C gate for Phase 9A:**
+> measured on our corpus; **external replication inconclusive** - 7B applied the
+> wrong shift type, 7C was blocked by its own pre-registered rule; with
+> **post-hoc evidence of the mechanism in accuracy** on the external corpus
+> (difference-in-differences −0.0804, 95% CI [−0.1364, −0.0210]). Those three
+> clauses travel together; none of them is quoted alone.
+
 #### The manipulation check, reported before the result
 
 | space | mean cosine | median | cross-fitted domain AUC |
@@ -2927,10 +2934,15 @@ read.
 with 6B, where a domain AUC of 0.9908 blocked the BGE arm. It fired, so the
 primary is not interpreted and no secondary is promoted to fill the gap.
 
-#### POST-HOC: the blocking rule may be mis-specified for this design
+#### SPEC ERROR, OWNED: the blocking rule was copied across designs
 
-*Added after seeing the result, and labelled as such. It is a question for the
-gate, not a licence to unblock.*
+**Decided at the 7C gate (2026-09-22): the arm is NOT unblocked.** The rule was
+pre-registered, and changing it after seeing results is exactly what this
+project refuses to do, however good the reason. **The pre-registered verdict
+stands: BLOCKED.**
+
+*The critique below was raised after seeing the result and is recorded as a
+specification error, not as grounds for a re-run.*
 
 In **6B** the >= 0.95 rule gated a **density-ratio estimate**. Weighted
 conformal divides by `p(cal|x)`, so near-perfect separability makes the ratio
@@ -2943,11 +2955,20 @@ threshold across may therefore be gating the wrong quantity - the same error
 the project has already named once, when a promotion rule for resolution
 clustering measured recall while claiming to gate precision.
 
-There is a real reading on the other side: a rewrite that a classifier can
-identify with near-certainty is arguably a *different corpus* rather than a
-shifted one, which is a coherent reason to refuse to call it a shift. **Both
-readings are recorded; the choice is a decision for the gate, taken with the
-numbers already visible, and it is not one this write-up makes on its own.**
+**The counter-reading is real and is recorded too:** a rewrite that a classifier
+can identify with near-certainty is arguably a *different corpus* rather than a
+shifted one, which is a coherent reason to refuse to call it a shift. The two
+readings are not resolved here.
+
+> **The lesson, for every future pre-registration: a degeneracy rule must be
+> justified by what the specific design estimates, not copied across designs.**
+> Ask what quantity becomes ill-posed at the threshold, and confirm that
+> quantity exists in *this* experiment. A threshold guarding a density ratio
+> means nothing where no density ratio is computed.
+
+**The unblocked coverage numbers remain in
+[`external_paraphrase_conformal.csv`](data/external_tobibueck/external_paraphrase_conformal.csv),
+labelled post-hoc. They are never quoted as the verdict.**
 
 #### POST-HOC: the mechanism IS visible - in accuracy, not in coverage
 
@@ -2965,19 +2986,44 @@ directly: surface-vocabulary change is what TF-IDF cannot absorb. 7B never
 produced this contrast, which supports the diagnosis that its version shift was
 the wrong kind of shift.
 
-**And yet conformal coverage barely moved for either tier** (blocked numbers, in
-the CSV). The candidate explanation is structural and worth carrying into the
-paper: with ten classes and ~35% base accuracy, prediction sets here run **4.9
-to 6.9 labels out of 10**. Sets that large **buffer coverage against a score
-shift** - the true label stays inside them even when the argmax moves. On our
-corpus, seven classes and far higher accuracy give small sets, where the same
-score shift pushes labels out and coverage drops.
+**And it survives its own interval.** Because this project does not write down a
+difference without one, the accuracy difference-in-differences was bootstrapped
+before it was written up - 10,000 paired draws at seed 42, the same
+configuration as 6A and the blocked coverage arm:
 
-If that holds, Finding 1 needs **both** a representation contrast **and** an
+| statistic | point | 95% CI |
+|---|---|---|
+| paraphrased, Tier-1 − Tier-2 | −0.0804 | [−0.1259, −0.0350] |
+| original, Tier-1 − Tier-2 | +0.0000 | [−0.0455, +0.0455] |
+| **difference-in-differences** | **−0.0804** | **[−0.1364, −0.0210]** |
+
+The interval **excludes zero**: the paraphrase shift cost Tier-1 more than
+Tier-2, over and above any difference the tiers had on the originals. In counts,
+Tier-1 fell from **108 to 78** of 286 correct while Tier-2 fell from **108 to
+101**.
+
+**This remains POST-HOC and exploratory.** It does not replace the blocked
+primary, it was not pre-registered, and the external labels are still
+generator-assigned and unaudited. It is evidence about the *mechanism*, on the
+external corpus, and that is all it is.
+
+**And yet conformal coverage barely moved for either tier** (blocked numbers, in
+the CSV, post-hoc).
+
+#### FUTURE WORK, not tested here: are large prediction sets buffering coverage?
+
+The obvious candidate explanation for accuracy moving while coverage did not is
+structural: with ten classes and ~35% base accuracy, prediction sets here run
+**4.9 to 6.9 labels out of 10**. Sets that large would **buffer coverage against
+a score shift** - the true label stays inside them even when the argmax moves.
+Our corpus's seven classes and far higher accuracy give small sets, where the
+same score shift pushes labels out and coverage drops.
+
+If it holds, Finding 1 would need **both** a representation contrast **and** an
 operating regime where sets are small enough for coverage to be sensitive -
-which is a sharper statement of its scope than "it is a property of our
-corpus", and a testable one. It is post-hoc and is offered as a hypothesis, not
-a finding.
+sharper than "it is a property of our corpus", and testable. **It was not tested
+in 7C and is recorded as future work, not as a finding or a hypothesis this
+programme goes on to check.**
 
 The identical original-arm accuracies are a genuine coincidence, checked rather
 than assumed: the two tiers disagree on **87 of 286** tickets and the

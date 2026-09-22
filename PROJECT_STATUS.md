@@ -1,15 +1,16 @@
 # Project Status
 
 **Last updated:** 2026-09-22
-**Last commit to move code or a result:** `f789b8d` — Phase 7B (Finding 1 does
-not replicate under a version shift). **Gate cleared and PUSHED on 2026-09-22.**
+**Last commit to move code or a result:** `0c9ff8b` — Phase 7C (Finding 1 under a
+paraphrase shift: BLOCKED). **Gate cleared and PUSHED on 2026-09-22.**
+Phase 7B (`f789b8d`) is also gated and PUSHED.
 Phase 7A (`ba98843`) is also gated and PUSHED. Phase 6B (`8419db6`) is
 also gated and pushed. Phase 6A
 (`8f2f5e1`) and Phase 5C (`4793785`, `1200451`, `a8557df`) are gated and
 pushed.
 **Branch:** `main`, level with `origin/main`, working tree clean.
 
-**Current phase: Phase 7C — COMPLETE, COMMITTED, AWAITING GATE.**
+**Current phase: Phase 7C — COMPLETE, GATED and PUSHED** (`0c9ff8b`, 2026-09-22).
 **Verdict: BLOCKED** (`blocked_auc_ge_0.95`) — the pre-registered degeneracy
 rule fired at a TF-IDF-space domain AUC of **0.9972**, so **no verdict is drawn
 on the primary**. 7C set out to test Finding 1 under the shift it was actually
@@ -33,9 +34,10 @@ deferral question resolved for the first time** (3 of 6 comparisons, *all*
 favouring the confidence incumbent — conformal deferral is **worse** there, on
 that corpus only), and a **RECORD CORRECTION** — 7A's ad hoc domain AUCs do not
 reproduce and are replaced. Nothing promoted; `settings.conformal.enabled` and
-`settings.drift.enabled` stay `False`. **Next: the 7C gate decides whether the
-≥0.95 blocking rule applies to a design that estimates no density ratio; then
-Phase 6C on a fresh-quota day.**
+`settings.drift.enabled` stay `False`. **The 7C gate DECLINED to unblock** — a
+pre-registered rule is not revised after seeing results, so the spec error is
+recorded instead. **Next: Phase 6C on a fresh-quota day, then 8A. NO FURTHER
+EXTERNAL EXPERIMENTS in this programme.**
 
 **Phase 7A is COMPLETE, GATED and PUSHED** (2026-09-22). **Design A chosen as
 7B's primary** (version split within the `aa` file, 51+52 → 400, domain AUC
@@ -1600,7 +1602,7 @@ with its CSV byte-identical; goldens **45/45** and **9/9**; ablation baseline
 
 ---
 
-## Phase 7C — Finding 1 under a paraphrase shift: BLOCKED (COMPLETE, committed, awaiting gate)
+## Phase 7C — Finding 1 under a paraphrase shift: BLOCKED (COMPLETE, gated and pushed in `0c9ff8b`)
 
 Offline, **zero Gemini calls** (local Ollama). Measurement only; production
 frozen; both `enabled` flags stay `False`. Isolation check: **27 files**
@@ -1632,7 +1634,7 @@ version shift, for scale, sits at BGE-space AUC 0.8472.
 1.0279 / median 0.9543 / **aggregate 0.9417**; words **aggregate 0.9344**.
 About 6% shorter — no length confound.
 
-### POST-HOC, and the question for the gate: the rule may be mis-specified
+### SPEC ERROR, OWNED — and the gate DECLINED to unblock
 
 In **6B** the ≥0.95 rule gated a **density-ratio estimate**, where
 near-separability makes the ratio ill-posed — the rule measured what it gated.
@@ -1642,9 +1644,20 @@ manipulation was **strong**. Carrying the threshold across may gate the wrong
 quantity — the error this project has already named once, when a clustering
 promotion rule measured recall while claiming to gate precision.
 
-The counter-reading is real: a rewrite a classifier identifies with
-near-certainty is arguably a *different corpus* rather than a shifted one.
-**Both readings are recorded. The choice is the gate's, not the write-up's.**
+**The counter-reading is real and is recorded too:** a rewrite a classifier
+identifies with near-certainty is arguably a *different corpus* rather than a
+shifted one.
+
+**Decided at the gate (2026-09-22): DO NOT UNBLOCK.** A pre-registered rule is
+not revised after seeing the results, however good the critique — that is
+precisely what this project refuses to do. The verdict stays BLOCKED, the
+critique is recorded as a **specification error**, and the unblocked coverage
+numbers stay in the CSV **labelled post-hoc, never quoted as the verdict**.
+
+> **Lesson for every future pre-registration: a degeneracy rule must be
+> justified by what the specific design estimates, not copied across designs.**
+> Ask what quantity becomes ill-posed at the threshold, and confirm that
+> quantity exists in *this* experiment.
 
 ### POST-HOC: the mechanism IS visible — in accuracy, not coverage
 
@@ -1658,13 +1671,23 @@ near-certainty is arguably a *different corpus* rather than a shifted one.
 Finding 1's mechanism, confirmed directly. 7B never produced this contrast,
 which supports the diagnosis that its version shift was the wrong kind of shift.
 
-Yet coverage barely moved for either tier. The candidate explanation, offered
-as a **hypothesis, not a finding**: with ten classes and ~35% accuracy,
-prediction sets run **4.9–6.9 labels of 10**, and sets that large **buffer
-coverage against a score shift**. Our corpus's seven classes and high accuracy
-give small sets, where the same shift pushes labels out. If it holds, Finding 1
-needs **both** a representation contrast **and** small enough sets for coverage
-to be sensitive — a sharper and testable scope statement.
+**It survives its own interval.** Bootstrapped before being written up — 10,000
+paired draws, seed 42, the same configuration as 6A and the blocked arm:
+
+| statistic | point | 95% CI |
+|---|---|---|
+| paraphrased, T1 − T2 | −0.0804 | [−0.1259, −0.0350] |
+| original, T1 − T2 | +0.0000 | [−0.0455, +0.0455] |
+| **difference-in-differences** | **−0.0804** | **[−0.1364, −0.0210]** |
+
+The interval **excludes zero**. In counts, Tier-1 fell **108 → 78** of 286 while
+Tier-2 fell **108 → 101**. **Still POST-HOC and exploratory**: it does not
+replace the blocked primary and the labels remain unaudited.
+
+**FUTURE WORK, not tested and not pursued in this programme:** coverage may be
+buffered by **large prediction sets** (4.9–6.9 of 10 labels here), so Finding 1
+may require **both** a representation contrast **and** small sets. Recorded as
+future work, not as a hypothesis this programme goes on to check.
 
 The identical original-arm accuracies were checked, not assumed: the tiers
 disagree on **87 of 286** tickets with a **23/23** discordant split and
@@ -1762,8 +1785,15 @@ not.
 | Sub-phase | Scope |
 |---|---|
 | **7A** | Feasibility check on `Tobi-Bueck/customer-support-tickets` — **DONE** (`ba98843`, gated and pushed) |
+
+**PHASE 7 IS CLOSED as of the 7C gate (2026-09-22). No further external
+experiments in this programme.** External replication of Finding 1 is
+**inconclusive**: 7B applied a version shift (the wrong type), 7C applied the
+right type but was **blocked by its own pre-registered rule**. The set-size
+question 7C raised post-hoc is **future work, not a 7D**.
+
 | **7B** | Replicate Finding 1 on it — **DONE, GATED and PUSHED** (`f789b8d`). **It does NOT replicate** under a *version* shift. Design B resolved nothing, twice, for two named reasons |
-| **7C** | Replicate Finding 1 under a **paraphrase** shift — **DONE**, committed and awaiting gate. **BLOCKED** by the pre-registered ≥0.95 rule; the mechanism shows in accuracy (−10.5 vs −2.5 pts) but not coverage |
+| **7C** | Replicate Finding 1 under a **paraphrase** shift — **DONE, GATED and PUSHED** (`0c9ff8b`). **BLOCKED**, and the gate declined to unblock. Post-hoc: the mechanism shows in accuracy, DiD **−0.0804** [−0.1364, −0.0210] |
 
 **PHASE 7 IS NOT OPTIONAL — priority RAISED 2026-09-21 after the 6A gate.**
 Evaluation-set size at low coverage is now the binding constraint in **four**
@@ -1841,61 +1871,48 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 7C — does Finding 1 replicate under the shift it was actually measured
-under?** Added 2026-09-22 at the 7B gate and inserted **before 6C**. Offline,
-**zero Gemini calls** (paraphrasing runs on local Ollama). Opens in plan mode
-like every sub-phase.
+**Phase 6C — the retrieval-sufficiency gate, on the 33 groundedness tickets.**
+**~55–110 Gemini calls**, so it runs on a day with **fresh quota** and must not
+share a day with any other quota-spending sub-phase. Opens in plan mode like
+every sub-phase.
 
-**Why it exists.** 7B applied a **version shift within one generator** and
-found no tier contrast. Finding 1 was measured under a **paraphrase / register
-shift**. TF-IDF's failure mechanism is **surface-vocabulary change**, and a
-version shift need not produce any — so 7B may not have exercised the mechanism
-at all. 7C supplies the missing like-for-like test.
+**PHASE 7 IS CLOSED. NO FURTHER EXTERNAL EXPERIMENTS in this programme.** 7A
+(feasibility), 7B (version shift) and 7C (paraphrase shift) are all gated and
+pushed. External replication of Finding 1 is **inconclusive** and is written up
+as such; the set-size question raised post-hoc in 7C is **future work**, not a
+7D.
 
-### The design, as commissioned
+### What 6C's plan must specify
 
-- **Sample** ~300 version-400 test tickets, **seeded and queue-stratified**.
-- **Paraphrase** each with local **Ollama `qwen2.5:3b-instruct`** into plain,
-  non-technical everyday English, preserving meaning and queue. **Cache every
-  raw output.** **Dry-run 3 and show them before the full run.**
-- **Guards:** discard any paraphrase at **BGE cosine >= 0.95** to its source
-  (it was not rewritten) and report how many; report **mean source-paraphrase
-  similarity**.
-- **Re-use 7B's models and calibration unchanged** — no refitting, no
-  recalibration.
-- **Evaluate** coverage on the paraphrased set against its unparaphrased
-  originals, in the **same Finding 1 table shape**, band **recomputed for this
-  n**.
-- **Pre-registered primary:** the **Tier-1 minus Tier-2 coverage-gap difference
-  at alpha = 0.10**. Same degeneracy rule as 6A/6B/7B — name the condition and
-  report "no resolution" rather than promoting a secondary metric. Anything
-  added after results is labelled **post-hoc**.
-- **Limitation to write beside the result:** the external labels are unaudited
-  and base accuracy is ~35%, so **a null here is weaker evidence than a null on
-  a well-learned task**.
+1. **The dry run first**, at `--limit 3`, checking the prompt before the full
+   budget is spent — the rule that caught `build_groundedness_set.py`'s
+   eligibility bug when its 54/0 count was checked against an independently
+   measured 33/21.
+2. **`call_delay_sec` at or above 4.5s**, and **every raw response cached to
+   disk** keyed by prompt hash, so a crash or a re-score never re-spends quota.
+3. **Eligibility derived from `decision.escalated`, never a status enum** —
+   `ESCALATED` belongs to the *filing* gate and a RAG-gate escalation carries
+   `NEEDS_HUMAN_RESOLUTION`. This is occurrence 5 of the recurring bug class.
+4. **Every count checked against a second, independent derivation** before any
+   quota is spent.
+5. **Any degeneracy or blocking rule justified by what 6C itself estimates** —
+   not copied from an earlier phase. 7C's rule was carried over from 6B, where
+   it guarded a density-ratio estimate that 7C never computed, and the gate
+   declined to unblock rather than revise it after the fact. The cost of a
+   mis-specified rule is a phase that cannot answer its own question.
 
-**Either outcome is reportable.**
+### Order after 6C
 
-### Order after 7C
+**6C → 8A → 8B → 9A–9C.**
 
-**7C → 6C → 8A → 8B → 9A–9C.**
+**6C must be GATED before 8A starts**, because 8A builds every paper table from
+finished results and starting it while a result is in flight would bake a
+moving number into the reproducibility layer.
 
-- **6C** (retrieval-sufficiency gate on the 33 groundedness tickets, **~55–110
-  Gemini calls**) runs on a day with **fresh quota** and must not share a day
-  with any other quota-spending sub-phase. Its plan must specify the
-  `--limit 3` dry run, `call_delay_sec >= 4.5`, per-prompt-hash response
-  caching, eligibility derived from **`decision.escalated` and never a status
-  enum**, and every count checked against a second independent derivation.
-- **6C must be GATED before 8A starts**, because 8A builds every paper table
-  from finished results and starting it while a result is in flight would bake
-  a moving number into the reproducibility layer.
-
-**8A's remit grew because of 7B.** Two recorded design AUCs turned out to be
-ad hoc figures whose derivation was never committed and which do not reproduce
-(see the Phase 7B record correction). That is precisely the failure
-`build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test exist to stop,
-and **any number quoted at a gate must now come from a committed script**, not
-from an interactive session.
+**8A's remit grew because of 7B and 7C.** Two recorded design AUCs turned out to
+be ad hoc figures whose derivation was never committed and which do not
+reproduce (the 7B record correction). **Any number quoted at a gate must come
+from a committed script**, not from an interactive session.
 
 ### Carried forward for Phase 9A
 
@@ -1916,12 +1933,12 @@ from an interactive session.
    near-duplicated (85.20%) than the external one (79.39%). 7B applies it
    again: its 1.46% boundary-contamination rate is low because the *reference
    set* is 3,305 rows, not because the corpus changed.
-6. **Finding 1's claim is scoped BY THE SHIFT MECHANISM, not only by the
-   corpus:** *coverage transfer depends on the representation **under
-   paraphrase shift**, on our corpus.* Both candidate explanations for 7B's
-   null are stated and **neither rescues the finding** — the version-vs-
-   paraphrase shift mismatch, and the absent representation contrast (2.6
-   points vs our 35.6). **7C settles which.**
+6. **FINDING 1'S PAPER FRAMING IS FIXED** (7C gate, 2026-09-22), and the three
+   clauses travel together — none is quoted alone:
+   **measured on our corpus; external replication inconclusive (7B applied the
+   wrong shift type, 7C was blocked by its own pre-registered rule); with
+   post-hoc evidence of the mechanism in accuracy on the external corpus
+   (difference-in-differences −0.0804, 95% CI [−0.1364, −0.0210]).**
 7. **7B's deferral reading must not be merged with 6A's.** 6A: "no evidence
    either way on the gated axis", for our data. 7B: conformal deferral is
    **worse** — 3 of 6 resolving comparisons, all favouring the incumbent — on a
@@ -1930,6 +1947,11 @@ from an interactive session.
 8. **The 7B record correction belongs in the reproducibility section**, as the
    concrete motivation for 8A: a number quoted at a gate and never regenerated
    from a committed script is a number that can stop being true.
+9. **7C's spec error belongs in the methods section**, as the concrete case for
+   pre-registration discipline: the rule was kept even though the critique of it
+   was sound, because revising a rule after seeing results is what the
+   discipline exists to prevent. **A degeneracy rule must be justified by what
+   the specific design estimates, not copied across designs.**
 
 
 ---

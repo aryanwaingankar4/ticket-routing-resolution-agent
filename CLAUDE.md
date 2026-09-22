@@ -414,22 +414,36 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   limitation, not a rescue.
 - **7C is BLOCKED, and a blocked arm is not a null.** The pre-registered ≥0.95
   degeneracy rule fired (TF-IDF-space domain AUC **0.9972**), so **no verdict
-  was drawn on the primary** and the numbers sit in the CSV marked blocked, as
+  was drawn on the primary** and the numbers sit in the CSV marked post-hoc, as
   6B's BGE arm does. **After 7B and 7C, Finding 1 has not been shown either to
   hold or to fail outside its original corpus** — write that, not "it failed
-  twice". Open question for a future gate, recorded post-hoc: the ≥0.95 rule
-  was imported from 6B, where it gated a **density-ratio estimate**; 7C
-  estimates no density ratio and uses the AUC only as a manipulation check,
-  where a near-1.0 value means the manipulation was *strong*. It may be gating
-  the wrong quantity.
+  twice".
+- **A pre-registered rule is NOT revised after seeing the results, however good
+  the critique.** 7C's ≥0.95 rule was copied from 6B, where it guarded a
+  **density-ratio estimate**; 7C computes no density ratio and uses the AUC only
+  as a manipulation check, where a near-1.0 value means the manipulation was
+  *strong*. The critique is sound and the gate still **declined to unblock** —
+  it is recorded as a **specification error**, not acted on. The counter-reading
+  is recorded too: a rewrite a classifier identifies with near-certainty may be
+  a *different corpus* rather than a shifted one. **Lesson: a degeneracy rule
+  must be justified by what the specific design estimates, never copied across
+  designs.**
 - **Finding 1's mechanism IS confirmed in accuracy, even though 7C is
   blocked.** The paraphrase shift cost Tier-1 **10.5 accuracy points**
-  (0.3776 → 0.2727) against Tier-2's **2.5** (0.3776 → 0.3531) — about 4×.
-  7B's version shift produced no such contrast, which is direct support for the
-  diagnosis that it was the wrong kind of shift. Coverage barely moved either
-  way; the post-hoc hypothesis is that **large prediction sets buffer coverage
-  against a score shift** (4.9–6.9 labels of 10 here), so Finding 1 may need
-  both a representation contrast *and* small sets. Hypothesis, not finding.
+  (0.3776 → 0.2727, 108 → 78 of 286) against Tier-2's **2.5** (0.3776 → 0.3531,
+  108 → 101) — about 4×. Bootstrapped before being written down:
+  difference-in-differences **−0.0804, 95% CI [−0.1364, −0.0210]**, excluding
+  zero (10,000 paired draws, seed 42). 7B's version shift produced no such
+  contrast, which supports the diagnosis that it was the wrong kind of shift.
+  **Still POST-HOC** — it does not replace the blocked primary.
+- **Finding 1's paper framing is FIXED (7C gate), and its three clauses travel
+  together:** measured on our corpus; **external replication inconclusive** (7B
+  wrong shift type, 7C blocked by its own rule); **post-hoc evidence of the
+  mechanism in accuracy** on the external corpus. Never quote one clause alone.
+- **Phase 7 is CLOSED — no further external experiments in this programme.**
+  The set-size question (coverage may be buffered by 4.9–6.9-label prediction
+  sets, so Finding 1 may need both a representation contrast *and* small sets)
+  is **future work, not a 7D**.
 - **A test-arm coverage band must include the test-sampling term.** Finding 1
   and 7B quote `coverage_sd(alpha, n_cal)` alone, which is fine on a
   10,441-ticket arm. At 7C's n=286 the test-sampling sd (0.0173 at α=0.10)
