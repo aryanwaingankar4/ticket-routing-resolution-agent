@@ -1,9 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** the **Phase 9A commit** ("Phase 9A:
-the IEEE draft…", the child of `1c72e22`; `git log --grep "Phase 9A:"` finds
-it). It changes the builder, adds two data files and corrects one
+**Last commit to move code or a result:** `8c9ac59`, the Phase 9A commit. It changes the builder, adds two data files and corrects one
 paper-surface number. Before it: `681f356` (the 8B.3 follow-up).
 
 **PHASE 9A IS DRAFTED** (2026-09-23). The gates passed and the work was pushed
@@ -2317,7 +2315,7 @@ published figure drifts — the goldens pattern applied to the write-up.
 
 | Sub-phase | Scope |
 |---|---|
-| **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
+| **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (`8c9ac59`, 2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
 | **9B** | Pre-submission audit |
 | **9C** | Author explainer |
 
