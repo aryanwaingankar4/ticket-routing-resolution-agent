@@ -6,8 +6,26 @@ comparing gate CSVs by kind on the runner (`compare_gate_csv.py`). Before it,
 `f80a2d5` (8B.3 proper).
 
 **PHASE 8 IS CLOSED** (2026-09-23). 8A, 8A.1, 8B, 8B.1, 8B.2 and 8B.3 are all
-gated and pushed. **8B.3 was gated on `681f356`**: `gates.yml` passed both
-jobs (full suite and container) and Aryan declared "gate cleared".
+gated and pushed.
+
+**8B.3's gate evidence is `gates.yml` run #4** (id `35869187805`), on
+**`07136ec`**, which carries `681f356`'s code unchanged: `git diff --name-only
+681f356 07136ec` lists only `CLAUDE.md` and `PROJECT_STATUS.md`. **Both jobs
+passed**: docker build + deployment verification in **8m 29s**, and the full
+suite in **5m 36s**, where every gate step passed, including both
+`compare_gate_csv.py` steps and the committed-index check. The run took
+**8m 34s** in total (13:44:31 → 13:53:05 UTC). This was verified against the
+public Actions API, not only as reported.
+
+> **Correction to the record.** Phase 8 was first closed in `07136ec` on the
+> strength of "gates.yml passed on 681f356". **That run did not exist.** The
+> message was sent before the workflow had been triggered, and the API lists
+> no `gates.yml` run on `681f356` at all: runs #1–#3 are on `4f79746`,
+> `91a5b38` and `b0f6500`, all failures. So the closure was recorded **before
+> its evidence existed**. Run #4 above is the real evidence, and it passed. The
+> conclusion stands, but it rests on run #4, not on the earlier statement.
+> The lesson is to check that a cited run exists before recording a gate
+> against it.
 
 **Next: Phase 9A, the IEEE draft.** Like every sub-phase, it opens in plan mode
 with no code before approval. See "Immediate next step".
@@ -22,7 +40,8 @@ with no code before approval. See "Immediate next step".
 > `tier1_conf` within 1e-6 + 1e-12, similarity within 1e-6 + γ_n, max delta
 > printed). The rounding term is **1e-6, not the 5e-7 first specified**,
 > because both sides are rounded. Byte identity stays the local ritual. No CSV
-> or golden changed. **`gates.yml` then passed on `681f356`: gate cleared.**
+> or golden changed. **Gated by `gates.yml` run #4 on `07136ec`** (same code
+> as `681f356`), both jobs passed. See the correction note above.
 
 > **Recovery note (2026-09-23).** The previous session died when the laptop
 > slept. On resumption every 8B.3 item was found **already committed in
@@ -2206,7 +2225,7 @@ reality. Any write-up must say so in those words.
 | **8B** | Docker + CI — **DONE and GATED** (2026-09-23). Digest-pinned image that builds its own artifacts, two workflows, a committed deployment verifier. Found **occurrence #7** of the recurring bug class in the `.dockerignore` rule |
 | **8B.1** | Hash content, not platform bytes — **DONE, GATED, PUSHED** (`2a8c8d3`). **Occurrence #8** (CRLF in `PROVENANCE.json`) |
 | **8B.2** | Compare decisions exactly, floats by their own arithmetic — **DONE, PUSHED** (`91a5b38`). Withdrew 8B's "Tier-1 bit-identical" claim |
-| **8B.3** | Commit Tier-1's vocabulary; derive the similarity tolerance; CI stops rebuilding the committed index; runner compares gate CSVs by kind — **DONE, GATED, PUSHED** (`f80a2d5`, `681f356`; `gates.yml` passed on `681f356`) |
+| **8B.3** | Commit Tier-1's vocabulary; derive the similarity tolerance; CI stops rebuilding the committed index; runner compares gate CSVs by kind — **DONE, GATED, PUSHED** (`f80a2d5`, `681f356`; gated by `gates.yml` run #4 on `07136ec`, same code, both jobs passed) |
 
 **PHASE 8 IS CLOSED (2026-09-23).**
 
