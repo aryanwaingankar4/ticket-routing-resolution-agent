@@ -1,33 +1,38 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** `2a8c8d3` — Phase 8B.1, hashing content
-rather than platform bytes. **All five gates passed.** Phase 8B (`3885393`) is
-gated and pushed.
+**Last commit to move code or a result:** `f80a2d5` — Phase 8B.3, committing
+Tier-1's vocabulary and deriving the similarity tolerance. (The follow-up
+recovery commit changed one code *comment* and docs only.)
 
-**Current phase: Phase 8B.3 — COMMITTED, LOCAL GATES PASSED, CONTAINER GATE
-PENDING** (2026-09-23).
+**Current phase: Phase 8B.3 — LOCAL GATES PASSED, PUSHED, AWAITING `gates.yml`**
+(2026-09-23). **Not gated until `gates.yml` passes on the pushed commit.**
 
-> **NOT PUSHED.** All five LOCAL gates passed (below). The Linux-container
-> verification could **not be run**: the image rebuild was stopped by the tool
-> harness because the machine ran low on memory, not by any failure in the
-> build — it had already passed the no-pre-built-artifact guard, fitted Tier-1
-> from the committed vocabulary and reached the BGE encode. It must be re-run
-> before this is pushed:
+> **Recovery note (2026-09-23).** The previous session died when the laptop
+> slept. On resumption every 8B.3 item was found **already committed in
+> `f80a2d5`** and nothing was in the working tree. Re-verified, not recalled:
+> the committed vocabulary equals the term set a `max_features=5000` fit
+> selects on this machine (the vocabulary the goldens were captured under), the
+> tie re-derives from the count matrix as 4,240 / 11,834 / 760, and the
+> persisted bundle is manifest v2 with a matching vocabulary hash. One stale
+> comment fixed (`verify_deployment.py` still said "bit-identical").
 >
-> ```powershell
-> docker build -t ticket-triage:8b3 .
-> docker run -d --name triage -p 8000:8000 ticket-triage:8b3
-> python src/service/verify_deployment.py --base-url http://localhost:8000
-> ```
+> **Gates re-run on resumption:** `pytest` **425 passed**, 0 failed/skipped
+> (golden parity: similarity delta 0.000e+00, `tier1_conf` ≤ 6.661e-16);
+> adversarial **9/9**, CSV byte-identical; ablation **32/45** (+9/9), CSV
+> byte-identical, count re-derived from the CSV.
 >
-> What it should now show, and what would be a finding if it does not: adv_08's
-> `tier1_conf` matching the golden to float64 rounding rather than differing by
-> 1.18e-04, because the vocabulary is no longer chosen by the runner's CPU.
+> **The container gate moved to CI.** The local Docker daemon was not running
+> and the last local rebuild ran the machine out of memory, so the container
+> verification is `gates.yml`'s `docker build + deployment verification` job
+> on the pushed commit. What it must show: adv_08's `tier1_conf` matching the
+> golden to float64 rounding (not 1.18e-04 off), and the similarity inside
+> 4.578e-05. The newest run before this push (`35799173134`) was on
+> `91a5b38`, not 8B.3, and failed both jobs — the two failures 8B.3 fixes.
 
-**Current phase: Phase 8B.3 — COMPLETE and GATED** (2026-09-23). `gates.yml`
-failed twice more. One failure was a **moved number**; the other was a **guard
-doing its job**. Neither was a regression in the pipeline.
+`gates.yml` failed twice more before 8B.3. One failure was a **moved number**;
+the other was a **guard doing its job**. Neither was a regression in the
+pipeline.
 
 **THE FINDING: Tier-1's vocabulary was never determined by the data.** A
 GitHub runner returned adv_08 `tier1_conf` **0.31818032412549274** against this
@@ -2183,6 +2188,9 @@ reality. Any write-up must say so in those words.
 | **8A** | `build_paper_artifacts.py` + `paper/NUMBERS.md` + a parity test for it — **DONE and GATED**. 16 tables, 7 figures, 161 numbers; audit 54 anchors / 0 mismatches / 5 no-source |
 | **8A.1** | Give the five "no committed source" numbers a source — **DONE**. 4 sourced, 1 unsourceable, and **1 non-reproduction (TF-IDF 6/14, not 7/14)**. 188 numbers / 51 sources / 59 anchors / 0 mismatches |
 | **8B** | Docker + CI — **DONE and GATED** (2026-09-23). Digest-pinned image that builds its own artifacts, two workflows, a committed deployment verifier. Found **occurrence #7** of the recurring bug class in the `.dockerignore` rule |
+| **8B.1** | Hash content, not platform bytes — **DONE, GATED, PUSHED** (`2a8c8d3`). **Occurrence #8** (CRLF in `PROVENANCE.json`) |
+| **8B.2** | Compare decisions exactly, floats by their own arithmetic — **DONE, PUSHED** (`91a5b38`). Withdrew 8B's "Tier-1 bit-identical" claim |
+| **8B.3** | Commit Tier-1's vocabulary; derive the similarity tolerance; CI stops rebuilding the committed index — **committed `f80a2d5`, local gates passed; `gates.yml` on the pushed commit is the outstanding gate** |
 
 8A is the structural answer to this project's recurring bug class: every number
 in the paper regenerated from one script, with a parity test that fails when a
@@ -2247,10 +2255,13 @@ class**, which is now a *packaging* rule rather than a model swap, a
 routing/eligibility test or a grouping key — the paper's "recurring bug class"
 narrative should say the shape generalises further than the first six
 suggested, and that this one was caught by reading a log rather than by a
-control. And **a cross-platform reproducibility fact**: Tier-1's confidence is
-bit-identical between Windows and a Linux container, the BGE/FAISS similarity
-is not (fixed -1.192e-07), which belongs in the reproducibility section beside
-the container.
+control. And **a cross-platform reproducibility fact**, as corrected by 8B.2 and 8B.3:
+DECISIONS reproduce exactly on all 54 golden tickets; Tier-1's confidence
+agrees to float64 rounding (≤1.17e-15), **not** bit-identity (8B's claim is
+withdrawn); the BGE/FAISS similarity differs at float32 level (2.384e-07
+container, ~7e-07 runner); and Tier-1's vocabulary was, until 8B.3, **760 of
+5,000 features chosen by an unstable sort's tie-break** — see
+`paper/FRAMING.md`.
 
 **Phase 8B is DONE and GATED** (see the top of this file). Docker + CI landed:
 `pytest`, the adversarial gate at 9/9 with its CSV byte-identical, goldens
@@ -2417,11 +2428,11 @@ from a committed script**, not from an interactive session.
   the resolution-clustering calibration behind the production 0.80 threshold.
   Regenerating them under BGE requires re-deriving that threshold in the same
   change. Never a side effect.
-- **The recurring bug class has surfaced six times** (four of them
-  stale-artifact specifically), twice reaching published results — once
-  standing for eleven days. Anything touching a model, index, threshold,
-  routing/eligibility test or grouping key should be assumed to have a
-  **seventh** instance waiting. Run `pytest` and the adversarial gate before
+- **The recurring bug class has surfaced eight times** (see CLAUDE.md "The
+  recurring bug class"), twice reaching published results — once standing for
+  eleven days. Anything touching a model, index, threshold, routing/eligibility
+  test, grouping key, packaging rule or a hash of checkout-rewritable bytes
+  should be assumed to have a **ninth** instance waiting. Run `pytest` and the adversarial gate before
   believing a green result, and check every count against a second,
   independent derivation. Phase 5B closed one latent instance:
   `run_ablation_study.py` was still refitting Tier-1 locally instead of

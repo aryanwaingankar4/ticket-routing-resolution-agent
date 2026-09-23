@@ -404,7 +404,8 @@ def check_adv_08(base_url: str) -> None:
 
     _compare("tier1_conf vs CSV      ", observed_tier1,
              csv_ref["tier1_confidence"], CSV_TOLERANCE_CONF)
-    # Exact: TF-IDF in float64 is bit-identical across platforms.
+    # float64 tolerance (1e-12), NOT bit-identity -- see the note by
+    # GOLDEN_TOLERANCE_EXACT; 8B's bit-identity claim is withdrawn.
     _compare("tier1_conf vs goldens  ", observed_tier1,
              golden_ref["tier1_confidence"], GOLDEN_TOLERANCE_EXACT)
     _compare("similarity vs CSV      ", observed_sim,
