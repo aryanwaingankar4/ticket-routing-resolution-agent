@@ -1,12 +1,16 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** `f80a2d5` — Phase 8B.3, committing
-Tier-1's vocabulary and deriving the similarity tolerance. (The follow-up
-recovery commit changed one code *comment* and docs only.)
+**Last commit to move code or a result:** `681f356` — the 8B.3 follow-up,
+comparing gate CSVs by kind on the runner (`compare_gate_csv.py`). Before it,
+`f80a2d5` (8B.3 proper).
 
-**Current phase: Phase 8B.3 — LOCAL GATES PASSED, PUSHED, AWAITING A `gates.yml`
-RE-RUN** (2026-09-23). **Not gated until `gates.yml` passes.**
+**PHASE 8 IS CLOSED** (2026-09-23). 8A, 8A.1, 8B, 8B.1, 8B.2 and 8B.3 are all
+gated and pushed. **8B.3 was gated on `681f356`**: `gates.yml` passed both
+jobs (full suite and container) and Aryan declared "gate cleared".
+
+**Next: Phase 9A, the IEEE draft.** Like every sub-phase, it opens in plan mode
+with no code before approval. See "Immediate next step".
 
 > **`gates.yml` on `b0f6500`:** the container job **PASSED**, so the vocabulary
 > fix worked (adv_08's `tier1_conf` is inside 1e-12 of the golden; the exact
@@ -18,8 +22,7 @@ RE-RUN** (2026-09-23). **Not gated until `gates.yml` passes.**
 > `tier1_conf` within 1e-6 + 1e-12, similarity within 1e-6 + γ_n, max delta
 > printed). The rounding term is **1e-6, not the 5e-7 first specified**,
 > because both sides are rounded. Byte identity stays the local ritual. No CSV
-> or golden changed. **Next: re-run `gates.yml` on the pushed follow-up
-> commit.**
+> or golden changed. **`gates.yml` then passed on `681f356`: gate cleared.**
 
 > **Recovery note (2026-09-23).** The previous session died when the laptop
 > slept. On resumption every 8B.3 item was found **already committed in
@@ -2203,7 +2206,9 @@ reality. Any write-up must say so in those words.
 | **8B** | Docker + CI — **DONE and GATED** (2026-09-23). Digest-pinned image that builds its own artifacts, two workflows, a committed deployment verifier. Found **occurrence #7** of the recurring bug class in the `.dockerignore` rule |
 | **8B.1** | Hash content, not platform bytes — **DONE, GATED, PUSHED** (`2a8c8d3`). **Occurrence #8** (CRLF in `PROVENANCE.json`) |
 | **8B.2** | Compare decisions exactly, floats by their own arithmetic — **DONE, PUSHED** (`91a5b38`). Withdrew 8B's "Tier-1 bit-identical" claim |
-| **8B.3** | Commit Tier-1's vocabulary; derive the similarity tolerance; CI stops rebuilding the committed index — **committed `f80a2d5`, local gates passed; `gates.yml` on the pushed commit is the outstanding gate** |
+| **8B.3** | Commit Tier-1's vocabulary; derive the similarity tolerance; CI stops rebuilding the committed index; runner compares gate CSVs by kind — **DONE, GATED, PUSHED** (`f80a2d5`, `681f356`; `gates.yml` passed on `681f356`) |
+
+**PHASE 8 IS CLOSED (2026-09-23).**
 
 8A is the structural answer to this project's recurring bug class: every number
 in the paper regenerated from one script, with a parity test that fails when a
@@ -2220,6 +2225,34 @@ published figure drifts — the goldens pattern applied to the write-up.
 9A builds on the **named finding** above rather than re-deriving it, and keeps
 Phase 2A as a *related* corpus limitation rather than a third instance of the
 mechanism.
+
+### Phase 9B audit list: things the draft must NOT quote
+
+9B's pre-submission audit checks the draft against each item below. Add to it
+whenever a stale or unsourced figure is found. Never fix one by quoting around
+it.
+
+1. **The adv_03 and adv_05 ticket notes are MiniLM-era.** Their `note` text in
+   `data/adversarial_escalation_tickets.json` (read-only benchmark), copied
+   verbatim into `data/adversarial_escalation_results.csv` and
+   `data/ablation_no-rag_results.csv`, cites the **old 0.35 MiniLM
+   threshold**: adv_03 "0.4357 (above 0.35)", adv_05 "0.3943 -- just 0.044
+   above the 0.35 threshold". The rows show **0.670427** and **0.676582**
+   against the live 0.67 gate. Quote a ticket's numbers from its result
+   columns, **never from its note**. Neither the benchmark nor the CSVs were
+   edited. Checked 2026-09-23: `paper/` quotes none of these notes. See CLAUDE.md
+   "Known inconsistencies".
+2. **TF-IDF 7/14** is on the do-not-cite list. The reproduced figure is
+   **6/14** (8A.1).
+3. **Cascade calibration attempt 2** ("34 of 35 tickets in one bucket") has
+   **no committed source** (`status=no_artifact`). It is quoted as that or not
+   at all.
+4. **8B's "Tier-1 is bit-identical across platforms"** is withdrawn. The
+   figure is float64 rounding, ≤1.17e-15 over 54 tickets (8B.2).
+5. **6B's BGE arm** (domain AUC 0.9908) is blocked. Its numbers are never
+   quoted as a result.
+6. **The reliability ECEs** are a ceiling effect. Never write
+   "over-confident".
 
 ### Explicitly FUTURE WORK — not in this programme
 
@@ -2255,6 +2288,15 @@ endpoint.
 ---
 
 ## Immediate next step
+
+**Phase 8 is CLOSED. Phase 9A, the IEEE draft, is next.** Phase 8 hands it:
+(a) the reproducibility section's three-way split, where decisions are exact
+across platforms, Tier-1 agrees to float64 rounding, and the similarity agrees
+to float32 last digits; (b) the 760-of-5,000 tie-break finding and the four
+unfixed `max_features` fits as a stated limitation; (c) the gate-CSV lesson,
+that byte identity holds only on the machine that wrote the file and CI
+compares by kind; and (d) the **Phase 9B audit list** (under "Phase 9"), which
+the draft must be written against from the start.
 
 **Phase 9A — the IEEE draft.** Opens in plan mode like every sub-phase. It
 builds on the **named finding** recorded above rather than re-deriving it, and

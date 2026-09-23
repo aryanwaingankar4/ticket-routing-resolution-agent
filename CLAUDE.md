@@ -809,6 +809,31 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   `verify_deployment.py`. The CSVs were not re-rounded: that would change
   committed published files.
 
+- **Two adversarial ticket notes are MiniLM-era and stale. Never quote them.**
+  The free-text `note` of adv_03 and adv_05 in
+  `data/adversarial_escalation_tickets.json` (read-only benchmark, committed
+  2026-08-15, before the BGE swap) describes measurements against the **old
+  MiniLM RAG threshold 0.35** (`OLD_MINILM_THRESHOLD` in
+  `calibrate_rag_similarity_threshold.py`):
+  - adv_03: "RAG similarity **0.4357 (above 0.35)**". The row now shows
+    **0.670427** against the 0.67 gate. Its Tier-1 half (0.8119) is still
+    correct: 0.811925.
+  - adv_05: "measured RAG similarity was **0.3943 -- just 0.044 above the 0.35
+    threshold** … evidence the 0.35 cutoff is meaningfully placed". The row
+    now shows **0.676582** against 0.67.
+
+  The gate scripts copy `note` verbatim, so the stale text also sits in
+  **`data/adversarial_escalation_results.csv`** and
+  **`data/ablation_no-rag_results.csv`**. The numeric columns beside it are
+  correct. Only the prose is stale. **Not fixed, deliberately:** the benchmark is
+  read-only, and editing the note would rewrite both committed gate CSVs, one
+  of which the adversarial gate checks for byte identity. The qualitative
+  point survives the swap: both tickets are marginal, which is now even
+  sharper, since both sit just **above** 0.67 by 0.0004 and 0.0066. But no number in
+  either note may be quoted. `paper/` quotes none of them (checked). **It is
+  on the Phase 9B audit list** in `PROJECT_STATUS.md`. Read a ticket's
+  numbers from the result columns, never from its note.
+
 - **DECISIONS are reproducible across platforms; the FLOATS behind them are
   not.** This is a property of the pipeline, not a bug, and it is now measured
   over the whole of both golden sets rather than inferred from one ticket
