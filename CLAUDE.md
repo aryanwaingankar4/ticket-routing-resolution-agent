@@ -55,7 +55,7 @@ needs it; the classification-only and clustering scripts do not.
 
 ```powershell
 python data/generate_dataset.py                      # 4,000 synthetic tickets, seed 42
-python src/classification/train_tier1.py             # persisted Tier-1 (TF-IDF)
+python src/classification/train_tier1.py             # persisted Tier-1 (TF-IDF, committed vocabulary)
 python src/classification/train_embeddings.py        # production BGE classifier
 python src/rag/build_vector_index.py                 # FAISS index + aligned metadata
 streamlit run src/app/streamlit_app.py               # live demo
@@ -100,10 +100,17 @@ image exists — a stale-artifact image fails the build.
 comes from a committed script". It compares `/health`'s `config_fingerprint`
 against this checkout's, confirms the no-key surface (`/agents/resolve` → 503,
 everything else 200), and runs `adv_08` over HTTP against **two** recorded
-derivations — the 6-dp CSV and the full-precision golden. Never widen its
-tolerances: a moved routing number is a finding. Note its Tier-1 check is
-**exact only because adv_08's delta happens to be 0.0**; across all 54 golden
-tickets Tier-1 agrees to 1.2e-15, not bit-exactly (see "Known inconsistencies").
+derivations — the 6-dp CSV and the full-precision golden. **Its tolerances are
+derived, not measured** (float32 dot-product bound for the similarity, 6-dp
+rounding added on top for the CSV comparison); never widen them to make a run
+pass — a moved routing number is a finding.
+
+**Tier-1 is fitted against a COMMITTED vocabulary** (`data/tier1_vocabulary.txt`,
+Phase 8B.3), so the 5,000 features are the same on every machine. The manifest
+pins the vocabulary's hash and `load_tier1()` refuses a bundle fitted against a
+different one. There is deliberately **no fallback to `max_features`** — that
+fallback is the nondeterminism the file exists to remove. If you regenerate the
+vocabulary you have changed the model: re-run the goldens and the gates.
 
 **Seeing the cross-platform deltas locally:**
 
@@ -750,6 +757,24 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## Known inconsistencies
 
+- **Tier-1's vocabulary was not determined by the data, and four other fits
+  still are not.** `TfidfVectorizer(max_features=5000)` keeps the most frequent
+  terms with `(-tfs).argsort()` — an **unstable** quicksort. On the 4,000-row
+  corpus **4,240** terms sit strictly above the cut and **11,834 tie at count 1
+  for the remaining 760 slots**, so **760 of the 5,000 features (15.2%) were
+  chosen by the sort's tie-break, not by the corpus**; on the 80/20 split it is
+  **950 of 5,000**. numpy dispatches SIMD sorts by CPU, so a GitHub runner kept
+  a different vocabulary and returned adv_08 `tier1_conf` **0.31818032412549274**
+  against this machine's **0.3182984770932253** — **1.18e-04**, roughly 1e11×
+  float64 noise, from a model nobody had changed.
+  **Production Tier-1 is fixed** (Phase 8B.3): `data/tier1_vocabulary.txt` is
+  committed, `train_tier1.py` fits against it, and the manifest pins its hash.
+  **The other four fits are NOT fixed and must not be "fixed" casually** —
+  `generalization_test.py` (both arms), `train_baseline_tfidf.py` and
+  `run_imbalance_sweep.py` — because refitting them would move published
+  numbers. Their figures reproduce on this platform and **may differ slightly
+  on another**; that is a stated limitation, not a defect to patch.
+
 - **The gate CSVs survive a platform change by luck, not by construction.**
   `data/adversarial_escalation_results.csv` and
   `data/ablation_baseline_results.csv` write floats at **6 decimal places**, and
@@ -781,12 +806,27 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   than the similarity, but not bit-identity. One ticket is not a population.
 
   `tests/test_pipeline_parity.py` therefore compares every decision exactly,
-  `tier1_conf` at 1e-12 and similarity at 1e-6, **prints the max delta on every
-  run** (visible with `-s`; `gates.yml` has a step for it), and **fails if any
-  golden value sits within its tolerance of the gate it feeds** — otherwise the
-  tolerance could hide a flipped decision. Measured headroom: the closest
-  similarity is **1.458e-04** from the 0.67 gate (146x the tolerance) and the
-  closest `tier1_conf` **1.264e-02** from 0.50.
+  `tier1_conf` at 1e-12 and similarity at a **derived** float32 bound, **prints
+  the max delta on every run** (visible with `-s`; `gates.yml` has a step for
+  it), and **fails if any golden value sits within its tolerance of the gate it
+  feeds** — otherwise the tolerance could hide a flipped decision.
+
+  **The similarity tolerance is derived, never fitted to a machine.** It was
+  1e-6 ("4.2x the worst case I measured once"), and a GitHub runner then
+  produced ~7e-07 — inside it by luck, while breaking the 5e-07 CSV comparison
+  next door. It is now γ_n = n·u/(1−n·u) = **4.578e-05** for n=768 at float32
+  unit roundoff u = 2⁻²⁴ (Higham, *Accuracy and Stability of Numerical
+  Algorithms*, §3.1). **State its limit when quoting it**: it bounds the inner
+  product only and does not model the BGE forward pass, which also differs
+  across platforms; it is used because it is derived and covers the observed
+  deltas (2.384e-07 container, ~7e-07 runner) with room. The CSV comparison
+  adds 6-dp rounding to it (5e-07 + γ_n), because those two errors add rather
+  than replace one another.
+
+  Headroom: the closest similarity is **1.458096e-04** from the 0.67 gate —
+  **3.19×** the derived tolerance, far thinner than the 146× a fitted 1e-6
+  gave, and reported rather than engineered away. The closest `tier1_conf` is
+  **1.264e-02** from 0.50.
 
   **Never "fix" a cross-platform parity failure by regenerating the goldens.**
   They are the Windows reference the published numbers were produced on.

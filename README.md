@@ -3871,6 +3871,100 @@ regeneration.
 
 ---
 
+### Phase 8B.3 - Tier-1's vocabulary was never determined by the data
+
+`gates.yml` failed twice more, and both failures were real. One was a moved
+number; the other was a guard doing its job.
+
+**The moved number, and what actually caused it.** A GitHub runner returned
+adv_08 `tier1_conf` **0.31818032412549274** where this machine returns
+**0.3182984770932253** -- a difference of **1.18e-04**, about 1e11 times
+float64 noise, from a model nobody had touched. Four candidates were excluded
+by measurement before any code changed:
+
+| Candidate | Test | Result |
+|---|---|---|
+| dataset nondeterminism | regenerate under `PYTHONHASHSEED=0/1/random` | identical sha, all three, = committed |
+| dependency drift | fresh resolve, same commands, diffed against the working image | no version changed, added or removed |
+| thread count | refit at `OMP_NUM_THREADS=1/2/8` | max delta **3.3e-16** |
+| BLAS kernel | refit under `OPENBLAS_CORETYPE=Haswell/Nehalem/Prescott/Zen` | max delta **1.7e-16** |
+
+The cause is that **Tier-1's vocabulary was never determined by the data**.
+`TfidfVectorizer(max_features=5000)` keeps the most frequent terms using
+`(-tfs).argsort()` -- an **unstable** quicksort. On the 4,000-row corpus
+**4,240** terms sit strictly above the cut and **11,834 terms tie at a count of
+1**, competing for the remaining **760** slots. So **760 of the 5,000 features
+(15.2%) were chosen by the sort's tie-break rather than by the corpus**, and
+swapping quicksort for a stable sort changes **754** of the kept terms. numpy
+dispatches SIMD sorts by CPU capability, so a different runner keeps a
+different vocabulary and every downstream probability moves at the 1e-4 scale.
+
+**A correction to this entry's own first draft:** the tie was first reported as
+27 terms competing for 21 slots. That measurement summed the *tf-idf* matrix;
+sklearn prunes on the *count* matrix. The corrected figures are the ones above,
+and they are far worse.
+
+**The fix commits the feature space.** `data/tier1_vocabulary.txt` records the
+current Tier-1's exact term-to-column mapping, and `train_tier1.py` fits
+against it; the manifest pins the file's hash and refuses a bundle fitted
+against a different one. There is no fallback to `max_features` -- that
+fallback is the nondeterminism being removed.
+
+**What the fix costs, stated precisely.** Refitting with the fixed vocabulary
+is *not* bit-identical to the previous artifact: probabilities move by
+**8.88e-16** (1.25 float64 ulp). The cause is benign and was isolated -- raw
+counts are identical and `idf` is identical to **0.0**, but sklearn builds the
+matrix by a different code path when the vocabulary is fixed, so L2
+normalisation sums in a different order. A control refit with the *original*
+config reproduces the old artifact exactly (`0.0`), which is how the residual
+was attributed. Predictions are identical on both benchmark sets, the goldens'
+`tier1_conf` tolerance is 1e-12 -- roughly 1,500x the residual -- and the 6-dp
+CSVs cannot move. **The goldens were not regenerated.**
+
+**Four other fits still carry the same exposure, deliberately.**
+`generalization_test.py` (both arms), `train_baseline_tfidf.py` and
+`run_imbalance_sweep.py` all use `max_features=5000`; on the 80/20 split the
+tie is larger still, **950 of 5,000**. They were left alone because refitting
+them would move published numbers. The limitation to state in the write-up:
+**those figures reproduce on this platform and may differ slightly on
+another.**
+
+**The similarity tolerance is now derived, not fitted.** The previous 1e-6 was
+"4.2x the worst case measured in one container", and a GitHub runner produced
+~7e-07 -- inside it by luck, while breaking the 5e-07 CSV comparison next door
+by 6.875e-07. The tolerance is now the float32 dot-product bound for
+768-dimensional normalised vectors,
+
+    gamma_n = n*u / (1 - n*u) = 768 * 2^-24 / (1 - 768 * 2^-24) = 4.578e-05
+
+(Higham, *Accuracy and Stability of Numerical Algorithms*, 2nd ed., section
+3.1). **Its limit is stated wherever it is used**: it bounds the inner product
+only and does not model the BGE forward pass, which also differs across
+platforms. It is used because it is derived and because it covers the observed
+deltas -- 2.384e-07 container, ~7e-07 runner -- with margin. The CSV comparison
+adds 6-dp rounding on top (5e-07 + gamma_n), since those errors add rather than
+replace one another. **Headroom to the gate falls from 146x to 3.19x** (closest
+golden similarity is 1.458096e-04 from 0.67); that is the honest price of
+deriving the bound instead of fitting it, and the gate-distance check still
+fails if any ticket ever lands inside the tolerance of 0.67.
+
+**The guard that was right.** The full-suite job also failed with *STALE DRIFT
+REFERENCE: FAISS index file hash differs*. It was correct: the job rebuilt the
+**committed** index, and a Linux rebuild produces different bytes
+(`cce6dc8e...` becomes `6893ca48...`) because float32 embeddings accumulate
+differently. `data/drift_reference_bge-base-en-v1-5.json` pins the index it was
+built against, so it refused to load. The fix is that **CI no longer rebuilds a
+committed artifact**: `gates.yml` builds only what is gitignored and uses the
+committed index -- the one every published number was measured against -- and
+asserts it is untouched afterwards. **Mixed provenance, recorded not hidden:**
+the Tier-2 classifier is then fitted from Linux-computed embeddings while the
+index holds Windows-computed vectors. Same 4,000 tickets, same model, differing
+only in float32 rounding -- but not produced on one machine, and results from
+that job should be read with that in mind.
+
+
+---
+
 ## Final Classification Comparison
 
 | Method | In-Distribution Accuracy | 14-Ticket Generalization | 45-Ticket Generalization |

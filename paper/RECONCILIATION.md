@@ -88,16 +88,16 @@ Every statistic-shaped token in the four documents -- decimals with three or mor
 |---|---|---|
 | CLAUDE.md | DO-NOT-CITE literal | 5 |
 | CLAUDE.md | matched to a committed source | 45 |
-| CLAUDE.md | unmatched | 49 |
+| CLAUDE.md | unmatched | 50 |
 | PROJECT_OVERVIEW.md | DO-NOT-CITE literal | 1 |
 | PROJECT_OVERVIEW.md | matched to a committed source | 79 |
 | PROJECT_OVERVIEW.md | unmatched | 153 |
 | PROJECT_STATUS.md | DO-NOT-CITE literal | 8 |
-| PROJECT_STATUS.md | matched to a committed source | 238 |
-| PROJECT_STATUS.md | unmatched | 271 |
+| PROJECT_STATUS.md | matched to a committed source | 244 |
+| PROJECT_STATUS.md | unmatched | 280 |
 | README.md | DO-NOT-CITE literal | 14 |
-| README.md | matched to a committed source | 292 |
-| README.md | unmatched | 571 |
+| README.md | matched to a committed source | 298 |
+| README.md | unmatched | 582 |
 
 ### DO-NOT-CITE literals still present in the documents
 

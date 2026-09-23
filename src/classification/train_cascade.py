@@ -514,11 +514,40 @@ def standard_split(X, y):
 # --------------------------------------------------------------------------- #
 # Tier 1: TF-IDF + LogisticRegression                                          #
 # --------------------------------------------------------------------------- #
-def train_tier1(X_train_text, y_train):
+def train_tier1(X_train_text, y_train, vocabulary=None):
     """Fit the cheap Tier-1 model on the given training text.
 
     Returns (vectorizer, clf). Matches the project's Tier-A candidate config.
+
+    `vocabulary` (Phase 8B.3) fixes the term -> column mapping instead of
+    letting `max_features=5000` choose it. WHY THAT MATTERS: sklearn's
+    `_limit_features` ranks terms by corpus count and keeps the top 5,000 via
+    `(-tfs).argsort()` -- an UNSTABLE quicksort. On this corpus 4,240 terms sit
+    strictly above the cut and **11,834 terms tie at count 1 for the remaining
+    760 slots**, so 760 of the 5,000 features (15.2%) are decided by the sort's
+    tie-break rather than by the data. numpy 2.x dispatches SIMD sorts by CPU,
+    so a different machine keeps a different vocabulary and every downstream
+    probability shifts by ~1e-4. That is what moved adv_08's Tier-1 confidence
+    on a GitHub runner.
+
+    DEFAULT IS None, deliberately: every other caller (the calibration sweeps,
+    the generalization test, the imbalance sweep) keeps the original behaviour
+    bit-for-bit, because changing them would move published numbers. Only the
+    persisted production Tier-1 passes a vocabulary.
     """
+    if vocabulary is not None:
+        # max_features is NOT passed with a fixed vocabulary: the pruning step
+        # is what we are replacing, and sklearn would reject both together.
+        vectorizer = TfidfVectorizer(
+            vocabulary=vocabulary,
+            ngram_range=(1, 2),
+            stop_words="english",
+        )
+        X_train_tfidf = vectorizer.fit_transform(X_train_text)
+        clf = LogisticRegression(max_iter=1000)
+        clf.fit(X_train_tfidf, y_train)
+        return vectorizer, clf
+
     vectorizer = TfidfVectorizer(
         max_features=5000,
         ngram_range=(1, 2),

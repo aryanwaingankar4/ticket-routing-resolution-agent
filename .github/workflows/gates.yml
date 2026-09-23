@@ -63,12 +63,36 @@ jobs:
           path: ~/.cache/huggingface
           key: hf-bge-base-en-v1.5-${{ runner.os }}
 
-      - name: Build artifacts (the documented order)
+      # build_vector_index.py is DELIBERATELY NOT RUN here.
+      #
+      # The FAISS index is a COMMITTED artifact, and rebuilding it on Linux
+      # produces different bytes -- float32 embeddings accumulate differently
+      # on a different machine, so the committed cce6dc8e... becomes
+      # 6893ca48... . data/drift_reference_bge-base-en-v1-5.json pins the
+      # index it was built against by hash, so the rebuild made
+      # DriftReference.check_compatible refuse to load: "STALE DRIFT
+      # REFERENCE: FAISS index file hash differs". The guard was right; the
+      # job was wrong to overwrite a committed file.
+      #
+      # So CI builds only what is NOT committed (models/, gitignored) and uses
+      # the committed index, which is also the index every published number was
+      # measured against.
+      #
+      # MIXED PROVENANCE, stated rather than hidden: the Tier-2 classifier is
+      # fitted here from Linux-computed embeddings while the index holds the
+      # vectors computed on Windows. Both describe the same 4,000 tickets and
+      # the same model, and they differ only in float32 rounding -- but they
+      # were not produced on the same machine, and any result from this job
+      # should be read with that in mind.
+      - name: Build artifacts (committed FAISS index is NOT rebuilt)
         run: |
           python data/generate_dataset.py
           python src/classification/train_tier1.py
           python src/classification/train_embeddings.py
-          python src/rag/build_vector_index.py
+
+      # Prove the committed index really is untouched before any test uses it.
+      - name: The committed index must be unchanged
+        run: git diff --exit-code -- data/ticket_index_bge-base-en-v1-5.faiss data/ticket_metadata_bge-base-en-v1-5.json
 
       - name: Report the configuration under test
         run: |

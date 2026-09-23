@@ -16,3 +16,10 @@ paper/**/*.json  text eol=lf
 paper/*.md       text eol=lf
 paper/**/*.pdf   binary
 paper/**/*.png   binary
+
+# data/tier1_vocabulary.txt is the COMMITTED Tier-1 feature space (Phase 8B.3).
+# Its sha256 is recorded in the Tier-1 manifest and verified at load time. The
+# hash is CRLF-normalised (the Phase 8B.1 lesson), so a checkout cannot break
+# it -- but pinning the file to LF keeps the working tree stable too, and keeps
+# the diff of a vocabulary change readable.
+data/tier1_vocabulary.txt text eol=lf

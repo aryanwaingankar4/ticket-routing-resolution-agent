@@ -74,30 +74,55 @@ GOLDEN_JSON = os.path.join(PROJECT_ROOT, "tests", "goldens",
 
 TICKET_ID = "adv_08"
 
-# The CSV records 6 decimal places; the goldens record full float precision.
-CSV_TOLERANCE = 5e-7
+# --------------------------------------------------------------------------- #
+# Tolerances (Phase 8B.3): derived from the arithmetic, one per KIND of number.
+# --------------------------------------------------------------------------- #
+# A similarity is a float32 inner product of two L2-normalised 768-dim vectors.
+# Higham, *Accuracy and Stability of Numerical Algorithms* (2nd ed.), section
+# 3.1 gives |fl(x.y) - x.y| <= gamma_n |x||y| with gamma_n = n*u/(1 - n*u).
+# float32 u = 2^-24, normalised vectors so |x||y| = 1, n = 768:
+#
+#     gamma_768 = 768 * 2^-24 / (1 - 768 * 2^-24) = 4.577846e-05
+#
+# It bounds the INNER PRODUCT only -- it does not model the BGE forward pass,
+# which also differs between platforms -- but it is derived rather than fitted
+# to one machine, and it covers the observed deltas (2.384e-07 in a Linux
+# container, ~7e-07 on a GitHub runner) with room.
+FLOAT32_DOT_BOUND = 4.577846e-05
+
+# The CSV records 6 decimal places, so comparing a live full-precision value to
+# it carries up to 5e-7 of pure rounding BEFORE any platform difference. The
+# two sources of error add; they do not replace one another. The first version
+# of this file used 5e-7 alone and a GitHub runner failed it by 6.875e-7 --
+# rounding plus a platform delta, against a budget for rounding only.
+CSV_ROUNDING = 5e-7
+CSV_TOLERANCE_SIMILARITY = CSV_ROUNDING + FLOAT32_DOT_BOUND
+
+# tier1_conf is float64 throughout and, since Phase 8B.3, is fitted against a
+# COMMITTED vocabulary, so the CPU can no longer change which features exist.
+# Only 6-dp rounding remains.
+CSV_TOLERANCE_CONF = CSV_ROUNDING
 
 # TWO TOLERANCES AGAINST THE GOLDENS, FOR TWO KINDS OF NUMBER.
 #
-# tier1_conf comes from TF-IDF + LogisticRegression in float64 and is
-# bit-identical across platforms: the container reproduces the golden's
-# 0.3182984770932253 exactly. It is checked exactly, and it should stay that
-# way -- if that one ever moves, something real moved.
+# tier1_conf is float64 TF-IDF + LogisticRegression. Phase 8B claimed it was
+# "bit-identical across platforms"; that was WRONG and is withdrawn -- it
+# generalised from adv_08, the one ticket whose delta happened to be 0.0. Over
+# all 54 golden tickets the agreement is 1.2e-15, float64 rounding rather than
+# bit-identity, and since Phase 8B.3 the vocabulary is committed so the CPU can
+# no longer change which features exist. 1e-12 is ~860x the measured worst case
+# and still catches anything real.
 #
 # The retrieval similarity comes from a float32 BGE forward pass and a FAISS
 # inner product. Those accumulate in an order set by the BLAS kernel and the
-# SIMD width of the machine, so the LAST DIGITS ARE PLATFORM-SPECIFIC. Measured
-# in Phase 8B: the Linux container returns 0.6123799085617065 where the Windows
-# goldens record 0.6123800277709961 -- a fixed -1.192e-07 offset, identical on
-# every repeat, against a distance of +5.762e-02 from the 0.67 gate this value
-# feeds. The margin is 483,352x the offset.
-#
-# So the exact check was the WRONG TEST for this number: it asserted a
-# guarantee the pipeline does not make. The tolerance below is float32's, it is
-# documented here and in the README rather than quietly widened, and the
-# measured delta is printed on every run whether it passes or not.
+# SIMD width of the machine, so the LAST DIGITS ARE PLATFORM-SPECIFIC: the
+# Linux container returns 0.6123799085617065 where the Windows goldens record
+# 0.6123800277709961, and a GitHub runner differs again by ~7e-07. An exact
+# check was the WRONG TEST for that number -- it asserted a guarantee the
+# pipeline does not make -- so it carries the derived float32 bound above, and
+# the measured delta is printed on every run whether it passes or not.
 GOLDEN_TOLERANCE_EXACT = 1e-12
-GOLDEN_TOLERANCE_FLOAT32 = 1e-6
+GOLDEN_TOLERANCE_FLOAT32 = FLOAT32_DOT_BOUND
 
 _failures: list[str] = []
 
@@ -378,12 +403,12 @@ def check_adv_08(base_url: str) -> None:
               f"{csv_ref['escalated']}, golden {golden_ref['escalated']}")
 
     _compare("tier1_conf vs CSV      ", observed_tier1,
-             csv_ref["tier1_confidence"], CSV_TOLERANCE)
+             csv_ref["tier1_confidence"], CSV_TOLERANCE_CONF)
     # Exact: TF-IDF in float64 is bit-identical across platforms.
     _compare("tier1_conf vs goldens  ", observed_tier1,
              golden_ref["tier1_confidence"], GOLDEN_TOLERANCE_EXACT)
     _compare("similarity vs CSV      ", observed_sim,
-             csv_ref["rag_similarity"], CSV_TOLERANCE)
+             csv_ref["rag_similarity"], CSV_TOLERANCE_SIMILARITY)
     # float32 tolerance, and the delta is printed either way. See the note by
     # GOLDEN_TOLERANCE_FLOAT32.
     _compare("similarity vs goldens  ", observed_sim,

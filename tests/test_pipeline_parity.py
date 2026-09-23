@@ -47,14 +47,51 @@ pytestmark = pytest.mark.slow
 # and generalised. Over 54 tickets TF-IDF + LogReg agrees to float64 rounding
 # (<= 1.2e-15), which is a much stronger statement than the similarity's 2.4e-7
 # but is not bit-identity.
-TOL_FLOAT32 = 1e-6    # similarity; 4.2x the measured worst case
-TOL_FLOAT64 = 1e-12   # tier1_conf; 858x the measured worst case
+# --- the similarity tolerance is DERIVED, not fitted to a machine ----------
+#
+# Phase 8B.3. The first version of this constant was 1e-6, chosen as "4.2x the
+# worst case I measured in one container". That is a tolerance fitted to one
+# machine, and a GitHub runner promptly produced ~7e-7 -- inside 1e-6, but only
+# by luck, and it broke the 5e-7 CSV comparison next door. A tolerance has to
+# come from the arithmetic, not from a sample of one.
+#
+# DERIVATION. A similarity here is a float32 inner product of two L2-normalised
+# 768-dimensional vectors. For a dot product of length n computed in floating
+# point with unit roundoff u, the standard bound (Higham, *Accuracy and
+# Stability of Numerical Algorithms*, 2nd ed., section 3.1) is
+#
+#     |fl(x.y) - x.y|  <=  gamma_n |x| |y|,      gamma_n = n*u / (1 - n*u)
+#
+# float32 has u = 2^-24 = 5.9604644775390625e-08, the vectors are normalised so
+# |x||y| = 1, and n = 768, giving
+#
+#     gamma_768 = 768 * 2^-24 / (1 - 768 * 2^-24) = 4.577846e-05.
+#
+# HONESTLY: this bounds the INNER PRODUCT only. It does not model the BGE
+# forward pass, which also differs between platforms and is the larger part of
+# what we observe. It is used because it is derived and because it covers the
+# observed cross-platform deltas with room -- 2.384e-07 in a Linux container
+# and ~7e-07 on a GitHub runner, 190x and 65x inside it -- not because it is a
+# bound on the whole pipeline.
+TOL_FLOAT32 = 4.577846e-05
+
+# tier1_conf is float64 TF-IDF + LogReg. Measured worst case across 54 golden
+# tickets: 1.166e-15. Kept far tighter than the similarity on purpose -- these
+# are different kinds of number and must not share a tolerance.
+TOL_FLOAT64 = 1e-12   # 858x the measured worst case
 
 # A tolerance is only safe while no ticket sits near the gate it feeds --
 # otherwise the tolerance could swallow a FLIPPED DECISION, which is the one
 # thing parity exists to catch. Both distances are asserted below, every run.
-#     measured: closest similarity to the 0.67 RAG gate   1.458e-04  (146x)
-#               closest tier1_conf to the 0.50 cascade    1.264e-02
+#
+#     closest similarity to the 0.67 RAG gate   1.458096e-04  =  3.19x the
+#                                               derived tolerance
+#     closest tier1_conf to the 0.50 cascade    1.264076e-02
+#
+# 3.19x is THIN, and deliberately reported rather than engineered away: it is
+# the honest consequence of deriving the tolerance instead of fitting it to a
+# machine. If a future benchmark ticket lands closer to 0.67 than 4.58e-05, the
+# gate-headroom check below fails and that ticket must be compared exactly.
 
 
 def _run(text, artifacts, ticket_id=None):

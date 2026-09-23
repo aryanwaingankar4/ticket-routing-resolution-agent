@@ -50,6 +50,18 @@ Phase 7C's blocking rule was copied from Phase 6B, where it guarded a DENSITY-RA
 
 Phase 7A's two design domain AUCs were computed interactively, quoted at a gate, never committed, and do not reproduce. The conclusions were unaffected because every value cleared the same threshold, but the figures were wrong in print for a day. This is the motivation for Phase 8A and belongs in the reproducibility section.
 
+### What reproduces across machines, and what does not (Phase 8B)
+
+Running the pipeline on a second platform separated three kinds of number, and the distinction belongs in the reproducibility section rather than in a footnote.
+
+DECISIONS reproduce exactly. Category, tier, escalated and the number of retrieved neighbours were identical on all 54 golden tickets between Windows and a Linux container. No routing decision has ever differed.
+
+EMBEDDING SIMILARITIES DO NOT, and cannot. They are float32 inner products of 768-dimensional normalised vectors, accumulated in an order set by the machine's BLAS kernel and SIMD width: 2.384e-07 between this machine and a Linux container, about 7e-07 against a GitHub runner. The published figures are quoted to six decimals and are unaffected. Parity is therefore asserted with a DERIVED bound -- gamma_n = n*u/(1-n*u) = 4.578e-05 for n=768 at float32 unit roundoff u = 2^-24 (Higham, section 3.1) -- and never with a tolerance fitted to one machine's measurement. That bound covers the inner product only; it does not model the encoder's own cross-platform difference.
+
+TIER-1's VOCABULARY WAS NOT DETERMINED BY THE DATA, and this is the finding worth reporting. TfidfVectorizer(max_features=5000) keeps the most frequent terms using an UNSTABLE quicksort. On the 4,000-row corpus 4,240 terms sit strictly above the cut and 11,834 terms tie at a count of 1 for the remaining 760 slots -- so 760 of the 5,000 features, 15.2%, were selected by the sort's tie-break rather than by the corpus. numpy dispatches SIMD sorts by CPU, so a GitHub runner kept a different vocabulary and produced a Tier-1 confidence of 0.31818 where this machine produces 0.31830 -- a difference of 1.18e-04, about 1e11 times float64 noise, from a model nobody had changed. Phase 8B.3 commits the vocabulary as an artifact and fits against it, which moves the published probabilities by 8.9e-16 (float64 construction order, 1.25 ulp) and no decision at all.
+
+THE SAME EXPOSURE REMAINS, UNFIXED, IN FOUR OTHER FITS: generalization_test.py (both arms), train_baseline_tfidf.py and run_imbalance_sweep.py all use max_features=5000. On the 80/20 training split the tie is larger still -- 950 of 5,000 features. They were deliberately NOT changed, because refitting them would move published numbers. The limitation to state is therefore: those figures reproduce on this platform and may differ slightly on another.
+
 ## 5. The escalation gate errs in both directions
 
 The RAG similarity gate sits at 0.67, inside the adversarial safe range [0.619577, 0.670427]. It is not a perfect separator and the paper says so in both directions: adversarial tickets G021 and G024 pass the gate when they should not, and ticket N45 (top similarity 0.6397) is escalated although Phase 6C's rater found its retrieved context adequate. A scalar threshold on a single similarity is the simplest thing that works, not a claim that it is sufficient.

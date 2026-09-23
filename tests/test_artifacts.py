@@ -106,10 +106,19 @@ def test_persisted_tier1_matches_a_fresh_fit(artifacts, benchmark_tickets):
         get_tier1_confidence,
         train_tier1,
     )
-    from src.classification.train_tier1 import load_training_frame
+    from src.classification.train_tier1 import (
+        load_training_frame,
+        load_vocabulary,
+    )
 
     texts, labels, _ = load_training_frame(settings.models.dataset_path)
-    fresh_vectorizer, fresh_classifier = train_tier1(texts, labels)
+    # The fresh fit must use the PRODUCTION configuration, which since Phase
+    # 8B.3 means the committed vocabulary. Fitting without it here would
+    # compare the persisted artifact against a different model and then blame
+    # persistence for the difference -- and it would silently re-admit the
+    # unstable max_features tie-break that 8B.3 exists to remove.
+    fresh_vectorizer, fresh_classifier = train_tier1(
+        texts, labels, vocabulary=load_vocabulary())
 
     sample = [t["text"] for t in benchmark_tickets]
     fresh_preds, fresh_conf = get_tier1_confidence(

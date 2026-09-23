@@ -37,6 +37,12 @@ the DATASET plus the vectorizer/sklearn configuration -- so those travel inside
 the artifact as a manifest, and artifacts._load_tier1() refuses to load a
 bundle whose manifest no longer matches reality.
 
+Since Phase 8B.3 the identity also includes the VOCABULARY. Tier-1 is no longer
+fitted with max_features=5000, because that let an unstable sort choose 760 of
+the 5,000 features and a different CPU chose differently -- see VOCABULARY_NAME
+below. The term -> column mapping is a committed artifact, and its hash is part
+of the manifest.
+
 verify_manifest() lives here, next to the code that writes the manifest,
 specifically so the writer and the checker cannot drift apart.
 
@@ -59,7 +65,10 @@ if PROJECT_ROOT not in sys.path:
 from src.agent.config import settings                      # noqa: E402
 from src.agent.logging_setup import ensure_utf8_console     # noqa: E402
 
-MANIFEST_VERSION = 1
+# Bumped to 2 in Phase 8B.3: the bundle now records the vocabulary it was
+# fitted against, so a v1 bundle (whose vocabulary was chosen by an unstable
+# sort) is rejected rather than loaded.
+MANIFEST_VERSION = 2
 
 # Keys artifacts._load_tier1() relies on. A bundle missing any of them is
 # rejected rather than loaded on partial evidence.
@@ -72,7 +81,25 @@ REQUIRED_MANIFEST_KEYS = (
     "classes",
     "sklearn_version",
     "vectorizer_params",
+    "vocabulary_sha256",
+    "vocabulary_size",
 )
+
+# The committed term -> column mapping. Line i of the file IS column i.
+#
+# WHY THIS FILE EXISTS (Phase 8B.3). TfidfVectorizer(max_features=5000) keeps
+# the 5,000 most frequent terms using `(-tfs).argsort()`, an UNSTABLE
+# quicksort. On this corpus 4,240 terms are strictly above the cut and 11,834
+# tie at count 1 for the remaining 760 slots, so **760 of the 5,000 features
+# (15.2%) are chosen by the sort's tie-break, not by the data**. numpy 2.x
+# dispatches SIMD sorts by CPU, so another machine keeps a different
+# vocabulary: a GitHub runner produced adv_08 tier1_conf 0.31818032412549274
+# against this machine's 0.3182984770932253, a difference of 1.18e-4 -- 1e11
+# times float64 noise, from a model that had not changed.
+#
+# Fixing the vocabulary makes the feature space a committed artifact instead of
+# a property of the CPU that happened to fit it.
+VOCABULARY_NAME = "tier1_vocabulary.txt"
 
 REQUIRED_COLUMNS = ("title", "description", "category")
 
@@ -94,12 +121,70 @@ def dataset_sha256(path) -> str:
     return digest.hexdigest()
 
 
+def vocabulary_path():
+    """data/tier1_vocabulary.txt, beside the dataset Tier-1 is fitted on."""
+    return settings.models.dataset_path.parent / VOCABULARY_NAME
+
+
+def vocabulary_sha256(path) -> str:
+    """Content hash of the vocabulary file, CRLF normalised to LF.
+
+    Normalised for the reason Phase 8B.1 established: raw working-tree bytes
+    are a property of the machine, not of the content, so hashing them makes a
+    file look changed after a checkout on another operating system.
+    """
+    with open(path, "rb") as fh:
+        data = fh.read()
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
+def load_vocabulary(path=None) -> dict:
+    """Return {term: column index} from the committed vocabulary file.
+
+    Fails loudly and specifically. There is deliberately NO fallback to
+    `max_features=5000`: that fallback is precisely the nondeterminism this
+    file exists to remove, and it would reintroduce it silently on exactly the
+    machines where it matters.
+    """
+    path = vocabulary_path() if path is None else path
+    if not os.path.isfile(path):
+        raise SystemExit(
+            f"[ERROR] Tier-1 vocabulary not found:\n    - {path}\n"
+            "  Tier-1 is fitted against a COMMITTED vocabulary so that the\n"
+            "  same 5,000 features are used on every machine. Restore the\n"
+            "  file from git; do not fall back to max_features."
+        )
+
+    with open(path, "r", encoding="utf-8") as fh:
+        terms = [line.rstrip("\n").rstrip("\r") for line in fh]
+    while terms and terms[-1] == "":
+        terms.pop()
+
+    if not terms:
+        raise SystemExit(f"[ERROR] {path} is empty.")
+    if len(set(terms)) != len(terms):
+        raise SystemExit(
+            f"[ERROR] {path} contains duplicate terms; the term -> column "
+            "mapping would be ambiguous.")
+
+    return {term: index for index, term in enumerate(terms)}
+
+
 def _vectorizer_params(vectorizer) -> dict:
-    """The vectorizer settings that change Tier-1's output if they change."""
+    """The vectorizer settings that change Tier-1's output if they change.
+
+    Phase 8B.3: `max_features` is None on the production vectorizer now -- the
+    feature set comes from the committed vocabulary instead -- so the manifest
+    records `fixed_vocabulary` as well. Both are kept: a bundle fitted the old
+    way (max_features set, fixed_vocabulary False) is then visibly different
+    from one fitted the new way, rather than merely differing in its numbers.
+    """
     return {
         "max_features": vectorizer.max_features,
         "ngram_range": list(vectorizer.ngram_range),
         "stop_words": vectorizer.stop_words,
+        "fixed_vocabulary": bool(getattr(vectorizer, "fixed_vocabulary_",
+                                         vectorizer.vocabulary is not None)),
     }
 
 
@@ -117,6 +202,8 @@ def build_manifest(vectorizer, classifier, *, dataset_path, dataset_rows,
         "classes": sorted(str(c) for c in classifier.classes_),
         "sklearn_version": sklearn.__version__,
         "vectorizer_params": _vectorizer_params(vectorizer),
+        "vocabulary_sha256": vocabulary_sha256(vocabulary_path()),
+        "vocabulary_size": int(len(vectorizer.vocabulary_)),
         "seed": int(settings.seed),
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "fitted_on": "full_dataset",
@@ -177,6 +264,28 @@ def verify_manifest(manifest, vectorizer, classifier, *, dataset_path) -> list:
             f"fitted with {manifest['sklearn_version']}. Refit rather than "
             "assume the two agree."
         )
+
+    vocab_file = vocabulary_path()
+    if not os.path.isfile(vocab_file):
+        problems.append(
+            f"the committed Tier-1 vocabulary is missing: {vocab_file}")
+    else:
+        live_vocab_sha = vocabulary_sha256(vocab_file)
+        if manifest["vocabulary_sha256"] != live_vocab_sha:
+            problems.append(
+                "the Tier-1 vocabulary has changed since the model was "
+                "fitted:\n"
+                f"        fitted against "
+                f"{manifest['vocabulary_sha256'][:16]}...\n"
+                f"        {VOCABULARY_NAME} is now {live_vocab_sha[:16]}...\n"
+                "        The feature space is committed on purpose -- refit "
+                "rather than assume the two agree."
+            )
+
+    if manifest["vocabulary_size"] != len(vectorizer.vocabulary_):
+        problems.append(
+            f"the bundled vectorizer has {len(vectorizer.vocabulary_)} "
+            f"features, the manifest says {manifest['vocabulary_size']}")
 
     live_params = _vectorizer_params(vectorizer)
     if manifest["vectorizer_params"] != live_params:
@@ -266,7 +375,14 @@ def main() -> None:
           "matches\n        the live demo and the behaviour the goldens "
           "were captured under.")
 
-    vectorizer, classifier = train_tier1(texts, labels)
+    vocabulary = load_vocabulary()
+    print(f"[step1] Using the COMMITTED vocabulary: {len(vocabulary)} terms "
+          f"from {VOCABULARY_NAME}")
+    print("        max_features would choose 760 of these 5,000 by an "
+          "unstable sort\n        tie-break among 11,834 terms tied at count "
+          "1 (Phase 8B.3).")
+
+    vectorizer, classifier = train_tier1(texts, labels, vocabulary=vocabulary)
     print(f"\n[step2] Fitted. Vocabulary: "
           f"{len(vectorizer.vocabulary_)} features")
 

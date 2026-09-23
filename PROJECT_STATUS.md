@@ -5,7 +5,88 @@
 rather than platform bytes. **All five gates passed.** Phase 8B (`3885393`) is
 gated and pushed.
 
-**Current phase: Phase 8B.2 — COMPLETE and GATED** (2026-09-23).
+**Current phase: Phase 8B.3 — COMMITTED, LOCAL GATES PASSED, CONTAINER GATE
+PENDING** (2026-09-23).
+
+> **NOT PUSHED.** All five LOCAL gates passed (below). The Linux-container
+> verification could **not be run**: the image rebuild was stopped by the tool
+> harness because the machine ran low on memory, not by any failure in the
+> build — it had already passed the no-pre-built-artifact guard, fitted Tier-1
+> from the committed vocabulary and reached the BGE encode. It must be re-run
+> before this is pushed:
+>
+> ```powershell
+> docker build -t ticket-triage:8b3 .
+> docker run -d --name triage -p 8000:8000 ticket-triage:8b3
+> python src/service/verify_deployment.py --base-url http://localhost:8000
+> ```
+>
+> What it should now show, and what would be a finding if it does not: adv_08's
+> `tier1_conf` matching the golden to float64 rounding rather than differing by
+> 1.18e-04, because the vocabulary is no longer chosen by the runner's CPU.
+
+**Current phase: Phase 8B.3 — COMPLETE and GATED** (2026-09-23). `gates.yml`
+failed twice more. One failure was a **moved number**; the other was a **guard
+doing its job**. Neither was a regression in the pipeline.
+
+**THE FINDING: Tier-1's vocabulary was never determined by the data.** A
+GitHub runner returned adv_08 `tier1_conf` **0.31818032412549274** against this
+machine's **0.3182984770932253** — **1.18e-04**, ~1e11x float64 noise, from a
+model nobody had touched. Four candidates were excluded by measurement first:
+dataset generation (identical sha under `PYTHONHASHSEED=0/1/random`),
+dependency drift (fresh resolve: **no** version changed), thread count
+(≤3.3e-16 at 1/2/8 threads) and BLAS kernel (≤1.7e-16 across
+Haswell/Nehalem/Prescott/Zen).
+
+The cause: `TfidfVectorizer(max_features=5000)` keeps the top terms via
+`(-tfs).argsort()`, an **unstable** quicksort. **4,240** terms sit strictly
+above the cut; **11,834 tie at count 1** for the remaining **760** slots — so
+**760 of the 5,000 features (15.2%) were chosen by the tie-break, not the
+corpus**, and a stable sort changes **754** of them. numpy dispatches SIMD
+sorts by CPU, so another runner keeps a different vocabulary.
+**Self-correction:** this tie was first reported as 27/21, measured on the
+tf-idf matrix; sklearn prunes on the **count** matrix. The corrected figures
+are above.
+
+**Fix:** `data/tier1_vocabulary.txt` commits the exact term→column mapping;
+`train_tier1.py` fits against it; the manifest pins its hash (version 2) and
+refuses a bundle fitted against a different one. **No fallback to
+`max_features`** — that fallback is the nondeterminism being removed.
+**Cost, precisely:** probabilities move **8.88e-16** (1.25 float64 ulp) because
+sklearn builds the matrix by a different code path when the vocabulary is
+fixed; raw counts are identical and `idf` identical to **0.0**, and a control
+refit with the *original* config reproduces the old artifact exactly (`0.0`),
+which is how the residual was attributed. Predictions identical on both sets;
+**goldens NOT regenerated**.
+
+**Four other fits keep the exposure, deliberately:** `generalization_test.py`
+(both arms), `train_baseline_tfidf.py`, `run_imbalance_sweep.py` — on the 80/20
+split the tie is **950 of 5,000**. Refitting them would move published numbers.
+**Limitation to state: those figures reproduce on this platform and may differ
+slightly on another.**
+
+**Similarity tolerance is now DERIVED, not fitted.** The old 1e-6 was "4.2x one
+container's worst case"; a runner then produced ~7e-07 and broke the 5e-07 CSV
+check by 6.875e-07. Now γ_n = n·u/(1−n·u) = **4.578e-05** (n=768, u=2⁻²⁴;
+Higham §3.1). **Stated limit:** it bounds the inner product only and does not
+model the BGE forward pass; it is used because it is derived and covers the
+observed deltas (2.384e-07 container, ~7e-07 runner). The CSV check adds 6-dp
+rounding on top (5e-07 + γ_n). **Gate headroom falls 146x → 3.19x** — reported,
+not engineered away; the gate-distance check still fails if any ticket lands
+inside the tolerance of 0.67.
+
+**The guard that was right:** *STALE DRIFT REFERENCE: FAISS index file hash
+differs*. The job rebuilt the **committed** index and a Linux rebuild differs
+(`cce6dc8e…` → `6893ca48…`). **Fix (option B): CI no longer rebuilds a
+committed artifact** — `gates.yml` builds only gitignored artifacts, uses the
+committed index, and asserts it is untouched. **Mixed provenance, recorded:**
+the Tier-2 classifier is fitted from Linux embeddings while the index holds
+Windows-computed vectors — same tickets, same model, float32 rounding apart,
+but not one machine.
+
+---
+
+**Phase 8B.2 is COMPLETE and GATED** (2026-09-23).
 `gates.yml`'s full-suite job failed golden parity on Linux with a similarity
 mismatch on essentially every benchmark ticket. **No regression**: the test
 asserted `TOL = 1e-9` for every number in the file, and an embedding similarity
