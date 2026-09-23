@@ -211,6 +211,12 @@ in CI) fails on:
 
 No LaTeX engine is installed, so do not install one. Compile on Overleaf.
 
+**`docs/AUTHOR_EXPLAINER.md` (Phase 9C) is hand-written for the author**, not
+part of the paper, and no test guards it. Every number in it carries its
+`NUMBERS.md` id, and it is a snapshot at config fingerprint `9c9a5cbcb53f`. If
+a rebuild changes a `NUMBERS.md` value, this file is stale: re-check the ids it
+cites rather than trusting its prose.
+
 **Values measured once on another platform** live in
 `data/cross_platform_record.json`. Store **raw values only**, with no deltas
 and no approximations. Each carries its machine, commit, run id,

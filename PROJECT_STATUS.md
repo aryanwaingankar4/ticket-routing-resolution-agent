@@ -1,8 +1,25 @@
 # Project Status
 
-**Last updated:** 2026-09-23
+**Last updated:** 2026-09-24
 **Last commit to move code or a result:** `8c9ac59`, the Phase 9A commit. It changes the builder, adds two data files and corrects one
 paper-surface number. Before it: `681f356` (the 8B.3 follow-up).
+
+**PHASE 9C IS DONE, run before 9B at Aryan's request** (2026-09-24). This was
+a docs-only commit: `docs/AUTHOR_EXPLAINER.md`, a plain-language guide for the
+author. It covers 21 results, each with the number that matters, where it lives
+and three examiner questions. It ends with the ten hardest questions and a
+never-use table. Every number carries its `NUMBERS.md` id. A throwaway checker
+verified:
+- all 135 ids;
+- 128 displayed values, plus the rest by hand;
+- whole clause groups;
+- forbidden wording confined to the never-use table;
+- 55 function names.
+
+**No code, data or paper file moved, so the "last commit to move code or a
+result" pointer above stays at `8c9ac59`.** The work is committed and **not
+pushed**. An untracked `paper_upload.zip` sits in the root; this session did
+not create it and left it alone.
 
 **PHASE 9A IS DRAFTED** (2026-09-23). The gates passed and the work was pushed
 on Aryan's standing instruction for this sub-phase ("commit and push
@@ -2317,7 +2334,7 @@ published figure drifts — the goldens pattern applied to the write-up.
 |---|---|
 | **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (`8c9ac59`, 2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
 | **9B** | Pre-submission audit |
-| **9C** | Author explainer |
+| **9C** | Author explainer — **DONE** (2026-09-24), run before 9B at Aryan's request. `docs/AUTHOR_EXPLAINER.md`, docs-only, every number keyed to a `NUMBERS.md` id |
 
 9A builds on the **named finding** above rather than re-deriving it, and keeps
 Phase 2A as a *related* corpus limitation rather than a third instance of the
@@ -2405,8 +2422,12 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 9A is DRAFTED. Next: Aryan reviews `paper/main.tex` on Overleaf, then
-Phase 9B, the pre-submission audit.** 9B opens in plan mode like every
+**Phase 9A is DRAFTED and 9C is DONE. Next: Aryan reviews `paper/main.tex` on
+Overleaf, then Phase 9B, the pre-submission audit.** If 9B changes any
+`NUMBERS.md` value, re-check the ids `docs/AUTHOR_EXPLAINER.md` cites. 9B
+should also fix this file's stale health table (it still says 446 tests and
+188 numbers; 9A made them 456 and 257) and the "4–7×" still in the
+named-finding section above. 9B opens in plan mode like every
 sub-phase, and works against:
 - the 9B audit list above, now 12 items;
 - the 8 `% TODO-VERIFY` markers;

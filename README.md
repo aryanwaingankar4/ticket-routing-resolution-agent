@@ -4127,6 +4127,37 @@ Six are related-work characterisations, one is the nasscom brief's wording and
 one is the benchmark-scope cross-reference. Every bibliography field other than
 a supplied surname or title is `TODO`.
 
+### Phase 9C - the author explainer (run before 9B)
+
+**What landed.** `docs/AUTHOR_EXPLAINER.md`, a plain-language guide for the
+author, not a paper section. It covers 21 results. Each has a short
+explanation, the one number that matters, the file and function where it
+lives, and three likely examiner questions with honest answers. It ends with
+the ten hardest questions, several answered "that's a limitation", and a
+table of numbers and phrasings never to use, each with its replacement.
+Docs-only: zero Gemini or Ollama calls, no model load, nothing under `src/`,
+`data/`, `tests/`, `models/` or `paper/` touched.
+
+**Number discipline.** Every number carries its `paper/NUMBERS.md` id in
+backticks. Rounding and unit changes (0.233333 as "23.3 points") are the only
+transformations; no new arithmetic. It is a snapshot against config
+fingerprint `9c9a5cbcb53f` at `8c9ac59`, so NUMBERS.md wins if they ever
+disagree. Facts NUMBERS.md does not carry, such as the recurring-bug count,
+are described in words and pointed at CLAUDE.md.
+
+**Verified by a throwaway checker (not committed):**
+- all 135 ids exist in NUMBERS.md;
+- 128 bold displays match their id's value to displayed precision (the
+  remainder, e.g. ticket names and CIs, were checked by hand);
+- every number not beside an id was listed and reviewed;
+- clause groups are quoted whole per section, using `CLAUSE_COMPANIONS` from
+  `tests/test_paper_draft.py`;
+- the forbidden wordings appear only in the never-use table;
+- all 55 named functions and every named path exist.
+
+It caught one partial Finding 1 clause group and three trap phrasings outside
+the never-use table, all fixed before commit.
+
 
 ---
 
