@@ -1,0 +1,3 @@
+Quantity,Closest,Tolerance,Ratio
+top-1 similarity vs RAG gate,1.4575e-04,4.5778e-05,3.18
+Tier-1 confidence vs cascade gate,1.2641e-02,1.0000e-12,12640755902.16

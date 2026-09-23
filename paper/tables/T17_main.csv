@@ -1,0 +1,4 @@
+direction,item,ticket,eval_set,top_similarity,margin_to_gate,evidence
+"passed the gate, draft unsupported",G021,N26,novel-45,0.7010266780853271,0.03102667808532711,human label: ungrounded (Phase 2B)
+"passed the gate, draft unsupported",G024,N31,novel-45,0.6747423410415649,0.0047423410415649014,human label: ungrounded (Phase 2B)
+"escalated, context adequate",S051,N45,benchmark45,0.6396739482879639,-0.030326051712036173,sufficiency rater: SUFFICIENT (Phase 6C)

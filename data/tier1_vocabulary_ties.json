@@ -1,0 +1,30 @@
+{
+  "dataset": "data/synthetic_tickets.csv",
+  "dataset_rows": 4000,
+  "description": "Count-matrix tie profile at TfidfVectorizer(max_features=5000, ngram_range=(1,2), stop_words='english'). Terms tied at the cut are ordered by an unstable sort, so 'slots_for_tied' features are chosen by the sort's tie-break rather than by the corpus.",
+  "full4000": {
+    "above_cut": 4240,
+    "count_at_cut": 1,
+    "max_features": 5000,
+    "n_documents": 4000,
+    "share_of_features_set_by_tie_break": 0.152,
+    "slots_for_tied": 760,
+    "terms_total": 16074,
+    "tied_at_cut": 11834
+  },
+  "split": {
+    "random_state": 42,
+    "stratify": "category",
+    "test_size": 0.2
+  },
+  "split3200": {
+    "above_cut": 4050,
+    "count_at_cut": 1,
+    "max_features": 5000,
+    "n_documents": 3200,
+    "share_of_features_set_by_tie_break": 0.19,
+    "slots_for_tied": 950,
+    "terms_total": 13672,
+    "tied_at_cut": 9622
+  }
+}

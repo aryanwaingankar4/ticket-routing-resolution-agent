@@ -1,0 +1,9 @@
+Cal. set,alpha,False escal.,OOD det. (variants),OOD det. (seeds),Adv. flagged,of
+clean,0.20,0.194,1.000,1.000,9,9
+clean,0.10,0.091,0.978,1.000,9,9
+clean,0.05,0.040,0.956,1.000,9,9
+clean,0.01,0.000,0.844,0.933,6,9
+contaminated,0.20,0.194,1.000,1.000,9,9
+contaminated,0.10,0.091,0.978,1.000,9,9
+contaminated,0.05,0.040,0.956,1.000,9,9
+contaminated,0.01,0.000,0.867,0.933,8,9

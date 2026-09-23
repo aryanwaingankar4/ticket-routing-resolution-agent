@@ -1,0 +1,3 @@
+quantity,gate,closest_golden_distance,tolerance,headroom_ratio
+top-1 similarity vs RAG gate,0.67,1.4575e-04,4.5778e-05,3.183812583286684
+Tier-1 confidence vs cascade gate,0.5,1.2641e-02,1.0000e-12,12640755902.162682

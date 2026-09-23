@@ -289,9 +289,15 @@ TAG_WITHIN_BAND = "within-band"
 # Phase 8A.1: a value measured for the first time, which must never be written
 # up as a reproduction of a previously published figure.
 TAG_NEW = "new-measurement"
+# Phase 9A: a value measured ONCE on another platform (a GitHub runner, a
+# Linux container) that this machine cannot re-measure. It lives in
+# data/cross_platform_record.json as a raw value with its machine, commit, run
+# id and first-recorded document, and was transcribed by hand from there.
+# Every DIFFERENCE quoted from it is computed here, never stored.
+TAG_RECORDED = "recorded"
 
 VALID_TAGS = {TAG_POST_HOC, TAG_BLOCKED, TAG_NO_RESOLUTION, TAG_DEGENERATE,
-              TAG_CASE_STUDY, TAG_WITHIN_BAND, TAG_NEW}
+              TAG_CASE_STUDY, TAG_WITHIN_BAND, TAG_NEW, TAG_RECORDED}
 
 
 @dataclass
@@ -400,6 +406,17 @@ def format_value(value):
 def frac(k, n):
     """A k/n count, formatted the way the project writes them."""
     return f"{int(k)}/{int(n)}"
+
+
+def sci(value):
+    """Scientific notation for the Phase 9A cross-platform deltas.
+
+    format_value() writes six decimals below 1, which would print a 7e-07
+    difference as 0.000001. It is deliberately NOT changed, because every
+    existing table and number goes through it and the parity test pins those
+    bytes. Only the new, tiny quantities are formatted here.
+    """
+    return f"{float(value):.4e}"
 
 
 # ---------------------------------------------------------------------------
@@ -955,6 +972,25 @@ def build_t2(emit):
               "LLMs -- a property of the register, not of any one method.")
     emit("T2.gemini.infrastructure.recall.benchmark45",
          g45[("recall", "Infrastructure")], g45_path, group="5C")
+    # Phase 9A: the trained classifier's side of the shared Infrastructure
+    # failure, which the documents stated and nothing emitted. Derived from
+    # the Tier-2-only ablation and checked against the production cascade's.
+    t2_path = src("ablation_tier2-only_results.csv")
+    t2 = pd.read_csv(t2_path)
+    infra = t2[t2["expected"] == "Infrastructure"]
+    t2_recall = float((infra["predicted"] == infra["expected"]).mean())
+    base = pd.read_csv(src("ablation_baseline_results.csv"))
+    base = base[(base["section"] == "classification")
+                & (base["expected"] == "Infrastructure")]
+    base_recall = float((base["predicted"] == base["expected"]).mean())
+    if t2_recall != base_recall:
+        raise AssertionError(
+            f"Tier-2-only Infrastructure recall {t2_recall} differs from the "
+            f"cascade's {base_recall}; the shared-failure claim needs both.")
+    emit("T2.tier2.infrastructure.recall.benchmark45", t2_recall,
+         rel(t2_path), group="5C",
+         note="The trained classifier's Infrastructure recall on the 45; the "
+              "production cascade's is identical.")
     emit("T2.prompt_identity.benchmark45",
          q45[("prompt_identity_verified_vs_gemini", "")], q45_path,
          group="5C",
@@ -989,8 +1025,23 @@ def build_t3(emit):
 
     esc_base = pd.read_csv(base45)
     esc_base = esc_base[esc_base["section"] == "escalation"]
-    esc_correct = int((esc_base["escalated"].astype(str).str.lower()
+    # Phase 9A correction (recurring bug class, occurrence #9). Until 9A this
+    # counted tickets that ESCALATED (6) and labelled the count "escalation
+    # correct", while the no-rag arm below is counted by CORRECTNESS (3). The
+    # two cells compared different quantities. The baseline decides all nine
+    # correctly -- six escalate and should, three proceed and should -- which
+    # the adversarial regression gate reports independently as 9/9.
+    esc_correct = int((esc_base["correct"].astype(str).str.lower()
                        == "true").sum())
+    esc_escalated = int((esc_base["escalated"].astype(str).str.lower()
+                         == "true").sum())
+    esc_should = int((esc_base["expected"].astype(str).str.lower()
+                      == "true").sum())
+    if esc_escalated != esc_should or esc_correct != len(esc_base):
+        raise AssertionError(
+            f"baseline adversarial rows: {esc_escalated} escalated, "
+            f"{esc_should} should, {esc_correct}/{len(esc_base)} correct -- "
+            f"the adversarial gate's 9/9 no longer holds in this CSV.")
     norag_df = pd.read_csv(norag)
     norag_correct = int(norag_df["escalation_correct"].astype(bool).sum())
 
@@ -1005,19 +1056,19 @@ def build_t3(emit):
         {"mode": "baseline (production cascade + RAG gate)",
          "what_it_is": "the shipped pipeline",
          "benchmark45": frac(*b45), "deployment175": frac(*b175),
-         "adversarial9_escalation": frac(esc_correct, len(esc_base))},
+         "adversarial9_decided_correctly": frac(esc_correct, len(esc_base))},
         {"mode": "no-cascade (Tier-1 answers everything)",
          "what_it_is": "the TF-IDF REPRESENTATION, not the cascade's value",
          "benchmark45": frac(*n45), "deployment175": frac(*n175),
-         "adversarial9_escalation": "n/a"},
+         "adversarial9_decided_correctly": "n/a"},
         {"mode": "tier2-only (the control that isolates the cascade)",
          "what_it_is": "BGE answering everything",
          "benchmark45": frac(*t45), "deployment175": frac(*t175),
-         "adversarial9_escalation": "n/a"},
+         "adversarial9_decided_correctly": "n/a"},
         {"mode": "no-rag (RAG similarity gate removed)",
          "what_it_is": "the escalation gate's value",
          "benchmark45": "n/a", "deployment175": "n/a",
-         "adversarial9_escalation": frac(norag_correct, len(norag_df))},
+         "adversarial9_decided_correctly": frac(norag_correct, len(norag_df))},
     ]
     df = pd.DataFrame(rows)
 
@@ -1081,10 +1132,17 @@ def build_t3(emit):
                ["median_latency_saving"].iloc[0]), rel(lat_path))
     emit("T3.norag.escalation_correct", frac(norag_correct, len(norag_df)),
          rel(norag),
-         note="Removing the RAG gate costs the adversarial set; the baseline "
-              f"scores {frac(esc_correct, len(esc_base))} there.")
+         note="Adversarial tickets decided correctly with the RAG gate "
+              "removed: only those that should proceed are right.")
     emit("T3.baseline.escalation_correct", frac(esc_correct, len(esc_base)),
-         rel(base45))
+         rel(base45),
+         note="CORRECTED in Phase 9A: this was published as 6/9, which is "
+              "the number that ESCALATED, not the number decided correctly. "
+              "The baseline decides every adversarial ticket correctly.")
+    emit("T3.baseline.adversarial_escalated", frac(esc_escalated,
+                                                    len(esc_base)),
+         rel(base45),
+         note="The adversarial tickets that should escalate, and do.")
 
     return {"main": df, "latency": lat_df}
 
@@ -1474,6 +1532,34 @@ def build_t7(emit):
          note="The density ratio is ill-posed in this space. The BGE arm's "
               "flattering numbers are in the CSV as BLOCKED, not as a "
               "result. The 0.9908 is itself a statement of the named finding.")
+
+    # Phase 9A: the cost of reweighting, charged to Tier-2, in the NON-blocked
+    # (TF-IDF-space) arm only -- the BGE arm's numbers are never quoted. A
+    # configuration is WORSE when its |gap| grows against the unweighted gap
+    # at the same alpha; the sign of delta_vs_unweighted alone does not say
+    # that, because Tier-2's unweighted gap can be positive.
+    wdf = pd.read_csv(w_path)
+    unweighted = (wdf[wdf["weighting"] == "unweighted"]
+                  .set_index(["tier", "alpha"])["coverage_gap"])
+    t2w = wdf[(wdf["weighting"] == "weighted") & (wdf["space"] == "tfidf")
+              & (wdf["tier"] == "tier2")]
+    worse = sum(abs(r.coverage_gap) > abs(unweighted[(r.tier, r.alpha)])
+                for r in t2w.itertuples())
+    # Second derivation: gap - delta must reproduce the unweighted gap.
+    recon = (t2w["coverage_gap"] - t2w["delta_vs_unweighted"]).round(9)
+    expect = [round(float(unweighted[(t, a)]), 9)
+              for t, a in zip(t2w["tier"], t2w["alpha"])]
+    if list(recon) != expect:
+        raise AssertionError("weighted Tier-2 rows do not reconcile with "
+                             "their unweighted gaps")
+    outside = int(t2w["gap_outside_band"].astype(bool).sum())
+    emit("T7.weighted.tier2.tfidf.worse", frac(worse, len(t2w)), rel(w_path),
+         group="6B",
+         note="Tier-2 configurations whose |coverage gap| grew under "
+              "TF-IDF-space reweighting -- the cost side of the partial "
+              "repair.")
+    emit("T7.weighted.tier2.tfidf.outside_band", frac(outside, len(t2w)),
+         rel(w_path), group="6B")
 
     return {"finding1": main, "weighted_6b": weighted}
 
@@ -1973,6 +2059,29 @@ def build_t13(emit):
                   "continuously; the binding constraint is what the "
                   "reference is made of.")
 
+    # Phase 9A: the ratio of the realistic-traffic flag rate to the per-ticket
+    # null, computed here rather than quoted. The documents had carried it as
+    # "4-7x"; recomputed from the committed summary it spans a much wider
+    # range across the four alphas, so the paper quotes these instead.
+    ratios = []
+    for row in summary["realistic_traffic_per_ticket"]:
+        key = format_value(row.get("alpha"))
+        null_rate = float(row["marginal_null_rate"])
+        ratio = float(row["flag_rate"]) / null_rate
+        ratios.append(ratio)
+        emit(f"T13.realistic_traffic.null_rate.alpha{key}", null_rate,
+             rel(sum_path),
+             note="The per-ticket marginal null rate at this alpha, for the "
+                  "175-ticket reference.")
+        emit(f"T13.realistic_traffic.ratio_to_null.alpha{key}", ratio,
+             rel(sum_path))
+    emit("T13.realistic_traffic.ratio_to_null.min", min(ratios),
+         rel(sum_path),
+         note="Recomputed in Phase 9A. The documents said '4-7x'; that range "
+              "does not hold across all four alphas and is not quoted.")
+    emit("T13.realistic_traffic.ratio_to_null.max", max(ratios),
+         rel(sum_path))
+
     return {"null_rates": grouped, "realistic_traffic": realistic,
             "null_raw": null}
 
@@ -2273,6 +2382,740 @@ def build_t16(emit):
 
     return {"pooled_cliffs": pooled, "per_category": percat,
             "automation_flags": flags, "pilot": pilot}
+
+
+# ---------------------------------------------------------------------------
+# Phase 9A -- three tables the draft needed and 8A never built
+#
+# FRAMING.md carried these facts as typed literals (and, in one case, got them
+# wrong: it called G021 and G024 "adversarial tickets" when both are 45-ticket
+# benchmark items). Each is now derived from a committed file, with a second
+# derivation checked wherever one exists.
+# ---------------------------------------------------------------------------
+GOLDEN_FILES = ["tests/goldens/benchmark_baseline.json",
+                "tests/goldens/adversarial_baseline.json"]
+CROSS_PLATFORM_RECORD = "data/cross_platform_record.json"
+PARITY_TEST = "tests/test_pipeline_parity.py"
+GATE_CSV_COMPARATOR = "src/experiments/compare_gate_csv.py"
+
+
+def golden_rows():
+    rows = []
+    for path in GOLDEN_FILES:
+        payload = read_json(os.path.join(PROJECT_ROOT, path))
+        for row in payload["rows"]:
+            rows.append(dict(row, _golden_file=path))
+    return rows
+
+
+def module_constant(path, name):
+    """Read a module-level numeric constant by AST, without importing.
+
+    Importing a test module to read one constant would run its collection-time
+    code; the AST read keeps the builder offline and side-effect free.
+    """
+    import ast
+    with open(os.path.join(PROJECT_ROOT, path), "r", encoding="utf-8") as fh:
+        tree = ast.parse(fh.read())
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+                isinstance(t, ast.Name) and t.id == name for t in node.targets):
+            return ast.literal_eval(node.value)
+    raise KeyError(f"{name} is not a module-level constant of {path}")
+
+
+@table("T17", "The RAG similarity gate errs in both directions",
+       ["data/groundedness_results.csv", "data/sufficiency_gate_results.csv",
+        "src/agent/config.py"],
+       "python src/experiments/score_groundedness_set.py; "
+       "python src/experiments/score_sufficiency_gate.py")
+def build_t17(emit):
+    g_path = src("groundedness_results.csv")
+    s_path = src("sufficiency_gate_results.csv")
+    grounded = pd.read_csv(g_path)
+    suff = pd.read_csv(s_path)
+    gate = float(settings.rag.similarity_threshold)
+
+    # Direction 1: tickets that PASSED the gate and got an unsupported draft.
+    through = grounded[grounded["human_label"] == "ungrounded"].copy()
+    # Direction 2: tickets the gate ESCALATED whose context the rater judged
+    # adequate.
+    escalated = suff[suff["arm"] == "escalated"]
+    adequate = escalated[escalated["gemini_verdict"] == "SUFFICIENT"].copy()
+
+    # Second derivations. Every drafted ticket must sit at or above the gate,
+    # must be in 6C's resolver-eligible arm, and every escalated one below it.
+    eligible = set(suff.loc[suff["arm"] == "eligible", "ticket_id"])
+    for _, row in through.iterrows():
+        if float(row["top_similarity"]) < gate:
+            raise AssertionError(
+                f"{row['item_id']} was drafted but its similarity "
+                f"{row['top_similarity']} is below the {gate} gate.")
+        if row["ticket_id"] not in eligible:
+            raise AssertionError(
+                f"{row['item_id']} ({row['ticket_id']}) is not in 6C's "
+                f"eligible arm -- the two harnesses disagree on who reached "
+                f"the resolver.")
+    for _, row in adequate.iterrows():
+        if float(row["top_similarity"]) >= gate:
+            raise AssertionError(
+                f"{row['ticket_id']} is in the escalated arm but sits at or "
+                f"above the {gate} gate.")
+
+    rows = []
+    for _, row in through.sort_values("item_id").iterrows():
+        rows.append({"direction": "passed the gate, draft unsupported",
+                     "item": row["item_id"], "ticket": row["ticket_id"],
+                     "eval_set": row["source"],
+                     "top_similarity": float(row["top_similarity"]),
+                     "margin_to_gate": float(row["top_similarity"]) - gate,
+                     "evidence": "human label: ungrounded (Phase 2B)"})
+    for _, row in adequate.sort_values("ticket_id").iterrows():
+        rows.append({"direction": "escalated, context adequate",
+                     "item": row["item_id"], "ticket": row["ticket_id"],
+                     "eval_set": "benchmark45",
+                     "top_similarity": float(row["top_similarity"]),
+                     "margin_to_gate": float(row["top_similarity"]) - gate,
+                     "evidence": "sufficiency rater: SUFFICIENT (Phase 6C)"})
+    frame = pd.DataFrame(rows)
+
+    emit("T17.passed_unsupported.count", frac(len(through), len(grounded)),
+         rel(g_path), tags=[TAG_CASE_STUDY],
+         note=f"Drafts that passed the {format_value(gate)} gate and were "
+              "human-labelled ungrounded. Both are 45-ticket benchmark items "
+              "-- NOT adversarial tickets, as FRAMING.md once said.")
+    for _, row in through.sort_values("item_id").iterrows():
+        key = row["item_id"]
+        emit(f"T17.{key}.ticket", str(row["ticket_id"]), rel(g_path))
+        emit(f"T17.{key}.top_similarity", float(row["top_similarity"]),
+             rel(g_path))
+        emit(f"T17.{key}.margin_to_gate",
+             float(row["top_similarity"]) - gate, [rel(g_path),
+                                                   "src/agent/config.py"])
+    emit("T17.escalated_adequate.count", frac(len(adequate), len(escalated)),
+         rel(s_path), tags=[TAG_CASE_STUDY],
+         note="Escalated tickets whose retrieved context the 6C rater found "
+              "adequate. The scalar gate errs in this direction too.")
+    for idx, (_, row) in enumerate(adequate.sort_values("ticket_id")
+                                   .iterrows()):
+        key = f"T17.escalated_adequate.{idx}"
+        emit(f"{key}.ticket", str(row["ticket_id"]), rel(s_path))
+        emit(f"{key}.top_similarity", float(row["top_similarity"]),
+             rel(s_path))
+        emit(f"{key}.margin_to_gate", float(row["top_similarity"]) - gate,
+             [rel(s_path), "src/agent/config.py"])
+    return {"main": frame}
+
+
+@table("T18", "Cross-platform reproducibility: decisions, floats and the "
+              "Tier-1 vocabulary",
+       [CROSS_PLATFORM_RECORD, "data/tier1_vocabulary_ties.json",
+        GATE_CSV_COMPARATOR, PARITY_TEST, "src/agent/config.py"]
+       + GOLDEN_FILES,
+       "python src/experiments/measure_tier1_vocabulary_ties.py "
+       "(the record file is transcribed, not regenerable)")
+def build_t18(emit):
+    record = read_json(os.path.join(PROJECT_ROOT, CROSS_PLATFORM_RECORD))
+    ties_path = src("tier1_vocabulary_ties.json")
+    ties = read_json(ties_path)
+    goldens = golden_rows()
+    golden_by_id = {row["id"]: row for row in goldens if "id" in row}
+
+    sys.path.insert(0, PROJECT_ROOT)
+    from src.experiments.compare_gate_csv import gamma_n
+    dim = int(settings.models.embedding_dim)
+    tol_sim = gamma_n(dim)
+    tol_t1 = float(module_constant(PARITY_TEST, "TOL_FLOAT64"))
+    tol_sim_test = float(module_constant(PARITY_TEST, "TOL_FLOAT32"))
+    # Second derivation: the parity test's hard-coded tolerance must be the
+    # derived bound (to its printed precision), or the paper describes a
+    # tolerance the tests do not apply.
+    if abs(tol_sim_test - tol_sim) > abs(tol_sim) * 1e-6:
+        raise AssertionError(
+            f"TOL_FLOAT32 in {PARITY_TEST} is {tol_sim_test}, but gamma_n "
+            f"({dim}) is {tol_sim}. The paper would quote a tolerance the "
+            f"parity test does not use.")
+
+    fields = {"rag_similarity": "rag_similarity",
+              "tier1_confidence": "tier1_confidence"}
+    delta_rows = []
+    outcome_rows = []
+    for entry in record["entries"]:
+        if entry["status"] != "recorded_not_regenerable":
+            raise AssertionError(f"{entry['id']}: unexpected status "
+                                 f"{entry['status']!r}")
+        prefix, ticket, quantity = entry["id"].split(".")
+        if quantity in fields:
+            golden = golden_by_id[ticket][fields[quantity]]
+            delta = float(entry["value"]) - float(golden)
+            delta_rows.append({
+                "platform": prefix, "commit": entry["commit"],
+                "run_id": entry["run_id"] or "none (local container)",
+                "ticket": ticket, "quantity": quantity,
+                "recorded_value": repr(float(entry["value"])),
+                "golden_value": repr(float(golden)),
+                "delta": sci(delta),
+                "delta_over_tolerance": sci(abs(delta) / (
+                    tol_sim if quantity == "rag_similarity" else tol_t1)),
+            })
+            base = f"T18.{prefix}.{ticket}.{quantity}"
+            run = entry["run_id"] or "no CI run (local)"
+            emit(f"{base}.recorded", repr(float(entry["value"])),
+                 CROSS_PLATFORM_RECORD, tags=[TAG_RECORDED],
+                 note=f"{entry['machine']}, commit {entry['commit']}, run "
+                      f"{run}; first recorded in "
+                      f"{entry['first_recorded']}.")
+            emit(f"{base}.golden", repr(float(golden)), GOLDEN_FILES)
+            emit(f"{base}.delta", sci(delta),
+                 [CROSS_PLATFORM_RECORD] + GOLDEN_FILES, tags=[TAG_RECORDED],
+                 note="Computed here from the two raw values -- never "
+                      "stored.")
+            emit(f"{base}.abs_delta", sci(abs(delta)),
+                 [CROSS_PLATFORM_RECORD] + GOLDEN_FILES, tags=[TAG_RECORDED])
+        else:
+            outcome_rows.append({"platform": prefix, "commit": entry["commit"],
+                                 "run_id": entry["run_id"],
+                                 "check": entry["quantity"],
+                                 "outcome": entry["value"]})
+            emit(f"T18.{prefix}.{ticket}.{quantity}", str(entry["value"]),
+                 CROSS_PLATFORM_RECORD, tags=[TAG_RECORDED],
+                 note=f"{entry['machine']}, commit {entry['commit']}, run "
+                      f"{entry['run_id']}.")
+
+    # Gate-distance headroom, recomputed from the goldens. A tolerance is only
+    # safe while no golden value sits inside it of the gate it feeds.
+    rag_gate = float(settings.rag.similarity_threshold)
+    cascade_gate = float(settings.cascade.confidence_threshold)
+    sim_dist = min(abs(float(r["rag_similarity"]) - rag_gate)
+                   for r in goldens if r.get("rag_similarity") is not None)
+    t1_dist = min(abs(float(r["tier1_confidence"]) - cascade_gate)
+                  for r in goldens if r.get("tier1_confidence") is not None)
+    headroom = pd.DataFrame([
+        {"quantity": "top-1 similarity vs RAG gate", "gate": rag_gate,
+         "closest_golden_distance": sci(sim_dist), "tolerance": sci(tol_sim),
+         "headroom_ratio": sim_dist / tol_sim},
+        {"quantity": "Tier-1 confidence vs cascade gate",
+         "gate": cascade_gate, "closest_golden_distance": sci(t1_dist),
+         "tolerance": sci(tol_t1), "headroom_ratio": t1_dist / tol_t1},
+    ])
+
+    emit("T18.golden_tickets", len(goldens), GOLDEN_FILES,
+         note="Every routing decision on these tickets is compared EXACTLY "
+              "across platforms by tests/test_pipeline_parity.py.")
+    emit("T18.embedding_dim", dim, "src/agent/config.py")
+    emit("T18.gamma_n", sci(tol_sim), [GATE_CSV_COMPARATOR,
+                                       "src/agent/config.py"],
+         note="gamma_n = n*u/(1-n*u), n = embedding dim, u = 2^-24 (Higham, "
+              "section 3.1). Bounds the float32 inner product only; it does "
+              "not model the encoder's own cross-platform difference.")
+    emit("T18.tier1_tolerance", sci(tol_t1), PARITY_TEST)
+    emit("T18.headroom.similarity_distance", sci(sim_dist), GOLDEN_FILES)
+    emit("T18.headroom.similarity_ratio", sim_dist / tol_sim,
+         GOLDEN_FILES + [GATE_CSV_COMPARATOR])
+    emit("T18.headroom.tier1_distance", sci(t1_dist), GOLDEN_FILES)
+
+    tie_rows = []
+    for arm in ("full4000", "split3200"):
+        prof = ties[arm]
+        tie_rows.append({"fit": arm, "documents": prof["n_documents"],
+                         "above_cut": prof["above_cut"],
+                         "tied_at_cut": prof["tied_at_cut"],
+                         "slots_for_tied": prof["slots_for_tied"],
+                         "max_features": prof["max_features"],
+                         "share_set_by_tie_break":
+                             prof["share_of_features_set_by_tie_break"]})
+        for key in ("n_documents", "above_cut", "tied_at_cut",
+                    "slots_for_tied", "max_features"):
+            emit(f"T18.ties.{arm}.{key}", int(prof[key]), rel(ties_path))
+        emit(f"T18.ties.{arm}.share", float(
+            prof["share_of_features_set_by_tie_break"]), rel(ties_path))
+    return {"platform_deltas": pd.DataFrame(delta_rows),
+            "platform_checks": pd.DataFrame(outcome_rows),
+            "gate_headroom": headroom,
+            "vocabulary_ties": pd.DataFrame(tie_rows)}
+
+
+@table("T19", "Corpus and evaluation-set structure",
+       ["data/synthetic_tickets.csv", "data/novel_tickets_expanded.json",
+        "data/adversarial_escalation_tickets.json",
+        "data/ablation_baseline_results_benchmark14.csv",
+        "data/ablation_baseline_results_deployment175.csv",
+        "data/tier1_vocabulary_ties.json", "src/agent/config.py"],
+       "python data/generate_dataset.py (read-only benchmarks; no regeneration)")
+def build_t19(emit):
+    ds_path = src("synthetic_tickets.csv")
+    df = pd.read_csv(ds_path)
+    b45_path = src("novel_tickets_expanded.json")
+    b45 = read_json(b45_path)
+    b45_n = len(b45["tickets"] if isinstance(b45, dict) else b45)
+    adv_path = src("adversarial_escalation_tickets.json")
+    adv = read_json(adv_path)
+    adv_n = len(adv["tickets"] if isinstance(adv, dict) else adv)
+    b14_path = src("ablation_baseline_results_benchmark14.csv")
+    _, b14_n = ablation_count(b14_path)
+    d175_path = src("ablation_baseline_results_deployment175.csv")
+    _, d175_n = ablation_count(d175_path)
+    ties = read_json(src("tier1_vocabulary_ties.json"))
+    train_rows = int(ties["split3200"]["n_documents"])
+
+    # Second derivation for the 45: the ablation CSV must score the same count.
+    _, b45_scored = ablation_count(src("ablation_baseline_results.csv"))
+    if b45_scored != b45_n:
+        raise AssertionError(f"benchmark45 file has {b45_n} tickets but the "
+                             f"ablation scored {b45_scored}")
+
+    frame = pd.DataFrame([
+        {"quantity": "dataset rows", "value": len(df),
+         "source": "data/synthetic_tickets.csv"},
+        {"quantity": "categories", "value": int(df["category"].nunique()),
+         "source": "data/synthetic_tickets.csv"},
+        {"quantity": "training rows (seed-42 80/20 split)",
+         "value": train_rows, "source": "data/tier1_vocabulary_ties.json"},
+        {"quantity": "14-ticket benchmark", "value": b14_n,
+         "source": rel(b14_path)},
+        {"quantity": "45-ticket out-of-template benchmark", "value": b45_n,
+         "source": rel(b45_path)},
+        {"quantity": "adversarial escalation set", "value": adv_n,
+         "source": rel(adv_path)},
+        {"quantity": "deployment-distribution set", "value": d175_n,
+         "source": rel(d175_path)},
+        {"quantity": "retrieved neighbours (top-k)",
+         "value": int(settings.rag.top_k), "source": "src/agent/config.py"},
+    ])
+    emit("T19.dataset_rows", len(df), rel(ds_path))
+    emit("T19.categories", int(df["category"].nunique()), rel(ds_path))
+    emit("T19.train_rows", train_rows, "data/tier1_vocabulary_ties.json")
+    emit("T19.benchmark14.n", b14_n, rel(b14_path))
+    emit("T19.benchmark45.n", b45_n, rel(b45_path))
+    emit("T19.adversarial.n", adv_n, rel(adv_path))
+    emit("T19.deployment175.n", d175_n, rel(d175_path))
+    emit("T19.rag_top_k", int(settings.rag.top_k), "src/agent/config.py")
+    return {"main": frame}
+
+
+# ---------------------------------------------------------------------------
+# Phase 9A -- IEEE views of the tables
+#
+# The frames above are the record: wide, snake_case, every column. They do not
+# fit an IEEE column. Each view below SELECTS columns (and, for T5, rows) from
+# an already-built frame and gives them human headers; it computes nothing new
+# except rounding, so an IEEE table cannot say something its frame does not.
+# The originals under paper/tables/ are untouched and still byte-compared.
+# ---------------------------------------------------------------------------
+IEEE_T5_ROWS_EACH_SIDE = 4    # presentation: thresholds shown around 0.67
+
+
+def _fmt_cell(value, fmt):
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return "--"
+    if isinstance(value, str) and fmt not in ("raw", "sci"):
+        return value
+    if fmt == "raw":
+        return str(value)
+    if fmt == "int":
+        return str(int(value))
+    if fmt == "bool":
+        return "yes" if str(value).lower() in ("true", "yes", "1") else "no"
+    if fmt == "sci":
+        return value if isinstance(value, str) else f"{float(value):.3e}"
+    if fmt.startswith("r"):
+        return f"{float(value):.{int(fmt[1:])}f}"
+    if fmt.startswith("pct"):
+        return f"{float(value) * 100:.{int(fmt[3:])}f}"
+    raise ValueError(f"unknown IEEE cell format {fmt!r}")
+
+
+def ieee_view(frame, cols, rows=None):
+    sel = frame if rows is None else rows(frame)
+    out = pd.DataFrame({header: [_fmt_cell(v, fmt) for v in sel[col]]
+                        for col, header, fmt in cols})
+    return out
+
+
+def _t5_rows(frame):
+    live = frame.index[frame["is_live_gate"].astype(bool)][0]
+    lo = max(0, live - IEEE_T5_ROWS_EACH_SIDE)
+    return frame.iloc[lo:live + IEEE_T5_ROWS_EACH_SIDE + 1]
+
+
+def _t7_t10(frames):
+    t10 = frames[("T10", "main")].copy()
+    t7 = frames[("T7", "finding1")][["tier", "alpha", "noise_band_2sd"]]
+    return t10.merge(t7, on=["tier", "alpha"], how="left")
+
+
+def _t11_design_a(frames):
+    df = frames[("T11", "design_a_7b")]
+    return df[df["test_arm"] == "full"]
+
+
+def _t13_null(frames):
+    df = frames[("T13", "null_rates")]
+    return df[df["test"].isin(["conditional_binomial", "marginal_binomial",
+                               "ks"])]
+
+
+IEEE_VIEWS = [
+    # ---- main text -------------------------------------------------------
+    {"name": "T1_classification", "src": ("T1", "main"), "wide": True,
+     "place": "main",
+     "caption": "Classification accuracy on the fixed benchmarks. Trained "
+                "classifiers against zero-shot LLMs; Wilson 95\\% interval on "
+                "the 45-ticket set. The zero-shot rows have no abstention "
+                "guarantee, no calibrated gate and no cost model.",
+     "cols": [("method", "Method", "raw"), ("kind", "Kind", "raw"),
+              ("benchmark14", "14-ticket", "raw"),
+              ("benchmark45", "45-ticket", "raw"),
+              ("benchmark45_pct", "45 (\\%)", "r1"),
+              ("benchmark45_ci_low", "CI low", "r3"),
+              ("benchmark45_ci_high", "CI high", "r3"),
+              ("deployment175", "Deployment set", "raw")]},
+    {"name": "T3_ablation", "src": ("T3", "main"), "place": "main",
+     "caption": "Ablation. No-cascade is TF-IDF answering everything, so "
+                "baseline minus no-cascade is the representation gap, not "
+                "the value of cascading; Tier-2-only is the control that "
+                "isolates the cascade.",
+     "cols": [("mode", "Mode", "raw"), ("benchmark45", "45-ticket", "raw"),
+              ("deployment175", "Deploy.", "raw"),
+              ("adversarial9_decided_correctly", "Adv. correct", "raw")]},
+    {"name": "T3_latency", "src": ("T3", "latency"), "place": "main",
+     "caption": "What the cascade buys: median per-ticket latency, warm, "
+                "batch size one, on the recorded CPU.",
+     "cols": [("eval_set", "Set", "raw"),
+              ("tier1_share", "Tier-1 share (\\%)", "pct1"),
+              ("cascade_expected_median_ms", "Cascade (ms)", "r1"),
+              ("tier2_only_median_ms", "Tier-2 only (ms)", "r1"),
+              ("median_latency_saving", "Saving (\\%)", "pct1")]},
+    {"name": "T5_rag_gate", "src": ("T5", "main"), "rows": _t5_rows,
+     "place": "supp",
+     "caption": "RAG similarity gate: in-domain tickets allowed through "
+                "against out-of-domain leakage, around the live threshold.",
+     "cols": [("threshold", "Threshold", "r2"),
+              ("n_in_domain_proceed", "In-domain proceed", "int"),
+              ("ood_leakage_rate", "OOD leakage", "r3"),
+              ("f1_combined", "F1", "r3"),
+              ("is_live_gate", "Live", "bool")]},
+    {"name": "T7_T10_coverage", "src": _t7_t10, "place": "main",
+     "caption": "Split-conformal coverage gap on the 45-ticket benchmark, by "
+                "tier and calibration distribution. Same method, same "
+                "benchmark; only the calibration set changes between the two "
+                "gap columns.",
+     "cols": [("tier", "Tier", "raw"), ("alpha", "$\\alpha$", "r2"),
+              ("coverage_gap_in_domain", "Gap, in-domain cal.", "r3"),
+              ("coverage_gap_deployment", "Gap, deployment cal.", "r3"),
+              ("noise_band_2sd", "$\\pm$2 s.d.", "r3"),
+              ("mean_set_size_in_domain", "Set size", "r2")]},
+    {"name": "T8_contamination", "src": ("T8", "diagnostic"),
+     "place": "main",
+     "caption": "Template-level structure of the corpus (Phase 5A corrected "
+                "diagnostic). A template is (category, scenario).",
+     "cols": [("quantity", "Quantity", "raw"),
+              ("corrected_value", "Value", "raw")]},
+    {"name": "T14_groundedness", "src": ("T14", "main"), "place": "main",
+     "caption": "Resolution groundedness on every draft the gate allowed "
+                "(Phase 2B), human labels and the LLM judge.",
+     "cols": [("quantity", "Quantity", "raw"), ("value", "Value", "raw")]},
+    {"name": "T15_sufficiency", "src": ("T15", "gemini_2x2"),
+     "place": "main",
+     "caption": "Retrieval-sufficiency rater against the human "
+                "groundedness labels (Phase 6C). The labels are an outcome "
+                "proxy for draft support, not a direct sufficiency label.",
+     "cols": [("rater_verdict", "Rater", "raw"),
+              ("human_label", "Human label", "raw"), ("n", "n", "int")]},
+    {"name": "T17_gate_errors", "src": ("T17", "main"), "place": "main",
+     "caption": "The RAG gate errs in both directions.",
+     "cols": [("direction", "Direction", "raw"), ("item", "Item", "raw"),
+              ("ticket", "Ticket", "raw"),
+              ("top_similarity", "Top-1 sim.", "r4"),
+              ("margin_to_gate", "Margin", "r4")]},
+    {"name": "T18_platform", "src": ("T18", "platform_deltas"),
+     "place": "main",
+     "caption": "Cross-platform floats on ticket adv\\_08, computed from raw "
+                "values recorded once on other platforms. Routing decisions "
+                "are compared exactly and do not differ.",
+     "cols": [("platform", "Platform", "raw"),
+              ("quantity", "Quantity", "raw"),
+              ("recorded_value", "Recorded", "raw"),
+              ("golden_value", "Golden", "raw"),
+              ("delta", "Difference", "sci")]},
+    {"name": "T19_corpus", "src": ("T19", "main"), "place": "supp",
+     "caption": "Corpus and evaluation sets.",
+     "cols": [("quantity", "Set", "raw"), ("value", "Size", "int")]},
+    # ---- supplement --------------------------------------------------------
+    {"name": "T1_paired", "src": ("T1", "paired_tests"), "place": "supp",
+     "caption": "Exact McNemar tests on the same tickets.",
+     "cols": [("comparison", "Comparison", "raw"),
+              ("eval_set", "Set", "raw"),
+              ("b_left_only_right", "b", "int"),
+              ("c_right_only_right", "c", "int"),
+              ("exact_mcnemar_p", "p", "r4")]},
+    {"name": "T2_percategory", "src": ("T2", "main"), "place": "supp",
+     "wide": True,
+     "caption": "Zero-shot per-category behaviour (Phase 5C).",
+     "cols": [("arm", "Arm", "raw"), ("eval_set", "Set", "raw"),
+              ("category", "Category", "raw"),
+              ("support", "Support", "int"), ("recall", "Recall", "r3"),
+              ("precision", "Precision", "r3"),
+              ("predicted_this_category", "Predicted", "raw")]},
+    {"name": "T4_sweep", "src": ("T4", "threshold_sweep"), "place": "supp",
+     "wide": True,
+     "caption": "Cascade threshold by target accuracy. A threshold above "
+                "one is the escalate-everything sentinel.",
+     "cols": [("target_accuracy", "Target", "r2"),
+              ("derived_threshold", "Threshold", "r4"),
+              ("novel_tier1_pct", "14: Tier-1 share", "r3"),
+              ("novel_cascade_accuracy", "14: accuracy", "r3"),
+              ("expanded45_tier1_pct", "45: Tier-1 share", "r3"),
+              ("expanded45_cascade_accuracy", "45: accuracy", "r3")]},
+    {"name": "T4_reliability", "src": ("T4", "main"), "place": "supp",
+     "caption": "In-distribution reliability: a ceiling effect, not "
+                "calibration. Observed accuracy is at the ceiling in every "
+                "bin, so both tiers are under-confident there.",
+     "cols": [("representation", "Tier", "raw"),
+              ("n_tickets", "n", "int"),
+              ("expected_calibration_error", "ECE", "r3"),
+              ("mean_confidence", "Mean conf.", "r3"),
+              ("observed_accuracy", "Accuracy", "r3")]},
+    {"name": "T9_novelty", "src": ("T9", "main"), "place": "supp",
+     "wide": True,
+     "caption": "Conformal novelty detection for the RAG gate.",
+     "cols": [("contamination", "Cal. set", "raw"),
+              ("alpha", "$\\alpha$", "r2"),
+              ("false_escalation_rate_in_domain", "False escal.", "r3"),
+              ("ood_detection_rate_variants", "OOD det. (variants)", "r3"),
+              ("ood_detection_rate_seeds", "OOD det. (seeds)", "r3"),
+              ("adversarial_flagged", "Adv. flagged", "int"),
+              ("adversarial_total", "of", "int")]},
+    {"name": "T11_external_7b", "src": _t11_design_a, "place": "supp",
+     "wide": True,
+     "caption": "Phase 7B, Design A (version shift) on the external corpus: "
+                "independently generated data, not real production data.",
+     "cols": [("tier", "Tier", "raw"), ("alpha", "$\\alpha$", "r2"),
+              ("n_calibration", "n cal.", "int"),
+              ("n_test", "n test", "int"),
+              ("coverage_gap", "Gap", "r4"),
+              ("noise_band_2sd", "$\\pm$2 s.d.", "r4"),
+              ("mean_set_size", "Set size", "r2")]},
+    {"name": "T11_paraphrase_7c", "src": ("T11", "paraphrase_conformal_7c"),
+     "place": "supp", "wide": True,
+     "caption": "Phase 7C (paraphrase shift). BLOCKED by its pre-registered "
+                "degeneracy rule; every coverage number here is post-hoc and "
+                "is not a verdict.",
+     "cols": [("arm", "Arm", "raw"), ("tier", "Tier", "raw"),
+              ("alpha", "$\\alpha$", "r2"), ("n_test", "n test", "int"),
+              ("coverage_gap", "Gap (post-hoc)", "r4"),
+              ("combined_band_2sd", "Combined $\\pm$2 s.d.", "r4"),
+              ("calibration_only_band_2sd", "Cal.-only $\\pm$2 s.d.", "r4")]},
+    {"name": "T12_deferral_ours", "src": ("T12", "ours_6a"), "place": "supp",
+     "wide": True,
+     "caption": "Phase 6A, our data: conformal deferral against the "
+                "confidence incumbent at the live gate's operating coverage "
+                "and by AURC. No evidence either way on the gated axis.",
+     "cols": [("tier", "Tier", "raw"), ("eval_set", "Set", "raw"),
+              ("rule", "Rule", "raw"),
+              ("live_gate_coverage", "Gate cov.", "r3"),
+              ("degenerate_at_gate", "Degenerate", "raw"),
+              ("verdict_at_live_gate", "Verdict at gate", "raw"),
+              ("d_aurc_vs_confidence", "$\\Delta$AURC", "r4")]},
+    {"name": "T12_deferral_external", "src": ("T12", "external_7b"),
+     "place": "supp", "wide": True,
+     "caption": "Phase 7B, external corpus: the same comparison, reported "
+                "separately from 6A. Different corpus, transplanted gate, "
+                "unaudited labels.",
+     "cols": [("tier", "Tier", "raw"), ("rule", "Rule", "raw"),
+              ("live_gate_coverage", "Gate cov.", "r4"),
+              ("risk_at_gate", "Risk at gate", "r4"),
+              ("risk_delta_vs_incumbent", "$\\Delta$risk", "r4"),
+              ("risk_signal", "Signal", "raw")]},
+    {"name": "T13_drift_null", "src": _t13_null, "place": "supp",
+     "wide": True,
+     "caption": "Drift detection: measured null false-alarm rate by test "
+                "and window.",
+     "cols": [("signal", "Signal", "raw"), ("test", "Test", "raw"),
+              ("window", "Window", "int"), ("rate_min", "Min", "r4"),
+              ("rate_max", "Max", "r4"),
+              ("usable_as_an_alarm", "Usable", "bool")]},
+    {"name": "T13_realistic", "src": ("T13", "realistic_traffic"),
+     "place": "supp",
+     "caption": "Deployment-register tickets against the in-domain drift "
+                "reference: legitimate traffic, not drift.",
+     "cols": [("alpha", "$\\alpha$", "r2"),
+              ("flag_rate", "Flag rate", "r3"),
+              ("marginal_null_rate", "Null", "r4"),
+              ("flagged", "Flagged", "int"), ("n", "n", "int")]},
+    {"name": "T16_pilot", "src": ("T16", "per_category"), "place": "supp",
+     "caption": "Resolution-clustering cliff edges per category (MiniLM).",
+     "cols": [("category", "Category", "raw"), ("n_tickets", "n", "int"),
+              ("cliff_edge", "Cliff", "r2"),
+              ("recall_at_cliff", "Recall", "r3")]},
+    {"name": "T18_ties", "src": ("T18", "vocabulary_ties"), "place": "supp",
+     "caption": "Tier-1 vocabulary: count-matrix ties at the max\\_features "
+                "cut. Tied terms are ordered by an unstable sort.",
+     "cols": [("fit", "Fit", "raw"), ("documents", "Docs", "int"),
+              ("above_cut", "Above cut", "int"),
+              ("tied_at_cut", "Tied", "int"),
+              ("slots_for_tied", "Slots", "int"),
+              ("share_set_by_tie_break", "Share (\\%)", "pct1")]},
+    {"name": "T18_headroom", "src": ("T18", "gate_headroom"),
+     "place": "supp",
+     "caption": "Gate-distance check: the closest golden value to each gate "
+                "against the parity tolerance.",
+     "cols": [("quantity", "Quantity", "raw"),
+              ("closest_golden_distance", "Closest", "sci"),
+              ("tolerance", "Tolerance", "sci"),
+              ("headroom_ratio", "Ratio", "r2")]},
+]
+
+# Headers that are already LaTeX (math, escaped %) pass through untouched.
+_RAW_HEADER = re.compile(r"\\\\|\$")
+
+
+def _tex_cell(text):
+    out = latex_escape(text)
+    return re.sub(r"(?<![\w.])-(?=\d)", r"\\ensuremath{-}", out)
+
+
+def write_ieee_table(df, path_base, name, caption, wide):
+    csv_df = df.copy()
+    csv_df.columns = [re.sub(r"\\|\$", "", c) for c in df.columns]
+    write_csv(csv_df, path_base + ".csv")
+    env = "table*" if wide else "table"
+    width = r"\textwidth" if wide else r"\columnwidth"
+    header = " & ".join(c if _RAW_HEADER.search(c) else latex_escape(c)
+                        for c in df.columns)
+    align = "l" + "r" * (len(df.columns) - 1)
+    lines = [
+        "% Generated by src/experiments/build_paper_artifacts.py -- do not "
+        "edit by hand. A column/row selection of the frame named in the "
+        "label; nothing is recomputed except rounding.",
+        r"\begin{" + env + "}[t]",
+        r"\centering\footnotesize",
+        r"\caption{" + caption + "}",
+        r"\label{tab:" + name.lower() + "}",
+        r"\resizebox{" + width + r"}{!}{%",
+        r"\begin{tabular}{" + align + "}",
+        r"\toprule",
+        header + r" \\",
+        r"\midrule",
+    ]
+    for _, row in df.iterrows():
+        lines.append(" & ".join(_tex_cell(v) for v in row) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}}", r"\end{" + env + "}", ""]
+    with open(path_base + ".tex", "w", encoding="utf-8", newline="\n") as fh:
+        fh.write("\n".join(lines))
+
+
+def build_ieee_views(all_frames, out_dir):
+    ieee_dir = os.path.join(out_dir, "tables", "ieee")
+    os.makedirs(ieee_dir, exist_ok=True)
+    written = []
+    for spec in IEEE_VIEWS:
+        source = spec["src"]
+        frame = source(all_frames) if callable(source) else \
+            all_frames[source]
+        df = ieee_view(frame, spec["cols"], spec.get("rows"))
+        base = os.path.join(ieee_dir, spec["name"])
+        write_ieee_table(df, base, "ieee_" + spec["name"], spec["caption"],
+                         spec.get("wide", False))
+        written += [rel(base + ".csv"), rel(base + ".tex")]
+    return written
+
+
+# ---------------------------------------------------------------------------
+# Phase 9A -- paper/numbers.tex: every NUMBERS.md value as a LaTeX macro
+#
+# main.tex may not type a number. It writes \nb{T1.cascade.benchmark45} and
+# gets exactly the NUMBERS.md value; an unknown id is a compile ERROR, never a
+# silent "??". Display variants (rounded, percentage, k, n, CI) are generated
+# here from the same value text, so rounding is never done by hand either.
+# ---------------------------------------------------------------------------
+_FRAC = re.compile(
+    r"^(\d+)/(\d+)(?: \[95% CI (-?[\d.]+), (-?[\d.]+)\])?$")
+_SCI = re.compile(r"^-?\d\.\d+e[+-]\d+$")
+_FLOAT = re.compile(r"^-?\d+(?:\.\d+)?$")
+
+
+def _tex_number(text):
+    """Escape and typeset a value; minus signs become a real minus."""
+    if _SCI.match(text):
+        mantissa, exponent = text.split("e")
+        return (r"\ensuremath{" + mantissa.replace("-", "-") +
+                r"\times 10^{" + str(int(exponent)) + "}}")
+    return _tex_cell(text)
+
+
+def _sci_variant(value, digits):
+    mantissa, exponent = f"{value:.{digits}e}".split("e")
+    return r"\ensuremath{" + mantissa + r"\times 10^{" + \
+        str(int(exponent)) + "}}"
+
+
+def number_variants(number_id, text):
+    """(id, latex) pairs: the value itself plus its display variants."""
+    out = [(number_id, _tex_number(text))]
+    frac_match = _FRAC.match(text)
+    if frac_match:
+        k, n = int(frac_match.group(1)), int(frac_match.group(2))
+        out += [(f"{number_id}@k", str(k)), (f"{number_id}@n", str(n)),
+                (f"{number_id}@frac", f"{k}/{n}")]
+        if n:
+            out += [(f"{number_id}@pct0", f"{100 * k / n:.0f}"),
+                    (f"{number_id}@pct1", f"{100 * k / n:.1f}")]
+        if frac_match.group(3):
+            lo, hi = float(frac_match.group(3)), float(frac_match.group(4))
+            out += [(f"{number_id}@ci", _tex_cell(f"[{lo:.3f}, {hi:.3f}]")),
+                    (f"{number_id}@cipct",
+                     _tex_cell(f"[{100 * lo:.1f}, {100 * hi:.1f}]"))]
+        return out
+    if _SCI.match(text) or _FLOAT.match(text):
+        value = float(text)
+        for digits in (1, 2, 3, 4):
+            out.append((f"{number_id}@r{digits}",
+                        _tex_cell(f"{value:.{digits}f}")))
+            out.append((f"{number_id}@abs@r{digits}",
+                        f"{abs(value):.{digits}f}"))
+        for digits in (0, 1):
+            out.append((f"{number_id}@pct{digits}",
+                        _tex_cell(f"{100 * value:.{digits}f}")))
+            out.append((f"{number_id}@abs@pct{digits}",
+                        f"{100 * abs(value):.{digits}f}"))
+        for digits in (1, 2):
+            out.append((f"{number_id}@sci{digits}",
+                        _sci_variant(value, digits)))
+            out.append((f"{number_id}@abs@sci{digits}",
+                        _sci_variant(abs(value), digits)))
+    return out
+
+
+def write_numbers_tex(path, numbers):
+    lines = [
+        "% paper/numbers.tex -- GENERATED by "
+        "src/experiments/build_paper_artifacts.py. Do not edit by hand.",
+        "% Every value in paper/NUMBERS.md as a macro: \\nb{<id>} and "
+        "\\nb{<id>@<variant>}.",
+        "% Variants: @k @n @frac @pct0 @pct1 @ci @cipct (counts); @r1-@r4 "
+        "@pct0 @pct1 @sci1 @sci2 and @abs@... (numbers).",
+        "% An unknown id is a compile error, never a silent placeholder.",
+        r"\makeatletter",
+        r"\newcommand{\nb@def}[2]{\expandafter\def\csname nb@@#1\endcsname"
+        r"{#2}}",
+        r"\newcommand{\nb}[1]{\ifcsname nb@@#1\endcsname"
+        r"\csname nb@@#1\endcsname\else"
+        r"\PackageError{numbers}{Unknown number id '#1'}"
+        r"{Every number must come from paper/numbers.tex. Rebuild with "
+        r"build_paper_artifacts.py --force.}\fi}",
+    ]
+    seen = set()
+    for number in numbers:
+        for key, latex in number_variants(number.id, number.value):
+            if key in seen:
+                raise ValueError(f"duplicate numbers.tex key {key}")
+            seen.add(key)
+            lines.append(r"\nb@def{" + key + "}{" + latex + "}")
+    lines += [r"\makeatother", ""]
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write("\n".join(lines))
+    return len(seen)
 
 
 # ---------------------------------------------------------------------------
@@ -2836,13 +3679,14 @@ CLAUSES = {
         "Finding 2's conclusion survived the correction because the coverage "
         "measurement excludes by row id, not by template."),
     "named-finding": (
-        "THE NAMED CROSS-PHASE FINDING -- the calibration/reference "
-        "distribution, not the test or the method, is the binding "
-        "constraint. Instances: Phase 1 Finding 4 (coverage), Phase 4B's "
-        "realistic-traffic arm (drift), Phase 5C (classification, which "
-        "widened it to the TRAINING distribution as well). Phase 2A is a "
-        "RELATED corpus limitation, not an instance. Phase 6C is NOT an "
-        "instance. Phase 9A settles the final wording."),
+        "THE NAMED CROSS-PHASE FINDING, final wording (settled in Phase 9A) "
+        "-- the data distribution a component is fitted or calibrated on, "
+        "not the method or the test applied to it, is the binding "
+        "constraint. Two scoped instance classes: the CALIBRATION/REFERENCE "
+        "distribution (Phase 1 Finding 4, coverage; Phase 4B's "
+        "realistic-traffic arm, drift) and the TRAINING distribution (Phase "
+        "5C, classification). Phase 2A is a RELATED dataset limitation, not "
+        "an instance. Phase 6C is NOT an instance."),
     "5C": (
         "PHASE 5C -- the correct sentence is: a 3B model on a laptop CPU "
         "with no training on this corpus is not beaten by a classifier "
@@ -2962,6 +3806,17 @@ DO_NOT_CITE = [
             "hypothesis, not a cause.",
      "use_instead": "T1.tfidf_baseline.benchmark14 -- 6/14 (42.9%), from "
                     "data/baseline_tfidf_benchmark14.csv."},
+    {"retired": "the production pipeline scores 6/9 on adversarial "
+                "escalation (paper surface, Phases 8A-8B)",
+     "literals": ["the baseline scores 6/9"],
+     "why": "Found in Phase 9A. build_t3 counted adversarial tickets that "
+            "ESCALATED (6) and published the count as 'escalation correct', "
+            "beside a no-rag arm counted by CORRECTNESS (3/9). The two cells "
+            "measured different things. Occurrence #9 of the recurring bug "
+            "class: internally consistent, wrong for its context.",
+     "use_instead": "T3.baseline.escalation_correct -- 9/9 decided "
+                    "correctly (6/9 escalate, and should), against 3/9 "
+                    "with the RAG gate removed."},
 ]
 
 
@@ -2999,7 +3854,16 @@ def write_numbers_md(path, numbers, provenance, stats_check):
         f"`{TAG_DEGENERATE}` (the test has no resolution at this operating "
         "point), "
         f"`{TAG_CASE_STUDY}` (counts only, by pre-registration), "
-        f"`{TAG_WITHIN_BAND}` (inside the measurement's own noise band).",
+        f"`{TAG_WITHIN_BAND}` (inside the measurement's own noise band), "
+        f"`{TAG_RECORDED}` (measured once on another platform and NOT "
+        "re-derivable here: the raw value is transcribed in "
+        f"`{CROSS_PLATFORM_RECORD}` with its machine, commit, run id and "
+        "first-recorded document, and every difference is computed by this "
+        "builder).",
+        "",
+        "Every value in this table is also a LaTeX macro in `numbers.tex` "
+        "(`\\nb{<id>}`), which is how `main.tex` quotes it. The paper types no "
+        "number by hand.",
         "",
         "---",
         "",
@@ -3159,10 +4023,17 @@ def write_framing_md(path, numbers):
         f"{val('T10.tier1.gap_deployment')} when only the calibration "
         "DISTRIBUTION changes.",
         "",
-        "Phase 9A settles the final wording. Phase 5C widened the mechanism "
-        "from the calibration/reference distribution to the training "
-        "distribution as well; the two original instances are unchanged and "
-        "are not weakened by the addition.",
+        "Phase 9A settled the wording above. 'Fitted or calibrated' covers "
+        "Phase 5C's widening to the training distribution without stretching "
+        "the word calibration over training; 'the method or the test' keeps "
+        "the original clause, which Phase 4B needs, because there no test, "
+        "alpha or window repairs the alarm rate; 'component' makes the claim "
+        "about each part of the pipeline rather than the system as a whole. "
+        "On the drift side, realistic-traffic flag rates sit between "
+        f"{val('T13.realistic_traffic.ratio_to_null.min')} and "
+        f"{val('T13.realistic_traffic.ratio_to_null.max')} times the "
+        "per-ticket null across the four alphas (recomputed in 9A; the "
+        "earlier '4-7x' is not quoted).",
         "",
         "## 3. The contribution is the calibrated escalation machinery, not "
         "accuracy",
@@ -3246,40 +4117,60 @@ def write_framing_md(path, numbers):
         "rather than in a footnote.",
         "",
         "DECISIONS reproduce exactly. Category, tier, escalated and the "
-        "number of retrieved neighbours were identical on all 54 golden "
-        "tickets between Windows and a Linux container. No routing decision "
-        "has ever differed.",
+        "number of retrieved neighbours are compared exactly on all "
+        f"{val('T18.golden_tickets')} golden tickets by "
+        "tests/test_pipeline_parity.py, and that test "
+        f"{val('T18.runner_07136ec.golden_parity.outcome')} on a GitHub "
+        "runner (gates.yml run 35869187805). No routing decision has ever "
+        "differed.",
         "",
         "EMBEDDING SIMILARITIES DO NOT, and cannot. They are float32 inner "
-        "products of 768-dimensional normalised vectors, accumulated in an "
-        "order set by the machine's BLAS kernel and SIMD width: 2.384e-07 "
-        "between this machine and a Linux container, about 7e-07 against a "
-        "GitHub runner. The published figures are quoted to six decimals and "
-        "are unaffected. Parity is therefore asserted with a DERIVED bound -- "
-        "gamma_n = n*u/(1-n*u) = 4.578e-05 for n=768 at float32 unit roundoff "
-        "u = 2^-24 (Higham, section 3.1) -- and never with a tolerance fitted "
-        "to one machine's measurement. That bound covers the inner product "
-        "only; it does not model the encoder's own cross-platform difference.",
+        f"products of {val('T18.embedding_dim')}-dimensional normalised "
+        "vectors, accumulated in an order set by the machine's BLAS kernel "
+        "and SIMD width. On adv_08 the recorded similarity differs from the "
+        "Windows golden by "
+        f"{val('T18.container_8b.adv_08.rag_similarity.delta')} in a local "
+        "Linux container and by "
+        f"{val('T18.runner_91a5b38.adv_08.rag_similarity.delta')} on a "
+        "GitHub runner (differences computed from the raw recorded values in "
+        "data/cross_platform_record.json). The published figures are quoted "
+        "to six decimals and are unaffected. Parity is therefore asserted "
+        "with a DERIVED bound -- gamma_n = n*u/(1-n*u) = "
+        f"{val('T18.gamma_n')} at float32 unit roundoff u = 2^-24 (Higham, "
+        "section 3.1) -- and never with a tolerance fitted to one machine's "
+        "measurement. That bound covers the inner product only; it does not "
+        "model the encoder's own cross-platform difference. The closest "
+        "golden similarity sits "
+        f"{val('T18.headroom.similarity_distance')} from the gate, "
+        f"{val('T18.headroom.similarity_ratio')} times the tolerance.",
         "",
         "TIER-1's VOCABULARY WAS NOT DETERMINED BY THE DATA, and this is the "
-        "finding worth reporting. TfidfVectorizer(max_features=5000) keeps "
-        "the most frequent terms using an UNSTABLE quicksort. On the "
-        "4,000-row corpus 4,240 terms sit strictly above the cut and 11,834 "
-        "terms tie at a count of 1 for the remaining 760 slots -- so 760 of "
-        "the 5,000 features, 15.2%, were selected by the sort's tie-break "
-        "rather than by the corpus. numpy dispatches SIMD sorts by CPU, so a "
-        "GitHub runner kept a different vocabulary and produced a Tier-1 "
-        "confidence of 0.31818 where this machine produces 0.31830 -- a "
-        "difference of 1.18e-04, about 1e11 times float64 noise, from a model "
-        "nobody had changed. Phase 8B.3 commits the vocabulary as an artifact "
-        "and fits against it, which moves the published probabilities by "
-        "8.9e-16 (float64 construction order, 1.25 ulp) and no decision at "
-        "all.",
+        "finding worth reporting. TfidfVectorizer(max_features="
+        f"{val('T18.ties.full4000.max_features')}) keeps the most frequent "
+        "terms using an UNSTABLE quicksort. On the "
+        f"{val('T18.ties.full4000.n_documents')}-row corpus "
+        f"{val('T18.ties.full4000.above_cut')} terms sit strictly above the "
+        f"cut and {val('T18.ties.full4000.tied_at_cut')} terms tie for the "
+        f"remaining {val('T18.ties.full4000.slots_for_tied')} slots -- so a "
+        f"share of {val('T18.ties.full4000.share')} of the features was "
+        "selected by the sort's tie-break rather than by the corpus. numpy "
+        "dispatches SIMD sorts by CPU, so a GitHub runner kept a different "
+        "vocabulary and produced an adv_08 Tier-1 confidence of "
+        f"{val('T18.runner_91a5b38.adv_08.tier1_confidence.recorded')} "
+        "against the golden "
+        f"{val('T18.runner_91a5b38.adv_08.tier1_confidence.golden')} -- a "
+        "difference of "
+        f"{val('T18.runner_91a5b38.adv_08.tier1_confidence.delta')}, from a "
+        "model nobody had changed. Phase 8B.3 commits the vocabulary as an "
+        "artifact and fits against it; no decision moved and the goldens were "
+        "not regenerated.",
         "",
         "THE SAME EXPOSURE REMAINS, UNFIXED, IN FOUR OTHER FITS: "
         "generalization_test.py (both arms), train_baseline_tfidf.py and "
-        "run_imbalance_sweep.py all use max_features=5000. On the 80/20 "
-        "training split the tie is larger still -- 950 of 5,000 features. "
+        "run_imbalance_sweep.py all use max_features. On the 80/20 "
+        "training split the tie is larger still -- "
+        f"{val('T18.ties.split3200.slots_for_tied')} of "
+        f"{val('T18.ties.split3200.max_features')} features. "
         "They were deliberately NOT changed, because refitting them would "
         "move published numbers. The limitation to state is therefore: those "
         "figures reproduce on this platform and may differ slightly on "
@@ -3290,10 +4181,17 @@ def write_framing_md(path, numbers):
         f"The RAG similarity gate sits at {val('F1.gate.rag')}, inside the "
         f"adversarial safe range [{val('T5.safe_range_low')}, "
         f"{val('T5.safe_range_high')}]. It is not a perfect separator and "
-        "the paper says so in both directions: adversarial tickets G021 and "
-        "G024 pass the gate when they should not, and ticket N45 "
-        "(top similarity 0.6397) is escalated although Phase 6C's rater "
-        "found its retrieved context adequate. A scalar threshold on a "
+        "the paper says so in both directions: 45-ticket benchmark items "
+        f"G021 ({val('T17.G021.ticket')}, similarity "
+        f"{val('T17.G021.top_similarity')}) and G024 "
+        f"({val('T17.G024.ticket')}, similarity "
+        f"{val('T17.G024.top_similarity')}) passed the gate and received "
+        "drafts a human labelled ungrounded, and ticket "
+        f"{val('T17.escalated_adequate.0.ticket')} (similarity "
+        f"{val('T17.escalated_adequate.0.top_similarity')}) is escalated "
+        "although Phase 6C's rater found its retrieved context adequate. "
+        "(Corrected in Phase 9A: G021 and G024 were previously described "
+        "here as adversarial tickets. They are not.) A scalar threshold on a "
         "single similarity is the simplest thing that works, not a claim "
         "that it is sufficient.",
         "",
@@ -3755,9 +4653,9 @@ def write_paper_readme(path, n_table_files, n_numbers):
     lines = [
         "# paper/ -- the generated write-up surface",
         "",
-        "**Everything in this directory is generated. Do not edit any of it "
-        "by hand.** Rebuild the whole directory with one command, from the "
-        "project root:",
+        "**Everything in this directory is generated -- except the four "
+        "hand-written draft files named below. Do not edit any generated "
+        "file by hand.** Rebuild with one command, from the project root:",
         "",
         "```powershell",
         ".\\venv\\Scripts\\Activate.ps1",
@@ -3797,10 +4695,29 @@ def write_paper_readme(path, n_table_files, n_numbers):
         "parity failure can distinguish 'the builder changed' from 'a result "
         "file changed'.",
         f"- `tables/` -- {n_table_files} files: each table as `.csv` and "
-        "as booktabs `.tex`.",
+        "as booktabs `.tex`, plus `tables/ieee/`: column selections of those "
+        "frames sized for an IEEE page, which is what the draft inputs.",
+        "- `numbers.tex` -- every `NUMBERS.md` value as a LaTeX macro, "
+        "`\\nb{<id>}`, with generated display variants (`@pct1`, `@r3`, "
+        "`@k`, `@n`, `@ci`, ...). An unknown id is a compile error.",
         f"- `figures/` -- {len(FIGURES)} figures, each as `.pdf` and `.png` "
         "at 300 dpi, with the data behind it as `_data.csv` and its caption "
         "as `_caption.txt`.",
+        "",
+        "## Hand-written (Phase 9A) -- NOT generated",
+        "",
+        "- `main.tex` -- the IEEE conference draft (IEEEtran). Every number "
+        "in it is a `\\nb{}` macro; `tests/test_paper_draft.py` fails on a "
+        "typed digit, a partially quoted clause group or a retired phrasing.",
+        "- `supplement.tex` -- the overflow appendix, same rules.",
+        "- `references.bib` -- citation keys; every field not confirmed is "
+        "`TODO`.",
+        "- `references_to_check.md` -- every citation, the claim it supports "
+        "and what to look up.",
+        "",
+        "No LaTeX engine is installed on the development machine. The sources "
+        "are Overleaf-ready: upload this directory, set `main.tex` as the "
+        "main document, and compile with pdfLaTeX + BibTeX.",
         "",
         "## Conventions",
         "",
@@ -3890,6 +4807,7 @@ def main(argv=None):
     emitter = Emitter()
     provenance = {}
     table_files, figure_files = [], []
+    all_frames = {}
 
     def record_sources(sources):
         for source_path in sources:
@@ -3904,6 +4822,7 @@ def main(argv=None):
         frames = spec["fn"](emitter.emit)
         record_sources(spec["sources"])
         for key, frame in frames.items():
+            all_frames[(spec["id"], key)] = frame
             base = f"{spec['id']}_{slug(key)}"
             csv_path = os.path.join(tables_dir, base + ".csv")
             tex_path = os.path.join(tables_dir, base + ".tex")
@@ -3912,6 +4831,9 @@ def main(argv=None):
                         "" if key == "main" else f"({key.replace('_', ' ')})")
             table_files += [rel(csv_path), rel(tex_path)]
         print(f"        {spec['id']}: {len(frames)} frame(s)")
+
+    print(f"[step1b] writing {len(IEEE_VIEWS)} IEEE table views")
+    table_files += build_ieee_views(all_frames, out_dir)
 
     print(f"[step2] building {len(FIGURES)} figures"
           f"{' (data only, --no-render)' if args.no_render else ''}")
@@ -3939,6 +4861,11 @@ def main(argv=None):
     numbers_path = os.path.join(out_dir, "NUMBERS.md")
     n_lines = write_numbers_md(numbers_path, emitter.numbers, provenance,
                                stats_check)
+
+    print("[step3b] writing numbers.tex")
+    n_macros = write_numbers_tex(os.path.join(out_dir, "numbers.tex"),
+                                 emitter.numbers)
+    print(f"        {n_macros} macros (values + display variants)")
 
     print("[step4] writing FRAMING.md")
     write_framing_md(os.path.join(out_dir, "FRAMING.md"), emitter.numbers)

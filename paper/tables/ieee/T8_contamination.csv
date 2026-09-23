@@ -1,0 +1,7 @@
+Quantity,Value
+template key,category+scenario_id
+templates in the dataset,66
+templates touched by the 175 calibration tickets,62
+median rows per template,62
+rows surviving whole-template exclusion,210
+dataset rows,4000

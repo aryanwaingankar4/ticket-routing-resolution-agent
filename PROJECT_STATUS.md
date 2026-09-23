@@ -1,9 +1,89 @@
 # Project Status
 
 **Last updated:** 2026-09-23
-**Last commit to move code or a result:** `681f356` — the 8B.3 follow-up,
-comparing gate CSVs by kind on the runner (`compare_gate_csv.py`). Before it,
-`f80a2d5` (8B.3 proper).
+**Last commit to move code or a result:** the **Phase 9A commit** ("Phase 9A:
+the IEEE draft…", the child of `1c72e22`; `git log --grep "Phase 9A:"` finds
+it). It changes the builder, adds two data files and corrects one
+paper-surface number. Before it: `681f356` (the 8B.3 follow-up).
+
+**PHASE 9A IS DRAFTED** (2026-09-23). The gates passed and the work was pushed
+on Aryan's standing instruction for this sub-phase ("commit and push
+automatically only if every gate passes"). **Aryan has not yet reviewed the
+draft itself.** That review, on Overleaf, comes before 9B.
+
+- **What landed:** `paper/main.tex` (IEEEtran conference) and
+  `paper/supplement.tex`, plus `references.bib` and
+  `references_to_check.md`. These are Overleaf-ready and **uncompiled**,
+  because no LaTeX engine is installed and none was installed.
+- **Page estimate:** about 4,700 words of main text, 9 tables (1 full-width)
+  and 3 figures, so **roughly 7 pages plus references**. This is estimated,
+  not compiled.
+- **No typed numbers:** every number is a `\nb{}` macro from the generated
+  `paper/numbers.tex`, and `tests/test_paper_draft.py` enforces this.
+- **Named finding, final wording:** *the data distribution a component is
+  fitted or calibrated on — not the method or the test applied to it — is
+  the binding constraint.* The instance classes are calibration/reference
+  (Finding 4, 4B-1) and training (5C). 2A is related, not an instance, and
+  6C is not an instance.
+- **Supplement:** holds F3, F4, F6 and F7, and T1-paired, T2, T4, T5, T9,
+  T11, T12 (6A and 7B kept separate), T13, T16, T18-ties, T18-headroom and
+  T19. It also carries the long-form bug list and the drift, external and
+  clustering detail. Nothing was dropped.
+- **Open markers:** **8 `% TODO-VERIFY` markers** remain in `main.tex` (six
+  related-work characterisations, the nasscom brief's wording and the
+  benchmark-scope cross-reference). Every bib field not supplied is `TODO`.
+
+**9A FOUND THINGS, and each was corrected in place (rule 8):**
+1. **Occurrence #9 of the recurring bug class.** `T3.baseline.escalation_correct`
+   was published as **6/9** since 8A. That is the adversarial tickets that
+   *escalated*, beside a no-RAG cell counted by *correctness* (3/9). The
+   correct comparison is **9/9 against 3/9**. Three independent derivations
+   agree: the CSV's `correct` column, the adversarial gate at 9/9, and
+   `run_ablation_study.py`'s own "9/9 adversarial tickets correctly
+   escalated". `T3_main.csv` and `.tex` changed; that is the only change to a
+   pre-existing generated value.
+2. **Headroom 1.4575e-04 / 3.18×, not 1.458096e-04 / 3.19×.** The documented
+   value was one float32 ulp off the golden (benchmark index 18). Corrected in
+   CLAUDE.md, the README and the parity-test comment.
+3. **The drift instance's "4–7×" does not hold.** Recomputed, the ratio is
+   **3.2× to 38.2×** the per-ticket null across the four alphas. The paper
+   quotes the recomputed range.
+4. **7C Tier-2 drop: 2.4 points, not 2.5** (7/286).
+5. **FRAMING.md's §5 called G021/G024 "adversarial tickets".** They are
+   45-ticket benchmark items N26 and N31. Its 8B section also typed nine
+   literals. All are now interpolated.
+
+**Transcribed values (`data/cross_platform_record.json`, tag `recorded`):**
+- the container's adv_08 similarity 0.6123799085617065 and Tier-1 confidence
+  0.3182984770932253, from this file's 8B block;
+- the runner's adv_08 similarity 0.6123793125152588, from Aryan's
+  transcription of the run `35799173134` job log;
+- the runner's pre-fix Tier-1 confidence 0.31818032412549274, from this
+  file's 8B.3 block, confirmed by Aryan from the same log;
+- the golden-parity outcome "passed" on run `35869187805`, from this file.
+
+The file stores raw values only. The builder computes every difference. The
+54-ticket maxima (2.384e-07, 1.17e-15) and 8.88e-16 have no raw values behind
+them, so they were **dropped from the paper**.
+
+**Gates, re-run and not quoted:**
+- `pytest`: **456 passed**, 0 failed, errored or skipped (446 plus 10 in
+  `tests/test_paper_draft.py`).
+- Adversarial gate: **9/9**, CSV byte-identical (`git diff --exit-code`
+  exit 0).
+- Goldens: **45/45 and 9/9** exact (similarity delta 0.000e+00, `tier1_conf`
+  ≤ 6.661e-16).
+- Ablation baseline: **32/45**, CSV byte-identical, re-derived from the CSV
+  as 32/45.
+- Paper parity **19/19** plus draft tests **10/10**. NUMBERS.md went from
+  188 to **257** numbers, and every pre-existing value is unchanged except
+  the T3 correction. Anchored mismatches: 0.
+- No stray `.npy` files.
+
+**Next: Aryan reviews the draft on Overleaf, then Phase 9B** (see "Immediate
+next step").
+
+---
 
 **PHASE 8 IS CLOSED** (2026-09-23). 8A, 8A.1, 8B, 8B.1, 8B.2 and 8B.3 are all
 gated and pushed.
@@ -410,7 +490,7 @@ measured under; it did not get to answer. **After 7B and 7C, Finding 1 has not
 been shown either to hold or to fail outside its original corpus.** Two post-hoc
 notes carry forward: the blocking rule may be **mis-specified for this design**
 (a question for the gate), and the mechanism **is** visible in accuracy — the
-paraphrase shift cost Tier-1 **10.5 points** against Tier-2's **2.5** — but not
+paraphrase shift cost Tier-1 **10.5 points** against Tier-2's **2.4** (corrected in 9A from 2.5: 7/286 = 2.45%) — but not
 in coverage. Phase 7B is COMPLETE, GATED and PUSHED (`f789b8d`, 2026-09-22).
 **Verdict: FINDING 1 DOES NOT REPLICATE on a different generator's corpus.**
 Under a measured covariate shift (domain AUC 0.8472), TF-IDF and BGE transfer
@@ -2237,7 +2317,7 @@ published figure drifts — the goldens pattern applied to the write-up.
 
 | Sub-phase | Scope |
 |---|---|
-| **9A** | IEEE draft |
+| **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
 | **9B** | Pre-submission audit |
 | **9C** | Author explainer |
 
@@ -2272,6 +2352,25 @@ it.
    quoted as a result.
 6. **The reliability ECEs** are a ceiling effect. Never write
    "over-confident".
+7. **"The production pipeline scores 6/9 on adversarial escalation"** (paper
+   surface, 8A–8B). This was a mislabelled count (occurrence #9). The corrected
+   figure is **9/9 decided correctly against 3/9 without the gate**, and 6/9 is
+   the number that *escalate*.
+8. **Drift "4–7×"** does not hold across the four alphas. Use
+   `T13.realistic_traffic.ratio_to_null.min/max` (3.2×–38.2×).
+9. **Headroom "1.458096e-04 / 3.19×"** is one float32 ulp off. Use
+   `T18.headroom.*` (1.4575e-04 / 3.18×).
+10. **7C Tier-2 "2.5 points"** should be **2.4**.
+11. **"Adversarial tickets G021 and G024"**: both are 45-ticket benchmark
+    items (N26, N31).
+12. **The 54-ticket cross-platform maxima (2.384e-07, 1.17e-15) and the
+    8.88e-16 vocabulary-fix cost**: there are no raw values behind them, so
+    they are not quoted. Quote the adv_08 differences from `T18.*`.
+
+**9B must also:** compile on Overleaf and record the real page count; fill
+every `TODO` in `references.bib` from `references_to_check.md`; resolve the 8
+`% TODO-VERIFY` markers; and re-run `tests/test_paper_draft.py` after any
+edit to the draft.
 
 ### Explicitly FUTURE WORK — not in this programme
 
@@ -2307,6 +2406,19 @@ endpoint.
 ---
 
 ## Immediate next step
+
+**Phase 9A is DRAFTED. Next: Aryan reviews `paper/main.tex` on Overleaf, then
+Phase 9B, the pre-submission audit.** 9B opens in plan mode like every
+sub-phase, and works against:
+- the 9B audit list above, now 12 items;
+- the 8 `% TODO-VERIFY` markers;
+- `paper/references_to_check.md`, where every bib field is still `TODO`;
+- a real compiled page count, where 9A could only estimate about 7 pages.
+
+Any edit to the draft must keep `tests/test_paper_draft.py` green. A new
+number goes through `emit()` and the rebuild, never into the `.tex`.
+
+*(The text below is the record from before 9A.)*
 
 **Phase 8 is CLOSED. Phase 9A, the IEEE draft, is next.** Phase 8 hands it:
 (a) the reproducibility section's three-way split, where decisions are exact
@@ -2502,11 +2614,13 @@ from a committed script**, not from an interactive session.
   the resolution-clustering calibration behind the production 0.80 threshold.
   Regenerating them under BGE requires re-deriving that threshold in the same
   change. Never a side effect.
-- **The recurring bug class has surfaced eight times** (see CLAUDE.md "The
+- **The recurring bug class has surfaced nine times** (see CLAUDE.md "The
   recurring bug class"), twice reaching published results — once standing for
-  eleven days. Anything touching a model, index, threshold, routing/eligibility
-  test, grouping key, packaging rule or a hash of checkout-rewritable bytes
-  should be assumed to have a **ninth** instance waiting. Run `pytest` and the adversarial gate before
+  eleven days — and a third time reaching the generated paper surface (#9, the
+  T3 adversarial count, found in 9A). Anything touching a model, index,
+  threshold, routing/eligibility test, grouping key, packaging rule, a hash of
+  checkout-rewritable bytes or **the label on a count** should be assumed to
+  have a **tenth** instance waiting. Run `pytest` and the adversarial gate before
   believing a green result, and check every count against a second,
   independent derivation. Phase 5B closed one latent instance:
   `run_ablation_study.py` was still refitting Tier-1 locally instead of

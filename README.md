@@ -3944,7 +3944,7 @@ platforms. It is used because it is derived and because it covers the observed
 deltas -- 2.384e-07 container, ~7e-07 runner -- with margin. The CSV comparison
 adds 6-dp rounding on top (5e-07 + gamma_n), since those errors add rather than
 replace one another. **Headroom to the gate falls from 146x to 3.19x** (closest
-golden similarity is 1.458096e-04 from 0.67); that is the honest price of
+golden similarity is 1.4575e-04 from 0.67 -- corrected in Phase 9A from 1.458096e-04, which was one float32 ulp off the golden value); that is the honest price of
 deriving the bound instead of fitting it, and the gate-distance check still
 fails if any ticket ever lands inside the tolerance of 0.67.
 
@@ -3999,6 +3999,133 @@ the two other copies of it.
 The job-log API returns 403 without admin credentials. The pass bounds the
 delta at 1e-12, because `verify_deployment.py` compares it to the golden at
 that tolerance and would have failed at the old 1.18e-04.
+
+### Phase 9A - the IEEE draft, and a ninth instance of the recurring bug
+
+**What landed.** `paper/main.tex` (IEEEtran conference) and
+`paper/supplement.tex` (the overflow), with `paper/references.bib` and
+`paper/references_to_check.md`. There is no LaTeX engine on this machine, so the
+sources are Overleaf-ready and **uncompiled**. The page count is an estimate:
+about 4,700 words of main text plus 9 tables (1 full-width) and 3 figures comes
+to **roughly 7 pages plus references**. Offline throughout: zero Gemini calls,
+zero Ollama calls, no model load. Production is frozen.
+
+**No number is typed into the draft.** The builder now writes
+`paper/numbers.tex`, which defines every `NUMBERS.md` value as a `\nb{<id>}`
+macro, along with generated display variants (`@pct1`, `@r3`, `@k`, `@n`,
+`@ci`, `@sci2`, ...), so rounding is never done by hand either. An unknown id
+is a compile error.
+
+`tests/test_paper_draft.py` (10 tests, fast, in CI's `not slow` subset) checks:
+- that no digit is typed into the draft's prose, with a probe proving the lint
+  can fail;
+- that every macro, `\input`, figure, `\ref` and `\cite` resolves;
+- that environments are balanced;
+- that every **clause group is quoted whole**: quoting a trigger number in a
+  section requires all of its companions in that section;
+- that no retired or forbidden phrasing appears.
+
+Tables come from `paper/tables/ieee/`. These are 25 column selections of the
+existing frames, sized for an IEEE column, and they compute nothing except
+rounding.
+
+**The named finding's final wording (settled here):** *the data distribution a
+component is fitted or calibrated on -- not the method or the test applied to
+it -- is the binding constraint.* It has two scoped instance classes:
+- **calibration/reference distributions:** Finding 4 (coverage) and 4B-1's
+  realistic-traffic arm (drift);
+- **the training distribution:** 5C (classification).
+
+2A stays a related dataset limitation, and 6C is not an instance. "Fitted or
+calibrated" covers 5C without stretching the word calibration over training.
+"The method or the test" keeps the clause that 4B needs. "Component" scopes the
+claim to each part of the pipeline.
+
+**OCCURRENCE #9 of the recurring bug class: the ablation table's adversarial
+column.** Since 8A, `build_t3` had published `T3.baseline.escalation_correct =
+6/9`. That count was the adversarial tickets that **escalated**, not the ones
+**decided correctly**. The no-RAG arm beside it was counted by correctness
+(3/9), so the two cells compared different quantities. The baseline's `correct`
+column is True on all 9 rows: 6 tickets escalate and should, and 3 proceed and
+should. The adversarial regression gate reports 9/9 independently. **Corrected:
+9/9 against 3/9.** `T3_main.csv` and `T3_main.tex` changed, and the column is
+renamed `adversarial9_decided_correctly`. A new `T3.baseline.adversarial_escalated
+= 6/9` keeps the other reading, and the builder now asserts all three counts.
+The old phrasing is on the do-not-cite list. The lab notebook's own "6/9 should
+have escalated" was correct throughout; only the paper surface mislabelled it.
+It was caught by **reading the rendered draft against the source CSV**, which is
+not a control. The assertion is the control now.
+
+**Three documented figures did not reproduce when given a writer.** Each is
+corrected in place:
+- **Gate-distance headroom: 1.4575e-04 and 3.18x, not 1.458096e-04 and 3.19x.**
+  The closest golden similarity is benchmark index 18, at 0.6701457500457764.
+  The documented value is one float32 ulp higher, probably taken from a
+  container measurement. The conclusion (thin headroom) is unchanged. It is now
+  emitted as `T18.headroom.similarity_distance`, recomputed from the goldens.
+- **The drift instance's "4-7x".** Recomputed from
+  `drift_evaluation_summary.json`, the realistic-traffic flag rate is **3.2x to
+  38.2x** the per-ticket null across the four alphas (38.2, 9.4, 5.3, 3.2). The
+  "4-7x" range does not hold across all four, so the paper quotes the
+  recomputed range and not that one. The finding is, if anything, stronger.
+- **7C's Tier-2 accuracy drop: 2.4 points, not 2.5** (7/286 = 2.45%).
+
+**FRAMING.md carried typed literals and one factual error.** Its Phase 8B
+section typed nine numbers despite a header saying every number is
+interpolated. Its section 5 called G021 and G024 **"adversarial tickets"**.
+They are 45-ticket benchmark items: N26 at 0.7010 and N31 at 0.6747. Both
+passed the gate and got drafts a human labelled ungrounded. Everything is now
+interpolated from three new generated tables:
+- **T17: the gate errs in both directions.** Its two directions are
+  cross-checked against 6C's eligible and escalated arms.
+- **T18: cross-platform reproducibility.** It also holds the vocabulary tie
+  profile and the gate headroom.
+- **T19: corpus and evaluation-set structure.**
+
+**Recorded, not regenerable: `data/cross_platform_record.json`.** Five values
+were measured once on other platforms and cannot be re-measured here. They are
+**transcribed by hand** as raw values: no deltas and no approximations. Each
+carries its machine, commit, CI run id, first-recorded document and `status:
+recorded_not_regenerable`, and each has a new `recorded` tag in NUMBERS.md.
+Every difference is computed by the builder from these values and the goldens.
+Where each value was transcribed from:
+- the container's adv_08 similarity 0.6123799085617065 and Tier-1 confidence
+  0.3182984770932253 (commit `3885393`): from PROJECT_STATUS.md, 8B block;
+- the runner's adv_08 similarity 0.6123793125152588 (run `35799173134`,
+  `91a5b38`): from Aryan's transcription of that run's job log;
+- the runner's pre-fix Tier-1 confidence 0.31818032412549274 (same run): from
+  PROJECT_STATUS.md 8B.3 and `train_tier1.py`, confirmed by Aryan from the same
+  log;
+- the golden-parity outcome "passed" on run `35869187805` (`07136ec`): from
+  PROJECT_STATUS.md.
+
+**Dropped from the paper** because only a pre-computed delta was ever recorded,
+with no raw values behind it: the 54-ticket maxima 2.384e-07 and 1.17e-15, and
+the vocabulary fix's 8.88e-16. The paper quotes the adv_08 differences, which
+the builder computes as 1.19e-07 (container) and 7.15e-07 (runner) for the
+similarity, and 1.18e-04 for the runner's pre-fix Tier-1 confidence.
+
+**New writer: `src/experiments/measure_tier1_vocabulary_ties.py`.** It is
+offline, deterministic and platform-independent, because it counts ties and
+does not sort them. It re-derives 8B.3's figures exactly: **4,240 / 11,834 /
+760** on all 4,000 rows, and **950** slots on the 80/20 split, where 4,050 are
+above the cut and 9,622 tie. It is fatal on mismatch. A test re-derives it and
+checks that the committed vocabulary contains all 4,240 data-determined terms.
+
+**Two new sourced numbers for claims the draft needed:**
+- the trained classifier's Infrastructure recall on the 45 is **3/6**, from the
+  Tier-2-only ablation, checked equal to the cascade's;
+- the cost of reweighting charged to Tier-2, **in the non-blocked TF-IDF arm
+  only**: **6/9** Tier-2 configurations moved further from nominal and **5/9**
+  ended outside the band. The earlier "7 of 18" counted the blocked BGE arm,
+  which is never quoted.
+
+**Paper surface:** 188 -> **257 numbers** (every old value unchanged except the
+one T3 correction), 3,747 macros, 62 hashed sources, 0 anchored mismatches, and
+still 1 no-source number. **8 `% TODO-VERIFY` markers** remain in `main.tex`.
+Six are related-work characterisations, one is the nasscom brief's wording and
+one is the benchmark-scope cross-reference. Every bibliography field other than
+a supplied surname or title is `TODO`.
 
 
 ---

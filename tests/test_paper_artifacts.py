@@ -58,6 +58,14 @@ def _sha256(path):
 # separately, against the freshly rebuilt copy.
 NOT_BYTE_COMPARED = {"RECONCILIATION.md"}
 
+# Phase 9A: the draft itself is HAND-WRITTEN and lives in paper/ beside the
+# generated surface. The builder never produces these, so they are excluded
+# from the byte comparison and checked structurally below instead.
+HAND_WRITTEN = {"main.tex", "supplement.tex", "references.bib",
+                "references_to_check.md"}
+NOT_BYTE_COMPARED |= HAND_WRITTEN
+DRAFTS = ("main.tex", "supplement.tex")
+
 
 def _comparable_files(root):
     """Everything whose bytes must not move: values and data, never pixels."""

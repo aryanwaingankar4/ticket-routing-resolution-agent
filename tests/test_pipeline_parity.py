@@ -84,11 +84,16 @@ TOL_FLOAT64 = 1e-12   # 858x the measured worst case
 # otherwise the tolerance could swallow a FLIPPED DECISION, which is the one
 # thing parity exists to catch. Both distances are asserted below, every run.
 #
-#     closest similarity to the 0.67 RAG gate   1.458096e-04  =  3.19x the
+#     closest similarity to the 0.67 RAG gate   1.457500e-04  =  3.18x the
 #                                               derived tolerance
 #     closest tier1_conf to the 0.50 cascade    1.264076e-02
 #
-# 3.19x is THIN, and deliberately reported rather than engineered away: it is
+# (Corrected in Phase 9A: this comment said 1.458096e-04 / 3.19x, which is
+# one float32 ulp above the golden value -- benchmark index 18, similarity
+# 0.6701457500457764. build_paper_artifacts.py now recomputes the distance
+# from the goldens as T18.headroom.similarity_distance.)
+#
+# 3.18x is THIN, and deliberately reported rather than engineered away: it is
 # the honest consequence of deriving the tolerance instead of fitting it to a
 # machine. If a future benchmark ticket lands closer to 0.67 than 4.58e-05, the
 # gate-headroom check below fails and that ticket must be compared exactly.

@@ -1,0 +1,61 @@
+{
+  "description": "Measurements taken ONCE on a platform other than the development machine, which this machine cannot re-measure. Raw values only: no deltas, no approximations. Every difference quoted in the paper is computed from these values and the committed goldens by src/experiments/build_paper_artifacts.py. Every entry was transcribed by hand from the named first-recorded source; status recorded_not_regenerable says so.",
+  "reference": "tests/goldens/adversarial_baseline.json (the Windows goldens the published numbers were produced on)",
+  "entries": [
+    {
+      "id": "container_8b.adv_08.rag_similarity",
+      "quantity": "adv_08 top-1 RAG similarity served over HTTP",
+      "value": 0.6123799085617065,
+      "machine": "local Docker Linux container, python:3.14.3-slim (digest-pinned), on the development laptop",
+      "commit": "3885393",
+      "run_id": null,
+      "first_recorded": "PROJECT_STATUS.md, Phase 8B block ('Container verification'), 2026-09-23",
+      "transcribed_from": "PROJECT_STATUS.md",
+      "status": "recorded_not_regenerable"
+    },
+    {
+      "id": "container_8b.adv_08.tier1_confidence",
+      "quantity": "adv_08 Tier-1 confidence served over HTTP",
+      "value": 0.3182984770932253,
+      "machine": "local Docker Linux container, python:3.14.3-slim (digest-pinned), on the development laptop",
+      "commit": "3885393",
+      "run_id": null,
+      "first_recorded": "PROJECT_STATUS.md, Phase 8B block ('Container verification'), 2026-09-23",
+      "transcribed_from": "PROJECT_STATUS.md",
+      "status": "recorded_not_regenerable"
+    },
+    {
+      "id": "runner_91a5b38.adv_08.rag_similarity",
+      "quantity": "adv_08 top-1 RAG similarity, gates.yml docker build + deployment verification job",
+      "value": 0.6123793125152588,
+      "machine": "GitHub-hosted runner (gates.yml container job)",
+      "commit": "91a5b38",
+      "run_id": "35799173134",
+      "first_recorded": "gates.yml run 35799173134 job log (verify_deployment.py output); supplied by Aryan from the log, 2026-09-23",
+      "transcribed_from": "Aryan's transcription of the run 35799173134 job log",
+      "status": "recorded_not_regenerable"
+    },
+    {
+      "id": "runner_91a5b38.adv_08.tier1_confidence",
+      "quantity": "adv_08 Tier-1 confidence, gates.yml docker build + deployment verification job, BEFORE the Phase 8B.3 vocabulary fix",
+      "value": 0.31818032412549274,
+      "machine": "GitHub-hosted runner (gates.yml container job)",
+      "commit": "91a5b38",
+      "run_id": "35799173134",
+      "first_recorded": "PROJECT_STATUS.md, Phase 8B.3 block, and src/classification/train_tier1.py comment; confirmed by Aryan from the run 35799173134 job log, 2026-09-23",
+      "transcribed_from": "Aryan's transcription of the run 35799173134 job log",
+      "status": "recorded_not_regenerable"
+    },
+    {
+      "id": "runner_07136ec.golden_parity.outcome",
+      "quantity": "outcome of tests/test_pipeline_parity.py on the runner, which compares category, tier, escalated and n_retrieved EXACTLY on every golden ticket",
+      "value": "passed",
+      "machine": "GitHub-hosted runner (gates.yml full-suite job)",
+      "commit": "07136ec",
+      "run_id": "35869187805",
+      "first_recorded": "PROJECT_STATUS.md, top block ('8B.3's gate evidence is gates.yml run #4'), verified against the public Actions API, 2026-09-23",
+      "transcribed_from": "PROJECT_STATUS.md",
+      "status": "recorded_not_regenerable"
+    }
+  ]
+}

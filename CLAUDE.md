@@ -32,7 +32,9 @@ operating point exists at Signal A's calibration-conditional binomial, α=0.05,
 W=100–200, and nothing was promoted into config), Phase 5A (the conformal
 template-grouping correction), Phase 5B (the honest ablation — the cascade is a
 latency optimisation, not an accuracy gain) and Phase 5C (zero-shot LLM
-classification baselines, Gemini and a local Qwen2.5-3B). The work now follows the agreed **Phase 5–9
+classification baselines, Gemini and a local Qwen2.5-3B). Phases 6 (6A–6C),
+7 (7A–7C, closed) and 8 (8A–8B.3, closed) are complete too, and Phase 9A (the
+IEEE draft, `paper/main.tex`) has been written. The work follows the agreed **Phase 5–9
 publication-readiness programme**, which is recorded in `PROJECT_STATUS.md`
 along with the current state — read it first.
 
@@ -186,6 +188,39 @@ is: a result file changed (the paper is stale) or the builder changed.
 
 ```powershell
 python src/experiments/build_paper_artifacts.py --force
+```
+
+**The draft is the one hand-written exception (Phase 9A).** `paper/main.tex`,
+`paper/supplement.tex`, `paper/references.bib` and
+`paper/references_to_check.md` are written by hand. Everything else in `paper/`
+is still generated. **The draft types no number.** It quotes
+`\nb{<id>}` from the generated `paper/numbers.tex`, which holds every
+`NUMBERS.md` value plus display variants (`@pct1`, `@r3`, `@k`, `@n`, `@ci`,
+`@sci2`, `@abs@...`). Rounding is therefore generated too. To quote a new
+number, `emit()` it in the builder and rebuild; **never type it into the
+`.tex`**. Tables are `\input` from `paper/tables/ieee/`, which are column
+selections of the existing frames and recompute nothing.
+`tests/test_paper_draft.py` (fast, so it runs in the `not slow` subset and
+in CI) fails on:
+- a typed digit;
+- an unresolved macro, `\ref`, `\cite`, `\input` or figure;
+- an unbalanced environment;
+- a **clause group quoted partially**;
+- a retired or forbidden phrasing ("bit-identical", "over-confident", "novel",
+  "state-of-the-art", "LLMs beat the pipeline", ...).
+
+No LaTeX engine is installed, so do not install one. Compile on Overleaf.
+
+**Values measured once on another platform** live in
+`data/cross_platform_record.json`. Store **raw values only**, with no deltas
+and no approximations. Each carries its machine, commit, run id,
+first-recorded document and `status: recorded_not_regenerable`, and they are
+tagged `recorded` in NUMBERS.md. The builder computes every difference. A
+summary statistic with no raw values behind it does not go in.
+
+```powershell
+python src/experiments/measure_tier1_vocabulary_ties.py     # 8B.3 tie counts, fatal on mismatch
+pytest tests/test_paper_draft.py                            # the draft's rules, ~3s
 ```
 
 ### Experiments
@@ -574,7 +609,7 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   designs.**
 - **Finding 1's mechanism IS confirmed in accuracy, even though 7C is
   blocked.** The paraphrase shift cost Tier-1 **10.5 accuracy points**
-  (0.3776 → 0.2727, 108 → 78 of 286) against Tier-2's **2.5** (0.3776 → 0.3531,
+  (0.3776 → 0.2727, 108 → 78 of 286) against Tier-2's **2.4** (0.3776 → 0.3531,
   108 → 101) — about 4×. Bootstrapped before being written down:
   difference-in-differences **−0.0804, 95% CI [−0.1364, −0.0210]**, excluding
   zero (10,000 paired draws, seed 42). 7B's version shift produced no such
@@ -731,7 +766,7 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   silent stale-artifact mismatch has bitten this project **four** times, most recently
   in `run_ablation_study.py`, where it reached published results. (That count is for
   the *stale-artifact* form specifically; the wider bug class it belongs to now stands
-  at **six** — see "The recurring bug class".)
+  at **nine** — see "The recurring bug class".)
 - **Tier-1 is a persisted artifact, not a startup refit.** It is fitted on the
   **full** 4,000 rows — never an 80/20 split, unlike every other script in
   `src/classification/` — because that is what the goldens were captured under. The
@@ -868,8 +903,10 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   adds 6-dp rounding to it (5e-07 + γ_n), because those two errors add rather
   than replace one another.
 
-  Headroom: the closest similarity is **1.458096e-04** from the 0.67 gate —
-  **3.19×** the derived tolerance, far thinner than the 146× a fitted 1e-6
+  Headroom: the closest similarity is **1.4575e-04** from the 0.67 gate —
+  **3.18×** the derived tolerance (corrected in 9A from 1.458096e-04 /
+  3.19×, one float32 ulp off the golden; now emitted as
+  `T18.headroom.similarity_distance`), far thinner than the 146× a fitted 1e-6
   gave, and reported rather than engineered away. The closest `tier1_conf` is
   **1.264e-02** from 0.50.
 
@@ -980,7 +1017,7 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
 
 ## The recurring bug class
 
-Eight occurrences so far, all the same shape: a value or artifact that is wrong for its
+Nine occurrences so far, all the same shape: a value or artifact that is wrong for its
 context, stays internally consistent, and therefore produces wrong results with no
 error. The first four were model swaps; the fifth and sixth show the shape is not
 limited to those — one was a routing/eligibility test, the other a grouping key.
@@ -1047,9 +1084,22 @@ limited to those — one was a routing/eligibility test, the other a grouping ke
    "Known inconsistencies").
    **Never hash working-tree bytes to decide whether a result changed.**
 
+9. **The paper's ablation table counting the wrong thing (found in Phase 9A).**
+   From 8A on, `build_t3` published `T3.baseline.escalation_correct = 6/9`.
+   That count was the adversarial tickets that **escalated**, not those
+   **decided correctly**. The no-RAG cell beside it (3/9) was counted by
+   correctness, so the table compared two different quantities. The baseline's
+   `correct` column is True on all 9 (6 escalate and should, 3 proceed and
+   should), which the adversarial gate reports independently as 9/9. It was
+   internally consistent: a real count, from the right file, under a plausible
+   label. **Caught by reading the rendered draft against the source CSV**,
+   which is not a control. The builder now asserts escalated == expected and
+   correct == n, and the corrected cell is 9/9. **A count's label must say what
+   was counted; check it against the column it claims to count.**
+
 When touching anything model-related — or any routing/eligibility test, any grouping
-key, any rule about which files reach a build, or **any hash of bytes that a
-checkout can rewrite** — assume a **ninth** is waiting. Run `pytest` and the adversarial gate before
+key, any rule about which files reach a build, **any hash of bytes that a
+checkout can rewrite**, or **any label on a count** — assume a **tenth** is waiting. Run `pytest` and the adversarial gate before
 believing a green result, and check any count you rely on against a second, independent
 derivation of it.
 

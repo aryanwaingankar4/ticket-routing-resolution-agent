@@ -1,0 +1,152 @@
+% paper/supplement.tex -- Phase 9A supplementary material. HAND-WRITTEN.
+% Same rules as main.tex: every number is \nb{<id>} from numbers.tex, every
+% table and figure is generated, and "% TODO-VERIFY" marks an unchecked claim.
+% Compile separately on Overleaf (pdfLaTeX + BibTeX).
+\documentclass[conference,onecolumn]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cite}
+\usepackage{url}
+\graphicspath{{figures/}}
+\input{numbers.tex}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\begin{document}
+
+\title{Supplementary Material:\\Calibrated Escalation for IT Ticket Triage}
+\author{\IEEEauthorblockN{TODO author list}}
+\maketitle
+
+This supplement carries every result the main paper summarises but has no room for. Nothing here is a new experiment. Section numbers are prefixed with S.
+
+% ===========================================================================
+\section{Corpus and evaluation sets}
+% ===========================================================================
+Table~\ref{tab:ieee_t19_corpus} lists the sizes of the corpus and the fixed evaluation sets. The out-of-template benchmark and the adversarial set are read-only and have never been regenerated.
+
+\input{tables/ieee/T19_corpus.tex}
+
+\textbf{Near-duplication needs a control.} On the external corpus, \nb{T11.7a.near_duplicate_rate_external@pct1}\% of rows have a BGE near-duplicate, which looks disqualifying until our own corpus is measured the same way: it scores \nb{T11.7a.near_duplicate_rate_our_corpus@pct1}\%. High near-duplication is a property of template-generated corpora generally, not a flaw of that dataset, and a redundancy rate is never quoted without saying what it is high relative to. The external corpus is independently generated data, not real production data: it has \nb{T11.7a.rows_english} English rows, of which \nb{T11.7a.distinct_texts} are distinct.
+
+% ===========================================================================
+\section{Retrieval gate and conformal novelty detection}
+% ===========================================================================
+Table~\ref{tab:ieee_t5_rag_gate} gives the in-domain and out-of-domain trade-off at thresholds around the live gate. A contamination check: \nb{T5.self_retrieval_rate} in-domain calibration tickets retrieve their own source row first. Table~\ref{tab:ieee_t9_novelty} gives conformal novelty detection. Seed-level out-of-domain detection is \nb{T9.ood_detection_seed_level@pct0}\% and variant-level \nb{T9.ood_detection_variant_level@pct1}\%. The smallest attainable p-value is \nb{T9.min_attainable_p@r4} at this calibration size, and the guarantee is marginal over the calibration draw, not conditional on it.
+
+\input{tables/ieee/T5_rag_gate.tex}
+\input{tables/ieee/T9_novelty.tex}
+
+% ===========================================================================
+\section{Cascade calibration and in-distribution reliability}
+% ===========================================================================
+Table~\ref{tab:ieee_t4_sweep} gives the threshold derived at each target accuracy and its effect on both benchmarks. Table~\ref{tab:ieee_t4_reliability} and Fig.~\ref{fig:reliability} show the in-distribution reliability of both tiers. Observed accuracy is \nb{T4.observed_accuracy_every_bin@r1} in every bin, so the expected calibration error measures the distance to a ceiling, and both tiers are under-confident there. Neither figure is evidence of calibration on real traffic. The second calibration attempt (a small hand-written set) was never committed, cannot be re-run, and its figures are not quoted.
+
+\input{tables/ieee/T4_sweep.tex}
+\input{tables/ieee/T4_reliability.tex}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{F4_reliability_diagrams_for_both_cascade_tiers.pdf}
+\caption{Reliability diagrams for both tiers on in-distribution tickets: a ceiling effect.}
+\label{fig:reliability}
+\end{figure}
+
+% ===========================================================================
+\section{Zero-shot baselines in detail}
+% ===========================================================================
+Table~\ref{tab:ieee_t1_paired} gives every exact McNemar test, and Table~\ref{tab:ieee_t2_percategory} gives per-category behaviour. Prompts were byte-identical across the two arms on all \nb{T2.prompt_identity.benchmark45} benchmark tickets, verified by hash in both directions. Neither arm returned an unparseable answer (\nb{T1.zeroshot_gemini.unparseable.benchmark45} and \nb{T1.zeroshot_qwen.unparseable.benchmark45}). Qwen2.5-3B predicted Database for no ticket at all (recall \nb{T2.qwen.database.recall.benchmark45}), so its Database precision is undefined, not zero. Everything it could not place went to Application, whose precision fell to \nb{T2.qwen.application.precision.benchmark45@r3}. Infrastructure recall is \nb{T2.gemini.infrastructure.recall.benchmark45@pct0}\% for both LLMs and \nb{T2.tier2.infrastructure.recall.benchmark45@pct0}\% for the trained classifier.
+
+\input{tables/ieee/T1_paired.tex}
+\input{tables/ieee/T2_percategory.tex}
+
+% ===========================================================================
+\section{Deferral rules: two corpora, two readings}
+% ===========================================================================
+\textbf{Our data.} Table~\ref{tab:ieee_t12_deferral_ours} and Fig.~\ref{fig:riskcov}. The live gate's operating coverage is \nb{T12.6a.gate_coverage.benchmark45@pct1}\% of the benchmark and \nb{T12.6a.gate_coverage.deployment175@pct1}\% of the deployment set. At that coverage \nb{T12.6a.comparisons_with_signal} of \nb{T12.6a.comparisons_total} comparisons signal, and \nb{T12.6a.degenerate_configurations} configurations are degenerate. The reading is \emph{no evidence either way on the gated axis}, never that conformal deferral is worse.
+
+\textbf{The external corpus.} Table~\ref{tab:ieee_t12_deferral_external}. There the gated axis resolves: the live gate covers \nb{T12.7b.gate_coverage@pct1}\% of the test arm, or \nb{T12.7b.n_at_gate} tickets. Of those comparisons, \nb{T12.7b.risk_signals} signal, and all favour the confidence incumbent. That reading belongs to a different corpus, with a transplanted gate and unaudited labels, and it is never merged with the reading on our data.
+
+\input{tables/ieee/T12_deferral_ours.tex}
+\input{tables/ieee/T12_deferral_external.tex}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{F3_risk_coverage_curves_for_four_deferral_rules_phase_6a.pdf}
+\caption{Risk--coverage curves for four deferral rules on our data. AURC averages over coverages the live gate never runs at.}
+\label{fig:riskcov}
+\end{figure}
+
+% ===========================================================================
+\section{Drift detection}
+% ===========================================================================
+The drift evaluation measured each test's null false-alarm rate before its power (Table~\ref{tab:ieee_t13_drift_null}, Fig.~\ref{fig:drift}). The verdict is \emph{measured, not shipped}. \nb{T13.eligible_operating_points} operating points are eligible, and nothing was promoted into configuration.
+\begin{itemize}
+\item \emph{Conditional binomial.} Its null holds at every window (\nb{T13.conditional_binomial.null_rate_min@r3} to \nb{T13.conditional_binomial.null_rate_max@r3}).
+\item \emph{Marginal binomial.} It reaches \nb{T13.marginal_binomial.null_rate_at_w200_min@r3} to \nb{T13.marginal_binomial.null_rate_at_w200_max@r3} at the largest window, so it is usable only at small windows.
+\item \emph{Kolmogorov--Smirnov.} Its null rises from \nb{T13.ks.null_rate_at_w25@r3} to \nb{T13.ks.null_rate_at_w200@r3} as the window grows. It reads the p-values' discreteness, not drift, and it is never an alarm.
+\end{itemize}
+Table~\ref{tab:ieee_t13_realistic} gives the realistic-traffic arm, which is the drift instance of the named finding. Every power number is provisional, because its in-domain portion reuses the reference tickets.
+
+\input{tables/ieee/T13_drift_null.tex}
+\input{tables/ieee/T13_realistic.tex}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{F6_measured_null_false_alarm_rate_against_window_size.pdf}
+\caption{Measured null false-alarm rate against window size.}
+\label{fig:drift}
+\end{figure}
+
+% ===========================================================================
+\section{External validity}
+% ===========================================================================
+Table~\ref{tab:ieee_t11_external_7b} gives the version-shift design, calibrated on \nb{T11.7b.n_calibration} tickets and tested on \nb{T11.7b.n_test}, with an operating domain AUC of \nb{T11.7b.domain_auc_operating@r4}. \nb{T11.7b.rows_inside_band} of its pre-registered readings fall inside the band. Only \nb{T11.7b.boundary_contamination_rate@pct1}\% of test tickets have a near-duplicate in the training or calibration data. That rate is low because the reference set is small, not because the corpus changed. The secondary design resolved nothing and supplies no headline.
+
+Table~\ref{tab:ieee_t11_paraphrase_7c} gives the paraphrase-shift design. The manipulation worked: mean TF-IDF cosine between original and paraphrase is \nb{T11.7c.tfidf_mean_cosine@r3}, against \nb{T11.7c.bge_mean_cosine@r3} for BGE, over \nb{T11.7c.n_pairs} pairs. The pre-registered rule nonetheless blocked the primary. At this test size the band must include the test-sampling term. The calibration-only band is $\pm$\nb{T11.7c.calibration_only_band_2sd@r4}, and the combined band is $\pm$\nb{T11.7c.combined_band_2sd@r4}. Every coverage number there is post-hoc and is not a verdict. Fig.~\ref{fig:paraphrase} shows the post-hoc accuracy contrast.
+
+\input{tables/ieee/T11_external_7b.tex}
+\input{tables/ieee/T11_paraphrase_7c.tex}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{F7_accuracy_under_a_paraphrase_shift_phase_7c_post_hoc.pdf}
+\caption{Accuracy under a paraphrase shift (post-hoc). The lexical tier loses far more than the embedding tier.}
+\label{fig:paraphrase}
+\end{figure}
+
+% ===========================================================================
+\section{Resolution clustering and automation flagging}
+% ===========================================================================
+Production clusters resolution text with MiniLM at a pooled cliff edge of \nb{T16.minilm.pooled_cliff@r2}. BGE was measured at \nb{T16.bge.pooled_cliff@r2} and not promoted. Table~\ref{tab:ieee_t16_pilot} gives the per-category cliff edges. The share of tickets in flagged clusters ranges from \nb{T16.flagged_share.min} to \nb{T16.flagged_share.max}. That range is a finding about which categories have standardised fixes, not a defect of the clustering. The validation pilot found \nb{T16.pilot.false_merges} false merges, with a rule-of-three upper bound of \nb{T16.pilot.rule_of_three_upper@r2}. The two configurations are indistinguishable on precision and differ only in recall, so promotion is a product decision about review-queue capacity.
+
+\input{tables/ieee/T16_pilot.tex}
+
+% ===========================================================================
+\section{The recurring bug class, in full}
+% ===========================================================================
+Each of these produced a plausible result with no error. We list them because the shape, not any single fix, is the lesson.
+\begin{enumerate}
+\item \textbf{Stale embedding cache.} During the embedding-model swap, a cache keyed without the model name was silently reused.
+\item \textbf{Private constants.} The adversarial gate script kept its own copies of the old model's thresholds.
+\item \textbf{Mismatched encoder.} A batch script encoded tickets with one model against an index built by another. The dimension check that now guards every load did not exist yet.
+\item \textbf{A stale ablation.} The ablation study carried its own loaders and measured the entire pre-swap pipeline. The numbers reached published results before they were caught.
+\item \textbf{Wrong status enum.} The groundedness harness decided eligibility by a status value that belongs to a different gate. It would have drafted for every escalating ticket. The dry run's count disagreed with an independently measured one, and that exposed it.
+\item \textbf{Incomplete grouping key.} The contamination diagnostic grouped by scenario alone. Scenario identifiers are unique only within a category, so all categories' templates merged. The result reached published results. Auditing the documents against the dataset generator's own comment caught it.
+\item \textbf{A packaging rule.} A container ignore pattern did not cross directory separators, so a developer's cached embeddings were copied into the image and reused. Reading a build log caught it, and a build-time guard now enforces the rule.
+\item \textbf{Hashing checkout bytes.} Provenance hashes over working-tree bytes differed across platforms because of line-ending conversion, and every source looked changed although none was. Content is now hashed with line endings normalised.
+\item \textbf{A mislabelled count (found writing this paper).} The ablation table counted adversarial tickets that \emph{escalated} (\nb{T3.baseline.adversarial_escalated}) and labelled them as decided correctly. The no-gate arm beside it was counted by correctness. Correctly counted, the baseline decides \nb{T3.baseline.escalation_correct} adversarial tickets correctly, against \nb{T3.norag.escalation_correct} without the gate. The adversarial regression gate reports the former independently.
+\end{enumerate}
+
+% ===========================================================================
+\section{Reproducibility details}
+% ===========================================================================
+Table~\ref{tab:ieee_t18_ties} gives the vocabulary tie profile of both fits, and Table~\ref{tab:ieee_t18_headroom} gives the gate-distance check for both gates. The Tier-1 comparison tolerance is \nb{T18.tier1_tolerance@sci1}. The closest golden Tier-1 confidence is \nb{T18.headroom.tier1_distance@sci2} from the cascade gate. Every value in the main paper's cross-platform table that comes from another platform is a raw recorded value. Its machine, commit, CI run and first-recorded document are listed in the committed record file, and the differences are computed by the build script.
+
+\input{tables/ieee/T18_ties.tex}
+\input{tables/ieee/T18_headroom.tex}
+
+\end{document}

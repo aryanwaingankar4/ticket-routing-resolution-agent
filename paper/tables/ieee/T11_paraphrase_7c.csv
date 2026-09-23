@@ -1,0 +1,13 @@
+Arm,Tier,alpha,n test,Gap (post-hoc),Combined pm2 s.d.,Cal.-only pm2 s.d.
+original,tier1,0.20,286,0.0007,0.0522,0.0220
+original,tier1,0.10,286,-0.0049,0.0391,0.0165
+original,tier1,0.05,286,0.0045,0.0284,0.0120
+original,tier2,0.20,286,0.0112,0.0522,0.0220
+original,tier2,0.10,286,-0.0049,0.0391,0.0165
+original,tier2,0.05,286,0.0045,0.0284,0.0120
+paraphrased,tier1,0.20,286,-0.0517,0.0522,0.0220
+paraphrased,tier1,0.10,286,-0.0259,0.0391,0.0165
+paraphrased,tier1,0.05,286,0.0045,0.0284,0.0120
+paraphrased,tier2,0.20,286,-0.0133,0.0522,0.0220
+paraphrased,tier2,0.10,286,-0.0049,0.0391,0.0165
+paraphrased,tier2,0.05,286,0.0045,0.0284,0.0120

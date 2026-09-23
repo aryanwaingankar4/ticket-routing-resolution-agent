@@ -1,0 +1,5 @@
+Mode,45-ticket,Deploy.,Adv. correct
+baseline (production cascade + RAG gate),32/45,131/175,9/9
+no-cascade (Tier-1 answers everything),16/45,91/175,n/a
+tier2-only (the control that isolates the cascade),33/45,132/175,n/a
+no-rag (RAG similarity gate removed),n/a,n/a,3/9

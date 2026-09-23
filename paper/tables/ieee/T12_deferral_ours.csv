@@ -1,0 +1,17 @@
+Tier,Set,Rule,Gate cov.,Degenerate,Verdict at gate,DeltaAURC
+tier1,benchmark45,aps,0.089,yes,no signal on the gated axis,0.0013
+tier1,benchmark45,confidence,0.089,yes,--,--
+tier1,benchmark45,lac,0.089,yes,no signal on the gated axis,0.0599
+tier1,benchmark45,margin,0.089,yes,no signal on the gated axis,0.0118
+tier1,deployment175,aps,0.189,no,no signal on the gated axis,-0.0018
+tier1,deployment175,confidence,0.189,no,--,--
+tier1,deployment175,lac,0.189,no,no signal on the gated axis,0.0556
+tier1,deployment175,margin,0.189,no,no signal on the gated axis,0.0121
+tier2,benchmark45,aps,0.089,yes,no signal on the gated axis,0.0280
+tier2,benchmark45,confidence,0.089,yes,--,--
+tier2,benchmark45,lac,0.089,yes,no signal on the gated axis,-0.0421
+tier2,benchmark45,margin,0.089,yes,no signal on the gated axis,-0.0207
+tier2,deployment175,aps,0.189,yes,no signal on the gated axis,0.0133
+tier2,deployment175,confidence,0.189,yes,--,--
+tier2,deployment175,lac,0.189,yes,no signal on the gated axis,0.0032
+tier2,deployment175,margin,0.189,yes,no signal on the gated axis,-0.0020

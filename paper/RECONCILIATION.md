@@ -87,17 +87,17 @@ Every statistic-shaped token in the four documents -- decimals with three or mor
 | document | verdict | occurrences |
 |---|---|---|
 | CLAUDE.md | DO-NOT-CITE literal | 5 |
-| CLAUDE.md | matched to a committed source | 45 |
-| CLAUDE.md | unmatched | 50 |
+| CLAUDE.md | matched to a committed source | 54 |
+| CLAUDE.md | unmatched | 60 |
 | PROJECT_OVERVIEW.md | DO-NOT-CITE literal | 1 |
-| PROJECT_OVERVIEW.md | matched to a committed source | 79 |
-| PROJECT_OVERVIEW.md | unmatched | 153 |
+| PROJECT_OVERVIEW.md | matched to a committed source | 83 |
+| PROJECT_OVERVIEW.md | unmatched | 149 |
 | PROJECT_STATUS.md | DO-NOT-CITE literal | 8 |
-| PROJECT_STATUS.md | matched to a committed source | 244 |
-| PROJECT_STATUS.md | unmatched | 280 |
+| PROJECT_STATUS.md | matched to a committed source | 290 |
+| PROJECT_STATUS.md | unmatched | 284 |
 | README.md | DO-NOT-CITE literal | 14 |
-| README.md | matched to a committed source | 298 |
-| README.md | unmatched | 582 |
+| README.md | matched to a committed source | 341 |
+| README.md | unmatched | 567 |
 
 ### DO-NOT-CITE literals still present in the documents
 

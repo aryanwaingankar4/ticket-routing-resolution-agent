@@ -1,0 +1,9 @@
+Comparison,Set,b,c,p
+cascade vs Tier-2-only,benchmark45,0,1,1.0000
+cascade vs Tier-2-only,deployment175,1,2,1.0000
+zero-shot Gemini vs Tier-2-only,benchmark45,1,8,0.0391
+zero-shot Gemini vs Tier-2-only,benchmark14,0,4,0.1250
+zero-shot Qwen2.5-3B vs Tier-2-only,benchmark45,6,7,1.0000
+zero-shot Qwen2.5-3B vs Tier-2-only,benchmark14,2,4,0.6875
+zero-shot Qwen2.5-3B vs zero-shot Gemini,benchmark45,1,7,0.0703
+zero-shot Qwen2.5-3B vs zero-shot Gemini,benchmark14,0,2,0.5000

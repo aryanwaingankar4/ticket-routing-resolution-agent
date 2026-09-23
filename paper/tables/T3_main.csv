@@ -1,5 +1,5 @@
-mode,what_it_is,benchmark45,deployment175,adversarial9_escalation
-baseline (production cascade + RAG gate),the shipped pipeline,32/45,131/175,6/9
+mode,what_it_is,benchmark45,deployment175,adversarial9_decided_correctly
+baseline (production cascade + RAG gate),the shipped pipeline,32/45,131/175,9/9
 no-cascade (Tier-1 answers everything),"the TF-IDF REPRESENTATION, not the cascade's value",16/45,91/175,n/a
 tier2-only (the control that isolates the cascade),BGE answering everything,33/45,132/175,n/a
 no-rag (RAG similarity gate removed),the escalation gate's value,n/a,n/a,3/9

@@ -1,0 +1,2 @@
+platform,commit,run_id,check,outcome
+runner_07136ec,07136ec,35869187805,"outcome of tests/test_pipeline_parity.py on the runner, which compares category, tier, escalated and n_retrieved EXACTLY on every golden ticket",passed

@@ -1,0 +1,13 @@
+Signal,Test,Window,Min,Max,Usable
+A,conditional_binomial,25,0.0092,0.0146,yes
+A,conditional_binomial,50,0.0098,0.0173,yes
+A,conditional_binomial,100,0.0127,0.0209,yes
+A,conditional_binomial,200,0.0164,0.0226,yes
+A,ks,25,0.0747,0.0794,no
+A,ks,50,0.1035,0.1090,no
+A,ks,100,0.1753,0.1878,no
+A,ks,200,0.3250,0.3392,no
+A,marginal_binomial,25,0.0146,0.0604,yes
+A,marginal_binomial,50,0.0437,0.0690,yes
+A,marginal_binomial,100,0.0534,0.0795,no
+A,marginal_binomial,200,0.0773,0.1253,no

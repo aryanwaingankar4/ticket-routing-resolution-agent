@@ -1,0 +1,9 @@
+Tier,Rule,Gate cov.,Risk at gate,Deltarisk,Signal
+tier1,aps,0.0615,0.2321,0.0532,yes
+tier1,confidence,0.0615,0.1791,--,--
+tier1,lac,0.0615,0.2290,0.0466,yes
+tier1,margin,0.0615,0.1745,-0.0074,no
+tier2,aps,0.0615,0.1324,0.0330,yes
+tier2,confidence,0.0615,0.0966,--,--
+tier2,lac,0.0615,0.0888,-0.0071,no
+tier2,margin,0.0615,0.0872,-0.0085,no

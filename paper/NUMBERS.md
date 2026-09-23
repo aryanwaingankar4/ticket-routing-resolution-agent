@@ -12,7 +12,9 @@ Config fingerprint at build time: `9c9a5cbcb53f`.
 
 Conventions: proportions carry a Wilson 95% interval computed with z = 1.96, except on pre-registered case-study axes, which report counts only. Paired comparisons on the same tickets use the EXACT McNemar test. A difference smaller than its own noise band is tagged `within-band` automatically.
 
-Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule fired; no verdict), `no-resolution` (the comparison could not resolve), `degenerate` (the test has no resolution at this operating point), `case-study` (counts only, by pre-registration), `within-band` (inside the measurement's own noise band).
+Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule fired; no verdict), `no-resolution` (the comparison could not resolve), `degenerate` (the test has no resolution at this operating point), `case-study` (counts only, by pre-registration), `within-band` (inside the measurement's own noise band), `recorded` (measured once on another platform and NOT re-derivable here: the raw value is transcribed in `data/cross_platform_record.json` with its machine, commit, run id and first-recorded document, and every difference is computed by this builder).
+
+Every value in this table is also a LaTeX macro in `numbers.tex` (`\nb{<id>}`), which is how `main.tex` quotes it. The paper types no number by hand.
 
 ---
 
@@ -47,6 +49,8 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | `T2.qwen.infrastructure.recall.benchmark45` | 0.5 | `data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark45.csv` | `python src/experiments/summarize_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct --set both --prompt-check-against gemini` |  |
 | | *Infrastructure fails at ~50% for the trained model AND both LLMs -- a property of the register, not of any one method.* | | | |
 | `T2.gemini.infrastructure.recall.benchmark45` | 0.5 | `data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark45.csv` | `python src/experiments/summarize_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct --set both --prompt-check-against gemini` |  |
+| `T2.tier2.infrastructure.recall.benchmark45` | 0.5 | `data/ablation_tier2-only_results.csv` | `python src/experiments/summarize_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct --set both --prompt-check-against gemini` |  |
+| | *The trained classifier's Infrastructure recall on the 45; the production cascade's is identical.* | | | |
 | `T2.prompt_identity.benchmark45` | 45 | `data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark45.csv` | `python src/experiments/summarize_zeroshot_baselines.py --backend ollama --model qwen2.5:3b-instruct --set both --prompt-check-against gemini` |  |
 | | *Byte-identical prompts, verified by sha256 in both directions.* | | | |
 
@@ -79,6 +83,9 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | | *READING 2 of the same clause: the RESIDUAL is still this many s.d. below nominal. Both readings are reported together.* | | | |
 | `T7.weighted.bge.domain_auc` | 0.990792 | `data/weighted_conformal_results.csv` | `python -m src.experiments.calibrate_conformal; python src/experiments/run_weighted_conformal.py` | `BLOCKED`, `degenerate` |
 | | *The density ratio is ill-posed in this space. The BGE arm's flattering numbers are in the CSV as BLOCKED, not as a result. The 0.9908 is itself a statement of the named finding.* | | | |
+| `T7.weighted.tier2.tfidf.worse` | 6/9 | `data/weighted_conformal_results.csv` | `python -m src.experiments.calibrate_conformal; python src/experiments/run_weighted_conformal.py` |  |
+| | *Tier-2 configurations whose |coverage gap| grew under TF-IDF-space reweighting -- the cost side of the partial repair.* | | | |
+| `T7.weighted.tier2.tfidf.outside_band` | 5/9 | `data/weighted_conformal_results.csv` | `python -m src.experiments.calibrate_conformal; python src/experiments/run_weighted_conformal.py` |  |
 
 ### Clause group `6C`
 
@@ -156,7 +163,7 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 
 ### Clause group `named-finding`
 
-> THE NAMED CROSS-PHASE FINDING -- the calibration/reference distribution, not the test or the method, is the binding constraint. Instances: Phase 1 Finding 4 (coverage), Phase 4B's realistic-traffic arm (drift), Phase 5C (classification, which widened it to the TRAINING distribution as well). Phase 2A is a RELATED corpus limitation, not an instance. Phase 6C is NOT an instance. Phase 9A settles the final wording.
+> THE NAMED CROSS-PHASE FINDING, final wording (settled in Phase 9A) -- the data distribution a component is fitted or calibrated on, not the method or the test applied to it, is the binding constraint. Two scoped instance classes: the CALIBRATION/REFERENCE distribution (Phase 1 Finding 4, coverage; Phase 4B's realistic-traffic arm, drift) and the TRAINING distribution (Phase 5C, classification). Phase 2A is a RELATED dataset limitation, not an instance. Phase 6C is NOT an instance.
 
 | id | value | source file | regenerating command | tags |
 |---|---|---|---|---|
@@ -230,8 +237,11 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | | *This -- not accuracy -- is what the cascade buys.* | | | |
 | `T3.latency.saving.deployment175` | 0.181951 | `data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv` | `python src/experiments/run_ablation_study.py --mode {baseline,no-cascade,tier2-only,no-rag}; python src/experiments/compare_cascade_vs_tier2.py; python src/experiments/measure_inference_latency.py` |  |
 | `T3.norag.escalation_correct` | 3/9 | `data/ablation_no-rag_results.csv` | `python src/experiments/run_ablation_study.py --mode {baseline,no-cascade,tier2-only,no-rag}; python src/experiments/compare_cascade_vs_tier2.py; python src/experiments/measure_inference_latency.py` |  |
-| | *Removing the RAG gate costs the adversarial set; the baseline scores 6/9 there.* | | | |
-| `T3.baseline.escalation_correct` | 6/9 | `data/ablation_baseline_results.csv` | `python src/experiments/run_ablation_study.py --mode {baseline,no-cascade,tier2-only,no-rag}; python src/experiments/compare_cascade_vs_tier2.py; python src/experiments/measure_inference_latency.py` |  |
+| | *Adversarial tickets decided correctly with the RAG gate removed: only those that should proceed are right.* | | | |
+| `T3.baseline.escalation_correct` | 9/9 | `data/ablation_baseline_results.csv` | `python src/experiments/run_ablation_study.py --mode {baseline,no-cascade,tier2-only,no-rag}; python src/experiments/compare_cascade_vs_tier2.py; python src/experiments/measure_inference_latency.py` |  |
+| | *CORRECTED in Phase 9A: this was published as 6/9, which is the number that ESCALATED, not the number decided correctly. The baseline decides every adversarial ticket correctly.* | | | |
+| `T3.baseline.adversarial_escalated` | 6/9 | `data/ablation_baseline_results.csv` | `python src/experiments/run_ablation_study.py --mode {baseline,no-cascade,tier2-only,no-rag}; python src/experiments/compare_cascade_vs_tier2.py; python src/experiments/measure_inference_latency.py` |  |
+| | *The adversarial tickets that should escalate, and do.* | | | |
 
 ### T4
 
@@ -390,6 +400,21 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | | *Deployment-register tickets are LEGITIMATE, not drift. A monitor on the in-domain reference would alarm continuously; the binding constraint is what the reference is made of.* | | | |
 | `T13.realistic_traffic.flag_rate.alpha0.2` | 0.645714 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
 | | *Deployment-register tickets are LEGITIMATE, not drift. A monitor on the in-domain reference would alarm continuously; the binding constraint is what the reference is made of.* | | | |
+| `T13.realistic_traffic.null_rate.alpha0.01` | 0.005682 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| | *The per-ticket marginal null rate at this alpha, for the 175-ticket reference.* | | | |
+| `T13.realistic_traffic.ratio_to_null.alpha0.01` | 38.2171 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| `T13.realistic_traffic.null_rate.alpha0.05` | 0.045455 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| | *The per-ticket marginal null rate at this alpha, for the 175-ticket reference.* | | | |
+| `T13.realistic_traffic.ratio_to_null.alpha0.05` | 9.4286 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| `T13.realistic_traffic.null_rate.alpha0.1` | 0.096591 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| | *The per-ticket marginal null rate at this alpha, for the 175-ticket reference.* | | | |
+| `T13.realistic_traffic.ratio_to_null.alpha0.1` | 5.3244 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| `T13.realistic_traffic.null_rate.alpha0.2` | 0.198864 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| | *The per-ticket marginal null rate at this alpha, for the 175-ticket reference.* | | | |
+| `T13.realistic_traffic.ratio_to_null.alpha0.2` | 3.247 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| `T13.realistic_traffic.ratio_to_null.min` | 3.247 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
+| | *Recomputed in Phase 9A. The documents said '4-7x'; that range does not hold across all four alphas and is not quoted.* | | | |
+| `T13.realistic_traffic.ratio_to_null.max` | 38.2171 | `data/drift_evaluation_summary.json` | `python src/experiments/evaluate_drift_detection.py` |  |
 
 ### T14
 
@@ -421,6 +446,89 @@ Tags: `post-hoc` (not a pre-registered result), `BLOCKED` (a pre-registered rule
 | | *Zero false merges in the pilot. STOP verdict: the harness found nothing to separate the two configurations.* | | | |
 | `T16.pilot.rule_of_three_upper` | 0.25 | `data/automation_flag_validation_pilot_results.csv` | `python src/experiments/calibrate_resolution_clustering.py; python src/experiments/flag_automation_candidates.py; python src/experiments/score_flag_validation_set.py --pilot` |  |
 | | *Upper 95% bound on the false-merge rate after zero events in 12 pairs -- the honest reading of a zero count.* | | | |
+
+### T17
+
+| id | value | source file | regenerating command | tags |
+|---|---|---|---|---|
+| `T17.passed_unsupported.count` | 2/33 | `data/groundedness_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` | `case-study` |
+| | *Drafts that passed the 0.67 gate and were human-labelled ungrounded. Both are 45-ticket benchmark items -- NOT adversarial tickets, as FRAMING.md once said.* | | | |
+| `T17.G021.ticket` | N26 | `data/groundedness_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.G021.top_similarity` | 0.701027 | `data/groundedness_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.G021.margin_to_gate` | 0.031027 | `data/groundedness_results.csv; src/agent/config.py` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.G024.ticket` | N31 | `data/groundedness_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.G024.top_similarity` | 0.674742 | `data/groundedness_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.G024.margin_to_gate` | 0.004742 | `data/groundedness_results.csv; src/agent/config.py` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.escalated_adequate.count` | 1/21 | `data/sufficiency_gate_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` | `case-study` |
+| | *Escalated tickets whose retrieved context the 6C rater found adequate. The scalar gate errs in this direction too.* | | | |
+| `T17.escalated_adequate.0.ticket` | N45 | `data/sufficiency_gate_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.escalated_adequate.0.top_similarity` | 0.639674 | `data/sufficiency_gate_results.csv` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+| `T17.escalated_adequate.0.margin_to_gate` | -0.030326 | `data/sufficiency_gate_results.csv; src/agent/config.py` | `python src/experiments/score_groundedness_set.py; python src/experiments/score_sufficiency_gate.py` |  |
+
+### T18
+
+| id | value | source file | regenerating command | tags |
+|---|---|---|---|---|
+| `T18.container_8b.adv_08.rag_similarity.recorded` | 0.6123799085617065 | `data/cross_platform_record.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *local Docker Linux container, python:3.14.3-slim (digest-pinned), on the development laptop, commit 3885393, run no CI run (local); first recorded in PROJECT_STATUS.md, Phase 8B block ('Container verification'), 2026-09-23.* | | | |
+| `T18.container_8b.adv_08.rag_similarity.golden` | 0.6123800277709961 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.container_8b.adv_08.rag_similarity.delta` | -1.1921e-07 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *Computed here from the two raw values -- never stored.* | | | |
+| `T18.container_8b.adv_08.rag_similarity.abs_delta` | 1.1921e-07 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| `T18.container_8b.adv_08.tier1_confidence.recorded` | 0.3182984770932253 | `data/cross_platform_record.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *local Docker Linux container, python:3.14.3-slim (digest-pinned), on the development laptop, commit 3885393, run no CI run (local); first recorded in PROJECT_STATUS.md, Phase 8B block ('Container verification'), 2026-09-23.* | | | |
+| `T18.container_8b.adv_08.tier1_confidence.golden` | 0.3182984770932253 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.container_8b.adv_08.tier1_confidence.delta` | 0.0000e+00 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *Computed here from the two raw values -- never stored.* | | | |
+| `T18.container_8b.adv_08.tier1_confidence.abs_delta` | 0.0000e+00 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| `T18.runner_91a5b38.adv_08.rag_similarity.recorded` | 0.6123793125152588 | `data/cross_platform_record.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *GitHub-hosted runner (gates.yml container job), commit 91a5b38, run 35799173134; first recorded in gates.yml run 35799173134 job log (verify_deployment.py output); supplied by Aryan from the log, 2026-09-23.* | | | |
+| `T18.runner_91a5b38.adv_08.rag_similarity.golden` | 0.6123800277709961 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.runner_91a5b38.adv_08.rag_similarity.delta` | -7.1526e-07 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *Computed here from the two raw values -- never stored.* | | | |
+| `T18.runner_91a5b38.adv_08.rag_similarity.abs_delta` | 7.1526e-07 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| `T18.runner_91a5b38.adv_08.tier1_confidence.recorded` | 0.31818032412549274 | `data/cross_platform_record.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *GitHub-hosted runner (gates.yml container job), commit 91a5b38, run 35799173134; first recorded in PROJECT_STATUS.md, Phase 8B.3 block, and src/classification/train_tier1.py comment; confirmed by Aryan from the run 35799173134 job log, 2026-09-23.* | | | |
+| `T18.runner_91a5b38.adv_08.tier1_confidence.golden` | 0.3182984770932253 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.runner_91a5b38.adv_08.tier1_confidence.delta` | -1.1815e-04 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *Computed here from the two raw values -- never stored.* | | | |
+| `T18.runner_91a5b38.adv_08.tier1_confidence.abs_delta` | 1.1815e-04 | `data/cross_platform_record.json; tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| `T18.runner_07136ec.golden_parity.outcome` | passed | `data/cross_platform_record.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` | `recorded` |
+| | *GitHub-hosted runner (gates.yml full-suite job), commit 07136ec, run 35869187805.* | | | |
+| `T18.golden_tickets` | 54 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| | *Every routing decision on these tickets is compared EXACTLY across platforms by tests/test_pipeline_parity.py.* | | | |
+| `T18.embedding_dim` | 768 | `src/agent/config.py` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.gamma_n` | 4.5778e-05 | `src/experiments/compare_gate_csv.py; src/agent/config.py` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| | *gamma_n = n*u/(1-n*u), n = embedding dim, u = 2^-24 (Higham, section 3.1). Bounds the float32 inner product only; it does not model the encoder's own cross-platform difference.* | | | |
+| `T18.tier1_tolerance` | 1.0000e-12 | `tests/test_pipeline_parity.py` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.headroom.similarity_distance` | 1.4575e-04 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.headroom.similarity_ratio` | 3.1838 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json; src/experiments/compare_gate_csv.py` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.headroom.tier1_distance` | 1.2641e-02 | `tests/goldens/benchmark_baseline.json; tests/goldens/adversarial_baseline.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.n_documents` | 4000 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.above_cut` | 4240 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.tied_at_cut` | 11834 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.slots_for_tied` | 760 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.max_features` | 5000 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.full4000.share` | 0.152 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.n_documents` | 3200 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.above_cut` | 4050 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.tied_at_cut` | 9622 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.slots_for_tied` | 950 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.max_features` | 5000 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+| `T18.ties.split3200.share` | 0.19 | `data/tier1_vocabulary_ties.json` | `python src/experiments/measure_tier1_vocabulary_ties.py (the record file is transcribed, not regenerable)` |  |
+
+### T19
+
+| id | value | source file | regenerating command | tags |
+|---|---|---|---|---|
+| `T19.dataset_rows` | 4000 | `data/synthetic_tickets.csv` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.categories` | 7 | `data/synthetic_tickets.csv` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.train_rows` | 3200 | `data/tier1_vocabulary_ties.json` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.benchmark14.n` | 14 | `data/ablation_baseline_results_benchmark14.csv` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.benchmark45.n` | 45 | `data/novel_tickets_expanded.json` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.adversarial.n` | 9 | `data/adversarial_escalation_tickets.json` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.deployment175.n` | 175 | `data/ablation_baseline_results_deployment175.csv` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
+| `T19.rag_top_k` | 5 | `src/agent/config.py` | `python data/generate_dataset.py (read-only benchmarks; no regeneration)` |  |
 
 ---
 
@@ -473,6 +581,11 @@ Each of these was published at some point and is now retired. The parity test gr
 - **Why it is retired:** Phase 8A.1 gave generalization_test.py a writer and re-ran it in its original configuration (TF-IDF + LogReg fitted on all 4,000 rows, seed 42). It scores 6/14, and so does the 80/20-fit arm, and so does the production Tier-1 artifact -- three independent derivations agreeing against the documented figure. The most likely explanation is that 7/14 was measured on the earlier 1,000-ticket dataset and never re-measured after the corpus was scaled to 4,000; that cannot be confirmed, because the 1,000-ticket corpus was never committed. It is recorded as a hypothesis, not a cause.
 - **Use instead:** T1.tfidf_baseline.benchmark14 -- 6/14 (42.9%), from data/baseline_tfidf_benchmark14.csv.
 
+### the production pipeline scores 6/9 on adversarial escalation (paper surface, Phases 8A-8B)
+
+- **Why it is retired:** Found in Phase 9A. build_t3 counted adversarial tickets that ESCALATED (6) and published the count as 'escalation correct', beside a no-rag arm counted by CORRECTNESS (3/9). The two cells measured different things. Occurrence #9 of the recurring bug class: internally consistent, wrong for its context.
+- **Use instead:** T3.baseline.escalation_correct -- 9/9 decided correctly (6/9 escalate, and should), against 3/9 with the RAG gate removed.
+
 ---
 
 ## Numbers in the documents with NO committed source
@@ -490,9 +603,12 @@ These appear in the project's documents but cannot be regenerated from any commi
 | source file | sha256 |
 |---|---|
 | `data/ablation_baseline_results.csv` | `644c817d397a1128e264194aa25970a4bf9deb89e488f43062503f3ddee2c6f2` |
+| `data/ablation_baseline_results_benchmark14.csv` | `aeaa7fa1620c043109bc225f3215ecd18c2934ab43cfb5750596fa4d32bce162` |
+| `data/ablation_baseline_results_deployment175.csv` | `e67c5e3941bcd6dab7c617274228ed6be97da40bba87f57067906cef8f5ee7f2` |
 | `data/ablation_no-cascade_results.csv` | `1fa102fa35e3f5d95e6fdbe28bff7721e553537a8d0fda82b44f0ef209d63bb0` |
 | `data/ablation_no-rag_results.csv` | `9b72f1f7550cf985d8bb4c1bbccf7a3a54dab2342e8cdde5709ac1771dd9e093` |
 | `data/ablation_tier2-only_results.csv` | `6127ebe45194f5447a5ca689cdd047b2b3fb62f434bcc25a5914307471d096f3` |
+| `data/adversarial_escalation_tickets.json` | `61cac33ba9b53d26fec531b3ab6f71ab1a8d8b50072ef7141472503339b30a4b` |
 | `data/automation_candidates.json` | `7f167736d748d8a820928e2b6f5bdbaf09468f336fc3310c1fc52d4b67f1d395` |
 | `data/automation_flag_validation_pilot_results.csv` | `9165fcd0fae05c2b9890e725c3823d4c5f80318f1a16147649a81a4c967ab1da` |
 | `data/baseline_tfidf_benchmark14.csv` | `932bccaaea45022e9d97bb8862623968f0ac56921c75d4ab14864a908eb4aa9d` |
@@ -505,6 +621,7 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/conformal_calibration_corrected_bge-base-en-v1-5.json` | `a1daaca47876dbfaff1d9eccc4f9e3febd4d8eb667bb0f0e3558040bc713f71b` |
 | `data/conformal_calibration_results.csv` | `9d03ddcabfb8a94136ef3815ac526989fa2703f53a87487688ab85b4d0266c9f` |
 | `data/conformal_novelty_results.csv` | `2fe429b4d5facaec3d396d1ca59a23e9b8e57671f31b452235df0e02595337ab` |
+| `data/cross_platform_record.json` | `a253ad53a3303a8ecea90844d9a01fd3dbf3628d3cf34ad12eedb085bfe091d0` |
 | `data/deferral_conformal_operating_points.csv` | `33e3fa1a512099a3a7d27fa0d3ffa625aa074a1c8cbd570b7cba11ebb12cca9d` |
 | `data/deferral_risk_coverage.csv` | `3ae62ebf0a3120ed72b03940db153fb15b0d0b01f4547fb14aa2603375c2bea9` |
 | `data/deferral_rule_summary.csv` | `c8eba59b25c8b58f0c6239dcfe40db526572c92118634fb845765d6d8ff8a332` |
@@ -524,6 +641,7 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/external_tobibueck/profile_summary.json` | `76500edc875d27ac891fb6e9c0e8f83a96b31cbc2b339c9517b467d772108ee2` |
 | `data/groundedness_results.csv` | `34bf0e540d75c86594ccea8d3191bf5e029982f393c748e72c43bd9535eecd71` |
 | `data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv` | `8903c021b883c9f052faad8247ba9d77d3dd20f917db21c4573642dc282e8890` |
+| `data/novel_tickets_expanded.json` | `93816c84728f097510baddc3f2f5a9ef1a0a869e980dc746804229754a8b2e75` |
 | `data/rag_self_retrieval_check.csv` | `1673bbef91ccf213278e90ba90bb7291f416ff9636fa39d8f73b97157ec00ce9` |
 | `data/rag_similarity_calibration.csv` | `179319f56f7f15280cbaa0c9e5cd9e662f8583bb149f0ac588b567c282a47336` |
 | `data/rag_similarity_calibration_combined.csv` | `cb6e1c3177500a898ef80cfae6cb559e7b3935908a81266e3e562b0f60280874` |
@@ -533,6 +651,8 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/skewed/imbalance_sweep_results.csv` | `86ba1519eb3cdfff9b96148707e8c1ed95682db3339ca6aec24dc19e29e8dda5` |
 | `data/sufficiency_gate_results.csv` | `724439ba04593cdeedbbb549eb82b8f20f0bf5c3375756c1eabb6ac3f835654c` |
 | `data/sufficiency_gate_summary.json` | `0fe82de70e9c8abec7ed4aad8ab788e8f2658acf666b54641fb9ecfab876bc95` |
+| `data/synthetic_tickets.csv` | `5619bc51a8d186e73c36af522857375727fe536e1d1f0e0827e5cd5a927d09af` |
+| `data/tier1_vocabulary_ties.json` | `d7b864d71c33b4cfc06bfc199c0f82faf41bbefa26af3ccf5359c96b4900e7e6` |
 | `data/weighted_conformal_results.csv` | `451577a3aab9daae3d4d82065bb728aebc3c4c0139cb8a7ec390d0198f5892df` |
 | `data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark14.csv` | `d217653cf8b54ef8bbf772097b5d05ec5953d93b30ea036299c2942b204c6b9b` |
 | `data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark45.csv` | `21dcecdf798c36c955867db76dfd05fb7f4e22fa25424cbf68adb35c7d58e8af` |
@@ -540,5 +660,9 @@ These appear in the project's documents but cannot be regenerated from any commi
 | `data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark45.csv` | `08b3b991607635ab5464ed61913e1bbf40b8681081333474bf41a7abf3e93014` |
 | `src/agent/config.py` | `12fab906b100fdae5315ba547ce8b6c6e14a2a67b110722586859d549706b07a` |
 | `src/agent/orchestrator.py` | `bf0eefd156920ea0682875172b8bdf3263fc46ba963f0d06e0e9b6db2994ecd4` |
+| `src/experiments/compare_gate_csv.py` | `a8feee0ffc2bc1e83cbd14b13e39bbc1dad1d51da5b14c809a8a68161644949c` |
+| `tests/goldens/adversarial_baseline.json` | `22d00d663c79afa3676c7597cf205f338783c4843bdb6d7c1479f4b27fb99343` |
+| `tests/goldens/benchmark_baseline.json` | `648cadd76edd59f82fae356a93087b815bc8f717542b5be556ae96bcbd49fe96` |
+| `tests/test_pipeline_parity.py` | `28835a0093e22a84140be5d1fb2e57e53e1ab2c74b58a08cdd6652b1228e3272` |
 
 Statistical cross-check at build time: 8 Wilson intervals and 5 exact McNemar tests agreed exactly with the implementations already committed in `src/experiments/`.

@@ -1,0 +1,8 @@
+Category,n,Cliff,Recall
+Infrastructure,115,0.80,0.542
+Application,100,0.80,0.499
+Security,61,0.80,0.871
+Database,49,0.70,0.788
+Storage,53,0.75,0.831
+Network,74,0.75,0.574
+Access Management,48,0.80,0.397

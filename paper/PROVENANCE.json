@@ -1,8 +1,8 @@
 {
   "config_fingerprint": "9c9a5cbcb53f",
   "n_figures": 7,
-  "n_numbers": 188,
-  "n_tables": 16,
+  "n_numbers": 257,
+  "n_tables": 19,
   "phase": "8A",
   "production_gates": {
     "cascade_confidence_threshold": 0.5,
@@ -14,9 +14,12 @@
   "seed": 42,
   "sources": {
     "data/ablation_baseline_results.csv": "644c817d397a1128e264194aa25970a4bf9deb89e488f43062503f3ddee2c6f2",
+    "data/ablation_baseline_results_benchmark14.csv": "aeaa7fa1620c043109bc225f3215ecd18c2934ab43cfb5750596fa4d32bce162",
+    "data/ablation_baseline_results_deployment175.csv": "e67c5e3941bcd6dab7c617274228ed6be97da40bba87f57067906cef8f5ee7f2",
     "data/ablation_no-cascade_results.csv": "1fa102fa35e3f5d95e6fdbe28bff7721e553537a8d0fda82b44f0ef209d63bb0",
     "data/ablation_no-rag_results.csv": "9b72f1f7550cf985d8bb4c1bbccf7a3a54dab2342e8cdde5709ac1771dd9e093",
     "data/ablation_tier2-only_results.csv": "6127ebe45194f5447a5ca689cdd047b2b3fb62f434bcc25a5914307471d096f3",
+    "data/adversarial_escalation_tickets.json": "61cac33ba9b53d26fec531b3ab6f71ab1a8d8b50072ef7141472503339b30a4b",
     "data/automation_candidates.json": "7f167736d748d8a820928e2b6f5bdbaf09468f336fc3310c1fc52d4b67f1d395",
     "data/automation_flag_validation_pilot_results.csv": "9165fcd0fae05c2b9890e725c3823d4c5f80318f1a16147649a81a4c967ab1da",
     "data/baseline_tfidf_benchmark14.csv": "932bccaaea45022e9d97bb8862623968f0ac56921c75d4ab14864a908eb4aa9d",
@@ -29,6 +32,7 @@
     "data/conformal_calibration_corrected_bge-base-en-v1-5.json": "a1daaca47876dbfaff1d9eccc4f9e3febd4d8eb667bb0f0e3558040bc713f71b",
     "data/conformal_calibration_results.csv": "9d03ddcabfb8a94136ef3815ac526989fa2703f53a87487688ab85b4d0266c9f",
     "data/conformal_novelty_results.csv": "2fe429b4d5facaec3d396d1ca59a23e9b8e57671f31b452235df0e02595337ab",
+    "data/cross_platform_record.json": "a253ad53a3303a8ecea90844d9a01fd3dbf3628d3cf34ad12eedb085bfe091d0",
     "data/deferral_conformal_operating_points.csv": "33e3fa1a512099a3a7d27fa0d3ffa625aa074a1c8cbd570b7cba11ebb12cca9d",
     "data/deferral_risk_coverage.csv": "3ae62ebf0a3120ed72b03940db153fb15b0d0b01f4547fb14aa2603375c2bea9",
     "data/deferral_rule_summary.csv": "c8eba59b25c8b58f0c6239dcfe40db526572c92118634fb845765d6d8ff8a332",
@@ -48,6 +52,7 @@
     "data/external_tobibueck/profile_summary.json": "76500edc875d27ac891fb6e9c0e8f83a96b31cbc2b339c9517b467d772108ee2",
     "data/groundedness_results.csv": "34bf0e540d75c86594ccea8d3191bf5e029982f393c748e72c43bd9535eecd71",
     "data/inference_latency_13th-gen-intel-r-core-tm-i5-1334u.csv": "8903c021b883c9f052faad8247ba9d77d3dd20f917db21c4573642dc282e8890",
+    "data/novel_tickets_expanded.json": "93816c84728f097510baddc3f2f5a9ef1a0a869e980dc746804229754a8b2e75",
     "data/rag_self_retrieval_check.csv": "1673bbef91ccf213278e90ba90bb7291f416ff9636fa39d8f73b97157ec00ce9",
     "data/rag_similarity_calibration.csv": "179319f56f7f15280cbaa0c9e5cd9e662f8583bb149f0ac588b567c282a47336",
     "data/rag_similarity_calibration_combined.csv": "cb6e1c3177500a898ef80cfae6cb559e7b3935908a81266e3e562b0f60280874",
@@ -57,13 +62,19 @@
     "data/skewed/imbalance_sweep_results.csv": "86ba1519eb3cdfff9b96148707e8c1ed95682db3339ca6aec24dc19e29e8dda5",
     "data/sufficiency_gate_results.csv": "724439ba04593cdeedbbb549eb82b8f20f0bf5c3375756c1eabb6ac3f835654c",
     "data/sufficiency_gate_summary.json": "0fe82de70e9c8abec7ed4aad8ab788e8f2658acf666b54641fb9ecfab876bc95",
+    "data/synthetic_tickets.csv": "5619bc51a8d186e73c36af522857375727fe536e1d1f0e0827e5cd5a927d09af",
+    "data/tier1_vocabulary_ties.json": "d7b864d71c33b4cfc06bfc199c0f82faf41bbefa26af3ccf5359c96b4900e7e6",
     "data/weighted_conformal_results.csv": "451577a3aab9daae3d4d82065bb728aebc3c4c0139cb8a7ec390d0198f5892df",
     "data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark14.csv": "d217653cf8b54ef8bbf772097b5d05ec5953d93b30ea036299c2942b204c6b9b",
     "data/zeroshot_summary_gemini_gemini-flash-lite-latest_benchmark45.csv": "21dcecdf798c36c955867db76dfd05fb7f4e22fa25424cbf68adb35c7d58e8af",
     "data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark14.csv": "0618c6c50bff54bc5918acd92bf8dd96886b5e88f1d3ea8344bffd771d4d85d9",
     "data/zeroshot_summary_ollama_qwen2-5-3b-instruct_benchmark45.csv": "08b3b991607635ab5464ed61913e1bbf40b8681081333474bf41a7abf3e93014",
     "src/agent/config.py": "12fab906b100fdae5315ba547ce8b6c6e14a2a67b110722586859d549706b07a",
-    "src/agent/orchestrator.py": "bf0eefd156920ea0682875172b8bdf3263fc46ba963f0d06e0e9b6db2994ecd4"
+    "src/agent/orchestrator.py": "bf0eefd156920ea0682875172b8bdf3263fc46ba963f0d06e0e9b6db2994ecd4",
+    "src/experiments/compare_gate_csv.py": "a8feee0ffc2bc1e83cbd14b13e39bbc1dad1d51da5b14c809a8a68161644949c",
+    "tests/goldens/adversarial_baseline.json": "22d00d663c79afa3676c7597cf205f338783c4843bdb6d7c1479f4b27fb99343",
+    "tests/goldens/benchmark_baseline.json": "648cadd76edd59f82fae356a93087b815bc8f717542b5be556ae96bcbd49fe96",
+    "tests/test_pipeline_parity.py": "28835a0093e22a84140be5d1fb2e57e53e1ab2c74b58a08cdd6652b1228e3272"
   },
   "z_95": 1.96
 }
