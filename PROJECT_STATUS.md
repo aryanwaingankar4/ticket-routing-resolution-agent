@@ -5,8 +5,21 @@
 Tier-1's vocabulary and deriving the similarity tolerance. (The follow-up
 recovery commit changed one code *comment* and docs only.)
 
-**Current phase: Phase 8B.3 — LOCAL GATES PASSED, PUSHED, AWAITING `gates.yml`**
-(2026-09-23). **Not gated until `gates.yml` passes on the pushed commit.**
+**Current phase: Phase 8B.3 — LOCAL GATES PASSED, PUSHED, AWAITING A `gates.yml`
+RE-RUN** (2026-09-23). **Not gated until `gates.yml` passes.**
+
+> **`gates.yml` on `b0f6500`:** the container job **PASSED**, so the vocabulary
+> fix worked (adv_08's `tier1_conf` is inside 1e-12 of the golden; the exact
+> delta is in a job log the public API refuses with 403). The full-suite job
+> failed **only** at the adversarial CSV byte-identity step: the gate itself
+> passed 9/9, and five rows' `rag_similarity` moved by one 6th-decimal unit with
+> every decision identical. **Fix:** the runner now uses
+> `src/experiments/compare_gate_csv.py` for both gate CSVs (decisions exact,
+> `tier1_conf` within 1e-6 + 1e-12, similarity within 1e-6 + γ_n, max delta
+> printed). The rounding term is **1e-6, not the 5e-7 first specified**,
+> because both sides are rounded. Byte identity stays the local ritual. No CSV
+> or golden changed. **Next: re-run `gates.yml` on the pushed follow-up
+> commit.**
 
 > **Recovery note (2026-09-23).** The previous session died when the laptop
 > slept. On resumption every 8B.3 item was found **already committed in
@@ -453,7 +466,7 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **425 passed** (406 + 12 from 8A + 4 from 8A.1 + 3 from 8B.1), 0 failed/skipped, offline |
+| Test suite | `pytest` | **446 passed** (406 + 12 from 8A + 4 from 8A.1 + 3 from 8B.1 + 21 from the 8B.3 CSV comparator), 0 failed/skipped, offline |
 | **Paper artifacts (8A.1)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **188 numbers**, **51 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
 | Paper parity (8A.1) | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
 | Document reconciliation (8A.1) | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source** (was 5); 2 z-conventions recorded |

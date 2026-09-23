@@ -12,9 +12,12 @@
 #     run_ablation_study.py --mode baseline             32/45, CSV unchanged
 #     tests/test_paper_artifacts.py                     paper parity
 #
-# "CSV unchanged" is checked with `git diff --exit-code` rather than by reading
-# the printed summary. A gate that passes while its recorded output moves is the
-# failure this project keeps having; git compares the bytes.
+# "CSV unchanged" is checked by a committed script rather than by reading the
+# printed summary. A gate that passes while its recorded output moves is the
+# failure this project keeps having. LOCALLY, on the machine that produced the
+# committed CSVs, that check is byte identity (`git diff --exit-code`). HERE,
+# on a different machine, it is compare_gate_csv.py: decisions exact, floats
+# within derived tolerances -- see the comparison steps below for why.
 #
 # NOTHING HERE SPENDS GEMINI QUOTA. pytest.ini deselects -m gemini by default
 # and no GEMINI_API_KEY is configured for this workflow.
@@ -120,20 +123,36 @@ jobs:
       - name: Adversarial escalation gate (9/9)
         run: python src/experiments/test_adversarial_escalation.py
 
-      # --ignore-cr-at-eol, and ONLY that. Python's csv module writes
-      # lineterminator='\r\n' on every platform, Linux included, while the blob
-      # is LF -- so a plain `git diff` here reports a change in a file whose
-      # content is identical. Ignoring a CR at end of line ignores exactly that
-      # and nothing else: any changed digit, column or row still fails.
-      - name: Adversarial CSV must be byte-identical
-        run: git diff --ignore-cr-at-eol --exit-code -- data/adversarial_escalation_results.csv
+      # NOT BYTE IDENTITY ON THIS MACHINE -- a cross-platform comparison.
+      #
+      # Byte identity is the right test on the machine that produced the
+      # committed CSVs, and it stays the LOCAL gate ritual there. On a runner it
+      # is the wrong test: both CSVs write floats at 6 dp, and the float32
+      # BGE + FAISS similarity differs across platforms in its last digits
+      # (~7e-07 here). On b0f6500 that crossed a 6-dp rounding boundary on five
+      # adversarial rows (adv_01/02/04/05/07): rag_similarity moved by exactly
+      # one unit in the 6th decimal, while every decision column and every
+      # tier1_confidence was identical and the gate itself passed 9/9.
+      #
+      # compare_gate_csv.py compares against the committed blob:
+      #   * header, row count, row order and EVERY non-float column EXACTLY --
+      #     ids, categories, expected/actual escalation, pass_fail,
+      #     predictions, tier used, correct -- so a flipped decision can never
+      #     hide inside a tolerance;
+      #   * tier1_confidence within 1e-6 (6-dp rounding on BOTH sides) + 1e-12;
+      #   * the similarity within 1e-6 + gamma_n, gamma_768 = 4.578e-05, the
+      #     derived float32 dot-product bound (it does not model the BGE
+      #     forward pass -- stated in the script);
+      # and prints the max delta per float column, pass or fail.
+      - name: Adversarial CSV -- cross-platform comparison
+        run: python src/experiments/compare_gate_csv.py data/adversarial_escalation_results.csv
 
       - name: Ablation baseline (32/45)
         run: python src/experiments/run_ablation_study.py --mode baseline
 
-      # Same reason as the adversarial CSV above.
-      - name: Ablation baseline CSV must be byte-identical
-        run: git diff --ignore-cr-at-eol --exit-code -- data/ablation_baseline_results.csv
+      # Same comparison: the ablation CSV carries tier1_conf and top_similarity.
+      - name: Ablation baseline CSV -- cross-platform comparison
+        run: python src/experiments/compare_gate_csv.py data/ablation_baseline_results.csv
 
       # The artifacts this job rebuilt (index, metadata, joblib bundles) are
       # tracked files, so they will show as modified whenever a rebuild is not

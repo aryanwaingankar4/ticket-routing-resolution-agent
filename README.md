@@ -3962,6 +3962,44 @@ index holds Windows-computed vectors. Same 4,000 tickets, same model, differing
 only in float32 rounding -- but not produced on one machine, and results from
 that job should be read with that in mind.
 
+#### 8B.3 follow-up -- the gate CSVs' luck ran out, so the runner compares by kind
+
+`gates.yml` on `b0f6500` passed the container job and failed the full-suite
+job at exactly one step, "Adversarial CSV must be byte-identical". **The
+adversarial gate itself passed 9/9.** The diff was five rows (adv_01, 02, 04,
+05, 07) whose `rag_similarity` differed by **exactly one unit in the 6th
+decimal**. `tier1_confidence`, expected/actual escalation and `pass_fail` were
+identical on every row. This is the failure recorded above as "holds by luck,
+not by construction": the float32 similarity's cross-platform last-digit
+difference (~7e-07 on a runner) crossing 6-dp rounding boundaries.
+
+**Fix: the same move 8B.2 made for the goldens -- compare by the KIND of
+number, not by bytes.** `src/experiments/compare_gate_csv.py` compares a
+regenerated gate CSV against its committed blob. The header, row count, row
+order and **every non-float column** are compared exactly, so a flipped
+decision can never hide in a tolerance. `tier1_confidence` is compared within
+**1e-6 + 1e-12** and the similarity within **1e-6 + γ_n** (4.578e-05). The
+max delta per float column is printed on every run. The ablation CSV carries
+`tier1_conf` and `top_similarity` too, so it gets the same treatment.
+
+**Why 1e-6 and not 5e-7:** both sides are rounded to 6 dp, and two roundings
+of one value can differ by a whole unit in the last place. 5e-7 is the budget
+only when one side is unrounded (`verify_deployment.py`), and here it would
+fail a float64 confidence that differs by 1e-15 but straddles a boundary.
+
+**Two checks, one per context.** Byte identity stays the **local** gate ritual
+on the machine that produced the committed CSVs, where it is valid. The runner
+uses the comparison. **No CSV and no golden was changed.** 21 new tests pin
+it: the actual runner failure passes, a one-unit boundary straddle on
+`tier1_confidence` passes, two units fail, a 1e-4 similarity move fails, any
+change to a decision, id or row order fails, and the script's γ_n agrees with
+the two other copies of it.
+
+**Not confirmed:** adv_08's `tier1_conf` delta in the passing container job.
+The job-log API returns 403 without admin credentials. The pass bounds the
+delta at 1e-12, because `verify_deployment.py` compares it to the golden at
+that tolerance and would have failed at the old 1.18e-04.
+
 
 ---
 
@@ -4521,8 +4559,10 @@ regenerated to make a cross-platform comparison pass.
 - `.github/workflows/gates.yml` — manual (`workflow_dispatch`): the full suite,
   the adversarial gate at 9/9, the ablation baseline at 32/45, and a container
   job that builds the image and runs `verify_deployment.py` against it. Both
-  CSV gates are confirmed byte-identical with `git diff --exit-code` rather
-  than by reading a printed summary.
+  CSV gates are checked by `compare_gate_csv.py` rather than by reading a
+  printed summary: decisions exact, floats within derived tolerances.
+  Byte identity is the check only on the machine that wrote the committed
+  CSVs, where it stays the local gate ritual.
 
 Neither workflow can spend Gemini quota: `pytest.ini` deselects `-m gemini` and
 no key is configured for either.
