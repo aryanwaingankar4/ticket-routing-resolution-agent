@@ -1,5 +1,14 @@
 # Project Overview — full briefing for a fresh session
 
+> ## ⚠ SUPERSEDED SNAPSHOT (2026-09-20). Do not use for current state.
+>
+> This file stops at Phase 4B-1. Everything after it is missing: Phases 5A–9B,
+> the paper (`paper/main.tex`), the named finding's final wording, and three
+> corrections to figures quoted below. **The programme is complete.** For where
+> the project is, read `PROJECT_STATUS.md`; for how it works, `CLAUDE.md`; for
+> every result, `README.md` and `paper/NUMBERS.md`. It is kept only as a
+> historical record and was **not** brought up to date in 9B.
+
 > **This is a dated, derived snapshot, not a source of truth.** It was written
 > on 2026-09-20 and is not maintained per session. `PROJECT_STATUS.md`,
 > `CLAUDE.md` and `README.md` win on any conflict, and `git log` / `git status`
@@ -1119,7 +1128,8 @@ Health, re-run today rather than quoted:
 > shipped** — an eligible operating point exists (Signal A
 > calibration-conditional binomial, α=0.05, W=100–200) and nothing was promoted
 > into config, because the realistic-traffic arm showed the in-domain reference
-> alarms at 4–7× its null on legitimate deployment-register traffic. The README's
+> alarms at 4–7× its null [**superseded:** 3.2×–38.2× across the four α,
+> `T13.realistic_traffic.ratio_to_null.min/max`, corrected in 9A/9B] on legitimate deployment-register traffic. The README's
 > "Phase 4 — drift detection" section and `PROJECT_STATUS.md` carry the full
 > result; the files below are what that gate covered.
 

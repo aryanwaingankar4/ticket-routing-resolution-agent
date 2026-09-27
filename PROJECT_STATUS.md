@@ -5,6 +5,41 @@
 builder: two new IEEE table views and a header-escaping fix. **No `NUMBERS.md` value moved.** Before it: `8c9ac59`, the Phase 9A
 commit, which changed the builder, added two data files and corrected one paper-surface number.
 
+**THE PHASE 5–9 PROGRAMME IS COMPLETE** (2026-09-28). **Phase 9B, the pre-submission audit, is done, gated and pushed, and tagged
+`v1.0` ("Final submission: 5-page IEEE paper").** 9B moved no code and no number, so the pointer above stays at `1fb204a`.
+
+**What 9B did:**
+- **Audit:** [`paper/AUDIT_9B.md`](paper/AUDIT_9B.md), verdict **SUBMIT once the author-only items are ticked**.
+  - Every number traces through `\nb{}`, with 0 undefined.
+  - Every claim is mapped to its table, figure or supplement section. Two numbers are sourced but sit in no table.
+  - The 7 `% TODO-VERIFY` comments are resolved and removed. Five sentences were softened or narrowed, two were kept, and none was strengthened.
+  - Hygiene: 0 printed TODOs, 0 retired literals, 0 forbidden wordings.
+- **Overleaf sync:** `main.tex` kept Aryan's author block ("Dr." on both guides, split lines, no acknowledgment). The supplement's block now matches.
+- **Consistency:** the drift ratio is 3.2×–38.2× in `CLAUDE.md` and in this file; the health table is refreshed; `PROJECT_OVERVIEW.md` is marked superseded.
+- **Repository:**
+  - a README top section for readers, with the lab notebook kept intact below it;
+  - an MIT `LICENSE`, the copyright being the four students;
+  - CI badges, and a global `*.npy` ignore;
+  - a secret scan of git history came back clean, and no history was rewritten.
+
+**Gates, re-run and not quoted:**
+- `pytest`: **456 passed**, including golden parity 45/45 and 9/9 (similarity delta 0.000e+00) and paper parity.
+- Adversarial gate: **9/9**, CSV byte-identical.
+- Ablation baseline: **32/45** and **9/9**, CSV byte-identical, re-derived from the CSV.
+- `NUMBERS.md`, `numbers.tex`, the tables and the figures: no diff.
+
+The first `pytest` run failed **1 of 456**. Paper parity treats any file in `paper/` it does not know to be hand-written as generated, so the new hand-written `AUDIT_9B.md` read as "no longer produced". It was registered in `HAND_WRITTEN` in `tests/test_paper_artifacts.py`, as 9A did for the draft files, and the re-run passed. That was a missing registration, not a moved result.
+
+**What Aryan must still do by hand:**
+1. **Re-compile on Overleaf** and confirm ≤ 5 pages. 9B added three short supplement pointers, about 20 words; revert those first if it overflows.
+2. **Confirm the nasscom sentence** against the brief itself.
+3. **Check the 9 arXiv entries** on Google Scholar (`paper/references_to_check.md`).
+4. Get the **guides' approval**.
+5. **Attach the final PDF** to the `v1.0` GitHub Release, or place it at `paper/paper_final.pdf`.
+6. **Trigger `gates.yml` once**, so its badge reflects the final commit.
+
+---
+
 **PHASE 9A.1 IS DONE, GATED AND PUSHED** (2026-09-28). The draft was revised to Aryan's guide's requirements. Aryan authorised
 "commit and push only if all pass", and they did.
 
@@ -622,10 +657,11 @@ first. Everything between is the record of what has already landed.
 
 | Check | Command | Current |
 |---|---|---|
-| Test suite | `pytest` | **446 passed** (406 + 12 from 8A + 4 from 8A.1 + 3 from 8B.1 + 21 from the 8B.3 CSV comparator), 0 failed/skipped, offline |
-| **Paper artifacts (8A.1)** | `build_paper_artifacts.py --force` | 16 tables, 7 figures, **188 numbers**, **51 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
-| Paper parity (8A.1) | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
-| Document reconciliation (8A.1) | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source** (was 5); 2 z-conventions recorded |
+| Test suite | `pytest` | **456 passed** (re-run in 9B; 446 before 9A + 10 draft tests), 0 failed/skipped, offline |
+| **Paper artifacts (9B)** | `build_paper_artifacts.py --force` | 19 tables (75 CSV + 75 LaTeX incl. `tables/ieee/`), 7 figures, **257 numbers**, **62 sources** hashed; byte-for-byte deterministic incl. PDF/PNG |
+| Paper parity | `pytest tests/test_paper_artifacts.py` | NUMBERS.md, every table CSV and every figure-data CSV byte-identical on rebuild |
+| Draft rules | `pytest tests/test_paper_draft.py` | 10/10: no typed number, clause groups whole, every cite in the bib; **0 `% TODO-VERIFY` left** (9B) |
+| Document reconciliation | same script, `RECONCILIATION.md` | **59 anchors, 0 mismatches**; **1 number with no committed source**; 2 z-conventions recorded |
 | **TF-IDF baseline, benchmark14 (8A.1)** | `generalization_test.py` | **6/14 (42.9%)** — the published 7/14 **does not reproduce**; 3 independent derivations agree |
 | DistilBERT, benchmark14 (8A.1) | `train_distilbert.py --backup-existing` | **7/14** — reproduces exactly, every epoch of both runs |
 | DistilBERT, benchmark45 (8A.1) | same | **18/45** retrain vs **21/45** original checkpoints — NEW measurement, ±3 tickets between runs |
@@ -687,7 +723,8 @@ the same register-mismatch mechanism:
 2. **Monitoring side — Phase 4B-1, the realistic-traffic arm.** Deployment-
    register tickets flag against the in-domain reference at 0.217/0.429/0.514/
    0.646 for α = 0.01/0.05/0.10/0.20, versus nulls of 0.006/0.046/0.097/0.199 —
-   4–7×. No test, α or window fixes it; the conditional binomial's null is a
+   3.2×–38.2× (`T13.realistic_traffic.ratio_to_null.min/max`; corrected in 9B
+   from a "4–7×" that did not hold). No test, α or window fixes it; the conditional binomial's null is a
    clean 0.009–0.023 at those same operating points.
 3. **Accuracy side — Phase 5C, the zero-shot baselines.** A classifier trained
    on 3,200 corpus rows is **indistinguishable from a 3B open-weight model that
@@ -1386,7 +1423,7 @@ reaches the 80% target.
    the strongest cell.
 2. **Realistic traffic reads as drift.** Deployment-register tickets flag at
    0.217 / 0.429 / 0.514 / 0.646 for α = 0.01 / 0.05 / 0.10 / 0.20 against nulls
-   of 0.006 / 0.046 / 0.097 / 0.199 — 4–7×. A monitor on this reference would
+   of 0.006 / 0.046 / 0.097 / 0.199 — 3.2×–38.2× (corrected in 9B from "4–7×"). A monitor on this reference would
    alarm continuously on legitimate traffic. Same wall as Phase 1 Finding 4,
    reached from the monitoring side: the reference's register is the binding
    constraint, not the test.
@@ -2373,7 +2410,9 @@ published figure drifts — the goldens pattern applied to the write-up.
 |---|---|
 | **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (`8c9ac59`, 2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
 | **9A.1** | The guide's revisions — **DONE, GATED, PUSHED** (2026-09-28). 5-page A4 target (~3.9 pp estimated, uncompiled); cuts moved to the supplement; six authors; references filled from the guide's list; `higham` now supplement-only |
-| **9B** | Pre-submission audit — **next, on the revised (9A.1) paper** |
+| **9B** | Pre-submission audit + presentation-ready repo — **DONE, GATED, PUSHED, tagged `v1.0`** (2026-09-28). `paper/AUDIT_9B.md`: SUBMIT once the author-only items are ticked |
+
+**THE PHASE 5–9 PROGRAMME IS COMPLETE.** Everything left is future work (below), not a phase of this programme.
 | **9C** | Author explainer — **DONE** (2026-09-24), run before 9B at Aryan's request. `docs/AUTHOR_EXPLAINER.md`, docs-only, every number keyed to a `NUMBERS.md` id |
 
 9A builds on the **named finding** above rather than re-deriving it, and keeps
@@ -2436,6 +2475,12 @@ edit to the draft.
 - **Re-running the Phase 2 harnesses on deployment-distribution data.** Both
   harnesses are built and guarded and need no code changes — only real resolved
   tickets.
+- **The set-size hypothesis** raised post-hoc in 7C: coverage may be buffered by
+  large prediction sets, so a representation contrast may need small sets before
+  it shows.
+- **Whether to promote conformal to a production gate** (see "Open questions"),
+  which needs its own evidence.
+- **Evaluation on real ticket data**, the direction the others depend on.
 
 ### Still deferred, each needing its own gate
 
@@ -2461,6 +2506,13 @@ endpoint.
 ---
 
 ## Immediate next step
+
+**The programme is COMPLETE (9B done, tagged `v1.0`).** Nothing in this programme is outstanding in code. What remains is Aryan's
+by-hand list at the top of this file: the Overleaf re-compile, the nasscom wording, the arXiv checks, the guides' approval, the PDF
+on the Release, and one `gates.yml` run. Anything after that is future work (see "Explicitly FUTURE WORK"), and each item would
+open as a new phase with its own plan.
+
+*(The text below is the record from before 9B.)*
 
 **Phase 9A.1 is DONE. Next: Phase 9B, the pre-submission audit, on the revised paper.** It opens in plan mode. Three things 9A.1
 changed for it:

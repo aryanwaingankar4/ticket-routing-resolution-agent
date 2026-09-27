@@ -94,9 +94,9 @@ Every statistic-shaped token in the four documents -- decimals with three or mor
 | PROJECT_OVERVIEW.md | unmatched | 149 |
 | PROJECT_STATUS.md | DO-NOT-CITE literal | 8 |
 | PROJECT_STATUS.md | matched to a committed source | 296 |
-| PROJECT_STATUS.md | unmatched | 286 |
+| PROJECT_STATUS.md | unmatched | 287 |
 | README.md | DO-NOT-CITE literal | 14 |
-| README.md | matched to a committed source | 347 |
+| README.md | matched to a committed source | 354 |
 | README.md | unmatched | 568 |
 
 ### DO-NOT-CITE literals still present in the documents

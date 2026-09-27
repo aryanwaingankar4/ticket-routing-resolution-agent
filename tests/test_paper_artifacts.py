@@ -62,7 +62,9 @@ NOT_BYTE_COMPARED = {"RECONCILIATION.md"}
 # generated surface. The builder never produces these, so they are excluded
 # from the byte comparison and checked structurally below instead.
 HAND_WRITTEN = {"main.tex", "supplement.tex", "references.bib",
-                "references_to_check.md"}
+                "references_to_check.md",
+                # Phase 9B: the pre-submission audit, written by hand.
+                "AUDIT_9B.md"}
 NOT_BYTE_COMPARED |= HAND_WRITTEN
 DRAFTS = ("main.tex", "supplement.tex")
 

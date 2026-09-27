@@ -33,10 +33,13 @@ W=100–200, and nothing was promoted into config), Phase 5A (the conformal
 template-grouping correction), Phase 5B (the honest ablation — the cascade is a
 latency optimisation, not an accuracy gain) and Phase 5C (zero-shot LLM
 classification baselines, Gemini and a local Qwen2.5-3B). Phases 6 (6A–6C),
-7 (7A–7C, closed) and 8 (8A–8B.3, closed) are complete too, and Phase 9A (the
-IEEE draft, `paper/main.tex`) has been written. The work follows the agreed **Phase 5–9
-publication-readiness programme**, which is recorded in `PROJECT_STATUS.md`
-along with the current state — read it first.
+7 (7A–7C, closed) and 8 (8A–8B.3, closed) are complete too, and so is Phase 9:
+9A (the IEEE draft, `paper/main.tex`), 9A.1 (the guide's 5-page revision), 9C
+(the author explainer) and 9B (the pre-submission audit, `paper/AUDIT_9B.md`).
+**The agreed Phase 5–9 publication-readiness programme is COMPLETE and tagged
+`v1.0`.** Anything further is future work and opens as a new phase with its own
+plan. `PROJECT_STATUS.md` carries the state and the author's remaining by-hand
+items — read it first.
 
 **Before ending a working session**, update `PROJECT_STATUS.md`: the last-updated date,
 the last commit SHA, what moved, and what the next step is. A future session should be
@@ -883,8 +886,8 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   of which the adversarial gate checks for byte identity. The qualitative
   point survives the swap: both tickets are marginal, which is now even
   sharper, since both sit just **above** 0.67 by 0.0004 and 0.0066. But no number in
-  either note may be quoted. `paper/` quotes none of them (checked). **It is
-  on the Phase 9B audit list** in `PROJECT_STATUS.md`. Read a ticket's
+  either note may be quoted. `paper/` quotes none of them (checked again in
+  9B; see `paper/AUDIT_9B.md`). Read a ticket's
   numbers from the result columns, never from its note.
 
 - **DECISIONS are reproducible across platforms; the FLOATS behind them are
@@ -954,7 +957,9 @@ Gemini model is `gemini-flash-lite-latest` via the unified `google-genai` SDK
   categories). All three stay in the report as descriptive reads only.
 - **A drift monitor on the in-domain reference would alarm continuously.** 4B-1's
   realistic-traffic arm: deployment-register tickets — legitimate, not drift — flag at
-  0.217/0.429/0.514/0.646 for α = 0.01/0.05/0.10/0.20, 4–7× the null. The binding
+  0.217/0.429/0.514/0.646 for α = 0.01/0.05/0.10/0.20, **3.2×–38.2× the per-ticket
+  null** (`T13.realistic_traffic.ratio_to_null.min/max`; the "4–7×" once written
+  here does not hold across the four alphas and was corrected in 9B). The binding
   constraint is what the reference is made of, not the test. Any future drift work
   needs a deployment-traffic reference first.
 - **The drift reference escalates 0/175 tickets**, so the escalation-rate test is

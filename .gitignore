@@ -23,3 +23,7 @@ data/external_tobibueck/*.faiss
 
 # Aryan's local Overleaf upload copy of paper/ (never committed)
 /paper_upload.zip
+
+# Phase 9B: embedding caches anywhere in the tree (none is tracked; the
+# path-specific patterns above predate this and are kept)
+*.npy

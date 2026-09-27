@@ -4,7 +4,14 @@
 
 **9A.1:** every `references.bib` entry is now **filled** from the guide's reference list, using exactly the fields supplied. Volume, number and pages are present only where the list gave them ([19] FAISS, [20] Wilson, [21] McNemar, [23] Cohen). Edition and publisher are present only for [7] Vovk et al. and [24] Higham. Nothing was looked up or guessed. Where the list gave only a first author ("et al."), the entry reads `and others`.
 
-**Still open:** the bibliographic fields are filled, but checking each characterisation is not done. Confirming that a paper actually supports the sentence citing it is still tracked by the `% TODO-VERIFY` comments in `main.tex`. That work belongs to Phase 9B.
+**9B: characterisations resolved.** Every `% TODO-VERIFY` comment is gone. Each citing sentence now claims **no more than the cited work's title supports**. Where the old wording went further, it was softened, and none was strengthened:
+- [1–3]: "LLM-based methods", no longer "classical and LLM-based".
+- [5]: the distribution-free guarantees of the title, no longer a set-valued mechanism.
+- [6]: "cascades can end in a human decision-maker".
+- [16]: agreeableness bias, no longer "reliability" in general.
+- [17]: "the efficacy of synthetic data as an evaluation benchmark has been studied", no longer "increasingly used".
+
+[14] CRAG's sentence already named no mechanism and was kept. See `paper/AUDIT_9B.md`.
 
 | # | key | status | cited in | claim it supports |
 |---|---|---|---|---|
@@ -39,20 +46,24 @@
 
 ## arXiv entries to check for a published version
 
-Before submission, look each of these up. If a peer-reviewed version exists, replace the arXiv entry with it:
+**All 9 are for you to check on Google Scholar.** No venue has been added from memory, because nothing here may be invented. For each one, search the exact title. Where Scholar lists a peer-reviewed venue, replace the `@misc` entry with it, giving venue, year and pages only as Scholar shows them. **If no venue is listed, keep the arXiv entry as it is.**
 
-- [5] `conformal_cascade`: Dou et al., "Conformal Cascade" (arXiv, 2026)
-- [8] `angelopoulos_gentle`: Angelopoulos & Bates (arXiv:2107.07511, 2021). A later journal/monograph version may exist
-- [13] `joren_sufficient`: Joren et al., "Sufficient Context" (arXiv, 2024)
-- [14] `crag`: Yan et al., "Corrective Retrieval Augmented Generation" (arXiv, 2024)
-- [15] `jung_trust_escalate`: Jung et al., "Trust or Escalate" (arXiv, 2024)
-- [16] `jain_judges`: Jain et al., "Beyond Consensus" (arXiv, 2025)
-- [17] `maheshwari_synthetic`: Maheshwari et al., "Efficacy of Synthetic Data as a Benchmark" (arXiv, 2024)
-- [18] `bge`: Xiao et al., "C-Pack" (arXiv:2309.07597, 2023)
-- [22] `qwen25`: Qwen Team, "Qwen2.5 Technical Report" (arXiv:2412.15115, 2024)
+| # | key | search for | note |
+|---|---|---|---|
+| [5] | `conformal_cascade` | "Conformal Cascade: Distribution-Free Accuracy Guarantees for Multi-Tier LLM Inference" | 2026 preprint, the most recent. May have no venue yet; keep arXiv if so |
+| [8] | `angelopoulos_gentle` | "A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification" | Check whether a journal or monograph version is listed |
+| [13] | `joren_sufficient` | "Sufficient Context: A New Lens on Retrieval Augmented Generation Systems" | Check for a conference version |
+| [14] | `crag` | "Corrective Retrieval Augmented Generation" | Check for a conference version. Do not confuse it with Meta's CRAG *benchmark* |
+| [15] | `jung_trust_escalate` | "Trust or Escalate: LLM Judges with Provable Guarantees for Human Agreement" | Check for a conference version |
+| [16] | `jain_judges` | "Beyond Consensus: Mitigating the Agreeableness Bias in LLM Judge Evaluations" | 2025 preprint. May have no venue yet |
+| [17] | `maheshwari_synthetic` | "Efficacy of Synthetic Data as a Benchmark" | Check for a workshop or conference version |
+| [18] | `bge` | "C-Pack: Packaged Resources To Advance General Chinese Embedding" | Check for a conference version. The arXiv number (2309.07597) is from your list |
+| [22] | `qwen25` | "Qwen2.5 Technical Report" | Technical reports usually stay arXiv-only. Keep it unless Scholar shows otherwise |
+
+Also add the arXiv identifier for [5], [13], [14], [15], [16] and [17] if you want it printed. Your list gave "arXiv preprint" without a number, so none was added.
 
 ## Claims that need a citation and have none yet
 
-- The nasscom hackathon use-case brief (main: Setup). It is not a publication. Decide whether to cite it as a URL or document, and confirm its wording against the brief itself (`% TODO-VERIFY` in `main.tex`).
+- The nasscom hackathon use-case brief (main: Setup). It is not a publication. Decide whether to cite it as a URL or document, and confirm its wording against the brief itself. The sentence records your account (PROJECT_STATUS.md, 2026-09-21) and was never checked against the brief document. Its marker was removed in 9B, and the check is an item on the submit checklist in `AUDIT_9B.md`.
 - The external dataset `Tobi-Bueck/customer-support-tickets` (supplement: External validity). Cite its dataset card. The pinned revision is recorded in `src/experiments/fetch_external_dataset.py`.
 - Gemini `gemini-flash-lite` (main: System and zero-shot). Cite the model documentation if the venue requires it.

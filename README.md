@@ -1,4 +1,106 @@
-# AI-Powered Intelligent Ticket Routing & Resolution Agent
+# Calibrated Escalation for IT Ticket Triage
+
+[![CI](https://github.com/aryanwaingankar4/ticket-routing-resolution-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/aryanwaingankar4/ticket-routing-resolution-agent/actions/workflows/ci.yml)
+[![Gates](https://github.com/aryanwaingankar4/ticket-routing-resolution-agent/actions/workflows/gates.yml/badge.svg)](https://github.com/aryanwaingankar4/ticket-routing-resolution-agent/actions/workflows/gates.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+This IT support-ticket triage agent does four things:
+- it classifies a ticket into one of seven teams;
+- it retrieves similar resolved tickets;
+- it lets a language model draft a resolution **only** when retrieval clears a calibrated similarity gate;
+- it **escalates to a human** whenever either of its two independently calibrated gates says it should not answer.
+
+Offline, it clusters resolved tickets to flag recurring issues for automation.
+
+The accompanying IEEE conference paper, *Calibrated Escalation for IT Ticket Triage: What the Calibration Distribution Decides*, reports one result that recurs across coverage guarantees, drift monitoring and classification: **the data distribution a component is fitted or calibrated on, not the method or the test applied to it, is the binding constraint.** The paper also reports what did not work. Every number in it is regenerated from a committed result file.
+
+**Origin.** The project comes from **nasscom hackathon Use Case 1**. That brief specified the seven categories, routing, resolution suggestion, confidence-based escalation and automation flagging, and recommended a synthetic, LLM-generated dataset. We followed it at 4,000 tickets.
+
+**Team.**
+- Students: Aryan Manoj Waingankar, Shreyansh Pandey, Parth Bagle and Swapnil Samrat.
+- Guides: **Dr. Madhvi Saxena** and **Dr. Aditi Saxena**.
+
+Department of Artificial Intelligence and Machine Learning, Symbiosis Institute of Technology, Pune, Symbiosis International (Deemed University).
+
+![System architecture: a two-tier classification cascade, a retrieval similarity gate, and grounded drafting only above the gate](paper/figures/F1_system_architecture.png)
+
+## Key results
+
+Every value comes from [`paper/NUMBERS.md`](paper/NUMBERS.md), which records the committed result file behind it. The ids let you trace each value.
+
+| Result | Value | `NUMBERS.md` id |
+|---|---|---|
+| Production cascade, 45-ticket out-of-template benchmark | **32/45** | `T1.cascade.benchmark45` |
+| Tier-2 (BGE) alone, same benchmark | **33/45** | `T1.tier2only.benchmark45` |
+| Zero-shot Gemini (flash-lite), same benchmark | **40/45** | `T1.zeroshot_gemini.benchmark45` |
+| Zero-shot Qwen2.5-3B on a laptop CPU, same benchmark | **34/45** | `T1.zeroshot_qwen.benchmark45` |
+| Adversarial tickets decided correctly: with the retrieval gate / without it | **9/9 vs 3/9** | `T3.baseline.escalation_correct`, `T3.norag.escalation_correct` |
+| Drafts grounded in retrieved tickets (human labels) | **31/33** | `T14.grounded` |
+| Tier-2 latency as a multiple of Tier-1 (warm, batch size 1) | **151×** | `T3.latency.tier2_over_tier1` |
+
+**How to read the table:**
+- The zero-shot LLMs are more accurate than the trained classifier, but they have **no abstention guarantee, no calibrated gate and no cost model**. That contrast is the paper's argument, not a loss.
+- The cascade is **one ticket worse** than Tier-2 alone, which is statistically indistinguishable. It exists for latency, not accuracy.
+
+## Quick start
+
+Windows PowerShell, from the project root:
+
+```powershell
+python -m venv venv; .\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+# optional: GEMINI_API_KEY=... in .env (only resolution drafting needs it)
+
+python data/generate_dataset.py                 # 4,000 synthetic tickets, seed 42
+python src/classification/train_tier1.py        # Tier-1 (TF-IDF, committed vocabulary)
+python src/classification/train_embeddings.py   # Tier-2 (BGE)
+python src/rag/build_vector_index.py            # FAISS index
+
+streamlit run src/app/streamlit_app.py          # live demo
+uvicorn src.service.api:app --port 8000         # HTTP service; open http://localhost:8000/docs
+pytest                                          # offline test suite, never spends API quota
+```
+
+Docker (the image builds its own artifacts; no API key is needed):
+
+```powershell
+docker build -t ticket-triage .
+docker run --rm -p 8000:8000 ticket-triage
+```
+
+## Repository structure
+
+```
+src/agent/          the pipeline: config, loaders, cascade, retriever, resolver, orchestrator
+src/service/        FastAPI service (per-agent endpoints, /triage)
+src/app/            Streamlit demo
+src/classification/ training scripts (Tier-1, Tier-2, baselines)
+src/rag/            FAISS index builder
+src/experiments/    every experiment, plus build_paper_artifacts.py
+data/               synthetic corpus, fixed benchmarks, committed result files
+tests/              offline suite: golden parity, gates, paper parity, draft rules
+paper/              IEEE draft (main.tex, supplement.tex) and generated tables, figures, NUMBERS.md
+```
+
+## Paper
+
+- **PDF: see [Releases](https://github.com/aryanwaingankar4/ticket-routing-resolution-agent/releases).**
+- Source: [`paper/main.tex`](paper/main.tex) (5 pages, IEEE conference format, A4) and [`paper/supplement.tex`](paper/supplement.tex).
+- Pre-submission audit: [`paper/AUDIT_9B.md`](paper/AUDIT_9B.md).
+
+## Use of AI tools
+
+AI assistants were used for code and drafting. All code, results and text were reviewed by the authors.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+---
+
+## Lab notebook: AI-Powered Intelligent Ticket Routing & Resolution Agent
+
+*Everything below is the project's lab notebook: every experiment, every calibration attempt including the ones that failed, and every correction. It is kept intact as the record.*
 
 A three-layer AI system for IT support ticket triage: **classify** the ticket
 into the right team, **retrieve** similar past tickets and suggest a grounded
@@ -4227,6 +4329,41 @@ Neither table recomputes anything, and `NUMBERS.md` is byte-identical: 257 numbe
 - Adversarial gate: **9/9**, CSV byte-identical.
 - Ablation baseline: **32/45** and 9/9, CSV byte-identical, re-derived from the CSV.
 - No stray `.npy` files.
+
+### Phase 9B - the pre-submission audit, and the repo made presentable
+
+**Scope.** Offline: 0 Gemini and 0 Ollama calls, no experiment re-run, no `NUMBERS.md` value moved. The full audit, with a submit / don't-submit checklist, is [`paper/AUDIT_9B.md`](paper/AUDIT_9B.md).
+
+**Result: every mechanical check passes.**
+- **Numbers:** every number traces to `NUMBERS.md` through `\nb{}`. 0 are undefined; 241 uses sit across main and supplement.
+- **Tables:** every table is generated.
+- **Claims:** every empirical claim points to its support. Two numbers are sourced but sit in no table: TF-IDF's in-distribution accuracy and Tier-1's median latency.
+- **Hygiene:** no printed TODO, no retired literal, and no forbidden or claim-inflating wording.
+
+**The seven `% TODO-VERIFY` comments are resolved.** Each sentence now claims no more than the cited work's title supports, and none was strengthened:
+- Softened:
+  - ticket triage [1–3] now says "LLM-based methods";
+  - Conformal Cascade [5] now describes its guarantees, not a mechanism;
+  - Fanconi et al. [6] now says "can end in a human decision-maker";
+  - Maheshwari et al. [17] no longer says "increasingly used".
+- Narrowed: Jain et al. [16] now names agreeableness bias.
+- Kept: CRAG [14]; the nasscom sentence, which now needs the author's confirmation against the brief; and the benchmark-scope pointer, which the supplement already carries.
+
+**What changed around the paper:**
+- **Page count:** three short supplement pointers were added to `main.tex`. The 5-page Overleaf compile predates them, so it must be redone.
+- **Supplement:** one sentence was added to the supplement's *Retrieval gate* section so that the main text's adversarial counts are supported where it points. The supplement's author block now matches the main text's.
+
+**Documents follow files:**
+- The drift ratio is corrected to 3.2×–38.2× (`T13.realistic_traffic.ratio_to_null.min/max`) in `CLAUDE.md` and `PROJECT_STATUS.md`.
+- The health table is refreshed from values re-run this session.
+- `PROJECT_OVERVIEW.md` is marked a superseded snapshot and is not rewritten.
+
+**Repository:**
+- **README top section** for readers: summary, origin, team and guides, architecture figure, key results with their `NUMBERS.md` ids, quick start, structure, paper link, use of AI tools, and license. This lab notebook is kept intact below it.
+- **Hygiene:** an MIT `LICENSE`, CI badges, and a global `*.npy` ignore.
+- **Secret scan (history not rewritten):** no key is in git history. Every `GEMINI_API_KEY=` ever committed is a placeholder, no `AIza…` string appears, and `.env` was never tracked.
+
+**Limitation, beside the result:** the characterisation check reads each cited work's **title**, not the paper. That is enough to soften a claim, and not enough to confirm one. Nine arXiv entries are left for the author to check on Google Scholar for a published version.
 
 
 ---

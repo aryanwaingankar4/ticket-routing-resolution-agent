@@ -1,7 +1,7 @@
 % paper/supplement.tex -- Phase 9A supplementary material, extended in 9A.1
 % with everything the five-page main text cut for length. HAND-WRITTEN.
 % Same rules as main.tex: every number is \nb{<id>} from numbers.tex, every
-% table and figure is generated, and "% TODO-VERIFY" marks an unchecked claim.
+% table and figure is generated, and (since Phase 9B) no claim is left flagged.
 % The main text points here by SECTION TITLE, so keep titles stable.
 % Compile separately on Overleaf (pdfLaTeX + BibTeX).
 \documentclass[conference,onecolumn,a4paper]{IEEEtran}
@@ -20,11 +20,14 @@
 \begin{document}
 
 \title{Supplementary Material:\\Calibrated Escalation for IT Ticket Triage}
-\author{\IEEEauthorblockN{Aryan Manoj Waingankar, Shreyansh Pandey, Parth Bagle, Swapnil Samrat, Madhvi Saxena, Aditi Saxena}
-\IEEEauthorblockA{Department of Artificial Intelligence and Machine Learning,
-Symbiosis Institute of Technology, Pune\\
-Symbiosis International (Deemed University), Pune, India\\
-\{aryan.waingankar.btech2023, shreyansh.pandey.btech2023, parth.bagle.btech2023, swapnil.samrat.btech2023, madhvi.saxena, aditi.saxena\}@sitpune.edu.in}}
+\author{\IEEEauthorblockN{Aryan Manoj Waingankar, Shreyansh Pandey, Parth Bagle, Swapnil Samrat,\\
+Dr. Madhvi Saxena, Dr. Aditi Saxena}
+\IEEEauthorblockA{\textit{Department of Artificial Intelligence and Machine Learning}\\
+\textit{Symbiosis Institute of Technology, Symbiosis International (Deemed University)}\\
+Pune, India\\
+\small aryan.waingankar.btech2023@sitpune.edu.in, shreyansh.pandey.btech2023@sitpune.edu.in\\
+\small parth.bagle.btech2023@sitpune.edu.in, swapnil.samrat.btech2023@sitpune.edu.in\\
+\small madhvi.saxena@sitpune.edu.in, aditi.saxena@sitpune.edu.in}}
 \maketitle
 
 This supplement carries every result the main paper summarises but has no room for. Nothing here is a new experiment. Section numbers are prefixed with S, and the main paper refers to each section by its title.
@@ -57,7 +60,7 @@ The pipeline is a sequential pipeline with agent boundaries and an HTTP surface.
 % ===========================================================================
 \section{Retrieval gate}
 % ===========================================================================
-\textbf{Derivation.} The threshold was chosen on a combined set of in-domain and out-of-domain tickets (Fig.~\ref{fig:ood}). At \nb{T5.gate@r2}, all \nb{T5.in_domain_proceed_at_gate} in-domain tickets proceed and \nb{T5.ood_leakage_at_gate@pct1}\% of out-of-domain tickets leak through. Lowering the threshold by two steps, to where leakage reaches \nb{T5.ood_leakage_below_gate@pct1}\%, nearly triples the leakage. The threshold also sits inside the adversarial safe range [\nb{T5.safe_range_low@r4}, \nb{T5.safe_range_high@r4}]. That range runs from the highest similarity among tickets that must escalate to the lowest among tickets that must proceed. Table~\ref{tab:ieee_t5_rag_gate} gives the in-domain and out-of-domain trade-off at thresholds around the live gate. A contamination check: \nb{T5.self_retrieval_rate} in-domain calibration tickets retrieve their own source row first.
+\textbf{Derivation.} The threshold was chosen on a combined set of in-domain and out-of-domain tickets (Fig.~\ref{fig:ood}). At \nb{T5.gate@r2}, all \nb{T5.in_domain_proceed_at_gate} in-domain tickets proceed and \nb{T5.ood_leakage_at_gate@pct1}\% of out-of-domain tickets leak through. Lowering the threshold by two steps, to where leakage reaches \nb{T5.ood_leakage_below_gate@pct1}\%, nearly triples the leakage. The threshold also sits inside the adversarial safe range [\nb{T5.safe_range_low@r4}, \nb{T5.safe_range_high@r4}]. That range runs from the highest similarity among tickets that must escalate to the lowest among tickets that must proceed. Table~\ref{tab:ieee_t5_rag_gate} gives the in-domain and out-of-domain trade-off at thresholds around the live gate. A contamination check: \nb{T5.self_retrieval_rate} in-domain calibration tickets retrieve their own source row first. On the adversarial set the pipeline decides \nb{T3.baseline.escalation_correct} tickets correctly with the gate and \nb{T3.norag.escalation_correct} with it removed (Table~\ref{tab:ieee_t3_ablation}, section \emph{Cascade ablation}).
 
 \begin{figure}[h]
 \centering
