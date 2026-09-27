@@ -211,6 +211,18 @@ in CI) fails on:
 
 No LaTeX engine is installed, so do not install one. Compile on Overleaf.
 
+**The main text has a hard 5-page limit (Phase 9A.1, the guide's requirement).** It is
+`\documentclass[conference,a4paper]{IEEEtran}`, and the limit includes references
+and the author block. Anything cut for length **moves to `supplement.tex`, never out of the
+research**, and the main text points to it **by section title**: the two compile
+separately, so a `\ref` cannot cross between them, and "S3" would trip the
+typed-digit lint. **Renaming a supplement section breaks a pointer silently.**
+The supplement has its own `\bibliography`, so a citation that moves there
+leaves the main reference list (`higham` did). Trimmed main-text tables are
+generated `IEEE_VIEWS` (`T3_compact`, `T1_classification_main`), never
+hand-cut. The only digits the draft may contain beyond the macro allowlist are
+the authors' `first.last.btech2023` e-mail local parts.
+
 **`docs/AUTHOR_EXPLAINER.md` (Phase 9C) is hand-written for the author**, not
 part of the paper, and no test guards it. Every number in it carries its
 `NUMBERS.md` id, and it is a snapshot at config fingerprint `9c9a5cbcb53f`. If

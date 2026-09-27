@@ -4158,6 +4158,76 @@ are described in words and pointed at CLAUDE.md.
 It caught one partial Finding 1 clause group and three trap phrasings outside
 the never-use table, all fixed before commit.
 
+### Phase 9A.1 - the draft revised to the guide's five-page limit
+
+**What the guide asked for.**
+- `paper/main.tex` must fit **5 pages on A4, references included**.
+- The six real authors replace the TODO author block.
+- Every `references.bib` TODO is filled from a supplied list of 24 references.
+- No TODO may remain in the printed text.
+
+Nothing was deleted from the research. Everything cut from the main text moved to `paper/supplement.tex`. The main text names the supplement section it moved to, by title, because the two compile separately and a `\ref` cannot cross between them.
+
+**What stays in the main text** (about 2,600 words of body, down from about 4,600):
+- the abstract, and an introduction with three contributions;
+- one short paragraph per related-work cluster;
+- the system, with Fig. 1;
+- the corpus origin and the evaluation sets;
+- the retrieval-gate derivation, with the 9/9-vs-3/9 adversarial count moved into the gates subsection;
+- Finding 1's full three-clause group, with the coverage table and figure;
+- the cascade ablation, as one compact table;
+- the zero-shot baselines, as a trimmed table;
+- groundedness, the judge and sufficiency in three sentences;
+- the named finding, with a three-sentence methodology paragraph;
+- three sentences of reproducibility;
+- a compact limitations list, and the conclusion.
+
+**What moved to the supplement:**
+- Table I (template structure);
+- Fig. 2 (out-of-domain leakage) and Table II (the gate errs both ways);
+- the novelty detector and the full cascade-calibration list;
+- 6B weighted conformal, whole;
+- the full ablation and latency tables;
+- the full classification table;
+- Tables VII–VIII and the full 6C paragraph;
+- the named-finding wording rationale;
+- the whole methodology-lessons section;
+- the whole reproducibility section, with Table IX.
+
+**Checked:**
+- All 171 `\nb` ids, all 25 table inputs and all 7 figures of the old draft are present across main and supplement.
+- There are 0 printed TODOs.
+- The 7 `% TODO-VERIFY` comments remain for 9B.
+
+**Two generated tables, not hand-written.** They are new `IEEE_VIEWS` entries in `build_paper_artifacts.py`:
+- `T3_compact` reshapes `T3/main` and `T3/latency`: the cascade against Tier-2-only per set, beside the latency.
+- `T1_classification_main` selects five rows of `T1/main`: the production tiers and the two zero-shot LLMs.
+
+Neither table recomputes anything, and `NUMBERS.md` is byte-identical: 257 numbers, 0 anchored mismatches.
+
+**One display bug found and fixed.** The builder's raw-header regex needed two backslashes, and the headers carry one. So the headers `45 (\%)`, `Saving (\%)`, `Tier-1 share (\%)` and `Share (\%)` were escaped and would have printed a literal backslash. This affected T1_classification, T3_latency, T18_ties and the new T3_compact. Only those header lines changed. It is a rendering defect, not a number.
+
+**References.** Every entry was filled with exactly the supplied fields. None was looked up or guessed.
+- Volume and pages appear only where given, and LaTeX accents are used (`Cand\`es`, `J\'egou`).
+- `gibbs_adaptive` is now Gibbs & Candès (NeurIPS 2021) for the "adapts online" claim.
+- **`higham` left the main reference list**: its only citation moved to the supplement with the γₙ derivation. The supplement now has its own bibliography.
+- `references_to_check.md` marks every entry as filled and lists the nine arXiv entries to check for a published version.
+
+**Authors.** The block uses the compact IEEE form: the names on one line, the shared affiliation written once, and the e-mails with a factored-out domain. By estimate, the standard two-rows-of-three layout would take about 2.4 in, against 1/6 of an A4 page (about 1.95 in). `tests/test_paper_draft.py` gains one narrow allowed token for the `first.last.btech2023` e-mail local parts. The no-typed-number rule is otherwise unchanged.
+
+**Page estimate.** This is *uncompiled*: no LaTeX engine is installed.
+- The inputs are about 2,600 words at about 480 per column, plus Fig. 1, the coverage figure, three column-width tables, the compact author block and 23 references.
+- That gives **≈ 7.8 of 10 columns, about 3.9 pages**.
+- A word-based estimate can be 10–15% off, which still leaves about a page of margin.
+
+**Limitation:** the real page count exists only after the Overleaf compile, which is a 9B item.
+
+**Gates, re-run and not quoted:**
+- `pytest`: **456 passed**, which includes paper parity, the draft tests and golden parity at similarity delta 0.000e+00.
+- Adversarial gate: **9/9**, CSV byte-identical.
+- Ablation baseline: **32/45** and 9/9, CSV byte-identical, re-derived from the CSV.
+- No stray `.npy` files.
+
 
 ---
 

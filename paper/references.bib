@@ -1,182 +1,200 @@
-% paper/references.bib -- Phase 9A. HAND-WRITTEN.
+% paper/references.bib -- Phase 9A, filled in 9A.1. HAND-WRITTEN.
 %
-% RULE: no bibliographic detail is invented. Each entry carries only what was
-% supplied (an author surname and, where one was given, a title) or what the
-% repository itself already states. EVERY other field is TODO. Look each one
-% up before submission -- paper/references_to_check.md lists the claim each
-% key supports and what to confirm.
+% RULE: no bibliographic detail is invented. Every field below is exactly what
+% the guide's reference list (Phase 9A.1) supplied. Where it gave only a first
+% author ("et al."), the entry says "and others". Volume, number and pages
+% appear ONLY where the list gave them; a missing field is left out, never
+% guessed. The arXiv entries to re-check for a published version are listed
+% in references_to_check.md.
 
 % --- Ticket triage ----------------------------------------------------------
-@misc{tickit,
-  author = {TODO},
-  title  = {{TickIt}: TODO full title},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{tickit,
+  author    = {Liu, F.-R. and others},
+  title     = {{TickIt}: Leveraging Large Language Models for Automated Ticket Escalation},
+  booktitle = {Proc. 33rd ACM Int. Conf. Foundations of Software Engineering (FSE)},
+  year      = {2025}
 }
 
-@misc{paket_ticket,
-  author = {Paket, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{paket_ticket,
+  author    = {Paket, E. and others},
+  title     = {{IT} Service Desk Ticket Classification via Large Language Models},
+  booktitle = {Proc. 9th Int. Conf. Computer Science and Engineering (UBMK)},
+  year      = {2024}
 }
 
-@misc{redcap_llm_triage,
-  author = {TODO},
-  title  = {TODO: {REDCap} {LLM} triage},
-  year   = {TODO},
-  note   = {TODO venue}
+@article{redcap_llm_triage,
+  author  = {Carroll, A. and others},
+  title   = {Evaluating large language models for automated {REDCap} support ticket triage and response},
+  journal = {JAMIA Open},
+  year    = {2026}
 }
 
 % --- Cascades and deferral --------------------------------------------------
-@misc{jitkrittum_cascade,
-  author = {Jitkrittum, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{jitkrittum_cascade,
+  author    = {Jitkrittum, W. and others},
+  title     = {When Does Confidence-Based Cascade Deferral Suffice?},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2023}
 }
 
 @misc{conformal_cascade,
-  author = {TODO},
-  title  = {Conformal Cascade: TODO full title},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Dou, Y.-F. and others},
+  title  = {Conformal Cascade: Distribution-Free Accuracy Guarantees for Multi-Tier {LLM} Inference},
+  note   = {arXiv preprint},
+  year   = {2026}
 }
 
-@misc{fanconi_defer,
-  author = {Fanconi, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{fanconi_defer,
+  author    = {Fanconi, C. and others},
+  title     = {Cascaded Language Models for Cost-Effective Human-{AI} Decision-Making},
+  booktitle = {Advances in Neural Information Processing Systems 38 (NeurIPS)},
+  year      = {2025}
 }
 
 % --- Conformal prediction and shift -----------------------------------------
-@misc{vovk_alrw,
-  author = {Vovk, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO publisher}
+@book{vovk_alrw,
+  author    = {Vovk, V. and Gammerman, A. and Shafer, G.},
+  title     = {Algorithmic Learning in a Random World},
+  publisher = {Springer},
+  address   = {New York},
+  year      = {2005}
 }
 
 @misc{angelopoulos_gentle,
-  author = {Angelopoulos, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Angelopoulos, A. N. and Bates, S.},
+  title  = {A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification},
+  note   = {arXiv:2107.07511},
+  year   = {2021}
 }
 
-@misc{tibshirani_covshift,
-  author = {Tibshirani, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{tibshirani_covshift,
+  author    = {Tibshirani, R. J. and Barber, R. F. and Cand\`es, E. and Ramdas, A.},
+  title     = {Conformal Prediction Under Covariate Shift},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2019}
 }
 
-@misc{barber_beyond,
-  author = {Barber, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@article{barber_beyond,
+  author  = {Barber, R. F. and Cand\`es, E. J. and Ramdas, A. and Tibshirani, R. J.},
+  title   = {Conformal prediction beyond exchangeability},
+  journal = {The Annals of Statistics},
+  year    = {2023}
 }
 
-@misc{gibbs_adaptive,
-  author = {Gibbs, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+% 9A.1: the "adapts online" claim cites Gibbs & Candes 2021 (adaptive
+% conformal inference), not Gibbs et al. 2023 (conditional guarantees).
+@inproceedings{gibbs_adaptive,
+  author    = {Gibbs, I. and Cand\`es, E.},
+  title     = {Adaptive Conformal Inference Under Distribution Shift},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2021}
 }
 
 % --- RAG and abstention -----------------------------------------------------
-@misc{lewis_rag,
-  author = {Lewis, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@inproceedings{lewis_rag,
+  author    = {Lewis, P. and others},
+  title     = {Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2020}
 }
 
 @misc{joren_sufficient,
-  author = {Joren, TODO and others},
-  title  = {Sufficient Context: TODO full title},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Joren, H. and others},
+  title  = {Sufficient Context: A New Lens on Retrieval Augmented Generation Systems},
+  note   = {arXiv preprint},
+  year   = {2024}
 }
 
 @misc{crag,
-  author = {TODO},
-  title  = {{CRAG}: TODO full title},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Yan, S.-Q. and others},
+  title  = {Corrective Retrieval Augmented Generation},
+  note   = {arXiv preprint},
+  year   = {2024}
 }
 
 % --- LLM judges -------------------------------------------------------------
 @misc{jung_trust_escalate,
-  author = {Jung, TODO and others},
-  title  = {Trust or Escalate: TODO full title},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Jung, J. and others},
+  title  = {Trust or Escalate: {LLM} Judges with Provable Guarantees for Human Agreement},
+  note   = {arXiv preprint},
+  year   = {2024}
 }
 
 @misc{jain_judges,
-  author = {Jain, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Jain, S. and others},
+  title  = {Beyond Consensus: Mitigating the Agreeableness Bias in {LLM} Judge Evaluations},
+  note   = {arXiv preprint},
+  year   = {2025}
 }
 
 % --- Synthetic benchmarks ---------------------------------------------------
 @misc{maheshwari_synthetic,
-  author = {Maheshwari, TODO and others},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Maheshwari, G. and others},
+  title  = {Efficacy of Synthetic Data as a Benchmark},
+  note   = {arXiv preprint},
+  year   = {2024}
 }
 
 % --- Models, tools and statistics used ---------------------------------------
 @misc{bge,
-  author = {TODO},
-  title  = {TODO: the paper introducing {BAAI} bge-base-en-v1.5},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {Xiao, S. and others},
+  title  = {{C-Pack}: Packaged Resources To Advance General {Chinese} Embedding},
+  note   = {arXiv:2309.07597},
+  year   = {2023}
 }
 
-@misc{faiss,
-  author = {TODO},
-  title  = {TODO: the {FAISS} library paper},
-  year   = {TODO},
-  note   = {TODO venue}
+@article{faiss,
+  author  = {Johnson, J. and Douze, M. and J\'egou, H.},
+  title   = {Billion-scale similarity search with {GPUs}},
+  journal = {IEEE Transactions on Big Data},
+  volume  = {7},
+  number  = {3},
+  pages   = {535--547},
+  year    = {2021}
+}
+
+@article{wilson,
+  author  = {Wilson, E. B.},
+  title   = {Probable inference, the law of succession, and statistical inference},
+  journal = {Journal of the American Statistical Association},
+  volume  = {22},
+  number  = {158},
+  pages   = {209--212},
+  year    = {1927}
+}
+
+@article{mcnemar,
+  author  = {McNemar, Q.},
+  title   = {Note on the sampling error of the difference between correlated proportions or percentages},
+  journal = {Psychometrika},
+  volume  = {12},
+  number  = {2},
+  pages   = {153--157},
+  year    = {1947}
 }
 
 @misc{qwen25,
-  author = {TODO},
-  title  = {TODO: the {Qwen2.5} technical report},
-  year   = {TODO},
-  note   = {TODO venue}
+  author = {{Qwen Team}},
+  title  = {{Qwen2.5} Technical Report},
+  note   = {arXiv:2412.15115},
+  year   = {2024}
 }
 
-@misc{higham,
-  author = {Higham, TODO},
-  title  = {Accuracy and Stability of Numerical Algorithms},
-  year   = {TODO},
-  note   = {TODO edition and publisher; the repository cites the 2nd edition, section 3.1}
+@article{cohen_kappa,
+  author  = {Cohen, J.},
+  title   = {A coefficient of agreement for nominal scales},
+  journal = {Educational and Psychological Measurement},
+  volume  = {20},
+  number  = {1},
+  pages   = {37--46},
+  year    = {1960}
 }
 
-@misc{mcnemar,
-  author = {McNemar, TODO},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
-}
-
-@misc{wilson,
-  author = {Wilson, TODO},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
-}
-
-@misc{cohen_kappa,
-  author = {Cohen, TODO},
-  title  = {TODO},
-  year   = {TODO},
-  note   = {TODO venue}
+@book{higham,
+  author    = {Higham, N. J.},
+  title     = {Accuracy and Stability of Numerical Algorithms},
+  edition   = {2nd},
+  publisher = {SIAM},
+  address   = {Philadelphia},
+  year      = {2002}
 }

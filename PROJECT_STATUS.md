@@ -1,8 +1,47 @@
 # Project Status
 
-**Last updated:** 2026-09-24
-**Last commit to move code or a result:** `8c9ac59`, the Phase 9A commit. It changes the builder, adds two data files and corrects one
-paper-surface number. Before it: `681f356` (the 8B.3 follow-up).
+**Last updated:** 2026-09-28
+**Last commit to move code or a result:** the **Phase 9A.1 commit** (SHA recorded in the follow-up commit below). It changes the
+builder: two new IEEE table views and a header-escaping fix. **No `NUMBERS.md` value moved.** Before it: `8c9ac59`, the Phase 9A
+commit, which changed the builder, added two data files and corrected one paper-surface number.
+
+**PHASE 9A.1 IS DONE, GATED AND PUSHED** (2026-09-28). The draft was revised to Aryan's guide's requirements. Aryan authorised
+"commit and push only if all pass", and they did.
+
+**What changed:**
+- **`main.tex` now targets 5 pages on A4, references included** (`\documentclass[conference,a4paper]{IEEEtran}`).
+  - The body went from about 4,600 to about 2,600 words.
+  - The main text keeps three contributions, one paragraph per related-work cluster, Fig. 1 and the two gates, the nasscom origin and the evaluation sets.
+  - It also keeps: the 0.67 derivation with 9/9 vs 3/9, Finding 1 whole, one compact cascade-and-latency table, and a trimmed zero-shot table.
+  - It keeps groundedness, κ and 6C in three sentences, the named finding, a three-sentence methodology paragraph, three sentences of reproducibility, compact limitations and the conclusion.
+- **Everything cut moved to `supplement.tex`:**
+  - Table I (T8), Fig. 2 (F5), Table II (T17), the novelty detector and the full cascade-calibration list;
+  - 6B whole, the full T3 ablation and latency tables, and the full T1 classification table;
+  - T14 and T15 with the full 6C paragraph, and the wording rationale;
+  - the whole methodology-lessons section, and the whole reproducibility section with T18.
+  - The main text cites each by **section title**, since the two compile separately.
+  - Checked: all **171 `\nb` ids, 25 table inputs and 7 figures** of the old draft are still present.
+- **The six authors are in, in compact IEEE form**, in both files. `tests/test_paper_draft.py` allows the `first.last.btech2023` e-mail local parts, and nothing else changed in that test.
+- **`references.bib` is filled** from the guide's list, exactly as supplied.
+  - `gibbs_adaptive` is now Gibbs & Candès 2021.
+  - **`higham` left the main reference list**; it is cited only in the supplement, which now has its own bibliography.
+  - `references_to_check.md` marks all 24 entries as filled and lists 9 arXiv entries to check for a published version.
+- **Two new generated IEEE views:** `T3_compact` and `T1_classification_main`. They are selections and reshapes only.
+- **A display bug fixed:** the builder's raw-header regex needed two backslashes, so four headers ending in `(\%)` would have printed a literal backslash (T1_classification, T3_latency, T18_ties and T3_compact).
+- **`paper/RECONCILIATION.md` refreshed.** It audits the live documents and is not byte-compared, and the 9C README edit had left it one token behind. No number moved.
+- **Printed TODOs: 0** in both files. **7 `% TODO-VERIFY` comments remain** for 9B: 5 related-work characterisations, the nasscom wording and the benchmark-scope cross-reference. The Gibbs marker was resolved by the guide.
+- **Page estimate:** about 7.8 of 10 columns, **about 3.9 pages, uncompiled.** The real count needs Overleaf. If it runs over, Fig. 2 (the coverage figure) moves to the supplement first; if there is slack, the F5 figure can come back.
+
+**Gates, re-run and not quoted:**
+- `pytest`: **456 passed**, 0 failed. This includes paper parity, the draft tests at 10/10, and golden parity 45/45 and 9/9 with similarity delta 0.000e+00.
+- Adversarial gate: **9/9**, CSV byte-identical.
+- Ablation baseline: **32/45** and **9/9**, CSV byte-identical, re-derived from the CSV.
+- `NUMBERS.md`: 257 numbers, no diff.
+- No stray `.npy` files.
+
+**Next: Phase 9B, the pre-submission audit, on the revised paper.** See "Immediate next step".
+
+---
 
 **PHASE 9C IS DONE, run before 9B at Aryan's request** (2026-09-24). This was
 a docs-only commit: `docs/AUTHOR_EXPLAINER.md`, a plain-language guide for the
@@ -2333,7 +2372,8 @@ published figure drifts — the goldens pattern applied to the write-up.
 | Sub-phase | Scope |
 |---|---|
 | **9A** | IEEE draft — **DRAFTED, gates passed, pushed** (`8c9ac59`, 2026-09-23). `paper/main.tex` + `supplement.tex`, about 7 pp estimated, uncompiled, every number a `\nb{}` macro. Found occurrence #9 (T3 6/9 → 9/9). **Awaiting Aryan's review of the draft** |
-| **9B** | Pre-submission audit |
+| **9A.1** | The guide's revisions — **DONE, GATED, PUSHED** (2026-09-28). 5-page A4 target (~3.9 pp estimated, uncompiled); cuts moved to the supplement; six authors; references filled from the guide's list; `higham` now supplement-only |
+| **9B** | Pre-submission audit — **next, on the revised (9A.1) paper** |
 | **9C** | Author explainer — **DONE** (2026-09-24), run before 9B at Aryan's request. `docs/AUTHOR_EXPLAINER.md`, docs-only, every number keyed to a `NUMBERS.md` id |
 
 9A builds on the **named finding** above rather than re-deriving it, and keeps
@@ -2422,7 +2462,17 @@ endpoint.
 
 ## Immediate next step
 
-**Phase 9A is DRAFTED and 9C is DONE. Next: Aryan reviews `paper/main.tex` on
+**Phase 9A.1 is DONE. Next: Phase 9B, the pre-submission audit, on the revised paper.** It opens in plan mode. Three things 9A.1
+changed for it:
+- **Compile on Overleaf first.** The 5-page A4 limit, references included, is the guide's hard requirement, and 9A.1 could only estimate it at about 3.9 pp. Also check the compact author block: the e-mail line may wrap to two lines.
+- **The bib fields are filled.** What remains is checking the characterisations: the 7 `% TODO-VERIFY` comments, and the 9 arXiv entries in `references_to_check.md`, to see whether each has a published version.
+- **Audit the supplement too.** It now carries most of the long-form text, and the main text cites its sections by title, so a renamed section silently breaks a pointer.
+
+The earlier 9B scope below still applies. **Add to it:** the stale drift "4–7×" also survives in `CLAUDE.md` ("Known
+inconsistencies", the realistic-traffic bullet) and in this file's Phase 4B-1 section, not only in the named-finding section.
+Use 3.2×–38.2× (`T13.realistic_traffic.ratio_to_null.min/max`).
+
+**(Before 9A.1:) Phase 9A is DRAFTED and 9C is DONE. Next: Aryan reviews `paper/main.tex` on
 Overleaf, then Phase 9B, the pre-submission audit.** If 9B changes any
 `NUMBERS.md` value, re-check the ids `docs/AUTHOR_EXPLAINER.md` cites. 9B
 should also fix this file's stale health table (it still says 446 tests and

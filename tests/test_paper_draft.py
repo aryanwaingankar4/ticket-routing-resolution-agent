@@ -84,6 +84,9 @@ _ALLOWED_DIGIT_TOKENS = [
     r"Tier-[12]", r"Finding~?\d", r"Qwen2\.5-3B", r"\b3B(?:-parameter)?\b",
     r"bge-base-en-v1\.5", r"float(?:32|64)", r"top-1", r"\bF1\b",
     r"adv\\_08",
+    # Phase 9A.1: the authors' institutional e-mail local parts
+    # ("first.last.btech2023"). Names, not measurements.
+    r"\b[a-z]+\.[a-z]+\.btech2023\b",
     # Conventions, not measurements: the 95% of a Wilson interval, and the
     # constant in the gamma_n formula.
     r"\b95\\%", r"\(1-nu\)",

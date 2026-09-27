@@ -2749,6 +2749,50 @@ def _t11_design_a(frames):
     return df[df["test_arm"] == "full"]
 
 
+# Phase 9A.1 -- the five-page main text carries trimmed views; the full
+# T1_classification, T3_ablation and T3_latency views move to the supplement.
+IEEE_T1_MAIN_METHODS = (
+    "TF-IDF + LogReg (Tier-1 only)",
+    "BGE-base-en-v1.5 + LogReg (Tier-2 only)",
+    "Cascade (Tier-1 -> Tier-2), production",
+    "Zero-shot Gemini flash-lite",
+    "Zero-shot Qwen2.5-3B (local CPU)",
+)
+
+
+def _t1_main_rows(frame):
+    sel = frame[frame["method"].isin(IEEE_T1_MAIN_METHODS)]
+    if len(sel) != len(IEEE_T1_MAIN_METHODS):
+        raise SystemExit(
+            "[FATAL] T1_classification_main: expected "
+            f"{len(IEEE_T1_MAIN_METHODS)} rows, found {len(sel)} -- a method "
+            "label in T1 changed.")
+    return sel
+
+
+def _t3_compact(frames):
+    """Cascade against its control, beside what it buys, per evaluation set.
+
+    A reshape of T3/main (the two rows that isolate the cascade) and
+    T3/latency; nothing is recomputed.
+    """
+    main = frames[("T3", "main")]
+    latency = frames[("T3", "latency")]
+
+    def row(prefix):
+        hit = main[main["mode"].str.startswith(prefix)]
+        if len(hit) != 1:
+            raise SystemExit(f"[FATAL] T3_compact: no unique {prefix!r} row")
+        return hit.iloc[0]
+
+    tier2, cascade = row("tier2-only"), row("baseline")
+    out = latency[["eval_set", "cascade_expected_median_ms",
+                   "tier2_only_median_ms", "median_latency_saving"]].copy()
+    out["tier2_only_accuracy"] = [tier2[s] for s in out["eval_set"]]
+    out["cascade_accuracy"] = [cascade[s] for s in out["eval_set"]]
+    return out
+
+
 def _t13_null(frames):
     df = frames[("T13", "null_rates")]
     return df[df["test"].isin(["conditional_binomial", "marginal_binomial",
@@ -2757,8 +2801,31 @@ def _t13_null(frames):
 
 IEEE_VIEWS = [
     # ---- main text -------------------------------------------------------
+    {"name": "T1_classification_main", "src": ("T1", "main"),
+     "rows": _t1_main_rows, "place": "main",
+     "caption": "Classification accuracy: the production tiers against "
+                "zero-shot LLMs; Wilson 95\\% interval on the 45-ticket set. "
+                "The zero-shot rows have no abstention guarantee, no "
+                "calibrated gate and no cost model. Every method is in the "
+                "supplement.",
+     "cols": [("method", "Method", "raw"),
+              ("benchmark14", "14-ticket", "raw"),
+              ("benchmark45", "45-ticket", "raw"),
+              ("benchmark45_ci_low", "CI low", "r3"),
+              ("benchmark45_ci_high", "CI high", "r3"),
+              ("deployment175", "Deployment", "raw")]},
+    {"name": "T3_compact", "src": _t3_compact, "place": "main",
+     "caption": "The cascade against the control that isolates it "
+                "(Tier-2 answering everything), and what it buys: median "
+                "per-ticket latency, warm, batch size one.",
+     "cols": [("eval_set", "Set", "raw"),
+              ("tier2_only_accuracy", "Tier-2 only", "raw"),
+              ("cascade_accuracy", "Cascade", "raw"),
+              ("tier2_only_median_ms", "Tier-2 (ms)", "r1"),
+              ("cascade_expected_median_ms", "Cascade (ms)", "r1"),
+              ("median_latency_saving", "Saving (\\%)", "pct1")]},
     {"name": "T1_classification", "src": ("T1", "main"), "wide": True,
-     "place": "main",
+     "place": "supp",
      "caption": "Classification accuracy on the fixed benchmarks. Trained "
                 "classifiers against zero-shot LLMs; Wilson 95\\% interval on "
                 "the 45-ticket set. The zero-shot rows have no abstention "
@@ -2770,7 +2837,7 @@ IEEE_VIEWS = [
               ("benchmark45_ci_low", "CI low", "r3"),
               ("benchmark45_ci_high", "CI high", "r3"),
               ("deployment175", "Deployment set", "raw")]},
-    {"name": "T3_ablation", "src": ("T3", "main"), "place": "main",
+    {"name": "T3_ablation", "src": ("T3", "main"), "place": "supp",
      "caption": "Ablation. No-cascade is TF-IDF answering everything, so "
                 "baseline minus no-cascade is the representation gap, not "
                 "the value of cascading; Tier-2-only is the control that "
@@ -2778,7 +2845,7 @@ IEEE_VIEWS = [
      "cols": [("mode", "Mode", "raw"), ("benchmark45", "45-ticket", "raw"),
               ("deployment175", "Deploy.", "raw"),
               ("adversarial9_decided_correctly", "Adv. correct", "raw")]},
-    {"name": "T3_latency", "src": ("T3", "latency"), "place": "main",
+    {"name": "T3_latency", "src": ("T3", "latency"), "place": "supp",
      "caption": "What the cascade buys: median per-ticket latency, warm, "
                 "batch size one, on the recorded CPU.",
      "cols": [("eval_set", "Set", "raw"),
@@ -2806,30 +2873,30 @@ IEEE_VIEWS = [
               ("noise_band_2sd", "$\\pm$2 s.d.", "r3"),
               ("mean_set_size_in_domain", "Set size", "r2")]},
     {"name": "T8_contamination", "src": ("T8", "diagnostic"),
-     "place": "main",
+     "place": "supp",
      "caption": "Template-level structure of the corpus (Phase 5A corrected "
                 "diagnostic). A template is (category, scenario).",
      "cols": [("quantity", "Quantity", "raw"),
               ("corrected_value", "Value", "raw")]},
-    {"name": "T14_groundedness", "src": ("T14", "main"), "place": "main",
+    {"name": "T14_groundedness", "src": ("T14", "main"), "place": "supp",
      "caption": "Resolution groundedness on every draft the gate allowed "
                 "(Phase 2B), human labels and the LLM judge.",
      "cols": [("quantity", "Quantity", "raw"), ("value", "Value", "raw")]},
     {"name": "T15_sufficiency", "src": ("T15", "gemini_2x2"),
-     "place": "main",
+     "place": "supp",
      "caption": "Retrieval-sufficiency rater against the human "
                 "groundedness labels (Phase 6C). The labels are an outcome "
                 "proxy for draft support, not a direct sufficiency label.",
      "cols": [("rater_verdict", "Rater", "raw"),
               ("human_label", "Human label", "raw"), ("n", "n", "int")]},
-    {"name": "T17_gate_errors", "src": ("T17", "main"), "place": "main",
+    {"name": "T17_gate_errors", "src": ("T17", "main"), "place": "supp",
      "caption": "The RAG gate errs in both directions.",
      "cols": [("direction", "Direction", "raw"), ("item", "Item", "raw"),
               ("ticket", "Ticket", "raw"),
               ("top_similarity", "Top-1 sim.", "r4"),
               ("margin_to_gate", "Margin", "r4")]},
     {"name": "T18_platform", "src": ("T18", "platform_deltas"),
-     "place": "main",
+     "place": "supp",
      "caption": "Cross-platform floats on ticket adv\\_08, computed from raw "
                 "values recorded once on other platforms. Routing decisions "
                 "are compared exactly and do not differ.",
@@ -2967,7 +3034,9 @@ IEEE_VIEWS = [
 ]
 
 # Headers that are already LaTeX (math, escaped %) pass through untouched.
-_RAW_HEADER = re.compile(r"\\\\|\$")
+# (Phase 9A.1: this was r"\\\\", which needs TWO backslashes, so a header
+# carrying one -- "Saving (\\%)" -- was escaped and printed a literal "\%".)
+_RAW_HEADER = re.compile(r"\\|\$")
 
 
 def _tex_cell(text):

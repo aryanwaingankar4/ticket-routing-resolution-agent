@@ -21,7 +21,7 @@ So: **every number the paper uses is regenerated from a committed result file, t
 - `FRAMING.md` -- the write-up framing agreed at each phase gate, with its numbers interpolated from `NUMBERS.md` so the text cannot drift from the measurements.
 - `RECONCILIATION.md` -- the four project documents audited against their source files.
 - `PROVENANCE.json` -- the sha256 of every source file read, so a parity failure can distinguish 'the builder changed' from 'a result file changed'.
-- `tables/` -- 146 files: each table as `.csv` and as booktabs `.tex`, plus `tables/ieee/`: column selections of those frames sized for an IEEE page, which is what the draft inputs.
+- `tables/` -- 150 files: each table as `.csv` and as booktabs `.tex`, plus `tables/ieee/`: column selections of those frames sized for an IEEE page, which is what the draft inputs.
 - `numbers.tex` -- every `NUMBERS.md` value as a LaTeX macro, `\nb{<id>}`, with generated display variants (`@pct1`, `@r3`, `@k`, `@n`, `@ci`, ...). An unknown id is a compile error.
 - `figures/` -- 7 figures, each as `.pdf` and `.png` at 300 dpi, with the data behind it as `_data.csv` and its caption as `_caption.txt`.
 
