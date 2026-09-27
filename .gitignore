@@ -20,3 +20,6 @@ data/external_tobibueck/english_subset.csv
 data/external_tobibueck/*.npy
 data/external_tobibueck/*.npz
 data/external_tobibueck/*.faiss
+
+# Aryan's local Overleaf upload copy of paper/ (never committed)
+/paper_upload.zip
