@@ -1,7 +1,7 @@
 # Project Status
 
 **Last updated:** 2026-09-28
-**Last commit to move code or a result:** the **Phase 9A.1 commit** (SHA recorded in the follow-up commit below). It changes the
+**Last commit to move code or a result:** `1fb204a`, the **Phase 9A.1 commit**. It changes the
 builder: two new IEEE table views and a header-escaping fix. **No `NUMBERS.md` value moved.** Before it: `8c9ac59`, the Phase 9A
 commit, which changed the builder, added two data files and corrected one paper-surface number.
 
