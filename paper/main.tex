@@ -15,8 +15,8 @@
 %     subsection, all of its required companions appear there too.
 %   * Phase 9B resolved every characterisation marker; none remain. A new
 %     unchecked claim about a cited work is softened, never left flagged.
-%     The comparison table marks a property only where the cited work's
-%     abstract states it (checked 2026-09-28); otherwise it shows "--".
+%     The comparison table describes each cited work only from its abstract
+%     (read 2026-09-28); where the abstract is silent it says "not stated".
 %   * Everything cut for length lives in supplement.tex, which this file
 %     names by section title (the two compile separately, so \ref cannot
 %     cross between them).
@@ -29,11 +29,16 @@
 \usepackage{amssymb}
 \usepackage{cite}
 \usepackage{url}
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \graphicspath{{figures/}}
 \input{numbers.tex}
 
 % Layout lengths and the repository URL live here, outside the document body,
 % so the body's no-typed-number lint sees no digit that is not a result.
+% A cited paper's own figure (Paket et al.'s class count, from its abstract),
+% not one of our results, so it is not in NUMBERS.md.
+\newcommand{\paketclasses}{172}
 \newcommand{\tabgroup}[1]{\multicolumn{2}{l}{\emph{#1}}}
 \newcommand{\repourl}{\url{https://github.com/aryanwaingankar4/ticket-routing-resolution-agent}}
 \newenvironment{verifytab}%
@@ -105,31 +110,29 @@ Our judge shows the failure these works caution against.
 \textbf{Synthetic benchmarks.} The efficacy of synthetic data as an evaluation benchmark has itself been studied~\cite{maheshwari_synthetic}.
 We treat what our synthetic corpus can and cannot measure as a result.
 
-\textbf{Positioning.} Table~\ref{tab:related} sets our pipeline against the closest of these works. A mark means the work's abstract states the property; a dash means only that the abstract does not state it. Two of the ticket-triage works evaluate on real tickets and we do not, which is our main limitation (Section~\ref{sec:limitations}). None of these abstracts describes the combination we study: a ticket-routing cascade, an escalation gate calibrated on measured evidence, and generation that is allowed only when retrieval clears that gate.
+\textbf{Positioning.} Table~\ref{tab:related} compares our pipeline with the closest of these works, using only what each abstract states. Two ticket-triage works evaluate on real tickets and we do not (Section~\ref{sec:limitations}); none describes escalation gates calibrated on measured evidence that allow generation only when retrieval clears them.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering\footnotesize
-\caption{Our pipeline against the closest cited work. \checkmark: the work's abstract states the property; --: its abstract does not state it, which is not a claim that the work lacks it. Tick.: IT or support tickets; Casc.: a model cascade; Abst.: abstains or escalates to a human; Conf.: a conformal guarantee; RAG: generation grounded in retrieved text; Real: evaluated on real tickets or in deployment; Code: released code.}
+\caption{Comparison with the closest related work, based on each paper's abstract.}
 \label{tab:related}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lccccccc}
+\begin{tabularx}{\textwidth}{lYYY}
 \toprule
-Work & Tick. & Casc. & Abst. & Conf. & RAG & Real & Code \\
+Work & Task & Escalation / abstention mechanism & Evaluated on \\
 \midrule
-TickIt~\cite{tickit} & \checkmark & -- & -- & -- & -- & \checkmark & -- \\
-Paket et al.~\cite{paket_ticket} & \checkmark & -- & -- & -- & -- & -- & -- \\
-Carroll et al.~\cite{redcap_llm_triage} & \checkmark & -- & -- & -- & \checkmark & \checkmark & -- \\
-Jitkrittum et al.~\cite{jitkrittum_cascade} & -- & \checkmark & -- & -- & -- & -- & -- \\
-Conformal Cascade~\cite{conformal_cascade} & -- & \checkmark & -- & \checkmark & -- & -- & -- \\
-Fanconi et al.~\cite{fanconi_defer} & -- & \checkmark & \checkmark & -- & -- & -- & -- \\
-Sufficient context~\cite{joren_sufficient} & -- & -- & \checkmark & -- & \checkmark & -- & -- \\
-CRAG~\cite{crag} & -- & -- & -- & -- & \checkmark & -- & -- \\
+TickIt~\cite{tickit} & Online ticket escalation & Routes tickets to support teams & Deployment on Volcano Engine \\
+Paket et al.~\cite{paket_ticket} & Service desk ticket classification (LLMs vs BERT) & not stated & Turkish service desk tickets, \paketclasses{} classes \\
+Carroll et al.~\cite{redcap_llm_triage} & REDCap ticket triage and drafting & not stated & Real REDCap tickets, expert-rated \\
+Jitkrittum et al.~\cite{jitkrittum_cascade} & Classifier cascade deferral & Confidence-based and post-hoc deferral & not stated \\
+Conformal Cascade~\cite{conformal_cascade} & Multi-tier LLM inference & Defer unless conformal set is singleton & Multiple-choice benchmarks \\
+Fanconi et al.~\cite{fanconi_defer} & Human-AI decision-making & Deferral, then abstention to human expert & General and medical QA \\
+Sufficient context~\cite{joren_sufficient} & RAG error analysis & Sufficient-context guided abstention & Several models and datasets \\
+CRAG~\cite{crag} & Robust retrieval-augmented generation & Retrieval evaluator triggers corrective actions & Short- and long-form generation tasks \\
 \midrule
-\textbf{Ours} & \checkmark & \checkmark & \checkmark & meas.$^{\dagger}$ & \checkmark & -- & \checkmark \\
+\textbf{Ours} & Ticket triage & Two calibrated gates (confidence, retrieval) & Synthetic corpus; \nb{T19.benchmark45.n}-ticket out-of-template set \\
 \bottomrule
-\end{tabular}}\par\smallskip
-\parbox{\columnwidth}{\scriptsize $^{\dagger}$Measured offline for both tiers; it does not gate production. Coverage transfers for Tier-2 but not for Tier-1 on our corpus (Section~\ref{sec:finding1}).}
-\end{table}
+\end{tabularx}
+\end{table*}
 
 % ===========================================================================
 \section{Methodology}
