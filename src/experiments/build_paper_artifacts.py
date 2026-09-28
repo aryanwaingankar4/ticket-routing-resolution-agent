@@ -3373,8 +3373,11 @@ def build_f1(emit):
                 start, end = (sx, sy - shh), (dx + dhw, dy)
                 arrow(start, end, rad=-0.3)
                 if ed["label"]:
-                    ax.text(sx - 0.14, dy + 0.34, ed["label"], fontsize=5.8,
-                            color="#333333", ha="right", va="center")
+                    # Right of the arc's start, clear of the curve (it
+                    # bends left, below the source box).
+                    ax.text(sx + 0.1, sy - shh - 0.22, ed["label"],
+                            fontsize=5.8, color="#333333", ha="left",
+                            va="center")
 
         # The framing sentence lives in the CAPTION, not inside the axes --
         # an IEEE figure should not carry its own prose.
