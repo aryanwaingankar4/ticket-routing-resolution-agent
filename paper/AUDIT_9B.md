@@ -58,6 +58,8 @@ Each resolution rests only on what we know about the cited work, which is its ti
 
 ## Page budget note
 
+> **Superseded 2026-09-28:** the guide now wants **6 pages** (A4, references included), not 5. The mentor revision of `main.tex` was written to that target. The 5-page note below is kept as the 9B record.
+
 9B added about 20 words to `main.tex`: three short supplement pointers plus the softened sentences, which are roughly length-neutral. The 5-page compile predates them. **Re-compile on Overleaf.** If page 5 overflows, revert the three "(supplement, …)" pointers first; that audit trail is also kept here.
 
 ## Submit / don't-submit checklist
@@ -72,7 +74,7 @@ Mechanical, done in 9B:
 - [x] No secret in git history. Every `GEMINI_API_KEY=` in history is a placeholder, and no `AIza…` key appears.
 
 **Only the author can tick these. Do not submit until all are ticked:**
-- [ ] **Overleaf re-compile after 9B: still ≤ 5 pages on A4, references included.**
+- [ ] **Overleaf re-compile after the mentor revision (2026-09-28): 6 pages on A4, references included.** The guide's limit moved from 5 to 6 pages; the revision targets about 5.75 pages and is uncompiled.
 - [ ] **nasscom brief:** the Setup sentence matches the brief (categories, fields, "synthetic, LLM-generated").
 - [ ] **arXiv entries:** each of the 9 checked on Google Scholar and replaced by a published version where one exists (`references_to_check.md`).
 - [ ] **Guides' approval** (Dr. Madhvi Saxena, Dr. Aditi Saxena) of the final PDF.

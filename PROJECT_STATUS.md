@@ -8,6 +8,8 @@ commit, which changed the builder, added two data files and corrected one paper-
 **THE PHASE 5–9 PROGRAMME IS COMPLETE** (2026-09-28). **Phase 9B, the pre-submission audit, is done, gated and pushed, and tagged
 `v1.0` ("Final submission: 5-page IEEE paper").** 9B moved no code and no number, so the pointer above stays at `1fb204a`.
 
+**Mentor revision (2026-09-28, after `v1.0`, tag not moved):** the guide now wants **6 pages**; `paper/main.tex` was revised (Methodology section, comparison/gate/verification tables, all-methods accuracy figure from `scripts/make_paper_figures.py`, two limitations, expanded conclusion, Reproducibility section folded into one sentence). No number moved; uncompiled, awaiting Aryan's Overleaf page count. `CLAUDE.md`'s "hard 5-page limit" line is now stale.
+
 **What 9B did:**
 - **Audit:** [`paper/AUDIT_9B.md`](paper/AUDIT_9B.md), verdict **SUBMIT once the author-only items are ticked**.
   - Every number traces through `\nb{}`, with 0 undefined.
