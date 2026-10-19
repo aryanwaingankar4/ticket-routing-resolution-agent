@@ -1,6 +1,6 @@
 # Project Status
 
-> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, not yet committed** (2026-10-19).
+> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, committed and pushed at `0ac3626`** (2026-10-19; not merged into main).
 > - **Format:** the paper is now a Word file, `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v3.docx`, with 44 `[[FILL-…]]` markers. `paper/` (LaTeX) is frozen.
 > - **Ledger:** every value, with its source and command, is in `paper_docx/RESULTS_FOR_PAPER.md`. Read that first.
 >
