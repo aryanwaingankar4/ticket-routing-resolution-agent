@@ -1,0 +1,22 @@
+{
+  "dataset": "Classification of IT Support Tickets",
+  "creator": "Leonardo Santiago Benitez Pereira (Federal Institute of Santa Catarina), ORCID 0000-0001-9429-7308",
+  "doi": "10.5281/zenodo.7648117",
+  "concept_versions": ["10.5281/zenodo.7384758 (v1)", "10.5281/zenodo.7648117 (latest, used here)"],
+  "publication_date": "2022-12-01",
+  "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+  "attribution": "Ticket texts in this directory are derived from the dataset above, used under CC BY 4.0. The only change is the English-language filter applied by scripts/prepare_zenodo_tickets.py.",
+  "description": "2,229 real IT support tickets from an IT support company in the Florianopolis (Brazil) region, typed by the users who opened them, labelled into 7 categories by three IT professionals in 2020, PII replaced by tags such as [NAME].",
+  "fetched_on": "2026-10-19",
+  "fetch": "python scripts/fetch_zenodo_tickets.py (md5-pinned; pickles and model not downloaded)",
+  "committed": [
+    "PROVENANCE.json",
+    "category_mapping.json",
+    "mapping_review_samples.csv (15 ticket texts, the evidence for the mapping decision)",
+    "routing_results.csv (ids, predictions and similarities; no ticket text)"
+  ],
+  "gitignored_regenerable": [
+    "raw/ (scripts/fetch_zenodo_tickets.py)",
+    "english_tickets.csv (scripts/prepare_zenodo_tickets.py)"
+  ]
+}

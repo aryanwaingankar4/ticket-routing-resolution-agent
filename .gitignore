@@ -21,6 +21,14 @@ data/external_tobibueck/*.npy
 data/external_tobibueck/*.npz
 data/external_tobibueck/*.faiss
 
+# Paper revision (Oct 2026) -- real-world tickets, Zenodo 10.5281/zenodo.7648117
+# (CC BY 4.0). Same rule as 7A: the raw files and the full English text are
+# regenerable from md5-pinned downloads (scripts/fetch_zenodo_tickets.py,
+# scripts/prepare_zenodo_tickets.py), so results are committed and bulk text
+# is not. See data/external_zenodo_7648117/PROVENANCE.json.
+data/external_zenodo_7648117/raw/
+data/external_zenodo_7648117/english_tickets.csv
+
 # Aryan's local Overleaf upload copy of paper/ (never committed)
 /paper_upload.zip
 

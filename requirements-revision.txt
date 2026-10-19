@@ -1,0 +1,9 @@
+# Extra packages for the October 2026 paper revision only, on top of
+# requirements.txt. Kept separate so the pinned production environment and the
+# Docker image are unchanged.
+#
+# Install:  pip install -r requirements.txt -r requirements-revision.txt
+
+# English filter for the real-world Zenodo tickets
+# (scripts/prepare_zenodo_tickets.py). Lui & Baldwin, ACL 2012 demos.
+langid==1.1.6

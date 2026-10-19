@@ -1,0 +1,13 @@
+{
+  "status": "proposed",
+  "note": "Awaiting author confirmation after reading mapping_review_samples.csv. null = excluded.",
+  "mapping": {
+    "Fileservice": "Storage",
+    "Active Directory": "Access Management",
+    "Software": "Application",
+    "O365": "Application",
+    "Computer-Services": "Infrastructure",
+    "Support general": null,
+    "EOL": null
+  }
+}

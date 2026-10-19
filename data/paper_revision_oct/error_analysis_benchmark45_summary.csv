@@ -1,0 +1,36 @@
+quantity,value
+n,45
+correct,32
+misclassified,13
+escalated,15
+drafted,30
+tier1_kept,4
+misclassified_escalated,5
+misclassified_drafted,8
+misclassified_drafted_labelled_ungrounded,1
+correct_escalated,10
+correct_drafted,22
+recall.Access Management,6/7
+recall.Application,5/7
+recall.Database,3/5
+recall.Infrastructure,3/6
+recall.Network,4/7
+recall.Security,4/6
+recall.Storage,7/7
+confusion.Database->Application,2
+confusion.Infrastructure->Application,2
+confusion.Security->Storage,2
+confusion.Access Management->Storage,1
+confusion.Application->Database,1
+confusion.Application->Storage,1
+confusion.Infrastructure->Database,1
+confusion.Network->Application,1
+confusion.Network->Database,1
+confusion.Network->Storage,1
+wrong_predictions_into.Access Management,0
+wrong_predictions_into.Application,5
+wrong_predictions_into.Database,3
+wrong_predictions_into.Infrastructure,0
+wrong_predictions_into.Network,0
+wrong_predictions_into.Security,0
+wrong_predictions_into.Storage,5

@@ -1,5 +1,27 @@
 # Project Status
 
+> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, not yet committed** (2026-10-19).
+> - **Format:** the paper is now a Word file, `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v3.docx`, with 44 `[[FILL-…]]` markers. `paper/` (LaTeX) is frozen.
+> - **Ledger:** every value, with its source and command, is in `paper_docx/RESULTS_FOR_PAPER.md`. Read that first.
+>
+> **Phase status:**
+> - **Phase 0 (inventory) and Phase 1 (fill from existing data): done.** Four offline scripts in `scripts/`, outputs in `data/paper_revision_oct/`, each fatal unless it reproduces the committed numbers. All passed. Figs 4–6 are in `paper_docx/fig/`.
+> - **Phase 2 (real-world tickets): in progress.**
+>   - Dataset: Zenodo 10.5281/zenodo.7648117 (CC BY 4.0), md5-pinned under `data/external_zenodo_7648117/`.
+>   - English filter (langid): 1,734 of 2,229. All 1,734 have been routed through the unchanged pipeline, with no LLM call. The output is identical across two runs.
+>   - **Blocked on the author confirming the category mapping** (`category_mapping.json` says `proposed`; `score_realworld.py` refuses to run until it says `confirmed`). Then scoring, then at most 30 drafts.
+> - **Phase 3 (independent set): setup done; design changed 2026-10-19 to ONE writer (AW, about 100 tickets) plus ONE blind second labeller (name to be confirmed), with disagreements resolved by discussion.**
+>   - `data/independent_test/` holds GUIDELINES.md and the templates.
+>   - `scripts/eval_independent.py` supports two annotators (κ) or `--single-annotator` (no κ; the paper must then say "single annotator"). Every path was tested on scratch fixtures.
+>   - **Waiting on AW to write the tickets and the second labeller to label them.**
+> - **Phase 4 (write v4.docx, test, commit, push): not started.**
+>
+> **Settled but not yet applied:** the text changes listed in RESULTS_FOR_PAPER.md, "Approved text changes", plus the §V-A bucket wording and the §VII-C E5 wording.
+>
+> **No threshold, model, existing result file or tag was changed.** The fast tests pass.
+>
+> **New finding:** the 0.50 cascade threshold is the lowest qualifying edge on **10%-wide buckets**. On a 0.01 grid the same rule gives 0.43 / 0.36, and kept accuracy peaks at 25/30 at 0.46.
+
 **Last updated:** 2026-09-28
 **Last commit to move code or a result:** `1fb204a`, the **Phase 9A.1 commit**. It changes the
 builder: two new IEEE table views and a header-escaping fix. **No `NUMBERS.md` value moved.** Before it: `8c9ac59`, the Phase 9A

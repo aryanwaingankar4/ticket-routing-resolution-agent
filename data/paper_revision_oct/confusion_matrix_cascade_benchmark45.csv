@@ -1,0 +1,8 @@
+true \ predicted,Access Management,Application,Database,Infrastructure,Network,Security,Storage
+Access Management,6,0,0,0,0,0,1
+Application,0,5,1,0,0,0,1
+Database,0,2,3,0,0,0,0
+Infrastructure,0,2,1,3,0,0,0
+Network,0,1,1,0,4,0,1
+Security,0,0,0,0,0,4,2
+Storage,0,0,0,0,0,0,7
