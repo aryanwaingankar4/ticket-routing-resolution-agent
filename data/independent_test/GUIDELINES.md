@@ -6,10 +6,9 @@ everything the pipeline was built from.**
 
 The training corpus was generated from templates. The 45-ticket benchmark,
 the deployment set and the paraphrased calibration set were all written by
-Gemini. This set is written **by hand, by one author (AW)**, without seeing
-any of that material. It is then labelled a second time, blind, by **one
-second labeller** (name to be confirmed; their code goes in the `labeller`
-column).
+Gemini. This set is written **by hand, by two authors: AW (Aryan) and SP
+(Shreyansh)**, about 54 tickets each, without seeing any of that material.
+Each author then labels **the other author's tickets, blind**.
 
 The set is scored by `scripts/eval_independent.py`. No model is retrained and
 no threshold is changed for it.
@@ -27,7 +26,7 @@ no threshold is changed for it.
    - the README's example tickets
    - the paper's examples
 
-   You have worked on this project and have seen some of them, so write from
+   If you have worked on this project and have seen some of them, write from
    your own experience of IT problems, not from what you remember of them.
 2. **No LLM help of any kind.** Do not use ChatGPT, Gemini, Copilot, Claude, a
    paraphraser, a "humanizer" or grammar rewriting. Spell-check in your editor
@@ -35,22 +34,27 @@ no threshold is changed for it.
 3. **Do not copy** tickets from the internet, forums or other datasets. Write
    each one yourself.
 4. **No real personal data.** Use made-up names, machines and locations.
-5. **Do not run the pipeline** on the tickets until the ticket file and the
-   second labels are both complete. Tuning a ticket after seeing how the
-   system handles it would contaminate the result.
+5. **Do not show your tickets to the other author** before they label them,
+   and do not discuss any ticket until both label files are complete.
+6. **Do not run the pipeline** on the tickets until the ticket files, the
+   second labels and the adjudication are all complete. Tuning a ticket
+   after seeing how the system handles it would contaminate the result.
 
-## 2. What to write
+## 2. What each author writes
 
-**About 100 tickets** in total, all by AW.
+**About 54 tickets per author**: AW in `tickets_AW.csv`, SP in `tickets_SP.csv`.
 
-| Kind | Count | `true_category` | `expected_outcome` |
+| Kind | Count per author | `true_category` | `expected_outcome` |
 |---|---|---|---|
-| Actionable IT problems, **about 13 per category** across all seven categories | ~91 | one of the seven categories | `proceed` |
-| Off-topic (not an IT request at all: canteen, travel claims, room bookings, …) | ~5 | `Out of scope` | `escalate` |
-| Too vague to act on (no system and no symptom: "it's broken again", "help pls") | ~5 | `Out of scope` | `escalate` |
+| Actionable IT problems, **7 per category** across all seven categories | 49 | one of the seven categories | `proceed` |
+| Off-topic or too vague to act on | 5 in total | see below | `escalate` |
 
-**Write the way employees write to a help desk.** Because one person writes
-every ticket, deliberately vary the voice to avoid a single house style.
+- **Off-topic:** not an IT request at all (canteen, travel claims, room bookings, …). Use `true_category` = `NONE`.
+- **Too vague:** "it's broken again", "help pls". Give it the category of the team it would go to if one is clear; if no team is identifiable, use `NONE`. The expected outcome is `escalate` either way.
+
+**`NONE` is allowed only with `expected_outcome = escalate`.** The script refuses a ticket with `NONE` and `proceed`. Category accuracy is computed only on tickets with a real category; escalation correctness uses every ticket.
+
+**Write the way employees write to a help desk.**
 - Imagine different senders (a new joiner, a manager in a hurry, a non-technical user, an engineer).
 - Vary the length (one line to a short paragraph) and the tone (calm, rushed, annoyed).
 - Vary the vocabulary: say "the shared drive", "the K: drive", "the team folder", not only "file share".
@@ -65,61 +69,78 @@ Label a ticket with **the team that would have to fix it**.
 
 | Category | The team that handles … |
 |---|---|
-| **Access Management** | accounts, passwords, MFA, single sign-on, **requests to be granted access** (to a folder, mailbox, group or system), joiners, leavers and role changes |
+| **Access Management** | accounts, passwords, MFA, single sign-on, **requests to be granted access** to a share, mailbox, group or system, joiners, leavers and role changes |
 | **Application** | business or office software misbehaving: errors, crashes, wrong output, features not working, licences, installing a program |
 | **Database** | data held in a database: records missing, wrong or duplicated; reports or queries failing or very slow; database errors |
 | **Infrastructure** | servers and back-end systems: a server or internal service down or slow, capacity, virtual machines, hosting platforms |
 | **Network** | connectivity: Wi-Fi, LAN, VPN, internet access, DNS, firewalls blocking something, latency |
 | **Security** | phishing, malware or ransomware, suspicious activity, lost or stolen devices, security alerts or vulnerabilities |
-| **Storage** | where files live: shared drives that are **broken or unreachable** (not access requests), disk space, quotas, backups and restores |
+| **Storage** | where files live: a **share or drive fault** (broken, unreachable, full, slow), disk space, quotas, backups and restores |
 
-**Boundary rules, so the writer and the second labeller label the same way:**
-- *"Please give me access to the finance folder"* is **Access Management**, a request. *"The finance folder stopped opening for everyone"* is **Storage**, a fault.
+**Boundary rules, so both authors label the same way:**
+- **An access request for a share, mailbox or system is Access Management. A share or drive fault is Storage.** *"Please give me access to the finance folder"* is Access Management. *"The finance folder stopped opening for everyone"* is Storage.
 - A program that is slow because the whole network is slow is **Network**. A program that is slow while everything else works is **Application**.
 - Physical device problems (printer, laptop hardware, monitor) have no category of their own. Avoid them, or label them by the team above that would actually be involved, and say why in `notes`.
-- If you genuinely cannot pick one category, the ticket is ambiguous: rewrite it, or drop it.
+- If you genuinely cannot pick one category for an actionable ticket, it is ambiguous: rewrite it, or drop it.
 
-## 4. Filling in the ticket file (AW)
+## 4. Filling in your ticket file
 
-1. Copy `TEMPLATE.csv` to `tickets_AW.csv`.
-2. One row per ticket:
+`tickets_AW.csv` and `tickets_SP.csv` already exist with only the header row. Each author fills in their own file, one row per ticket:
 
 | Column | Content |
 |---|---|
-| `ticket_id` | `AW-001`, `AW-002`, … unique, never reused |
-| `author` | `AW` |
+| `ticket_id` | `AW001`, `AW002`, … or `SP001`, `SP002`, … (three digits, no gaps needed, never reused) |
+| `author` | `AW` or `SP` |
 | `title` | may be empty |
 | `description` | the ticket body, required |
-| `true_category` | one of the seven names exactly as written above, or `Out of scope` |
-| `expected_outcome` | `proceed` (an actionable IT problem) or `escalate` (off-topic or too vague for anyone to act on without asking the user) |
+| `true_category` | one of the seven names exactly as written above, or `NONE` |
+| `expected_outcome` | `proceed` (an actionable IT problem) or `escalate` (off-topic, or too vague for anyone to act on without asking the user) |
 | `notes` | optional; anything a reader should know |
 
-3. Save as **UTF-8 CSV**. In Excel use "CSV UTF-8". Quote any text that contains commas, which Excel does for you.
+Save as **UTF-8 CSV**. In Excel use "CSV UTF-8". Quote any text that contains commas, which Excel does for you. Do not rename the file or change the columns.
 
-## 5. Second labelling (for Cohen's κ)
+Check your file at any time; this works when only one file is filled:
 
-The second labeller labels **every** ticket and **must not see AW's labels**.
+```powershell
+python scripts/eval_independent.py --check-only
+```
 
-1. When `tickets_AW.csv` is complete, give the second labeller a copy with only `ticket_id`, `title` and `description`. Delete the label columns from the copy, and shuffle the rows if you can.
-2. The second labeller copies `SECOND_LABELS_TEMPLATE.csv` to `second_labels_AW.csv` and fills in, for every ticket:
-   - `labeller`: their own short code, for example their initials, not `AW`;
-   - `second_category`;
-   - `second_expected_outcome`.
+## 5. Cross-labelling (for Cohen's κ)
 
-   They use sections 2–3 of this file only, and do not discuss any ticket with AW.
-3. κ is computed from these two independent labels **before** any discussion, and is reported as it comes out.
+When **both** ticket files are complete:
+
+1. AW generates the two blind files:
+
+   ```powershell
+   python scripts/eval_independent.py --make-second-label-files
+   ```
+
+   This writes `second_labels_on_AW_by_SP.csv` (AW's tickets, for SP to label) and `second_labels_on_SP_by_AW.csv` (SP's tickets, for AW to label). Each holds only `ticket_id`, `title`, `description`, an empty `second_label` and the `labeller` code. The rows are shuffled, and the writer's labels are not in the file.
+2. Each author fills `second_label` for **every** row of the file addressed to them: one of the seven categories, or `NONE` for a ticket that is not an IT request. Use sections 2–3 of this file only, and do not discuss any ticket with the writer.
+3. **Do not edit your own ticket file after this point.** The script refuses a second-label file whose ticket text no longer matches the ticket file.
+
+Only the **category** is cross-labelled. The expected outcome stays the writer's.
+
+κ is computed from these first, independent labels **before** any discussion, both pooled and per direction, and is reported as it comes out.
 
 ## 6. Resolving disagreements
 
-After κ is recorded:
-1. `python scripts/eval_independent.py --check-only` lists every ticket where the two labels disagree.
-2. AW and the second labeller discuss each one and agree a final label.
-3. Record each agreement in `adjudication.csv` (copied from `ADJUDICATION_TEMPLATE.csv`). Put both codes in `resolved_by` (for example `AW+XY`) and a short reason.
-4. The evaluation uses the agreed label, or the resolved one. It refuses to run while any disagreement is unresolved. Nobody edits `true_category` or the second labels after this point: the original labels are what κ measured.
+After both second-label files are complete:
 
-## 7. If no second labeller is available
+1. List the disagreements and pre-fill the adjudication file:
 
-The set can be evaluated with AW's labels alone:
+   ```powershell
+   python scripts/eval_independent.py --check-only
+   python scripts/eval_independent.py --make-adjudication-file
+   ```
+
+   `adjudication.csv` gets one row per disagreement, with `ticket_id`, `author_label` and `second_label` filled in.
+2. AW and SP discuss each one and agree a final label. Fill in `final_label`, `resolved_by` (`AW+SP`) and a short `reason`.
+3. The evaluation uses the agreed label where the two matched and `final_label` where they did not. It refuses to run while any disagreement has no `final_label`. **Nobody edits `true_category` or `second_label` after this point**: the original labels are what κ measured.
+
+## 7. Fallback: if cross-labelling cannot happen
+
+The set can be evaluated with each writer's own labels:
 
 ```powershell
 python scripts/eval_independent.py --single-annotator
@@ -127,21 +148,21 @@ python scripts/eval_independent.py --single-annotator
 
 κ is then not computed, and **the paper must say the set was labelled by a
 single annotator**. The script prints this reminder and records
-`annotation = single annotator` in its summary. Use this mode only if the
-second labelling truly cannot happen. A second, blind label is what lets the
-paper claim the labels are not one person's opinion.
+`annotation = single annotator` in its summary. It refuses this mode if any
+second label has been filled in. Use it only if the cross-labelling truly
+cannot happen.
 
 ## 8. Running the evaluation (after everything above is done)
 
 ```powershell
-python scripts/eval_independent.py --check-only   # validate, kappa, list disagreements; no model
+python scripts/eval_independent.py --check-only   # must end with "Ready for the final run."
 python scripts/eval_independent.py                # route every ticket through the unchanged pipeline
 ```
 
 The evaluation reports:
-- category accuracy for the cascade and for Tier 2 alone, on the in-scope tickets, with Wilson 95% intervals;
-- the escalation rate at 0.67;
-- whether each ticket's escalate or proceed outcome matched its expected outcome;
+- Cohen's κ for category (pooled and per direction) with a bootstrap 95% interval, and the number of disagreements;
+- category accuracy for the cascade and for Tier 2 alone, on the tickets with a real category, with Wilson 95% intervals;
+- the escalation rate at 0.67, and whether each ticket's escalate or proceed outcome matched its expected outcome;
 - the share handled by Tier 1;
 - per-category recall, and how many misclassified tickets were drafted rather than escalated.
 

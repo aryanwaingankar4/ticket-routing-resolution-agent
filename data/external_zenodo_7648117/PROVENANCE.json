@@ -15,7 +15,8 @@
     "mapping_review_samples.csv (15 ticket texts, the evidence for the mapping decision)",
     "routing_results.csv (ids, predictions and similarities; no ticket text)",
     "realworld_summary*.csv, realworld_by_source*.csv, realworld_confusion*.csv (scripts/score_realworld.py; no ticket text)",
-    "drafts.json and drafts_raw/<id>.json (scripts/draft_realworld.py; 30 ticket texts with their Gemini drafts and retrieved synthetic context)"
+    "drafts.json and drafts_raw/<id>.json (scripts/draft_realworld.py; 30 ticket texts with their Gemini drafts and retrieved synthetic context)",
+    "DRAFT_LABELS_README.md and draft_labels.csv (scripts/make_draft_label_sheet.py; the same 30 texts, for hand labelling)"
   ],
   "gitignored_regenerable": [
     "raw/ (scripts/fetch_zenodo_tickets.py)",

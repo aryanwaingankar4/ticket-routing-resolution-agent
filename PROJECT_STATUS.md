@@ -10,12 +10,12 @@
 >   - Dataset: Zenodo 10.5281/zenodo.7648117 (CC BY 4.0), md5-pinned under `data/external_zenodo_7648117/`. English (langid): 1,734 of 2,229.
 >   - Mapping confirmed by AW: Fileservice and Active Directory -> Access Management; Software and O365 -> Application; 750 excluded. Only 2 teams covered. A sensitivity variant maps Fileservice -> Storage.
 >   - **Distinct texts (headline): cascade 115/583 (19.7%); Tier-2-only 114/583; escalated 129/583 (22.1%); Tier-1 share 238/583 (40.8%).** Under the sensitivity mapping, accuracy is 294/583 (50.4%). Of the 468 misrouted tickets, 371 still reached the drafter.
->   - 30 Gemini drafts (3 dry-run calls + 27 live) are in `drafts.json`, **not yet labelled by AW**.
->   - Fills are drafted in RESULTS_FOR_PAPER.md. Open items: draft labels; OK for an optional Tier-1 column in Table VIII; where the supplement table goes.
-> - **Phase 3 (independent set): setup done; design changed 2026-10-19 to ONE writer (AW, about 100 tickets) plus ONE blind second labeller (name to be confirmed), with disagreements resolved by discussion.**
->   - `data/independent_test/` holds GUIDELINES.md and the templates.
->   - `scripts/eval_independent.py` supports two annotators (κ) or `--single-annotator` (no κ; the paper must then say "single annotator"). Every path was tested on scratch fixtures.
->   - **Waiting on AW to write the tickets and the second labeller to label them.**
+>   - 30 Gemini drafts (3 dry-run calls + 27 live) are in `drafts.json`. The labelling sheet (`draft_labels.csv` + `DRAFT_LABELS_README.md`) is empty, **awaiting AW** (single annotator). Then run `scripts/score_draft_labels.py`.
+>   - AW decisions (2026-10-21): the Tier-1 column in Table VIII, Appendix C (sensitivity), and the plain real-world reporting in five places are all drafted in RESULTS_FOR_PAPER.md.
+> - **Phase 3 (independent set): design changed 2026-10-21 to TWO authors, AW and SP, about 54 tickets each, cross-labelled blind.**
+>   - Files: `tickets_AW.csv` and `tickets_SP.csv` (header only, committed); `second_labels_on_{AW_by_SP,SP_by_AW}.csv` via `--make-second-label-files`; `adjudication.csv` via `--make-adjudication-file`.
+>   - κ is on category only, before adjudication. `--single-annotator` is kept as the fallback. Every path was tested on scratch fixtures.
+>   - **Waiting on AW and SP. Do not start Phase 4 until AW says "Independent set complete with cross-labels and adjudication."**
 > - **Phase 4 (write v4.docx, test, commit, push): not started.**
 >
 > **Settled but not yet applied:** the text changes listed in RESULTS_FOR_PAPER.md, "Approved text changes", plus the §V-A bucket wording and the §VII-C E5 wording.

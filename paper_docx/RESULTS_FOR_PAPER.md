@@ -283,21 +283,73 @@ All values come from `realworld_summary_sens_fileservice_storage.csv`.
 
 **Sensitivity sentence (draft, §VI-E):** "The result depends heavily on one mapping decision: if the file-share access requests are mapped to Storage, where our generator files share-permission faults, distinct-text accuracy is 294/583 (50.4%, 95% CI [46.4, 54.5]); the escalation rate and Tier-1 share do not depend on the mapping."
 
-### Drafted fills (real-world parts)
+### Decisions recorded 2026-10-21 (AW)
 
+- **Mapping timing confirmed:** AW chose the mapping before opening `routing_results.csv`. The X1 clause "fixed before predictions were examined" stands.
+- **Table VIII:** add a "Tier-1 share" column (approved).
+- **Appendix C (new, in the Word file):** the Fileservice → Storage sensitivity table below.
+- **Draft labels:** AW labels the 30 drafts (single annotator). If `draft_labels.csv` is not filled by Phase 4, the hand-off sentence is left out and the paper says the drafts were "not labelled".
+- **Reporting:** the real-world result is stated plainly in the abstract, §VI-E, §VII-B, Limitations and Conclusion (coverage matrix below). It is linked to the recurring finding, with no softening and no overclaiming. Two teams only.
+- **Limitations:** a note that the English filter let a few non-English tickets through (observation; no number).
+
+### Drafted fills and text (real-world parts)
+
+**Markers:**
 - **S7 (Table III, size):** "583 distinct (984)"
 - **S8 (Table III, source):** "Real user tickets, Pereira [ref], CC BY 4.0"
-- **X8–X11 (Table VIII, Real-world row):** X8 "583", X9 "115/583", X10 "114/583", X11 "129/583 (22.1%)". These use X2's format. The all-ticket reading goes in the X3 text.
-  - *Optional, needs your OK:* add a "Tier-1 share" column to Table VIII, filled as 4/45, {independent}, 238/583. This is a structural change, so it is not applied without your OK.
-- **D2:** the {N} in the Phase 3 draft = 583 distinct real tickets.
-- **X1, real-world part (draft):** "The real-world set is the public dataset of Pereira [ref], released under CC BY 4.0: 2,229 tickets typed by the users of an IT-support company and labelled into seven categories by three IT professionals. We kept the 1,734 tickets that langid.py [ref] identifies as English. Four source categories correspond to one of our teams, and the mapping was fixed before predictions were examined: Active Directory and Fileservice (almost entirely file-share access requests) to Access Management, and Software and O365 to Application. The other three categories (750 tickets) have no single counterpart and were excluded, so Database, Infrastructure, Network, Security and Storage are not covered. Of the 984 mapped tickets, 401 repeat an earlier text exactly, mostly system-generated subject lines, so we report the 583 distinct texts and give all 984 alongside."
-- **X3, real-world part (draft):** "On real tickets, routing accuracy is low: the cascade routes 115 of 583 distinct texts to the right team (19.7%, 95% CI [16.7, 23.1]; 119/984 over all tickets), with recall 86/319 for Access Management and 29/264 for Application, and Tier 2 alone does no better (114/583, exact McNemar p = 1.0). Tier 1 answers far more often than on generated text (238/583, 40.8% [36.9, 44.9], against 4/45 on the benchmark), but only 39 of those 238 are correct. The retrieval gate escalates 129/583 (22.1% [18.9, 25.7]; 159/984, 16.2%, over all tickets), but it does not separate misrouted tickets: 371 of the 468 misrouted texts reached the drafter, and only 83 of the 454 drafted texts had been routed correctly." Then the sensitivity sentence above.
-- **A1 (abstract, draft):** "On 583 distinct real user tickets from a public dataset, covering two of the seven teams, the pipeline routed 19.7% correctly (50.4% under an alternative mapping of file-share requests), and the retrieval gate escalated 22.1% but did not stop misrouted tickets reaching the drafter."
-- **C1 (draft):** "On real user-written tickets for the two teams we could test, routing accuracy fell to 19.7% (50.4% under an alternative category mapping) while Tier 1 kept 40.8% of tickets, which places the main weakness outside the synthetic corpus in the classifier's training data rather than in the gates' calibration."
-- **L1, real-world part (draft):** "The real-world set removes the dependence on generated evaluation text for two teams only; five teams remain untested on real tickets, accuracy on it depends strongly on how the source categories are mapped to ours (19.7% or 50.4%), and the tickets come from one organisation."
-- **T0, real-world part:** "583 real tickets [ref]". The independent part is pending.
+- **Table VIII, Real-world row:** X8 "583", X9 "115/583", X10 "114/583", X11 "129/583 (22.1%)". These use X2's format. The all-ticket reading goes in the X3 text.
+- **Table VIII, new "Tier-1 share" column (approved structural change):**
+  - Out-of-template: "4/45". Source: `data/ablation_baseline_results.csv`, `tier_used`.
+  - Independent: "{all.tier1_kept.k}/{n}". Source: `independent_summary.csv`.
+  - Real-world: "238/583". Source: `distinct.tier1_kept.k`.
+- **D2:** "We add two evaluation sets that no language model wrote: {n} tickets written by two of the authors, each labelling the other's tickets blind, and 583 distinct real tickets from a public IT-support dataset (Section VI-E)."
+- **T0:** "independent author-written set ({n} tickets); 583 real tickets [ref]"
 
-### Drafts on real tickets (at most 30)
+**X1, real-world part (§VI-E):** "The real-world set is the public dataset of Pereira [ref], released under CC BY 4.0: 2,229 tickets typed by the users of an IT-support company and labelled into seven categories by three IT professionals. We kept the 1,734 tickets that langid.py [ref] identifies as English. Four source categories correspond to one of our teams, and the mapping was fixed before predictions were examined: Active Directory and Fileservice (almost entirely file-share access requests) to Access Management, and Software and O365 to Application. The other three categories (750 tickets) have no single counterpart and were excluded, so Database, Infrastructure, Network, Security and Storage are not covered. Of the 984 mapped tickets, 401 repeat an earlier text exactly, mostly system-generated subject lines, so we report the 583 distinct texts and give all 984 alongside."
+
+**X3, real-world part (§VI-E):** "On real tickets the classifier does not transfer: the cascade routes 115 of 583 distinct texts to the right team (19.7%, 95% CI [16.7, 23.1]; 119/984, 12.1%, over all tickets), with recall 86/319 for Access Management and 29/264 for Application. Tier 2 alone does no better (114/583; exact McNemar p = 1.0), so the cascade neither helps nor hurts accuracy here. Tier 1 answers far more often than on generated text (238/583, 40.8% [36.9, 44.9], against 4/45 on the out-of-template set), but only 39 of those 238 answers are correct. The retrieval gate escalates 129/583 (22.1% [18.9, 25.7]; 159/984, 16.2%, over all tickets) but does not filter misrouted tickets: 371 of the 468 misrouted texts still reached the drafter. The result also depends on one mapping decision: if the file-share access requests are mapped to Storage, where our generator files share-permission faults, accuracy is 294/583 (50.4%, [46.4, 54.5]; Appendix C), while the escalation rate and Tier-1 share do not depend on the mapping. This is the recurring finding of this paper in its plainest form: a classifier trained only on synthetic templates does not transfer to real tickets, and the gates, calibrated on the same synthetic material, do not compensate for it."
+- **Then, only if `draft_labels.csv` is filled:** "In the 30 sampled drafts, labelled by one author, the model handed the ticket to a human in {handoff.yes + handoff.no} cases, {handoff.yes} of them appropriately, and {grounded.yes}/30 drafts were grounded in the retrieved tickets." Source: `draft_labels_summary.csv`.
+- **If it is not filled:** "The 30 drafts sampled from these tickets were not labelled."
+
+**§VII-B, added after approved change 6:** "The real tickets show the same at scale. Of the 468 misrouted distinct texts, 371 passed the retrieval gate and reached the drafter. The gate escalated 97 misrouted and 32 correctly routed texts, so its similarity score does not track routing correctness. Tier 1's confidence does not either: it kept 238 of the 583 texts at the 0.50 threshold, and 39 of those were correct."
+
+**A1 (abstract):** "On 583 distinct real user tickets from a public dataset, covering two of the seven teams, the pipeline routed 19.7% correctly (119 of all 984 tickets), equal to Tier 2 alone (p = 1.0). Accuracy rises to 50.4% if file-share requests are mapped to a different team. Tier 1 answered 238 tickets but only 39 correctly, and the retrieval gate escalated 22.1% but let 371 of 468 misrouted tickets reach the drafter, so a classifier trained only on synthetic templates does not transfer to real tickets."
+
+**C1 (Conclusion):** "On real user-written tickets for the two teams we could test, the classifier did not transfer: 115 of 583 distinct texts (19.7%; 119/984 over all tickets) were routed correctly, Tier 2 alone did no better (p = 1.0), and Tier 1 answered 238 of them with only 39 correct. The retrieval gate did not filter the misroutes (371 of 468 reached the drafter), and accuracy depends on the category mapping (50.4% under the alternative). This is the paper's recurring finding at its starkest: the synthetic training data, not the choice of method or threshold, limits what the pipeline can do."
+
+**L1, real-world part (Limitations):** "The real-world set removes the dependence on generated evaluation text for two teams only: Database, Infrastructure, Network, Security and Storage remain untested on real tickets. Its accuracy depends strongly on how the source categories are mapped to ours (19.7% or 50.4%), and the tickets come from a single organisation. The English filter also let a few non-English tickets through, because their system-generated subject lines were in English."
+
+**Coverage matrix: where each required point appears**
+
+| Point | A1 | §VI-E (X3) | §VII-B | Limitations | Conclusion |
+|---|---|---|---|---|---|
+| 115/583 = 19.7% (119/984 beside it) | ✓ | ✓ | | ✓ (19.7%) | ✓ |
+| gate does not filter misrouted (371 of 468) | ✓ | ✓ | ✓ | | ✓ |
+| mapping dependence (50.4%) | ✓ | ✓ | | ✓ | ✓ |
+| Tier 1 answers 238/583, 39 right | ✓ | ✓ | ✓ | | ✓ |
+| cascade = Tier 2 alone (p = 1.0) | ✓ | ✓ | | | ✓ |
+| two teams only; five not covered | ✓ ("two of the seven") | ✓ (X1) | | ✓ | ✓ ("two teams") |
+| link to the recurring finding | ✓ | ✓ | | | ✓ |
+
+### Appendix C (new): Fileservice → Storage sensitivity table, for the Word file
+
+Caption: "Real-world results under the primary mapping (file-share access requests → Access Management) and the sensitivity mapping (→ Storage). Distinct texts, n = 583. 95% Wilson intervals in brackets."
+
+| | Primary | Sensitivity |
+|---|---|---|
+| Cascade correct | 115/583 (19.7%) [16.7, 23.1] | 294/583 (50.4%) [46.4, 54.5] |
+| Tier 2 alone correct | 114/583 | 292/583 |
+| Exact McNemar, cascade vs Tier 2 | p = 1.0 | p = 0.79 |
+| Recall, Access Management | 86/319 | 62/82 |
+| Recall, Application | 29/264 | 29/264 |
+| Recall, Storage | — | 203/237 |
+| Tier-1 answers correct | 39/238 | 199/238 |
+| Drafted and correctly routed | 83/454 | 262/454 |
+| Escalated at 0.67 | 129/583 (22.1%) | 129/583 (22.1%) |
+
+Sources: `realworld_summary.csv` and `realworld_summary_sens_fileservice_storage.csv` (`distinct.*` keys). Tier 2 alone in the sensitivity column is `distinct.tier2_only_correct.k` = 292.
+
+### Drafts on real tickets (30)
 
 `python scripts/draft_realworld.py --limit 3` (the dry run), then `python scripts/draft_realworld.py`.
 - **Calls:** 30 Gemini calls in total. The dry run's 3 were reused from the cache, so the full run made 27 live calls.
@@ -305,39 +357,48 @@ All values come from `realworld_summary_sens_fileservice_storage.csv`.
 - **Sample:** distinct mapped texts that the gate does not escalate (population: Active Directory 51, Fileservice 224, O365 98, Software 81). Stratified by source with equal allocation (AD 7, Fileservice 8, O365 8, Software 7), `random.Random(42)`. The sample was fixed before any call.
 - **Outputs:** `data/external_zenodo_7648117/drafts.json`, plus one cached raw response per ticket in `drafts_raw/<id>.json`, keyed by prompt sha256.
 - **Routing of the 30 (mechanical, from drafts.json):** 9 correctly routed, 21 misrouted.
-- **Not yet labelled.** Groundedness or usefulness labels are human work (AW). Nothing about draft quality goes into the paper until those labels exist.
-- **Observation, not a paper number:** in at least 2 of the 30 (ids 1077 and 1212) the user's text is Spanish or German. The English system-generated subject line carried them through langid. The English filter therefore lets some non-English text through.
+- **Labelling sheet:** `draft_labels.csv`, with columns `id, grounded, appropriate_handoff, notes`, empty. `DRAFT_LABELS_README.md` shows each ticket, its 5 retrieved tickets and its draft, plus the label definitions. Both come from `python scripts/make_draft_label_sheet.py`. After labelling, run `python scripts/score_draft_labels.py` to write `draft_labels_summary.csv`. **Not yet labelled.**
+- **Observation, not a paper number:** in at least 2 of the 30 (ids 1077 and 1212) the user's text is Spanish or German. Their English system-generated subject lines carried them through langid. Covered by the L1 sentence.
 
 ## Pending
 
-- **Real-world tickets (Phase 2):** scoring and drafts are done, and fills are drafted above. Open items:
-  - AW to label the 30 drafts, if the paper should say anything about draft quality on real tickets;
-  - OK for the optional Tier-1 column in Table VIII;
-  - where the supplement table goes in the docx (the LaTeX supplement is frozen).
-- **Independent author-written set (Phase 3):** S6, X4–X7, and the independent parts of the same shared markers. See below.
+- **Real-world tickets (Phase 2):** AW labels the 30 drafts. Everything else is drafted.
+- **Independent author-written set (Phase 3):** S6, X4–X7, the Tier-1 cell, and the independent parts of the shared markers. See below.
 
 ## Phase 3 — independent set (setup done; tickets not yet written)
 
-**Design (changed 2026-10-19):**
-- **One writer, AW:** about 100 tickets, roughly 13 per category plus about 10 off-topic or vague.
-- **One second labeller** (name to be confirmed) labels every ticket blind.
-- **Disagreements** are resolved by discussion between the two and recorded in `adjudication.csv` (`resolved_by`, e.g. `AW+XY`). κ is computed before that discussion.
-- The four-author rotation was removed.
+**Design (changed 2026-10-21):**
+- **Writers:** two authors, AW and SP, about 54 tickets each (7 per category + 5 off-topic or vague).
+- **Cross-labelling:** each labels the **category** of the other's tickets blind. Expected outcomes are the writer's.
+- **Disagreements:** resolved by discussion and recorded in `adjudication.csv`, with `resolved_by` = `AW+SP`.
+- **κ:** Cohen's κ on the first, independent labels, before adjudication. Reported pooled and per direction, with a 10,000-draw bootstrap (seed 42).
+- **`NONE`:** a category is `NONE` only with `expected_outcome = escalate` (off-topic). Category accuracy is computed on rows with a real category; escalation correctness uses all rows.
+- **Fallback:** `--single-annotator` is kept.
 
-**Files and script:**
-- `data/independent_test/GUIDELINES.md`, `TEMPLATE.csv`, `SECOND_LABELS_TEMPLATE.csv`, `ADJUDICATION_TEMPLATE.csv`.
-- `python scripts/eval_independent.py [--check-only]` runs with two annotators.
-- `--single-annotator` runs without second labels. κ is skipped, gold is the writer's label, and the summary records `annotation = single annotator`. The script refuses this mode if second-label files exist.
+**Files** (`data/independent_test/`, exact names):
+- `tickets_AW.csv`, `tickets_SP.csv`. Committed with the header only.
+- `second_labels_on_AW_by_SP.csv`, `second_labels_on_SP_by_AW.csv`. Generated by `--make-second-label-files`.
+- `adjudication.csv`. Pre-filled by `--make-adjudication-file`.
+- `GUIDELINES.md` and the three templates.
 
-**Planned fills.** Every `{…}` is filled from `data/independent_test/results/independent_summary.csv` once the set exists.
-- **S6 (Table III, size):** the actual row count of `tickets_AW.csv`. **Planned: about 100.**
-- **D2 (§IV-C):** "We add two evaluation sets that no language model wrote: {n} tickets written by one of the authors and labelled blind by a second annotator, and {N} real tickets from a public IT-support dataset (Section VI-E)."
-- **X1, independent part (§VI-E):** "One author wrote {n} tickets, about 13 per category plus {k} off-topic or vague ones. They were written without consulting the training data, the generation templates or the benchmarks, and without LLM assistance. A second annotator labelled the category and the expected outcome of every ticket without seeing the writer's labels. Cohen's κ was {κ_cat} for category and {κ_out} for outcome, and the {d} disagreements were resolved by discussion."
-  - **Single-annotator variant** (only if run with `--single-annotator`): replace the last two sentences with "The labels were assigned by the writer alone (a single annotator), so no inter-annotator agreement is reported."
-- **X1, real-world part:** drafted after the mapping is confirmed.
+**Commands:**
+```
+python scripts/eval_independent.py --check-only                # any time; works with 0, 1 or 2 files filled
+python scripts/eval_independent.py --make-second-label-files   # once both ticket files are complete
+python scripts/eval_independent.py --make-adjudication-file    # once both second-label files are complete
+python scripts/eval_independent.py                             # final run
+```
 
-**Text change this design implies (needs your OK, Phase 4 rule 3):**
-
-| Where | Current | Proposed |
-|---|---|---|
-| Table III, independent-set row, Source | "Written blind by the authors" | "Written blind by one author; second annotator" (or "…; single annotator" in that mode). **Approved by AW 2026-10-21; apply in v4.** |
+**Planned fills.** Every `{…}` is filled from `data/independent_test/results/independent_summary.csv`.
+- **S6 (Table III, size):** `n_tickets`. **Planned: about 108.**
+- **Table III, Source (approved 2026-10-21):** "Written blind by two authors; cross-labelled". In single-annotator mode: "…; single annotator".
+- **X4–X7 (Table VIII):**
+  - X4 = `n_tickets`;
+  - X5 = `with_category.cascade_correct.k`/`n_with_category`;
+  - X6 = `with_category.tier2_only_correct.k`/`n_with_category`;
+  - X7 = `all.escalated.k`/`n_tickets` (rate).
+  - The accuracy denominator excludes `NONE` rows. The caption or X3 says so.
+- **Tier-1 cell:** `all.tier1_kept.k`/`n_tickets`.
+- **X1, independent part (§VI-E):** "Two authors each wrote about 54 tickets, seven per category plus five off-topic or vague ones ({n} in total). They wrote without consulting the training data, the generation templates or the benchmarks, and without LLM assistance. Each author then labelled the category of the other's tickets without seeing the writer's labels. Cohen's κ before adjudication was {kappa.category} (bootstrap 95% CI [{lo}, {hi}]), and the {disagreements} disagreements were resolved by discussion. The expected outcome (escalate or proceed) was assigned by each ticket's writer."
+  - **Single-annotator variant:** replace the last two sentences with "The labels were assigned by each ticket's writer alone (a single annotator), so no inter-annotator agreement is reported."
+- **X3, independent part:** written once the results exist. It must include `all.outcome_correct` (escalation correctness on all rows).
