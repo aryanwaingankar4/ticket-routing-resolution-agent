@@ -10,11 +10,14 @@ whether the advice would work in general.
 | Column | Values | Meaning |
 |---|---|---|
 | `grounded` | `yes` / `no` | `yes` if every substantive fix step the draft **prescribes** is supported by at least one of the 5 retrieved resolutions (rewording, merging steps, or substituting the ticket's own names is fine). A draft that prescribes no fix and only declines is `yes`. `no` if it prescribes any step that no retrieved resolution supports. |
-| `appropriate_handoff` | `yes` / `no` / `na` | Only for drafts that **hand off**, i.e. decline to prescribe a fix and pass the ticket to a person: `yes` if the retrieved tickets really do not fit this ticket, `no` if they did fit and a fix should have been given. `na` if the draft prescribes a fix (a closing "a human should double-check" note on its own is not a hand-off). |
+| `appropriate_handoff` | `yes` / `no` / `na` | First decide whether the 5 retrieved tickets **fit** this ticket. `yes`: they did not fit, and the draft declined to give a fix and handed off to a human. `no`: they did not fit, but the draft still gave a fix. `na`: they did fit, so a draft giving a fix is expected. |
 | `notes` | free text | optional |
 
-A draft that prescribes a fix when it should have handed off is captured by
-`grounded = no` (an unsupported fix) or by a note.
+**A generic "a human should double-check" line on its own does not count as
+a hand-off.** A draft that gives a fix and adds that line has given a fix.
+
+If the retrieved tickets fit but the draft declined anyway, label `na` and say
+so in `notes`.
 
 The routing line under each heading is context only: "mapped" is the team the
 source category maps to, "routed" is the team the pipeline chose.

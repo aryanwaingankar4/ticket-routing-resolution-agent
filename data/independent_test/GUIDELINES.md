@@ -115,13 +115,15 @@ When **both** ticket files are complete:
    python scripts/eval_independent.py --make-second-label-files
    ```
 
-   This writes `second_labels_on_AW_by_SP.csv` (AW's tickets, for SP to label) and `second_labels_on_SP_by_AW.csv` (SP's tickets, for AW to label). Each holds only `ticket_id`, `title`, `description`, an empty `second_label` and the `labeller` code. The rows are shuffled, and the writer's labels are not in the file.
-2. Each author fills `second_label` for **every** row of the file addressed to them: one of the seven categories, or `NONE` for a ticket that is not an IT request. Use sections 2–3 of this file only, and do not discuss any ticket with the writer.
+   This writes `second_labels_on_AW_by_SP.csv` (AW's tickets, for SP to label) and `second_labels_on_SP_by_AW.csv` (SP's tickets, for AW to label). Each holds only `ticket_id`, `title`, `description`, an empty `second_label`, an empty `second_expected_outcome` and the `labeller` code. The rows are shuffled, and the writer's labels are not in the file.
+2. Each author fills **both** label columns for **every** row of the file addressed to them:
+   - `second_label`: one of the seven categories, or `NONE` for a ticket that is not an IT request;
+   - `second_expected_outcome`: `proceed` or `escalate`, by the same rules as section 2. `NONE` requires `escalate`.
+
+   Use sections 2–3 of this file only, and do not discuss any ticket with the writer. A row counts as labelled only when both columns are filled.
 3. **Do not edit your own ticket file after this point.** The script refuses a second-label file whose ticket text no longer matches the ticket file.
 
-Only the **category** is cross-labelled. The expected outcome stays the writer's.
-
-κ is computed from these first, independent labels **before** any discussion, both pooled and per direction, and is reported as it comes out.
+Both the **category** and the **expected outcome** are cross-labelled. κ is computed for each **separately**, from these first, independent labels, **before** any discussion. It is given pooled and per direction, and is reported as it comes out.
 
 ## 6. Resolving disagreements
 
@@ -134,9 +136,9 @@ After both second-label files are complete:
    python scripts/eval_independent.py --make-adjudication-file
    ```
 
-   `adjudication.csv` gets one row per disagreement, with `ticket_id`, `author_label` and `second_label` filled in.
-2. AW and SP discuss each one and agree a final label. Fill in `final_label`, `resolved_by` (`AW+SP`) and a short `reason`.
-3. The evaluation uses the agreed label where the two matched and `final_label` where they did not. It refuses to run while any disagreement has no `final_label`. **Nobody edits `true_category` or `second_label` after this point**: the original labels are what κ measured.
+   `adjudication.csv` gets one row per ticket where the category, the outcome or both disagree. Columns: `ticket_id, author_label, second_label, final_label, author_outcome, second_outcome, final_outcome, resolved_by, reason`. The author and second columns are filled in. Where one of the two fields already agrees, its `final_…` column is pre-filled with the agreed value.
+2. AW and SP discuss each row and agree both final values. Fill in `final_label`, `final_outcome`, `resolved_by` (`AW+SP`) and a short `reason`. A `final_label` of `NONE` requires `final_outcome` = `escalate`.
+3. The evaluation uses the agreed values where the two matched and the `final_…` values where they did not. It refuses to run while any row lacks `final_label` or `final_outcome`. **Nobody edits the ticket files or the second-label files after this point**: the original labels are what κ measured.
 
 ## 7. Fallback: if cross-labelling cannot happen
 
@@ -160,9 +162,9 @@ python scripts/eval_independent.py                # route every ticket through t
 ```
 
 The evaluation reports:
-- Cohen's κ for category (pooled and per direction) with a bootstrap 95% interval, and the number of disagreements;
+- Cohen's κ for category and, separately, for expected outcome (each pooled and per direction) with bootstrap 95% intervals, and the number of disagreements on each;
 - category accuracy for the cascade and for Tier 2 alone, on the tickets with a real category, with Wilson 95% intervals;
-- the escalation rate at 0.67, and whether each ticket's escalate or proceed outcome matched its expected outcome;
+- the escalation rate at 0.67, and whether each ticket's escalate or proceed outcome matched its agreed (or adjudicated) expected outcome;
 - the share handled by Tier 1;
 - per-category recall, and how many misclassified tickets were drafted rather than escalated.
 

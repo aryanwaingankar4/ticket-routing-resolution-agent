@@ -7,7 +7,11 @@ only source the paper may quote for draft quality on real tickets. The labels
 are a single annotator's; the summary says so.
 
 FATAL unless every one of the 30 ids from drafts.json has a valid label in
-both columns: grounded in {yes, no}; appropriate_handoff in {yes, no, na}.
+both columns: grounded in {yes, no}; appropriate_handoff in {yes, no, na},
+where yes = the retrieved tickets did not fit and the draft declined and
+handed off to a human; no = they did not fit but the draft still gave a fix;
+na = they did fit. A generic "a human should double-check" line alone is not
+a hand-off.
 
     .\\venv\\Scripts\\python.exe scripts/score_draft_labels.py
 """
@@ -58,20 +62,32 @@ def main():
     h = Counter(r["appropriate_handoff"] for r in rows)
     routed_ok = {i for i, d in drafts.items()
                  if d["cascade_category"] == d["mapped_category"]}
+    # appropriate_handoff: yes = context did not fit and the draft handed off;
+    # no = context did not fit but the draft still gave a fix;
+    # na = context fitted (a fix is expected).
+    mismatch = h["yes"] + h["no"]
     out = [("annotation", "single annotator (AW)"), ("n", n)]
-    for name, k in (("grounded.yes", g["yes"]),
-                    ("handoff.any", h["yes"] + h["no"])):
-        lo, hi = wilson(k, n)
-        out += [(f"{name}.k", k), (f"{name}.rate", repr(k / n)),
-                (f"{name}.wilson95_lo", repr(lo)),
-                (f"{name}.wilson95_hi", repr(hi))]
-    out += [("grounded.no.k", g["no"]), ("handoff.yes.k", h["yes"]),
-            ("handoff.no.k", h["no"]), ("handoff.na.k", h["na"]),
+
+    def prop(name, k, d):
+        out.append((f"{name}.k", k))
+        out.append((f"{name}.n", d))
+        if d:
+            lo, hi = wilson(k, d)
+            out.extend([(f"{name}.rate", repr(k / d)),
+                        (f"{name}.wilson95_lo", repr(lo)),
+                        (f"{name}.wilson95_hi", repr(hi))])
+
+    prop("grounded.yes", g["yes"], n)
+    prop("context_mismatch", mismatch, n)
+    prop("handed_off_given_mismatch", h["yes"], mismatch)
+    out += [("grounded.no.k", g["no"]),
+            ("handoff.yes.k", h["yes"]), ("handoff.no.k", h["no"]),
+            ("handoff.na.k", h["na"]),
             ("routed_correctly.k", len(routed_ok)),
-            ("handoff.any.among_misrouted.k",
+            ("misrouted.k", n - len(routed_ok)),
+            ("context_mismatch.among_misrouted.k",
              sum(r["appropriate_handoff"] != "na" for r in rows
-                 if r["id"] not in routed_ok)),
-            ("misrouted.k", n - len(routed_ok))]
+                 if r["id"] not in routed_ok))]
     with open(OUT, "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["quantity", "value"])

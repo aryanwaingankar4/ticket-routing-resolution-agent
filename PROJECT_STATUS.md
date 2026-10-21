@@ -14,7 +14,8 @@
 >   - AW decisions (2026-10-21): the Tier-1 column in Table VIII, Appendix C (sensitivity), and the plain real-world reporting in five places are all drafted in RESULTS_FOR_PAPER.md.
 > - **Phase 3 (independent set): design changed 2026-10-21 to TWO authors, AW and SP, about 54 tickets each, cross-labelled blind.**
 >   - Files: `tickets_AW.csv` and `tickets_SP.csv` (header only, committed); `second_labels_on_{AW_by_SP,SP_by_AW}.csv` via `--make-second-label-files`; `adjudication.csv` via `--make-adjudication-file`.
->   - κ is on category only, before adjudication. `--single-annotator` is kept as the fallback. Every path was tested on scratch fixtures.
+>   - Both category and expected outcome are cross-labelled (`second_label`, `second_expected_outcome`). κ is computed for each separately, before adjudication, and both are adjudicated. `--single-annotator` is kept as the fallback. Every path was tested on scratch fixtures.
+>   - The hand-off labels for the 30 drafts are defined by AW (yes / no / na, keyed on whether the retrieved tickets fit). The dataset-availability sentence for §VI-E and Limitations is recorded in RESULTS_FOR_PAPER.md.
 >   - **Waiting on AW and SP. Do not start Phase 4 until AW says "Independent set complete with cross-labels and adjudication."**
 > - **Phase 4 (write v4.docx, test, commit, push): not started.**
 >
