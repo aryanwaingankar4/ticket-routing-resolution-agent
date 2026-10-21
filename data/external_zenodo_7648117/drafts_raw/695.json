@@ -1,0 +1,62 @@
+{
+  "ticket_id": "695",
+  "source_category": "O365",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Wrong email address",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.719313383102417,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2146,
+      "title": "Suspicious login attempts on account s.joshi",
+      "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.719313383102417
+    },
+    {
+      "rank": 2,
+      "id": 3026,
+      "title": "Phishing email reported by p.menon",
+      "description": "[TCK-21239] Ticket raised because user p.menon reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+      "similarity": 0.7140547037124634
+    },
+    {
+      "rank": 3,
+      "id": 3719,
+      "title": "Role change access review for n.gupta",
+      "description": "[TCK-34817] Ticket raised because user n.gupta has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for n.gupta, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.710556149482727
+    },
+    {
+      "rank": 4,
+      "id": 1340,
+      "title": "Role change access review for t.rao",
+      "description": "[TCK-57223] Support desk logged the following: user t.rao has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. Awaiting assignment to the right team.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for t.rao, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7099814414978027
+    },
+    {
+      "rank": 5,
+      "id": 2604,
+      "title": "Role change access review for j.singh",
+      "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7096415758132935
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, none of the examples match the issue described in the new ticket (wrong email address). The retrieved tickets only cover security incidents (suspicious logins, phishing) and access management/role changes. \n\n**Recommended Action:** Because the retrieved examples do not match this ticket, a human agent should double-check and handle this request manually.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "191273c58b9e2befb21c52f8d3ad5e0d08dfba13bd3807a0c884c3cd5a0ab1d5",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.186,
+  "generated_at": "2026-10-21T14:40:19"
+}

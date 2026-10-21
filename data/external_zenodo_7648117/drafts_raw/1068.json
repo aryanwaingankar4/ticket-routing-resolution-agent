@@ -1,0 +1,62 @@
+{
+  "ticket_id": "1068",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to you  - Leaving Employee - [TICKET ID] - [NAME] (AMA. [LOCATION])",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.7468764781951904,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 3498,
+      "title": "Offboarding access revocation for s.khan",
+      "description": "[TCK-51618] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+      "similarity": 0.7468764781951904
+    },
+    {
+      "rank": 2,
+      "id": 269,
+      "title": "Offboarding access revocation for s.khan",
+      "description": "[TCK-33029] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+      "similarity": 0.7378958463668823
+    },
+    {
+      "rank": 3,
+      "id": 659,
+      "title": "Offboarding access revocation for s.khan",
+      "description": "[TCK-13133] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+      "similarity": 0.7364937663078308
+    },
+    {
+      "rank": 4,
+      "id": 1144,
+      "title": "Offboarding access revocation for s.joshi",
+      "description": "[TCK-81615] Ticket raised because leaver s.joshi has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Disabled the s.joshi account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+      "similarity": 0.7356403470039368
+    },
+    {
+      "rank": 5,
+      "id": 3512,
+      "title": "Offboarding access revocation for v.nair",
+      "description": "[TCK-93491] Ticket raised because leaver v.nair has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Disabled the v.nair account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+      "similarity": 0.7232423424720764
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nDisable the leaving employee's account, revoke all group memberships and tokens, and transfer their owned resources to their manager. \n\n*Note: The retrieved examples closely match this leaving employee offboarding request.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "3f2a2957e052a99213bdaf2083702193241386f5cdd9bbfbf05973e19360f5ce",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.098,
+  "generated_at": "2026-10-21T14:41:15"
+}

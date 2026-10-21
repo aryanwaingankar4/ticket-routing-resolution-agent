@@ -1,0 +1,62 @@
+{
+  "ticket_id": "1307",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to you  - okta mobile",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.7427196502685547,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2359,
+      "title": "Ticketing System integration with Okta failing",
+      "description": "[TCK-84949] Ticket raised because the Ticketing System integration with Okta has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The Okta API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+      "similarity": 0.7427196502685547
+    },
+    {
+      "rank": 2,
+      "id": 1714,
+      "title": "MFA reset request for v.nair",
+      "description": "[TCK-50975] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.722800612449646
+    },
+    {
+      "rank": 3,
+      "id": 320,
+      "title": "MFA reset request for v.nair",
+      "description": "[TCK-65306] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.7211830615997314
+    },
+    {
+      "rank": 4,
+      "id": 1037,
+      "title": "MFA reset request for p.reddy",
+      "description": "[TCK-53659] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.7172712087631226
+    },
+    {
+      "rank": 5,
+      "id": 3429,
+      "title": "MFA reset request for p.reddy",
+      "description": "[TCK-23574] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.7138953804969788
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, the description for the new ticket is empty, but it references \"okta mobile.\" The retrieved examples deal with Okta API credential expiration and MFA resets, but none specifically address Okta Mobile application issues. \n\n**Suggested Resolution:**\nVerify the user's identity out of band, check if they need an MFA reset (similar to Past Tickets #2–#5 by verifying the user, resetting their MFA enrollment, and guiding them through registering a new authenticator device), or check for Okta integration/credential issues if it is a system-level problem (similar to Past Ticket #1).\n\n*Note: The retrieved examples do not fully match the new ticket's lack of a specific description, so a human agent should double-check the details.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "11dd7517cedeebfc99ba472574c509decdd15bccc012f54b22e87fac583c46af",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.429,
+  "generated_at": "2026-10-21T14:40:46"
+}

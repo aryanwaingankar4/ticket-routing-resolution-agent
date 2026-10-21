@@ -1,0 +1,62 @@
+{
+  "ticket_id": "5255",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:  Please. provide me with assess to Server Link: GROUP (J:) with all relevant Folders and Dates. The same assess as by [NAME] ([COMPANY]. [LOCATION])     Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+  "cascade_category": "Storage",
+  "tier": 1,
+  "top_similarity": 0.7560021877288818,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 662,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7560021877288818
+    },
+    {
+      "rank": 2,
+      "id": 2634,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.751718282699585
+    },
+    {
+      "rank": 3,
+      "id": 2370,
+      "title": "File share \\\\fs02\\shared inaccessible",
+      "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7500286102294922
+    },
+    {
+      "rank": 4,
+      "id": 880,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-10572] User m.iyer reports that several Pune Branch users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Kindly look into this at the earliest.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Pune Branch group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7435030937194824
+    },
+    {
+      "rank": 5,
+      "id": 2367,
+      "title": "File share \\\\fs04\\legal inaccessible",
+      "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7432210445404053
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, the resolutions deal with correcting NTFS permissions or restarting share services for existing folder access issues, rather than granting new file share access (Read/Write) to an individual user as requested in this new ticket. \n\n**Suggested Resolution:**\nVerify the user's requirements against the specified file share, grant the requested Read/Write permissions matching the reference user, and apply/re-propagate the appropriate NTFS permissions and ACLs for the target group and folders.\n\n*Note: The retrieved examples do not fully match this request (they address permission errors and service crashes rather than new user provisioning), so a human agent should double-check these steps.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "6b74d67c3b33353830ece1636616cd20e6336a76646c8cc94f3e4a6366a2a808",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.458,
+  "generated_at": "2026-10-21T14:40:30"
+}

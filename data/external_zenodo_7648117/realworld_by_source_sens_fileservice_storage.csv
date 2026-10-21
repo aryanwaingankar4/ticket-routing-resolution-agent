@@ -1,0 +1,15 @@
+reading,source_category,mapped_to,n,escalated,pred.Access Management,pred.Application,pred.Database,pred.Infrastructure,pred.Network,pred.Security,pred.Storage
+all,Active Directory,Access Management,85,31,64,0,1,2,2,10,6
+all,Computer-Services,excluded,46,11,8,11,0,3,10,12,2
+all,EOL,excluded,103,0,0,0,0,103,0,0,0
+all,Fileservice,Storage,597,13,26,0,0,1,1,11,558
+all,O365,Application,144,42,67,18,3,1,9,35,11
+all,Software,Application,158,73,43,11,7,5,6,70,16
+all,Support general,excluded,601,91,438,20,5,3,25,88,22
+distinct,Active Directory,Access Management,82,31,62,0,1,2,2,9,6
+distinct,Computer-Services,excluded,46,11,8,11,0,3,10,12,2
+distinct,EOL,excluded,2,0,0,0,0,2,0,0,0
+distinct,Fileservice,Storage,238,13,25,0,0,1,1,8,203
+distinct,O365,Application,140,42,63,18,3,1,9,35,11
+distinct,Software,Application,124,43,42,11,7,5,4,41,14
+distinct,Support general,excluded,384,83,245,19,5,3,24,77,11

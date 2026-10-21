@@ -1,0 +1,62 @@
+{
+  "ticket_id": "7983",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "File Share Access - [TICKET ID] - [USERNAME]. [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:    Groups (J:/)     J:/CH-MAP   J:/CH-MAZ   J:/CH-ZRST   J:/CH-ÖFZ   J:/CH-ChZugang           Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:  Standort:[LOCATION]Container[LOCATION]1OG Raum11",
+  "cascade_category": "Storage",
+  "tier": 1,
+  "top_similarity": 0.7505305409431458,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 662,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7505305409431458
+    },
+    {
+      "rank": 2,
+      "id": 2634,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.749982476234436
+    },
+    {
+      "rank": 3,
+      "id": 2370,
+      "title": "File share \\\\fs02\\shared inaccessible",
+      "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7464916706085205
+    },
+    {
+      "rank": 4,
+      "id": 581,
+      "title": "File share \\\\fs01\\operations inaccessible",
+      "description": "[TCK-37155] Ticket raised because users cannot access the network file share \\\\fs01\\operations; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7413637638092041
+    },
+    {
+      "rank": 5,
+      "id": 2367,
+      "title": "File share \\\\fs04\\legal inaccessible",
+      "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7352800369262695
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, the examples deal with fixing incorrect NTFS permissions or restarting crashed share services, whereas the new ticket is a service request to grant new Read/Write access to multiple specific file shares (`J:/CH-MAP`, `J:/CH-MAZ`, `J:/CH-ZRST`, `J:/CH-ÖFZ`, and `J:/CH-ChZugang`) for a user. \n\n*Note: The retrieved examples do not closely match this service request, so a human agent should double-check and process the appropriate group permission assignments manually.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "2b972ece2a6774d5731243c3ba9d0fe6799650b25e5e7aab05bbfaf563dc01b8",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.719,
+  "generated_at": "2026-10-21T14:41:26"
+}

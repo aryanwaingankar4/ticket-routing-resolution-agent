@@ -1,0 +1,62 @@
+{
+  "ticket_id": "979",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - New account",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.7102328538894653,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2146,
+      "title": "Suspicious login attempts on account s.joshi",
+      "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.7102328538894653
+    },
+    {
+      "rank": 2,
+      "id": 3857,
+      "title": "Suspicious login attempts on account r.desai",
+      "description": "[TCK-25267] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.6929567456245422
+    },
+    {
+      "rank": 3,
+      "id": 503,
+      "title": "Suspicious login attempts on account r.desai",
+      "description": "[TCK-85427] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.6895781755447388
+    },
+    {
+      "rank": 4,
+      "id": 287,
+      "title": "Suspicious login attempts on account p.reddy",
+      "description": "[TCK-15783] Ticket raised because multiple failed login attempts followed by a success on account p.reddy from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account p.reddy, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.685338020324707
+    },
+    {
+      "rank": 5,
+      "id": 1120,
+      "title": "Suspicious login attempts on account d.mehta",
+      "description": "[TCK-17700] Ticket raised because multiple failed login attempts followed by a success on account d.mehta from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account d.mehta, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.6850346922874451
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the new support ticket lacks specific details regarding an account name or the nature of the issue (such as suspicious login attempts). However, if this ticket pertains to a compromised or suspicious account access issue, the standard resolution steps from the past tickets are to lock the affected account, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred. \n\n*Note:* The retrieved examples do not fully match the new ticket because the new ticket description is blank and does not specify an account or problem, so a human agent should double-check and gather ticket details before proceeding.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "74a6f0c5a545a941311759eb9b11bd6f475b0fc5015803cfffe6379091aa8b69",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 2.118,
+  "generated_at": "2026-10-21T14:41:10"
+}

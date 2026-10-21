@@ -1,0 +1,62 @@
+{
+  "ticket_id": "722",
+  "source_category": "O365",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - emails sent from GTC-TR mailbox appear in personal sent items instead GTC-TR sent items",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.6894499659538269,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 3887,
+      "title": "Expense Tracker scheduled report emails not sending",
+      "description": "[TCK-38821] Ticket raised because the scheduled report emails from Expense Tracker have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The outbound mail worker for Expense Tracker had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+      "similarity": 0.6894499659538269
+    },
+    {
+      "rank": 2,
+      "id": 1836,
+      "title": "Inventory Manager scheduled report emails not sending",
+      "description": "[TCK-52879] Ticket raised because the scheduled report emails from Inventory Manager have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The outbound mail worker for Inventory Manager had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+      "similarity": 0.6819970607757568
+    },
+    {
+      "rank": 3,
+      "id": 3902,
+      "title": "Inventory Manager scheduled report emails not sending",
+      "description": "[TCK-62279] Ticket raised because the scheduled report emails from Inventory Manager have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The outbound mail worker for Inventory Manager had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+      "similarity": 0.6811056137084961
+    },
+    {
+      "rank": 4,
+      "id": 3831,
+      "title": "Phishing email reported by s.khan",
+      "description": "[TCK-22396] Ticket raised because user s.khan reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+      "similarity": 0.6797497868537903
+    },
+    {
+      "rank": 5,
+      "id": 3707,
+      "title": "Ticketing System scheduled report emails not sending",
+      "description": "[TCK-20909] Support desk logged the following: the scheduled report emails from Ticketing System have silently stopped going out and users are not receiving their daily summaries. Awaiting assignment to the right team.",
+      "category": "Application",
+      "resolution": "The outbound mail worker for Ticketing System had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+      "similarity": 0.6779129505157471
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, the examples deal with scheduled report emails not sending due to stuck outbound mail queues and SMTP changes, which do not match the new ticket's issue regarding emails from the GTC-TR mailbox appearing in personal sent items instead of the GTC-TR sent items. \n\n*Note: The retrieved examples do not closely match this ticket; a human agent should double-check and investigate the mailbox configuration (such as \"Send As\" or delegate settings).*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "cc4f104dbbed13c289d8a9c550f2e1cffd87dc1e1f6be662dfd85b64b3dd912a",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.197,
+  "generated_at": "2026-10-21T14:39:58"
+}

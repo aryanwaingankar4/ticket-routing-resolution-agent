@@ -1,0 +1,62 @@
+{
+  "ticket_id": "1023",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - New Email Address",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.679402232170105,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2146,
+      "title": "Suspicious login attempts on account s.joshi",
+      "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.679402232170105
+    },
+    {
+      "rank": 2,
+      "id": 3586,
+      "title": "Group membership change for p.menon",
+      "description": "[TCK-80691] Ticket raised because manager requests that p.menon be added to the Chennai Support finance security group. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Added p.menon to the requested Chennai Support security group after manager approval and verified the new permissions took effect.",
+      "similarity": 0.6770777702331543
+    },
+    {
+      "rank": 3,
+      "id": 2254,
+      "title": "Phishing email reported by k.verma",
+      "description": "[TCK-34667] Ticket raised because user k.verma reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+      "similarity": 0.672876238822937
+    },
+    {
+      "rank": 4,
+      "id": 1893,
+      "title": "Phishing email reported by n.gupta",
+      "description": "[TCK-42269] Ticket raised because user n.gupta reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+      "similarity": 0.6718666553497314
+    },
+    {
+      "rank": 5,
+      "id": 3709,
+      "title": "Phishing email reported by a.kulkarni",
+      "description": "[TCK-63547] Ticket raised because user a.kulkarni reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+      "similarity": 0.6701997518539429
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, there are no examples that match the request for a \"New Email Address\" (the retrieved tickets deal with suspicious logins, group membership changes, and phishing emails). \n\nTherefore, a human agent should double-check and handle this request, as no matching resolution steps are available in the past ticket history.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "94ee2ed5825c6b1b44e043e5518bf8787221e9c85ab3a44773edcbff8a9a23e4",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.188,
+  "generated_at": "2026-10-21T14:41:42"
+}

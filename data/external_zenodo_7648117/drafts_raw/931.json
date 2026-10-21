@@ -1,0 +1,62 @@
+{
+  "ticket_id": "931",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - McAfee excepetion",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.7122459411621094,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 287,
+      "title": "Suspicious login attempts on account p.reddy",
+      "description": "[TCK-15783] Ticket raised because multiple failed login attempts followed by a success on account p.reddy from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account p.reddy, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.7122459411621094
+    },
+    {
+      "rank": 2,
+      "id": 1037,
+      "title": "MFA reset request for p.reddy",
+      "description": "[TCK-53659] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.704645037651062
+    },
+    {
+      "rank": 3,
+      "id": 3429,
+      "title": "MFA reset request for p.reddy",
+      "description": "[TCK-23574] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+      "similarity": 0.7011494040489197
+    },
+    {
+      "rank": 4,
+      "id": 3857,
+      "title": "Suspicious login attempts on account r.desai",
+      "description": "[TCK-25267] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+      "similarity": 0.6945686340332031
+    },
+    {
+      "rank": 5,
+      "id": 502,
+      "title": "Brute-force attack against Ticketing System login",
+      "description": "[TCK-53093] Ticket raised because monitoring shows a high-volume password-guessing attack hammering the Ticketing System login endpoint from many IP addresses. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Enabled rate limiting and account lockout on the Ticketing System login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures.",
+      "similarity": 0.6941635012626648
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, there are no examples matching a \"McAfee exception\" request; the past tickets only address account security incidents (suspicious logins, MFA resets, and brute-force attacks). \n\nBecause the retrieved examples do not match the new ticket, a human agent should double-check and investigate the appropriate procedure for handling McAfee exceptions.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "931733297f4e60544f9f9eb91db46bd97b16a10779c14d427f99719f85790bd8",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.435,
+  "generated_at": "2026-10-21T14:41:58"
+}

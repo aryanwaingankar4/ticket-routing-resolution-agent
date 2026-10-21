@@ -1,0 +1,62 @@
+{
+  "ticket_id": "8406",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "Basis User - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])Service Request: Basis User     Create Windows account for internal user  [USERNAME] [NAME] ([COMPANY]. [LOCATION])     Firstname:  [NAME]  Lastname:  [NAME]  Cost Center:  174440  Company:  [COMPANY] [ADDRESS] GmbH  Department:  [ADDRESS]  ZIP:  [ADDRESS]  City:  [ADDRESS]  Country:  Germany  Office:       Important: Please set the EA10 to the following value: 13306 (leave blank. when empty)  Please create Exchange and Skype account.  The user needs at least the following access permissions:  (RW) H:/%username%  (RO) J:/Auftrag  (RW) J:/Info  (RW) J:/Transfer  (RO) J:/Vorlagen  Access to [COMPANY] intranet  Access to [SOFTWARE] ([SERVER])  Requestor:  [NAME] ([COMPANY]. [LOCATION])     Desired date:  Sep  3 2018 12:00AM     Additional information:",
+  "cascade_category": "Access Management",
+  "tier": 1,
+  "top_similarity": 0.6723923087120056,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2622,
+      "title": "Elevated access request for m.iyer",
+      "description": "[TCK-79595] Support desk logged the following: user m.iyer has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+      "category": "Access Management",
+      "resolution": "Granted m.iyer time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6723923087120056
+    },
+    {
+      "rank": 2,
+      "id": 197,
+      "title": "Elevated access request for r.desai",
+      "description": "[TCK-60689] We are observing that user r.desai has requested temporary admin access to Ticketing System to complete a project task. Requesting priority attention from the relevant team.",
+      "category": "Access Management",
+      "resolution": "Granted r.desai time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6623932719230652
+    },
+    {
+      "rank": 3,
+      "id": 2303,
+      "title": "Elevated access request for j.singh",
+      "description": "[TCK-66436] Ticket raised because user j.singh has requested temporary admin access to Ticketing System to complete a project task. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted j.singh time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.662360668182373
+    },
+    {
+      "rank": 4,
+      "id": 3035,
+      "title": "Elevated access request for k.verma",
+      "description": "[TCK-44240] Support desk logged the following: user k.verma has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+      "category": "Access Management",
+      "resolution": "Granted k.verma time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6616809368133545
+    },
+    {
+      "rank": 5,
+      "id": 1473,
+      "title": "Elevated access request for r.sharma",
+      "description": "[TCK-22134] User r.sharma reports that user r.sharma has requested temporary admin access to Payroll to complete a project task. Kindly look into this at the earliest.",
+      "category": "Access Management",
+      "resolution": "Granted r.sharma time-boxed elevated access to Payroll via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6563267707824707
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, all examples deal with granting time-boxed elevated access to specific internal systems via a privileged-access workflow. However, the new ticket is a service request to create a new Windows account along with Exchange, Skype, intranet access, software access, and specific network share permissions (H:/ and J:/ drives), which is completely different from the past tickets. \n\nA human agent should double-check and process this Windows account and network/software access request manually, as the retrieved examples do not match this scenario.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "c32f1cc3ee4e70551c711b57bac676d1db3acbc51a54beb65e63418592a15a46",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 2.662,
+  "generated_at": "2026-10-21T14:40:58"
+}

@@ -1,0 +1,62 @@
+{
+  "ticket_id": "606",
+  "source_category": "O365",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Create Shared Mailbox",
+  "cascade_category": "Access Management",
+  "tier": 1,
+  "top_similarity": 0.7667214274406433,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 87,
+      "title": "Shared mailbox access request for p.reddy",
+      "description": "[TCK-55036] Ticket raised because user p.reddy needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted p.reddy delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+      "similarity": 0.7667214274406433
+    },
+    {
+      "rank": 2,
+      "id": 850,
+      "title": "Shared mailbox access request for r.desai",
+      "description": "[TCK-51922] Ticket raised because user r.desai needs delegated access to the Delhi Sales shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted r.desai delegate permissions on the Delhi Sales shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+      "similarity": 0.7599860429763794
+    },
+    {
+      "rank": 3,
+      "id": 3527,
+      "title": "Shared mailbox access request for a.patel",
+      "description": "[TCK-52684] Ticket raised because user a.patel needs delegated access to the Remote/WFH shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted a.patel delegate permissions on the Remote/WFH shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+      "similarity": 0.7556957602500916
+    },
+    {
+      "rank": 4,
+      "id": 806,
+      "title": "Shared mailbox access request for a.kulkarni",
+      "description": "[TCK-38517] Ticket raised because user a.kulkarni needs delegated access to the Ahmedabad Office shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted a.kulkarni delegate permissions on the Ahmedabad Office shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+      "similarity": 0.7510873079299927
+    },
+    {
+      "rank": 5,
+      "id": 1174,
+      "title": "Shared mailbox access request for m.iyer",
+      "description": "[TCK-33812] Flagged during routine checks: user m.iyer needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. Please confirm root cause and next steps.",
+      "category": "Access Management",
+      "resolution": "Granted m.iyer delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+      "similarity": 0.7337948083877563
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nThe retrieved past tickets address requests for granting delegated access to *existing* shared mailboxes, whereas the new ticket is titled \"Create Shared Mailbox.\" Because the retrieved examples do not fully match the requirement to *create* a new shared mailbox, a human agent should double-check and perform the creation steps before applying any delegate permissions.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "ba8c79d692574d16fa95d898803ec787d239939f2363efd9e8be176aee67c60e",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.361,
+  "generated_at": "2026-10-21T14:42:09"
+}

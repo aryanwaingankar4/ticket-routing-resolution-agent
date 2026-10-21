@@ -1,0 +1,62 @@
+{
+  "ticket_id": "926",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - Cannot access files",
+  "cascade_category": "Storage",
+  "tier": 2,
+  "top_similarity": 0.7592071294784546,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 3547,
+      "title": "Permissions incorrect on \\\\fs01\\hr",
+      "description": "[TCK-61796] Ticket raised because several Noida Tech Park users report they can see the folder \\\\fs01\\hr but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\hr for the relevant Noida Tech Park group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7592071294784546
+    },
+    {
+      "rank": 2,
+      "id": 1363,
+      "title": "Permissions incorrect on \\\\fs01\\operations",
+      "description": "[TCK-56463] Ticket raised because several Ahmedabad Office users report they can see the folder \\\\fs01\\operations but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\operations for the relevant Ahmedabad Office group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.745811402797699
+    },
+    {
+      "rank": 3,
+      "id": 1547,
+      "title": "Permissions incorrect on \\\\fs02\\marketing",
+      "description": "[TCK-38637] Ticket raised because several Kolkata Branch users report they can see the folder \\\\fs02\\marketing but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\marketing for the relevant Kolkata Branch group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7399194240570068
+    },
+    {
+      "rank": 4,
+      "id": 1172,
+      "title": "Snapshot/backup restore request for \\\\fs04\\legal",
+      "description": "[TCK-63468] Ticket raised because a user accidentally deleted a folder on \\\\fs04\\legal and needs yesterday's version restored. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Restored the requested folder on \\\\fs04\\legal from the previous night's snapshot and confirmed file integrity with the requesting user.",
+      "similarity": 0.7393345832824707
+    },
+    {
+      "rank": 5,
+      "id": 662,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7369741201400757
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nVerify which network share folder and user group are experiencing the issue. Correct the inherited NTFS permissions for the relevant group on the affected folder and re-propagate the ACLs so the files can be opened as expected. \n\n*Note: The retrieved examples address folder permission issues (\"access denied\"), but because the new ticket description is blank, a human agent should double-check the specific folder and user details before applying this resolution.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "cb37e720433a757fe3f768f5f10318ea06b8c009c22ccc502a23e9cccae5c504",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.333,
+  "generated_at": "2026-10-21T14:40:09"
+}

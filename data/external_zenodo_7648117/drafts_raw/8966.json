@@ -1,0 +1,62 @@
+{
+  "ticket_id": "8966",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "File Share Access - [TICKET ID] - [USERNAME]. Alissa ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. Alissa ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RO) Read only  File Share:      j:/PDW/TargetDB/       Normal   0               false   false   false      DE   EN-US   AR-SA                                             MicrosoftInternetExplorer4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+  "cascade_category": "Storage",
+  "tier": 1,
+  "top_similarity": 0.7520563006401062,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 662,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7520563006401062
+    },
+    {
+      "rank": 2,
+      "id": 2634,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7435346841812134
+    },
+    {
+      "rank": 3,
+      "id": 3490,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-54727] Monitoring alerted us that several Bangalore DC users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Escalating for investigation.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Bangalore DC group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7392828464508057
+    },
+    {
+      "rank": 4,
+      "id": 2370,
+      "title": "File share \\\\fs02\\shared inaccessible",
+      "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7367210388183594
+    },
+    {
+      "rank": 5,
+      "id": 617,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-51894] Reported by the Mumbai HQ team: several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Please investigate and resolve.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7318856120109558
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nGrant Read-Only (RO) access to the user for the specified file share (`j:/PDW/TargetDB/`), verify and configure the appropriate NTFS permissions and ACLs for the user's group, and re-propagate the permissions so the user can open files as expected.\n\n*Note: The retrieved examples deal with fixing existing NTFS permissions on a different path (`\\\\fs02\\shared`), whereas this new ticket is a service request for granting new file share access (`j:/PDW/TargetDB/`). A human agent should double-check the steps for provisioning new access.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "2c658a649dfaf263b3493864d7630a30da04a90e9a5ccf299aacf3dc68975769",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.554,
+  "generated_at": "2026-10-21T14:42:03"
+}

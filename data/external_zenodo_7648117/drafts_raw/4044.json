@@ -1,0 +1,62 @@
+{
+  "ticket_id": "4044",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "Initiated by [COMPANY][LOCATION]- Vulnerable Active X on [SERVER]8",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.6918987035751343,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 829,
+      "title": "Unpatched critical CVE on K8S-NODE-15",
+      "description": "[TCK-89505] Flagged during routine checks: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Please confirm root cause and next steps.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6918987035751343
+    },
+    {
+      "rank": 2,
+      "id": 1479,
+      "title": "Unpatched critical CVE on VM-BATCH-10",
+      "description": "[TCK-14048] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on VM-BATCH-10. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to VM-BATCH-10 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6861879825592041
+    },
+    {
+      "rank": 3,
+      "id": 2903,
+      "title": "Unpatched critical CVE on K8S-NODE-15",
+      "description": "[TCK-22170] Support desk logged the following: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Awaiting assignment to the right team.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6852834224700928
+    },
+    {
+      "rank": 4,
+      "id": 330,
+      "title": "Unpatched critical CVE on K8S-NODE-15",
+      "description": "[TCK-79817] Reported by the Delhi Sales team: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Please investigate and resolve.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6848456263542175
+    },
+    {
+      "rank": 5,
+      "id": 167,
+      "title": "Unpatched critical CVE on K8S-NODE-14",
+      "description": "[TCK-17336] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-14. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to K8S-NODE-14 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6845297813415527
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nApply the appropriate vendor security patch to the affected server during an emergency change window, and then rescan the system to confirm that the vulnerability has been remediated. \n\n*Note: The retrieved examples address unpatched CVEs on specific nodes rather than explicitly mentioning \"Active X,\" so a human agent should double-check the exact steps for this specific vulnerability.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "f079b36c5cdea3a6baae0f58243d1b7c329a92e4d231df58c24ed2dfb9124bb1",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.211,
+  "generated_at": "2026-10-21T14:41:47"
+}

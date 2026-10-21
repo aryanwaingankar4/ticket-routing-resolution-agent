@@ -1,0 +1,1881 @@
+{
+  "sample": {
+    "n": 30,
+    "seed": 42,
+    "allocation": {
+      "Active Directory": 7,
+      "Fileservice": 8,
+      "O365": 8,
+      "Software": 7
+    },
+    "eligible_population": {
+      "Active Directory": 51,
+      "Fileservice": 224,
+      "O365": 98,
+      "Software": 81
+    },
+    "population": "distinct mapped texts, not escalated, primary mapping"
+  },
+  "drafts": [
+    {
+      "ticket_id": "6901",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "File Share Access - [TICKET ID] - [NAME]. [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:  J:/ÖFZFOX/MOM-OSR     Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+      "cascade_category": "Storage",
+      "tier": 1,
+      "top_similarity": 0.7491793632507324,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2370,
+          "title": "File share \\\\fs02\\shared inaccessible",
+          "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7491793632507324
+        },
+        {
+          "rank": 2,
+          "id": 581,
+          "title": "File share \\\\fs01\\operations inaccessible",
+          "description": "[TCK-37155] Ticket raised because users cannot access the network file share \\\\fs01\\operations; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7445821762084961
+        },
+        {
+          "rank": 3,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7432700395584106
+        },
+        {
+          "rank": 4,
+          "id": 2367,
+          "title": "File share \\\\fs04\\legal inaccessible",
+          "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7429598569869995
+        },
+        {
+          "rank": 5,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7389819622039795
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nVerify the user's permissions for the requested file share (`J:/ÖFZFOX/MOM-OSR`). Depending on whether access is missing due to ACL configuration or share issues, correct the inherited NTFS permissions for the user or group and re-propagate the ACLs so the user can open and write to files as expected.\n\n*Note: The retrieved examples deal with fixing existing share accessibility and permission errors rather than provisioning a brand-new user access request, so a human agent should double-check the exact provisioning steps.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "f2616f6cdd65efec9be404ab3c55cad21663c38059a9a4dbfbfc9f073efcfbe8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.804,
+      "generated_at": "2026-10-21T14:38:28"
+    },
+    {
+      "ticket_id": "633",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - New Okta Registration",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.7460470795631409,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2359,
+          "title": "Ticketing System integration with Okta failing",
+          "description": "[TCK-84949] Ticket raised because the Ticketing System integration with Okta has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The Okta API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+          "similarity": 0.7460470795631409
+        },
+        {
+          "rank": 2,
+          "id": 2649,
+          "title": "Role change access review for k.verma",
+          "description": "[TCK-90664] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7427415251731873
+        },
+        {
+          "rank": 3,
+          "id": 1185,
+          "title": "Role change access review for k.verma",
+          "description": "[TCK-57628] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7419956922531128
+        },
+        {
+          "rank": 4,
+          "id": 3852,
+          "title": "Role change access review for p.reddy",
+          "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7390795946121216
+        },
+        {
+          "rank": 5,
+          "id": 2604,
+          "title": "Role change access review for j.singh",
+          "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.734404444694519
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the examples address a \"New Okta Registration\" or provide steps for registering a new user in Okta (the closest match involves expired API credentials for an existing integration, while the others cover role change access reviews). \n\n*Note: The retrieved examples do not closely match the new ticket description, so a human agent should double-check and handle this registration request manually.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "579db89bce46816337607ace9b504b650ce1585f69f42db1df3f97f4a8598595",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.691,
+      "generated_at": "2026-10-21T14:38:33"
+    },
+    {
+      "ticket_id": "1077",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - NO FUNCIONA CORREO ELECTRONICO",
+      "cascade_category": "Application",
+      "tier": 2,
+      "top_similarity": 0.679019570350647,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3614,
+          "title": "Ticketing System says it can't find the data",
+          "description": "[TCK-97277] Flagged during routine checks: Ticketing System shows an error mentioning a broken connection to where the data is kept, and no records load at all. Please confirm root cause and next steps.",
+          "category": "Database",
+          "resolution": "Diagnosed a dropped connection between Ticketing System and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Ticketing System could load data again.",
+          "similarity": 0.679019570350647
+        },
+        {
+          "rank": 2,
+          "id": 1885,
+          "title": "Login broken on Ticketing System",
+          "description": "[TCK-25362] Reported by the Ahmedabad Office team: no user can log in to Ticketing System; the login page accepts credentials then redirects back to itself. Please investigate and resolve.",
+          "category": "Application",
+          "resolution": "The Ticketing System session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login.",
+          "similarity": 0.6774982213973999
+        },
+        {
+          "rank": 3,
+          "id": 1182,
+          "title": "Ticketing System says it can't find the data",
+          "description": "[TCK-90973] Flagged during routine checks: Ticketing System shows an error mentioning a broken connection to where the data is kept, and no records load at all. Please confirm root cause and next steps.",
+          "category": "Database",
+          "resolution": "Diagnosed a dropped connection between Ticketing System and catalog_pg caused by a credentials rotation; updated the stored connection string and confirmed Ticketing System could load data again.",
+          "similarity": 0.676010012626648
+        },
+        {
+          "rank": 4,
+          "id": 2991,
+          "title": "Can't pull up records in Ticketing System",
+          "description": "[TCK-73422] Flagged during routine checks: trying to view customer or order records in Ticketing System just spins and then shows an error saying it cannot reach the records system. Please confirm root cause and next steps.",
+          "category": "Database",
+          "resolution": "The application server's connection pool to orders_pg had exhausted; restarted the pooler and verified Ticketing System could reach orders_pg again, restoring record lookups.",
+          "similarity": 0.6741578578948975
+        },
+        {
+          "rank": 5,
+          "id": 3393,
+          "title": "Can't pull up records in Ticketing System",
+          "description": "[TCK-30880] Support desk logged the following: trying to view customer or order records in Ticketing System just spins and then shows an error saying it cannot reach the records system. Awaiting assignment to the right team.",
+          "category": "Database",
+          "resolution": "The application server's connection pool to inventory_pg had exhausted; restarted the pooler and verified Ticketing System could reach inventory_pg again, restoring record lookups.",
+          "similarity": 0.6698004603385925
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the examples address email functionality (\"NO FUNCIONA CORREO ELECTRONICO\"), as they only cover database connection issues, connection pool exhaustion, and application login/cookie misconfigurations. \n\n**Suggested Resolution:**\nSince the retrieved examples do not match the issue described in the new ticket, a human agent should double-check and investigate the email service configuration, mail server status, and user mail client settings.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "fc11a68b761867730c62d1ef049273551ccfe6a4f6a4849f4648003efa3a9562",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 2.565,
+      "generated_at": "2026-10-21T14:38:40"
+    },
+    {
+      "ticket_id": "9016",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:      J:/LOEHNE1J:/ZET-PW    J:/Containe    J:/PW-INSBB         Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+      "cascade_category": "Storage",
+      "tier": 1,
+      "top_similarity": 0.7457888126373291,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7457888126373291
+        },
+        {
+          "rank": 2,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7427393794059753
+        },
+        {
+          "rank": 3,
+          "id": 2370,
+          "title": "File share \\\\fs02\\shared inaccessible",
+          "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7378205060958862
+        },
+        {
+          "rank": 4,
+          "id": 2136,
+          "title": "File share \\\\fs02\\marketing inaccessible",
+          "description": "[TCK-70308] Ticket raised because users cannot access the network file share \\\\fs02\\marketing; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\marketing had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7364309430122375
+        },
+        {
+          "rank": 5,
+          "id": 581,
+          "title": "File share \\\\fs01\\operations inaccessible",
+          "description": "[TCK-37155] Ticket raised because users cannot access the network file share \\\\fs01\\operations; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.735315203666687
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, grant the requested Read/Write (RW) permissions for user `[USERNAME]` to the specified file shares (`J:/LOEHNE1`, `J:/ZET-PW`, `J:/Containe`, and `J:/PW-INSBB`). Verify the permissions and ensure the Access Control Lists (ACLs) are correctly propagated so the user can access the paths as expected.\n\n*Note: The retrieved examples deal with fixing existing permission errors or restarting crashed share services rather than a standard new user provisioning request, so a human agent should double-check these steps.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "c1574ab6f6bf8b2e533eac3a804ec765595d05563ba036d3b045cd087ec0d7aa",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.716,
+      "generated_at": "2026-10-21T14:39:48"
+    },
+    {
+      "ticket_id": "586",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Access to the shared mailbox",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.7796483635902405,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 87,
+          "title": "Shared mailbox access request for p.reddy",
+          "description": "[TCK-55036] Ticket raised because user p.reddy needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted p.reddy delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7796483635902405
+        },
+        {
+          "rank": 2,
+          "id": 850,
+          "title": "Shared mailbox access request for r.desai",
+          "description": "[TCK-51922] Ticket raised because user r.desai needs delegated access to the Delhi Sales shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted r.desai delegate permissions on the Delhi Sales shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.775364339351654
+        },
+        {
+          "rank": 3,
+          "id": 3527,
+          "title": "Shared mailbox access request for a.patel",
+          "description": "[TCK-52684] Ticket raised because user a.patel needs delegated access to the Remote/WFH shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.patel delegate permissions on the Remote/WFH shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7732193470001221
+        },
+        {
+          "rank": 4,
+          "id": 806,
+          "title": "Shared mailbox access request for a.kulkarni",
+          "description": "[TCK-38517] Ticket raised because user a.kulkarni needs delegated access to the Ahmedabad Office shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.kulkarni delegate permissions on the Ahmedabad Office shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7646406888961792
+        },
+        {
+          "rank": 5,
+          "id": 1174,
+          "title": "Shared mailbox access request for m.iyer",
+          "description": "[TCK-33812] Flagged during routine checks: user m.iyer needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. Please confirm root cause and next steps.",
+          "category": "Access Management",
+          "resolution": "Granted m.iyer delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7542288303375244
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the new ticket lacks specific user and shared mailbox details in its description. \n\nHowever, following the pattern of the retrieved examples, the resolution for a shared mailbox access request involves granting the user delegate permissions on the requested shared mailbox, confirming it appears in their client, and setting the access to expire when the colleague returns.\n\n*Note: The retrieved examples closely match the general category (shared mailbox access), but because the new ticket description is blank and lacks user and mailbox details, a human agent should double-check the specific requirements before proceeding.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "0abf43e6a20bfed90dc694aefb9e7fa1642eed5191203c08ab6c4db85d4aa951",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.216,
+      "generated_at": "2026-10-21T14:39:53"
+    },
+    {
+      "ticket_id": "722",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - emails sent from GTC-TR mailbox appear in personal sent items instead GTC-TR sent items",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.6894499659538269,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3887,
+          "title": "Expense Tracker scheduled report emails not sending",
+          "description": "[TCK-38821] Ticket raised because the scheduled report emails from Expense Tracker have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The outbound mail worker for Expense Tracker had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+          "similarity": 0.6894499659538269
+        },
+        {
+          "rank": 2,
+          "id": 1836,
+          "title": "Inventory Manager scheduled report emails not sending",
+          "description": "[TCK-52879] Ticket raised because the scheduled report emails from Inventory Manager have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The outbound mail worker for Inventory Manager had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+          "similarity": 0.6819970607757568
+        },
+        {
+          "rank": 3,
+          "id": 3902,
+          "title": "Inventory Manager scheduled report emails not sending",
+          "description": "[TCK-62279] Ticket raised because the scheduled report emails from Inventory Manager have silently stopped going out and users are not receiving their daily summaries. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The outbound mail worker for Inventory Manager had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+          "similarity": 0.6811056137084961
+        },
+        {
+          "rank": 4,
+          "id": 3831,
+          "title": "Phishing email reported by s.khan",
+          "description": "[TCK-22396] Ticket raised because user s.khan reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.6797497868537903
+        },
+        {
+          "rank": 5,
+          "id": 3707,
+          "title": "Ticketing System scheduled report emails not sending",
+          "description": "[TCK-20909] Support desk logged the following: the scheduled report emails from Ticketing System have silently stopped going out and users are not receiving their daily summaries. Awaiting assignment to the right team.",
+          "category": "Application",
+          "resolution": "The outbound mail worker for Ticketing System had a stuck queue after an SMTP change; updated the mailer settings, drained the queue, and confirmed reports resumed.",
+          "similarity": 0.6779129505157471
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the examples deal with scheduled report emails not sending due to stuck outbound mail queues and SMTP changes, which do not match the new ticket's issue regarding emails from the GTC-TR mailbox appearing in personal sent items instead of the GTC-TR sent items. \n\n*Note: The retrieved examples do not closely match this ticket; a human agent should double-check and investigate the mailbox configuration (such as \"Send As\" or delegate settings).*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "cc4f104dbbed13c289d8a9c550f2e1cffd87dc1e1f6be662dfd85b64b3dd912a",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.197,
+      "generated_at": "2026-10-21T14:39:58"
+    },
+    {
+      "ticket_id": "585",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - please create shared mailbox.",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.7812737226486206,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 87,
+          "title": "Shared mailbox access request for p.reddy",
+          "description": "[TCK-55036] Ticket raised because user p.reddy needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted p.reddy delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7812737226486206
+        },
+        {
+          "rank": 2,
+          "id": 850,
+          "title": "Shared mailbox access request for r.desai",
+          "description": "[TCK-51922] Ticket raised because user r.desai needs delegated access to the Delhi Sales shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted r.desai delegate permissions on the Delhi Sales shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7730269432067871
+        },
+        {
+          "rank": 3,
+          "id": 3527,
+          "title": "Shared mailbox access request for a.patel",
+          "description": "[TCK-52684] Ticket raised because user a.patel needs delegated access to the Remote/WFH shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.patel delegate permissions on the Remote/WFH shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7653185129165649
+        },
+        {
+          "rank": 4,
+          "id": 806,
+          "title": "Shared mailbox access request for a.kulkarni",
+          "description": "[TCK-38517] Ticket raised because user a.kulkarni needs delegated access to the Ahmedabad Office shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.kulkarni delegate permissions on the Ahmedabad Office shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7554464936256409
+        },
+        {
+          "rank": 5,
+          "id": 982,
+          "title": "Shared mailbox access request for a.patel",
+          "description": "[TCK-82803] Flagged during routine checks: user a.patel needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. Please confirm root cause and next steps.",
+          "category": "Access Management",
+          "resolution": "Granted a.patel delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7411181330680847
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the new ticket requests the creation of a shared mailbox, whereas the historical examples all deal with granting delegated access to *existing* shared mailboxes. Therefore, the retrieved examples do not fully match the new ticket; a human agent should double-check the exact requirements to determine if a new mailbox needs to be created or if access to an existing one is required.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "8f88b8e0ba4ac0545e037f4997fa2d554431d90ebb3835631d9a760140842305",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.016,
+      "generated_at": "2026-10-21T14:40:03"
+    },
+    {
+      "ticket_id": "926",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - Cannot access files",
+      "cascade_category": "Storage",
+      "tier": 2,
+      "top_similarity": 0.7592071294784546,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3547,
+          "title": "Permissions incorrect on \\\\fs01\\hr",
+          "description": "[TCK-61796] Ticket raised because several Noida Tech Park users report they can see the folder \\\\fs01\\hr but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\hr for the relevant Noida Tech Park group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7592071294784546
+        },
+        {
+          "rank": 2,
+          "id": 1363,
+          "title": "Permissions incorrect on \\\\fs01\\operations",
+          "description": "[TCK-56463] Ticket raised because several Ahmedabad Office users report they can see the folder \\\\fs01\\operations but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\operations for the relevant Ahmedabad Office group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.745811402797699
+        },
+        {
+          "rank": 3,
+          "id": 1547,
+          "title": "Permissions incorrect on \\\\fs02\\marketing",
+          "description": "[TCK-38637] Ticket raised because several Kolkata Branch users report they can see the folder \\\\fs02\\marketing but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\marketing for the relevant Kolkata Branch group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7399194240570068
+        },
+        {
+          "rank": 4,
+          "id": 1172,
+          "title": "Snapshot/backup restore request for \\\\fs04\\legal",
+          "description": "[TCK-63468] Ticket raised because a user accidentally deleted a folder on \\\\fs04\\legal and needs yesterday's version restored. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Restored the requested folder on \\\\fs04\\legal from the previous night's snapshot and confirmed file integrity with the requesting user.",
+          "similarity": 0.7393345832824707
+        },
+        {
+          "rank": 5,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7369741201400757
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nVerify which network share folder and user group are experiencing the issue. Correct the inherited NTFS permissions for the relevant group on the affected folder and re-propagate the ACLs so the files can be opened as expected. \n\n*Note: The retrieved examples address folder permission issues (\"access denied\"), but because the new ticket description is blank, a human agent should double-check the specific folder and user details before applying this resolution.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "cb37e720433a757fe3f768f5f10318ea06b8c009c22ccc502a23e9cccae5c504",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.333,
+      "generated_at": "2026-10-21T14:40:09"
+    },
+    {
+      "ticket_id": "3838",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "Initiated by [COMPANY][LOCATION]- Vulnerable Internet Explorere on [SERVER]",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.673277735710144,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 1877,
+          "title": "Unpatched critical CVE on PRD-WEB-01",
+          "description": "[TCK-23167] We are observing that vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-01. Requesting priority attention from the relevant team.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to PRD-WEB-01 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.673277735710144
+        },
+        {
+          "rank": 2,
+          "id": 2054,
+          "title": "Unpatched critical CVE on PRD-WEB-02",
+          "description": "[TCK-78529] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-02. It started earlier today and has not self-resolved.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to PRD-WEB-02 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6687964200973511
+        },
+        {
+          "rank": 3,
+          "id": 3866,
+          "title": "Unpatched critical CVE on PRD-WEB-01",
+          "description": "[TCK-27397] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-01. It started earlier today and has not self-resolved.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to PRD-WEB-01 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6681889295578003
+        },
+        {
+          "rank": 4,
+          "id": 3739,
+          "title": "Unpatched critical CVE on PRD-WEB-02",
+          "description": "[TCK-85310] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-02. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to PRD-WEB-02 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6647026538848877
+        },
+        {
+          "rank": 5,
+          "id": 3583,
+          "title": "Unpatched critical CVE on PRD-CACHE-03",
+          "description": "[TCK-62509] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-CACHE-03. It started earlier today and has not self-resolved.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to PRD-CACHE-03 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6574567556381226
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nApply the vendor security patch to the affected server during an emergency change window, and then rescan the server to confirm the vulnerability has been remediated. \n\n*Note: While the retrieved examples involve unpatched vulnerabilities on specific servers rather than Internet Explorer explicitly, the resolution steps of applying vendor security patches and rescanning closely match. A human agent should double-check the specific remediation steps for Internet Explorer.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "9b5b76fd645eaf60e00024997bba294e0d7ccf41c4f80a1228f5db6c2150f798",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.245,
+      "generated_at": "2026-10-21T14:40:14"
+    },
+    {
+      "ticket_id": "695",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Wrong email address",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.719313383102417,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2146,
+          "title": "Suspicious login attempts on account s.joshi",
+          "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.719313383102417
+        },
+        {
+          "rank": 2,
+          "id": 3026,
+          "title": "Phishing email reported by p.menon",
+          "description": "[TCK-21239] Ticket raised because user p.menon reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.7140547037124634
+        },
+        {
+          "rank": 3,
+          "id": 3719,
+          "title": "Role change access review for n.gupta",
+          "description": "[TCK-34817] Ticket raised because user n.gupta has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for n.gupta, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.710556149482727
+        },
+        {
+          "rank": 4,
+          "id": 1340,
+          "title": "Role change access review for t.rao",
+          "description": "[TCK-57223] Support desk logged the following: user t.rao has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. Awaiting assignment to the right team.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for t.rao, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7099814414978027
+        },
+        {
+          "rank": 5,
+          "id": 2604,
+          "title": "Role change access review for j.singh",
+          "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7096415758132935
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the examples match the issue described in the new ticket (wrong email address). The retrieved tickets only cover security incidents (suspicious logins, phishing) and access management/role changes. \n\n**Recommended Action:** Because the retrieved examples do not match this ticket, a human agent should double-check and handle this request manually.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "191273c58b9e2befb21c52f8d3ad5e0d08dfba13bd3807a0c884c3cd5a0ab1d5",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.186,
+      "generated_at": "2026-10-21T14:40:19"
+    },
+    {
+      "ticket_id": "711",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - Remove File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])",
+      "cascade_category": "Storage",
+      "tier": 2,
+      "top_similarity": 0.7548255920410156,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7548255920410156
+        },
+        {
+          "rank": 2,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7466311454772949
+        },
+        {
+          "rank": 3,
+          "id": 3547,
+          "title": "Permissions incorrect on \\\\fs01\\hr",
+          "description": "[TCK-61796] Ticket raised because several Noida Tech Park users report they can see the folder \\\\fs01\\hr but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs01\\hr for the relevant Noida Tech Park group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7394373416900635
+        },
+        {
+          "rank": 4,
+          "id": 63,
+          "title": "Snapshot/backup restore request for \\\\fs02\\marketing",
+          "description": "[TCK-32707] Ticket raised because a user accidentally deleted a folder on \\\\fs02\\marketing and needs yesterday's version restored. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Restored the requested folder on \\\\fs02\\marketing from the previous night's snapshot and confirmed file integrity with the requesting user.",
+          "similarity": 0.7350682020187378
+        },
+        {
+          "rank": 5,
+          "id": 1547,
+          "title": "Permissions incorrect on \\\\fs02\\marketing",
+          "description": "[TCK-38637] Ticket raised because several Kolkata Branch users report they can see the folder \\\\fs02\\marketing but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\marketing for the relevant Kolkata Branch group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7347015142440796
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the new ticket is missing specific details regarding the file share path and user group. However, similar past file share access and permission issues were resolved by correcting the inherited NTFS permissions for the relevant user group on the specified file share and re-propagating the ACLs. \n\n*Note: The retrieved examples do not fully match the new ticket due to missing ticket details; a human agent should double-check the specific file share path and user group.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "2d56485f2bdbeef6073c4a1aad5992b739c6c26af3f7a3f86351b950a0a4cdfa",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.419,
+      "generated_at": "2026-10-21T14:40:25"
+    },
+    {
+      "ticket_id": "5255",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:  Please. provide me with assess to Server Link: GROUP (J:) with all relevant Folders and Dates. The same assess as by [NAME] ([COMPANY]. [LOCATION])     Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+      "cascade_category": "Storage",
+      "tier": 1,
+      "top_similarity": 0.7560021877288818,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7560021877288818
+        },
+        {
+          "rank": 2,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.751718282699585
+        },
+        {
+          "rank": 3,
+          "id": 2370,
+          "title": "File share \\\\fs02\\shared inaccessible",
+          "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7500286102294922
+        },
+        {
+          "rank": 4,
+          "id": 880,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-10572] User m.iyer reports that several Pune Branch users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Kindly look into this at the earliest.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Pune Branch group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7435030937194824
+        },
+        {
+          "rank": 5,
+          "id": 2367,
+          "title": "File share \\\\fs04\\legal inaccessible",
+          "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7432210445404053
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the resolutions deal with correcting NTFS permissions or restarting share services for existing folder access issues, rather than granting new file share access (Read/Write) to an individual user as requested in this new ticket. \n\n**Suggested Resolution:**\nVerify the user's requirements against the specified file share, grant the requested Read/Write permissions matching the reference user, and apply/re-propagate the appropriate NTFS permissions and ACLs for the target group and folders.\n\n*Note: The retrieved examples do not fully match this request (they address permission errors and service crashes rather than new user provisioning), so a human agent should double-check these steps.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "6b74d67c3b33353830ece1636616cd20e6336a76646c8cc94f3e4a6366a2a808",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.458,
+      "generated_at": "2026-10-21T14:40:30"
+    },
+    {
+      "ticket_id": "1274",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - Need to have Extech RHT10 Software Installed",
+      "cascade_category": "Application",
+      "tier": 2,
+      "top_similarity": 0.6850007176399231,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 1733,
+          "title": "Ticketing System integration with Zoom failing",
+          "description": "[TCK-99417] Ticket raised because the Ticketing System integration with Zoom has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The Zoom API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+          "similarity": 0.6850007176399231
+        },
+        {
+          "rank": 2,
+          "id": 3009,
+          "title": "Cannot mount \\\\fs02\\marketing on new machines",
+          "description": "[TCK-15852] Ticket raised because recently provisioned machines fail to map the file share \\\\fs02\\marketing, though existing machines connect fine. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully.",
+          "similarity": 0.6822201609611511
+        },
+        {
+          "rank": 3,
+          "id": 3876,
+          "title": "Ticketing System throwing errors after latest deploy",
+          "description": "[TCK-98029] Reported by the Ahmedabad Office team: immediately after the most recent Ticketing System release, users are seeing unexpected errors on pages that worked yesterday. Please investigate and resolve.",
+          "category": "Application",
+          "resolution": "A missed database migration accompanied the Ticketing System deploy; ran the pending migration and redeployed, and the post-release errors cleared.",
+          "similarity": 0.6804925799369812
+        },
+        {
+          "rank": 4,
+          "id": 508,
+          "title": "Cannot mount \\\\fs02\\marketing on new machines",
+          "description": "[TCK-82468] Ticket raised because recently provisioned machines fail to map the file share \\\\fs02\\marketing, though existing machines connect fine. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully.",
+          "similarity": 0.6783539056777954
+        },
+        {
+          "rank": 5,
+          "id": 309,
+          "title": "Ticketing System throwing errors after latest deploy",
+          "description": "[TCK-60413] Issue summary: immediately after the most recent Ticketing System release, users are seeing unexpected errors on pages that worked yesterday. It started earlier today and has not self-resolved.",
+          "category": "Application",
+          "resolution": "A missed database migration accompanied the Ticketing System deploy; ran the pending migration and redeployed, and the post-release errors cleared.",
+          "similarity": 0.677823543548584
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the historical resolutions address installing the Extech RHT10 Software (the past examples only cover Zoom integrations, file share mounting issues, and Ticketing System database migrations). \n\n**Suggested Action:** Because the retrieved examples do not match this request, a human agent should double-check and manually handle the software installation for the Extech RHT10 device.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "709f5f0c951efe42723d7c51f6fb8df29c356c1be5a5aad7ec1a489ca3847729",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.29,
+      "generated_at": "2026-10-21T14:40:35"
+    },
+    {
+      "ticket_id": "865",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "[PASSWORD] - New Support Ticket received  - Reset Password",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.7575826644897461,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3251,
+          "title": "Password reset for m.iyer",
+          "description": "[TCK-66755] Ticket raised because user m.iyer is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified the identity of m.iyer, reset the password, and required a change plus MFA re-registration at next login.",
+          "similarity": 0.7575826644897461
+        },
+        {
+          "rank": 2,
+          "id": 3958,
+          "title": "Password reset for a.patel",
+          "description": "[TCK-24708] Ticket raised because user a.patel is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified the identity of a.patel, reset the password, and required a change plus MFA re-registration at next login.",
+          "similarity": 0.7436448335647583
+        },
+        {
+          "rank": 3,
+          "id": 3737,
+          "title": "Password reset for m.chatterjee",
+          "description": "[TCK-43286] Ticket raised because user m.chatterjee is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified the identity of m.chatterjee, reset the password, and required a change plus MFA re-registration at next login.",
+          "similarity": 0.7425268888473511
+        },
+        {
+          "rank": 4,
+          "id": 2158,
+          "title": "Password reset for p.reddy",
+          "description": "[TCK-66644] Ticket raised because user p.reddy is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified the identity of p.reddy, reset the password, and required a change plus MFA re-registration at next login.",
+          "similarity": 0.7394831776618958
+        },
+        {
+          "rank": 5,
+          "id": 132,
+          "title": "Password reset for m.chatterjee",
+          "description": "[TCK-81864] Ticket raised because user m.chatterjee is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified the identity of m.chatterjee, reset the password, and required a change plus MFA re-registration at next login.",
+          "similarity": 0.7389802932739258
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nVerify the identity of the user requesting the password reset, reset their corporate account password, and configure the settings to require a password change along with MFA re-registration at their next login. \n\n*Note:* The retrieved examples closely match the standard password reset procedure, but because the new ticket description lacks a specific username, a human agent should double-check the user's identity and details before proceeding.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "8b93463c489fc51f33e6df6d7c85f3e7faec9a43efd581f9ea2a52b048bc5a62",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.21,
+      "generated_at": "2026-10-21T14:40:40"
+    },
+    {
+      "ticket_id": "1307",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to you  - okta mobile",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.7427196502685547,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2359,
+          "title": "Ticketing System integration with Okta failing",
+          "description": "[TCK-84949] Ticket raised because the Ticketing System integration with Okta has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The Okta API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+          "similarity": 0.7427196502685547
+        },
+        {
+          "rank": 2,
+          "id": 1714,
+          "title": "MFA reset request for v.nair",
+          "description": "[TCK-50975] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.722800612449646
+        },
+        {
+          "rank": 3,
+          "id": 320,
+          "title": "MFA reset request for v.nair",
+          "description": "[TCK-65306] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.7211830615997314
+        },
+        {
+          "rank": 4,
+          "id": 1037,
+          "title": "MFA reset request for p.reddy",
+          "description": "[TCK-53659] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.7172712087631226
+        },
+        {
+          "rank": 5,
+          "id": 3429,
+          "title": "MFA reset request for p.reddy",
+          "description": "[TCK-23574] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.7138953804969788
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the description for the new ticket is empty, but it references \"okta mobile.\" The retrieved examples deal with Okta API credential expiration and MFA resets, but none specifically address Okta Mobile application issues. \n\n**Suggested Resolution:**\nVerify the user's identity out of band, check if they need an MFA reset (similar to Past Tickets #2–#5 by verifying the user, resetting their MFA enrollment, and guiding them through registering a new authenticator device), or check for Okta integration/credential issues if it is a system-level problem (similar to Past Ticket #1).\n\n*Note: The retrieved examples do not fully match the new ticket's lack of a specific description, so a human agent should double-check the details.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "11dd7517cedeebfc99ba472574c509decdd15bccc012f54b22e87fac583c46af",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.429,
+      "generated_at": "2026-10-21T14:40:46"
+    },
+    {
+      "ticket_id": "788",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - [NAME] AD account keeps getting disabled",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.7109612822532654,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 238,
+          "title": "Unauthorized privilege escalation detected for v.nair",
+          "description": "[TCK-72438] Ticket raised because audit logs show account v.nair was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Revoked the unauthorized admin rights from v.nair, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+          "similarity": 0.7109612822532654
+        },
+        {
+          "rank": 2,
+          "id": 946,
+          "title": "Unauthorized privilege escalation detected for d.mehta",
+          "description": "[TCK-78664] Ticket raised because audit logs show account d.mehta was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Revoked the unauthorized admin rights from d.mehta, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+          "similarity": 0.7072190046310425
+        },
+        {
+          "rank": 3,
+          "id": 1015,
+          "title": "Unauthorized privilege escalation detected for a.kulkarni",
+          "description": "[TCK-97539] Ticket raised because audit logs show account a.kulkarni was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Revoked the unauthorized admin rights from a.kulkarni, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+          "similarity": 0.7048736810684204
+        },
+        {
+          "rank": 4,
+          "id": 2398,
+          "title": "Reports in Billing Portal won't generate",
+          "description": "[TCK-23848] Ticket raised because users trying to run reports in Billing Portal get stuck loading forever and eventually see a timeout error about the underlying data source. This is impacting daily work.",
+          "category": "Database",
+          "resolution": "Found the report queries in Billing Portal were timing out against audit_mysql due to a missing index; added the index and reports now generate within seconds.",
+          "similarity": 0.6924182772636414
+        },
+        {
+          "rank": 5,
+          "id": 2675,
+          "title": "Role change access review for s.khan",
+          "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.690831184387207
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the examples address an Active Directory account repeatedly getting disabled (the past examples cover unauthorized privilege escalation, report timeouts, and role change access reviews). \n\n**Suggested Resolution:**\nBecause the retrieved past tickets do not contain a resolution for an AD account repeatedly getting disabled, please manually investigate the user's account lockout logs and associated group policies to identify the root cause.\n\n*Note: The retrieved examples do not closely match this new ticket, so a human agent should double-check and handle accordingly.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "54975050d8cc839ab4d43f2fbbae95d7f68531d7adaf38abbde684b61baf0da8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.331,
+      "generated_at": "2026-10-21T14:40:51"
+    },
+    {
+      "ticket_id": "8406",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "Basis User - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])Service Request: Basis User     Create Windows account for internal user  [USERNAME] [NAME] ([COMPANY]. [LOCATION])     Firstname:  [NAME]  Lastname:  [NAME]  Cost Center:  174440  Company:  [COMPANY] [ADDRESS] GmbH  Department:  [ADDRESS]  ZIP:  [ADDRESS]  City:  [ADDRESS]  Country:  Germany  Office:       Important: Please set the EA10 to the following value: 13306 (leave blank. when empty)  Please create Exchange and Skype account.  The user needs at least the following access permissions:  (RW) H:/%username%  (RO) J:/Auftrag  (RW) J:/Info  (RW) J:/Transfer  (RO) J:/Vorlagen  Access to [COMPANY] intranet  Access to [SOFTWARE] ([SERVER])  Requestor:  [NAME] ([COMPANY]. [LOCATION])     Desired date:  Sep  3 2018 12:00AM     Additional information:",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.6723923087120056,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2622,
+          "title": "Elevated access request for m.iyer",
+          "description": "[TCK-79595] Support desk logged the following: user m.iyer has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+          "category": "Access Management",
+          "resolution": "Granted m.iyer time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6723923087120056
+        },
+        {
+          "rank": 2,
+          "id": 197,
+          "title": "Elevated access request for r.desai",
+          "description": "[TCK-60689] We are observing that user r.desai has requested temporary admin access to Ticketing System to complete a project task. Requesting priority attention from the relevant team.",
+          "category": "Access Management",
+          "resolution": "Granted r.desai time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6623932719230652
+        },
+        {
+          "rank": 3,
+          "id": 2303,
+          "title": "Elevated access request for j.singh",
+          "description": "[TCK-66436] Ticket raised because user j.singh has requested temporary admin access to Ticketing System to complete a project task. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted j.singh time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.662360668182373
+        },
+        {
+          "rank": 4,
+          "id": 3035,
+          "title": "Elevated access request for k.verma",
+          "description": "[TCK-44240] Support desk logged the following: user k.verma has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+          "category": "Access Management",
+          "resolution": "Granted k.verma time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6616809368133545
+        },
+        {
+          "rank": 5,
+          "id": 1473,
+          "title": "Elevated access request for r.sharma",
+          "description": "[TCK-22134] User r.sharma reports that user r.sharma has requested temporary admin access to Payroll to complete a project task. Kindly look into this at the earliest.",
+          "category": "Access Management",
+          "resolution": "Granted r.sharma time-boxed elevated access to Payroll via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6563267707824707
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, all examples deal with granting time-boxed elevated access to specific internal systems via a privileged-access workflow. However, the new ticket is a service request to create a new Windows account along with Exchange, Skype, intranet access, software access, and specific network share permissions (H:/ and J:/ drives), which is completely different from the past tickets. \n\nA human agent should double-check and process this Windows account and network/software access request manually, as the retrieved examples do not match this scenario.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "c32f1cc3ee4e70551c711b57bac676d1db3acbc51a54beb65e63418592a15a46",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 2.662,
+      "generated_at": "2026-10-21T14:40:58"
+    },
+    {
+      "ticket_id": "1212",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to you  - Zugriff eMail Postfach",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.7035411596298218,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2146,
+          "title": "Suspicious login attempts on account s.joshi",
+          "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.7035411596298218
+        },
+        {
+          "rank": 2,
+          "id": 3831,
+          "title": "Phishing email reported by s.khan",
+          "description": "[TCK-22396] Ticket raised because user s.khan reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.7000380754470825
+        },
+        {
+          "rank": 3,
+          "id": 1037,
+          "title": "MFA reset request for p.reddy",
+          "description": "[TCK-53659] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.6976150274276733
+        },
+        {
+          "rank": 4,
+          "id": 1893,
+          "title": "Phishing email reported by n.gupta",
+          "description": "[TCK-42269] Ticket raised because user n.gupta reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.6966630220413208
+        },
+        {
+          "rank": 5,
+          "id": 3709,
+          "title": "Phishing email reported by a.kulkarni",
+          "description": "[TCK-63547] Ticket raised because user a.kulkarni reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.6938705444335938
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the new ticket contains very little description (\"Zugriff eMail Postfach\") and does not closely match the specific scenarios (suspicious logins, phishing emails, or MFA resets) found in the history. \n\n**Suggested Resolution:**\nSince the exact nature of the email mailbox access issue is unspecified, a human agent should review the ticket details to determine the specific problem (such as a potential credential compromise, phishing report, or access/MFA issue) before applying actions like locking the account, resetting credentials/MFA, or checking mail-flow rules.\n\n*Note: The retrieved examples do not closely match the new ticket; a human agent should double-check.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "24f838e70b2dcba7c1bb88de3a7b4be9794bc0d0075cfca14928d799a2e7fbb8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.767,
+      "generated_at": "2026-10-21T14:41:04"
+    },
+    {
+      "ticket_id": "979",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - New account",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.7102328538894653,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2146,
+          "title": "Suspicious login attempts on account s.joshi",
+          "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.7102328538894653
+        },
+        {
+          "rank": 2,
+          "id": 3857,
+          "title": "Suspicious login attempts on account r.desai",
+          "description": "[TCK-25267] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.6929567456245422
+        },
+        {
+          "rank": 3,
+          "id": 503,
+          "title": "Suspicious login attempts on account r.desai",
+          "description": "[TCK-85427] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.6895781755447388
+        },
+        {
+          "rank": 4,
+          "id": 287,
+          "title": "Suspicious login attempts on account p.reddy",
+          "description": "[TCK-15783] Ticket raised because multiple failed login attempts followed by a success on account p.reddy from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account p.reddy, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.685338020324707
+        },
+        {
+          "rank": 5,
+          "id": 1120,
+          "title": "Suspicious login attempts on account d.mehta",
+          "description": "[TCK-17700] Ticket raised because multiple failed login attempts followed by a success on account d.mehta from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account d.mehta, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.6850346922874451
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the new support ticket lacks specific details regarding an account name or the nature of the issue (such as suspicious login attempts). However, if this ticket pertains to a compromised or suspicious account access issue, the standard resolution steps from the past tickets are to lock the affected account, force a credential reset and MFA re-enrolment, and confirm from session logs that no data exfiltration occurred. \n\n*Note:* The retrieved examples do not fully match the new ticket because the new ticket description is blank and does not specify an account or problem, so a human agent should double-check and gather ticket details before proceeding.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "74a6f0c5a545a941311759eb9b11bd6f475b0fc5015803cfffe6379091aa8b69",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 2.118,
+      "generated_at": "2026-10-21T14:41:10"
+    },
+    {
+      "ticket_id": "1068",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to you  - Leaving Employee - [TICKET ID] - [NAME] (AMA. [LOCATION])",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.7468764781951904,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3498,
+          "title": "Offboarding access revocation for s.khan",
+          "description": "[TCK-51618] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+          "similarity": 0.7468764781951904
+        },
+        {
+          "rank": 2,
+          "id": 269,
+          "title": "Offboarding access revocation for s.khan",
+          "description": "[TCK-33029] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+          "similarity": 0.7378958463668823
+        },
+        {
+          "rank": 3,
+          "id": 659,
+          "title": "Offboarding access revocation for s.khan",
+          "description": "[TCK-13133] Ticket raised because leaver s.khan has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Disabled the s.khan account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+          "similarity": 0.7364937663078308
+        },
+        {
+          "rank": 4,
+          "id": 1144,
+          "title": "Offboarding access revocation for s.joshi",
+          "description": "[TCK-81615] Ticket raised because leaver s.joshi has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Disabled the s.joshi account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+          "similarity": 0.7356403470039368
+        },
+        {
+          "rank": 5,
+          "id": 3512,
+          "title": "Offboarding access revocation for v.nair",
+          "description": "[TCK-93491] Ticket raised because leaver v.nair has left the company and all their access needs to be revoked immediately. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Disabled the v.nair account, revoked all group memberships and tokens, and transferred owned resources to their manager.",
+          "similarity": 0.7232423424720764
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nDisable the leaving employee's account, revoke all group memberships and tokens, and transfer their owned resources to their manager. \n\n*Note: The retrieved examples closely match this leaving employee offboarding request.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "3f2a2957e052a99213bdaf2083702193241386f5cdd9bbfbf05973e19360f5ce",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.098,
+      "generated_at": "2026-10-21T14:41:15"
+    },
+    {
+      "ticket_id": "947",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Citrix - [TICKET ID] - [NAME] ([COMPANY] Inc.. [LOCATION])",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.7155478000640869,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3852,
+          "title": "Role change access review for p.reddy",
+          "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7155478000640869
+        },
+        {
+          "rank": 2,
+          "id": 3586,
+          "title": "Group membership change for p.menon",
+          "description": "[TCK-80691] Ticket raised because manager requests that p.menon be added to the Chennai Support finance security group. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Added p.menon to the requested Chennai Support security group after manager approval and verified the new permissions took effect.",
+          "similarity": 0.7089368104934692
+        },
+        {
+          "rank": 3,
+          "id": 2649,
+          "title": "Role change access review for k.verma",
+          "description": "[TCK-90664] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7082396149635315
+        },
+        {
+          "rank": 4,
+          "id": 2604,
+          "title": "Role change access review for j.singh",
+          "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7073951363563538
+        },
+        {
+          "rank": 5,
+          "id": 1185,
+          "title": "Role change access review for k.verma",
+          "description": "[TCK-57628] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7050094604492188
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nReview the user's current entitlements, remove any obsolete permissions from their prior role, and assign the correct role for their current team/access requirements.\n\n*Note:* The retrieved past tickets address general role change access reviews, but the new ticket description is blank regarding specific user details or Citrix-related access needs. Therefore, a human agent should double-check the ticket and verify the appropriate steps.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "5daadce760b5b9cb23b69a6d516f86a9c888e56afcc71a935474c310e1ac4e85",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.411,
+      "generated_at": "2026-10-21T14:41:20"
+    },
+    {
+      "ticket_id": "7983",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "File Share Access - [TICKET ID] - [USERNAME]. [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:    Groups (J:/)     J:/CH-MAP   J:/CH-MAZ   J:/CH-ZRST   J:/CH-ÖFZ   J:/CH-ChZugang           Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:  Standort:[LOCATION]Container[LOCATION]1OG Raum11",
+      "cascade_category": "Storage",
+      "tier": 1,
+      "top_similarity": 0.7505305409431458,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7505305409431458
+        },
+        {
+          "rank": 2,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.749982476234436
+        },
+        {
+          "rank": 3,
+          "id": 2370,
+          "title": "File share \\\\fs02\\shared inaccessible",
+          "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7464916706085205
+        },
+        {
+          "rank": 4,
+          "id": 581,
+          "title": "File share \\\\fs01\\operations inaccessible",
+          "description": "[TCK-37155] Ticket raised because users cannot access the network file share \\\\fs01\\operations; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7413637638092041
+        },
+        {
+          "rank": 5,
+          "id": 2367,
+          "title": "File share \\\\fs04\\legal inaccessible",
+          "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7352800369262695
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the examples deal with fixing incorrect NTFS permissions or restarting crashed share services, whereas the new ticket is a service request to grant new Read/Write access to multiple specific file shares (`J:/CH-MAP`, `J:/CH-MAZ`, `J:/CH-ZRST`, `J:/CH-ÖFZ`, and `J:/CH-ChZugang`) for a user. \n\n*Note: The retrieved examples do not closely match this service request, so a human agent should double-check and process the appropriate group permission assignments manually.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "2b972ece2a6774d5731243c3ba9d0fe6799650b25e5e7aab05bbfaf563dc01b8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.719,
+      "generated_at": "2026-10-21T14:41:26"
+    },
+    {
+      "ticket_id": "673",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.7315714359283447,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2604,
+          "title": "Role change access review for j.singh",
+          "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7315714359283447
+        },
+        {
+          "rank": 2,
+          "id": 3852,
+          "title": "Role change access review for p.reddy",
+          "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7250293493270874
+        },
+        {
+          "rank": 3,
+          "id": 2675,
+          "title": "Role change access review for s.khan",
+          "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7182322144508362
+        },
+        {
+          "rank": 4,
+          "id": 2774,
+          "title": "Role change access review for a.kulkarni",
+          "description": "[TCK-72742] Ticket raised because user a.kulkarni has moved teams and still holds permissions from their previous HR Self-Service role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for a.kulkarni, removed the obsolete HR Self-Service permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7137262225151062
+        },
+        {
+          "rank": 5,
+          "id": 3053,
+          "title": "Role change access review for p.reddy",
+          "description": "[TCK-42485] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.7134464979171753
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, the available examples pertain to role change access reviews (reconciling permissions after moving teams), whereas the new ticket is titled \"File Share Access\" with no descriptive details provided. \n\nTherefore, the retrieved examples do not fully match the new ticket, and we recommend that a human agent double-check the specific file share requirements before proceeding.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "416fe04690ffaa15c8f29ead6c0cd6e38e1381c8cdde41d6bab134daced2cbf8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.211,
+      "generated_at": "2026-10-21T14:41:31"
+    },
+    {
+      "ticket_id": "1336",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - unable to log into skype",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.703245997428894,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 3908,
+          "title": "SSO access failing for s.joshi to AWS",
+          "description": "[TCK-31764] Ticket raised because user s.joshi cannot reach the AWS application through single sign-on and is bounced back to the login screen. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Found s.joshi was missing from the AWS SSO assignment group; added them to the group and confirmed federated login to AWS succeeded.",
+          "similarity": 0.703245997428894
+        },
+        {
+          "rank": 2,
+          "id": 2411,
+          "title": "Login broken on Ticketing System",
+          "description": "[TCK-78583] Monitoring alerted us that no user can log in to Ticketing System; the login page accepts credentials then redirects back to itself. Escalating for investigation.",
+          "category": "Application",
+          "resolution": "The Ticketing System session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login.",
+          "similarity": 0.6951373815536499
+        },
+        {
+          "rank": 3,
+          "id": 632,
+          "title": "Login broken on Billing Portal",
+          "description": "[TCK-18561] Ticket raised because no user can log in to Billing Portal; the login page accepts credentials then redirects back to itself. This is impacting daily work.",
+          "category": "Application",
+          "resolution": "The Billing Portal session cookie domain was misconfigured after a deploy; corrected the cookie settings and cleared the CDN cache to fix login.",
+          "similarity": 0.6903340816497803
+        },
+        {
+          "rank": 4,
+          "id": 320,
+          "title": "MFA reset request for v.nair",
+          "description": "[TCK-65306] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.6888642311096191
+        },
+        {
+          "rank": 5,
+          "id": 1714,
+          "title": "MFA reset request for v.nair",
+          "description": "[TCK-50975] Ticket raised because user v.nair lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified v.nair out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.687577486038208
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, none of the examples address logging into Skype or application-specific authentication issues matching this request (they cover AWS SSO group assignment, session cookie domain misconfigurations for internal tools, and MFA resets). \n\n*Note: The retrieved examples do not closely match the new ticket regarding Skype login; a human agent should double-check and investigate the appropriate troubleshooting steps for Skype access.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "b45b9255c801e89794e9bdc80cdac135ebcc98600bc1c44b85964aaeed50065b",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.059,
+      "generated_at": "2026-10-21T14:41:36"
+    },
+    {
+      "ticket_id": "1023",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - New Email Address",
+      "cascade_category": "Access Management",
+      "tier": 2,
+      "top_similarity": 0.679402232170105,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2146,
+          "title": "Suspicious login attempts on account s.joshi",
+          "description": "[TCK-50793] Ticket raised because multiple failed login attempts followed by a success on account s.joshi from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account s.joshi, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.679402232170105
+        },
+        {
+          "rank": 2,
+          "id": 3586,
+          "title": "Group membership change for p.menon",
+          "description": "[TCK-80691] Ticket raised because manager requests that p.menon be added to the Chennai Support finance security group. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Added p.menon to the requested Chennai Support security group after manager approval and verified the new permissions took effect.",
+          "similarity": 0.6770777702331543
+        },
+        {
+          "rank": 3,
+          "id": 2254,
+          "title": "Phishing email reported by k.verma",
+          "description": "[TCK-34667] Ticket raised because user k.verma reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.672876238822937
+        },
+        {
+          "rank": 4,
+          "id": 1893,
+          "title": "Phishing email reported by n.gupta",
+          "description": "[TCK-42269] Ticket raised because user n.gupta reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.6718666553497314
+        },
+        {
+          "rank": 5,
+          "id": 3709,
+          "title": "Phishing email reported by a.kulkarni",
+          "description": "[TCK-63547] Ticket raised because user a.kulkarni reported a phishing email with a credential-harvesting link that several staff may have clicked. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Removed the phishing message from all mailboxes via mail-flow rules, blocked the sender domain, and reset passwords for affected users.",
+          "similarity": 0.6701997518539429
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, there are no examples that match the request for a \"New Email Address\" (the retrieved tickets deal with suspicious logins, group membership changes, and phishing emails). \n\nTherefore, a human agent should double-check and handle this request, as no matching resolution steps are available in the past ticket history.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "94ee2ed5825c6b1b44e043e5518bf8787221e9c85ab3a44773edcbff8a9a23e4",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.188,
+      "generated_at": "2026-10-21T14:41:42"
+    },
+    {
+      "ticket_id": "4044",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "Initiated by [COMPANY][LOCATION]- Vulnerable Active X on [SERVER]8",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.6918987035751343,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 829,
+          "title": "Unpatched critical CVE on K8S-NODE-15",
+          "description": "[TCK-89505] Flagged during routine checks: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Please confirm root cause and next steps.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6918987035751343
+        },
+        {
+          "rank": 2,
+          "id": 1479,
+          "title": "Unpatched critical CVE on VM-BATCH-10",
+          "description": "[TCK-14048] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on VM-BATCH-10. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to VM-BATCH-10 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6861879825592041
+        },
+        {
+          "rank": 3,
+          "id": 2903,
+          "title": "Unpatched critical CVE on K8S-NODE-15",
+          "description": "[TCK-22170] Support desk logged the following: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Awaiting assignment to the right team.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6852834224700928
+        },
+        {
+          "rank": 4,
+          "id": 330,
+          "title": "Unpatched critical CVE on K8S-NODE-15",
+          "description": "[TCK-79817] Reported by the Delhi Sales team: vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-15. Please investigate and resolve.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to K8S-NODE-15 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6848456263542175
+        },
+        {
+          "rank": 5,
+          "id": 167,
+          "title": "Unpatched critical CVE on K8S-NODE-14",
+          "description": "[TCK-17336] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on K8S-NODE-14. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Applied the vendor security patch to K8S-NODE-14 during an emergency change window and rescanned to confirm the CVE was remediated.",
+          "similarity": 0.6845297813415527
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nApply the appropriate vendor security patch to the affected server during an emergency change window, and then rescan the system to confirm that the vulnerability has been remediated. \n\n*Note: The retrieved examples address unpatched CVEs on specific nodes rather than explicitly mentioning \"Active X,\" so a human agent should double-check the exact steps for this specific vulnerability.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "f079b36c5cdea3a6baae0f58243d1b7c329a92e4d231df58c24ed2dfb9124bb1",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.211,
+      "generated_at": "2026-10-21T14:41:47"
+    },
+    {
+      "ticket_id": "4306",
+      "source_category": "Active Directory",
+      "mapped_category": "Access Management",
+      "ticket_text": "Basis User - [TICKET ID] -Service Request: Basis User     Create Windows account for internal user       Firstname:  [NAME]  Lastname:  [NAME]  Cost Center:  44251  Company:  [COMPANY]  Department:  [COMPANY]OP  Street:  [ADDRESS]  ZIP:  [ADDRESS]  City:  [ADDRESS]  Country:  [ADDRESS]  Office:       Important: Please set the EA10 to the following value: [EMAIL] (leave blank. when empty)  Please create Exchange and Skype account.  The user needs at least the following access permissions:  Access to [SOFTWARE] ([SERVER])  Requestor:  [NAME] ([COMPANY]. [LOCATION])     Desired date:  Sep 19 2018  7:00AM     Additional information:   Please setup[LOCATION]user starts today.  Old ticket [TICKET ID].",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.6721967458724976,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 2622,
+          "title": "Elevated access request for m.iyer",
+          "description": "[TCK-79595] Support desk logged the following: user m.iyer has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+          "category": "Access Management",
+          "resolution": "Granted m.iyer time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6721967458724976
+        },
+        {
+          "rank": 2,
+          "id": 3035,
+          "title": "Elevated access request for k.verma",
+          "description": "[TCK-44240] Support desk logged the following: user k.verma has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+          "category": "Access Management",
+          "resolution": "Granted k.verma time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6603357791900635
+        },
+        {
+          "rank": 3,
+          "id": 197,
+          "title": "Elevated access request for r.desai",
+          "description": "[TCK-60689] We are observing that user r.desai has requested temporary admin access to Ticketing System to complete a project task. Requesting priority attention from the relevant team.",
+          "category": "Access Management",
+          "resolution": "Granted r.desai time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6595459580421448
+        },
+        {
+          "rank": 4,
+          "id": 2303,
+          "title": "Elevated access request for j.singh",
+          "description": "[TCK-66436] Ticket raised because user j.singh has requested temporary admin access to Ticketing System to complete a project task. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted j.singh time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+          "similarity": 0.6558958292007446
+        },
+        {
+          "rank": 5,
+          "id": 2675,
+          "title": "Role change access review for s.khan",
+          "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+          "similarity": 0.6518931984901428
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the provided examples involve elevated access and role change requests rather than creating a new Windows account, Exchange/Skype account, or granting software access as requested in this ticket. \n\n**Note:** The retrieved examples do not fully match the new ticket; please recommend that a human agent double-check and process the account creation and software permissions manually.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "45a01d05eadbb03775efcbd44e6bd12e798a6af17e0a0f3f62b78fbe4cc78e6f",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.647,
+      "generated_at": "2026-10-21T14:41:52"
+    },
+    {
+      "ticket_id": "931",
+      "source_category": "Software",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - New Support Ticket received  - McAfee excepetion",
+      "cascade_category": "Security",
+      "tier": 2,
+      "top_similarity": 0.7122459411621094,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 287,
+          "title": "Suspicious login attempts on account p.reddy",
+          "description": "[TCK-15783] Ticket raised because multiple failed login attempts followed by a success on account p.reddy from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account p.reddy, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.7122459411621094
+        },
+        {
+          "rank": 2,
+          "id": 1037,
+          "title": "MFA reset request for p.reddy",
+          "description": "[TCK-53659] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.704645037651062
+        },
+        {
+          "rank": 3,
+          "id": 3429,
+          "title": "MFA reset request for p.reddy",
+          "description": "[TCK-23574] Ticket raised because user p.reddy lost their phone and cannot complete multi-factor authentication to sign in. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Verified p.reddy out of band, reset their MFA enrolment, and guided them through registering a new authenticator device.",
+          "similarity": 0.7011494040489197
+        },
+        {
+          "rank": 4,
+          "id": 3857,
+          "title": "Suspicious login attempts on account r.desai",
+          "description": "[TCK-25267] Ticket raised because multiple failed login attempts followed by a success on account r.desai from an unfamiliar country. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Locked account r.desai, forced a credential reset and MFA re-enrolment, and confirmed no data exfiltration occurred in the session logs.",
+          "similarity": 0.6945686340332031
+        },
+        {
+          "rank": 5,
+          "id": 502,
+          "title": "Brute-force attack against Ticketing System login",
+          "description": "[TCK-53093] Ticket raised because monitoring shows a high-volume password-guessing attack hammering the Ticketing System login endpoint from many IP addresses. This is impacting daily work.",
+          "category": "Security",
+          "resolution": "Enabled rate limiting and account lockout on the Ticketing System login endpoint, added the attacking ranges to a block list, and turned on CAPTCHA after repeated failures.",
+          "similarity": 0.6941635012626648
+        }
+      ],
+      "draft": "Based on the retrieved past tickets, there are no examples matching a \"McAfee exception\" request; the past tickets only address account security incidents (suspicious logins, MFA resets, and brute-force attacks). \n\nBecause the retrieved examples do not match the new ticket, a human agent should double-check and investigate the appropriate procedure for handling McAfee exceptions.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "931733297f4e60544f9f9eb91db46bd97b16a10779c14d427f99719f85790bd8",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.435,
+      "generated_at": "2026-10-21T14:41:58"
+    },
+    {
+      "ticket_id": "8966",
+      "source_category": "Fileservice",
+      "mapped_category": "Access Management",
+      "ticket_text": "File Share Access - [TICKET ID] - [USERNAME]. Alissa ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. Alissa ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RO) Read only  File Share:      j:/PDW/TargetDB/       Normal   0               false   false   false      DE   EN-US   AR-SA                                             MicrosoftInternetExplorer4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+      "cascade_category": "Storage",
+      "tier": 1,
+      "top_similarity": 0.7520563006401062,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 662,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7520563006401062
+        },
+        {
+          "rank": 2,
+          "id": 2634,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7435346841812134
+        },
+        {
+          "rank": 3,
+          "id": 3490,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-54727] Monitoring alerted us that several Bangalore DC users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Escalating for investigation.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Bangalore DC group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7392828464508057
+        },
+        {
+          "rank": 4,
+          "id": 2370,
+          "title": "File share \\\\fs02\\shared inaccessible",
+          "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+          "category": "Storage",
+          "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+          "similarity": 0.7367210388183594
+        },
+        {
+          "rank": 5,
+          "id": 617,
+          "title": "Permissions incorrect on \\\\fs02\\shared",
+          "description": "[TCK-51894] Reported by the Mumbai HQ team: several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. Please investigate and resolve.",
+          "category": "Storage",
+          "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+          "similarity": 0.7318856120109558
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nGrant Read-Only (RO) access to the user for the specified file share (`j:/PDW/TargetDB/`), verify and configure the appropriate NTFS permissions and ACLs for the user's group, and re-propagate the permissions so the user can open files as expected.\n\n*Note: The retrieved examples deal with fixing existing NTFS permissions on a different path (`\\\\fs02\\shared`), whereas this new ticket is a service request for granting new file share access (`j:/PDW/TargetDB/`). A human agent should double-check the steps for provisioning new access.*",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "2c658a649dfaf263b3493864d7630a30da04a90e9a5ccf299aacf3dc68975769",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.554,
+      "generated_at": "2026-10-21T14:42:03"
+    },
+    {
+      "ticket_id": "606",
+      "source_category": "O365",
+      "mapped_category": "Application",
+      "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Create Shared Mailbox",
+      "cascade_category": "Access Management",
+      "tier": 1,
+      "top_similarity": 0.7667214274406433,
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": 87,
+          "title": "Shared mailbox access request for p.reddy",
+          "description": "[TCK-55036] Ticket raised because user p.reddy needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted p.reddy delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7667214274406433
+        },
+        {
+          "rank": 2,
+          "id": 850,
+          "title": "Shared mailbox access request for r.desai",
+          "description": "[TCK-51922] Ticket raised because user r.desai needs delegated access to the Delhi Sales shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted r.desai delegate permissions on the Delhi Sales shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7599860429763794
+        },
+        {
+          "rank": 3,
+          "id": 3527,
+          "title": "Shared mailbox access request for a.patel",
+          "description": "[TCK-52684] Ticket raised because user a.patel needs delegated access to the Remote/WFH shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.patel delegate permissions on the Remote/WFH shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7556957602500916
+        },
+        {
+          "rank": 4,
+          "id": 806,
+          "title": "Shared mailbox access request for a.kulkarni",
+          "description": "[TCK-38517] Ticket raised because user a.kulkarni needs delegated access to the Ahmedabad Office shared mailbox to cover for a colleague on leave. This is impacting daily work.",
+          "category": "Access Management",
+          "resolution": "Granted a.kulkarni delegate permissions on the Ahmedabad Office shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7510873079299927
+        },
+        {
+          "rank": 5,
+          "id": 1174,
+          "title": "Shared mailbox access request for m.iyer",
+          "description": "[TCK-33812] Flagged during routine checks: user m.iyer needs delegated access to the Chennai Support shared mailbox to cover for a colleague on leave. Please confirm root cause and next steps.",
+          "category": "Access Management",
+          "resolution": "Granted m.iyer delegate permissions on the Chennai Support shared mailbox, confirmed it appeared in their client, and set the access to expire when the colleague returns.",
+          "similarity": 0.7337948083877563
+        }
+      ],
+      "draft": "**Suggested Resolution:**\nThe retrieved past tickets address requests for granting delegated access to *existing* shared mailboxes, whereas the new ticket is titled \"Create Shared Mailbox.\" Because the retrieved examples do not fully match the requirement to *create* a new shared mailbox, a human agent should double-check and perform the creation steps before applying any delegate permissions.",
+      "llm_model": "gemini-flash-lite-latest",
+      "prompt_sha256": "ba8c79d692574d16fa95d898803ec787d239939f2363efd9e8be176aee67c60e",
+      "config_fingerprint": "9c9a5cbcb53f",
+      "elapsed_s": 1.361,
+      "generated_at": "2026-10-21T14:42:09"
+    }
+  ]
+}

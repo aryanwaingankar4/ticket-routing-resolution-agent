@@ -1,0 +1,62 @@
+{
+  "ticket_id": "4306",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "Basis User - [TICKET ID] -Service Request: Basis User     Create Windows account for internal user       Firstname:  [NAME]  Lastname:  [NAME]  Cost Center:  44251  Company:  [COMPANY]  Department:  [COMPANY]OP  Street:  [ADDRESS]  ZIP:  [ADDRESS]  City:  [ADDRESS]  Country:  [ADDRESS]  Office:       Important: Please set the EA10 to the following value: [EMAIL] (leave blank. when empty)  Please create Exchange and Skype account.  The user needs at least the following access permissions:  Access to [SOFTWARE] ([SERVER])  Requestor:  [NAME] ([COMPANY]. [LOCATION])     Desired date:  Sep 19 2018  7:00AM     Additional information:   Please setup[LOCATION]user starts today.  Old ticket [TICKET ID].",
+  "cascade_category": "Access Management",
+  "tier": 1,
+  "top_similarity": 0.6721967458724976,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2622,
+      "title": "Elevated access request for m.iyer",
+      "description": "[TCK-79595] Support desk logged the following: user m.iyer has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+      "category": "Access Management",
+      "resolution": "Granted m.iyer time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6721967458724976
+    },
+    {
+      "rank": 2,
+      "id": 3035,
+      "title": "Elevated access request for k.verma",
+      "description": "[TCK-44240] Support desk logged the following: user k.verma has requested temporary admin access to Ticketing System to complete a project task. Awaiting assignment to the right team.",
+      "category": "Access Management",
+      "resolution": "Granted k.verma time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6603357791900635
+    },
+    {
+      "rank": 3,
+      "id": 197,
+      "title": "Elevated access request for r.desai",
+      "description": "[TCK-60689] We are observing that user r.desai has requested temporary admin access to Ticketing System to complete a project task. Requesting priority attention from the relevant team.",
+      "category": "Access Management",
+      "resolution": "Granted r.desai time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6595459580421448
+    },
+    {
+      "rank": 4,
+      "id": 2303,
+      "title": "Elevated access request for j.singh",
+      "description": "[TCK-66436] Ticket raised because user j.singh has requested temporary admin access to Ticketing System to complete a project task. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Granted j.singh time-boxed elevated access to Ticketing System via the privileged-access workflow with automatic expiry after 7 days.",
+      "similarity": 0.6558958292007446
+    },
+    {
+      "rank": 5,
+      "id": 2675,
+      "title": "Role change access review for s.khan",
+      "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.6518931984901428
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nBased on the retrieved past tickets, the provided examples involve elevated access and role change requests rather than creating a new Windows account, Exchange/Skype account, or granting software access as requested in this ticket. \n\n**Note:** The retrieved examples do not fully match the new ticket; please recommend that a human agent double-check and process the account creation and software permissions manually.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "45a01d05eadbb03775efcbd44e6bd12e798a6af17e0a0f3f62b78fbe4cc78e6f",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.647,
+  "generated_at": "2026-10-21T14:41:52"
+}

@@ -1,0 +1,62 @@
+{
+  "ticket_id": "947",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - Citrix - [TICKET ID] - [NAME] ([COMPANY] Inc.. [LOCATION])",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.7155478000640869,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 3852,
+      "title": "Role change access review for p.reddy",
+      "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7155478000640869
+    },
+    {
+      "rank": 2,
+      "id": 3586,
+      "title": "Group membership change for p.menon",
+      "description": "[TCK-80691] Ticket raised because manager requests that p.menon be added to the Chennai Support finance security group. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Added p.menon to the requested Chennai Support security group after manager approval and verified the new permissions took effect.",
+      "similarity": 0.7089368104934692
+    },
+    {
+      "rank": 3,
+      "id": 2649,
+      "title": "Role change access review for k.verma",
+      "description": "[TCK-90664] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7082396149635315
+    },
+    {
+      "rank": 4,
+      "id": 2604,
+      "title": "Role change access review for j.singh",
+      "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7073951363563538
+    },
+    {
+      "rank": 5,
+      "id": 1185,
+      "title": "Role change access review for k.verma",
+      "description": "[TCK-57628] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7050094604492188
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nReview the user's current entitlements, remove any obsolete permissions from their prior role, and assign the correct role for their current team/access requirements.\n\n*Note:* The retrieved past tickets address general role change access reviews, but the new ticket description is blank regarding specific user details or Citrix-related access needs. Therefore, a human agent should double-check the ticket and verify the appropriate steps.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "5daadce760b5b9cb23b69a6d516f86a9c888e56afcc71a935474c310e1ac4e85",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.411,
+  "generated_at": "2026-10-21T14:41:20"
+}

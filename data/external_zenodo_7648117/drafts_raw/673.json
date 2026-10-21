@@ -1,0 +1,62 @@
+{
+  "ticket_id": "673",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - File Share Access - [TICKET ID] - [NAME] ([COMPANY]. [LOCATION])",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.7315714359283447,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2604,
+      "title": "Role change access review for j.singh",
+      "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7315714359283447
+    },
+    {
+      "rank": 2,
+      "id": 3852,
+      "title": "Role change access review for p.reddy",
+      "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7250293493270874
+    },
+    {
+      "rank": 3,
+      "id": 2675,
+      "title": "Role change access review for s.khan",
+      "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7182322144508362
+    },
+    {
+      "rank": 4,
+      "id": 2774,
+      "title": "Role change access review for a.kulkarni",
+      "description": "[TCK-72742] Ticket raised because user a.kulkarni has moved teams and still holds permissions from their previous HR Self-Service role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for a.kulkarni, removed the obsolete HR Self-Service permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7137262225151062
+    },
+    {
+      "rank": 5,
+      "id": 3053,
+      "title": "Role change access review for p.reddy",
+      "description": "[TCK-42485] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7134464979171753
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, the available examples pertain to role change access reviews (reconciling permissions after moving teams), whereas the new ticket is titled \"File Share Access\" with no descriptive details provided. \n\nTherefore, the retrieved examples do not fully match the new ticket, and we recommend that a human agent double-check the specific file share requirements before proceeding.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "416fe04690ffaa15c8f29ead6c0cd6e38e1381c8cdde41d6bab134daced2cbf8",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.211,
+  "generated_at": "2026-10-21T14:41:31"
+}

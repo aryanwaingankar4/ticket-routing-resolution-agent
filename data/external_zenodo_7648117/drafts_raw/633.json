@@ -1,0 +1,62 @@
+{
+  "ticket_id": "633",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - New Okta Registration",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.7460470795631409,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2359,
+      "title": "Ticketing System integration with Okta failing",
+      "description": "[TCK-84949] Ticket raised because the Ticketing System integration with Okta has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The Okta API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+      "similarity": 0.7460470795631409
+    },
+    {
+      "rank": 2,
+      "id": 2649,
+      "title": "Role change access review for k.verma",
+      "description": "[TCK-90664] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Billing Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Billing Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7427415251731873
+    },
+    {
+      "rank": 3,
+      "id": 1185,
+      "title": "Role change access review for k.verma",
+      "description": "[TCK-57628] Ticket raised because user k.verma has moved teams and still holds permissions from their previous Payroll role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for k.verma, removed the obsolete Payroll permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7419956922531128
+    },
+    {
+      "rank": 4,
+      "id": 3852,
+      "title": "Role change access review for p.reddy",
+      "description": "[TCK-88710] Ticket raised because user p.reddy has moved teams and still holds permissions from their previous Vendor Portal role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for p.reddy, removed the obsolete Vendor Portal permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.7390795946121216
+    },
+    {
+      "rank": 5,
+      "id": 2604,
+      "title": "Role change access review for j.singh",
+      "description": "[TCK-27748] Ticket raised because user j.singh has moved teams and still holds permissions from their previous Ticketing System role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for j.singh, removed the obsolete Ticketing System permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.734404444694519
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, none of the examples address a \"New Okta Registration\" or provide steps for registering a new user in Okta (the closest match involves expired API credentials for an existing integration, while the others cover role change access reviews). \n\n*Note: The retrieved examples do not closely match the new ticket description, so a human agent should double-check and handle this registration request manually.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "579db89bce46816337607ace9b504b650ce1585f69f42db1df3f97f4a8598595",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.691,
+  "generated_at": "2026-10-21T14:38:33"
+}

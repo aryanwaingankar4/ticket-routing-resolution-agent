@@ -1,0 +1,62 @@
+{
+  "ticket_id": "3838",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "Initiated by [COMPANY][LOCATION]- Vulnerable Internet Explorere on [SERVER]",
+  "cascade_category": "Security",
+  "tier": 2,
+  "top_similarity": 0.673277735710144,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 1877,
+      "title": "Unpatched critical CVE on PRD-WEB-01",
+      "description": "[TCK-23167] We are observing that vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-01. Requesting priority attention from the relevant team.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to PRD-WEB-01 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.673277735710144
+    },
+    {
+      "rank": 2,
+      "id": 2054,
+      "title": "Unpatched critical CVE on PRD-WEB-02",
+      "description": "[TCK-78529] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-02. It started earlier today and has not self-resolved.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to PRD-WEB-02 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6687964200973511
+    },
+    {
+      "rank": 3,
+      "id": 3866,
+      "title": "Unpatched critical CVE on PRD-WEB-01",
+      "description": "[TCK-27397] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-01. It started earlier today and has not self-resolved.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to PRD-WEB-01 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6681889295578003
+    },
+    {
+      "rank": 4,
+      "id": 3739,
+      "title": "Unpatched critical CVE on PRD-WEB-02",
+      "description": "[TCK-85310] Ticket raised because vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-WEB-02. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to PRD-WEB-02 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6647026538848877
+    },
+    {
+      "rank": 5,
+      "id": 3583,
+      "title": "Unpatched critical CVE on PRD-CACHE-03",
+      "description": "[TCK-62509] Issue summary: vulnerability scanning found a critical, actively-exploited CVE unpatched on PRD-CACHE-03. It started earlier today and has not self-resolved.",
+      "category": "Security",
+      "resolution": "Applied the vendor security patch to PRD-CACHE-03 during an emergency change window and rescanned to confirm the CVE was remediated.",
+      "similarity": 0.6574567556381226
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nApply the vendor security patch to the affected server during an emergency change window, and then rescan the server to confirm the vulnerability has been remediated. \n\n*Note: While the retrieved examples involve unpatched vulnerabilities on specific servers rather than Internet Explorer explicitly, the resolution steps of applying vendor security patches and rescanning closely match. A human agent should double-check the specific remediation steps for Internet Explorer.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "9b5b76fd645eaf60e00024997bba294e0d7ccf41c4f80a1228f5db6c2150f798",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.245,
+  "generated_at": "2026-10-21T14:40:14"
+}

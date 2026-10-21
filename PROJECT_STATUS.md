@@ -1,15 +1,17 @@
 # Project Status
 
-> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, committed and pushed at `0ac3626`** (2026-10-19; not merged into main).
+> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, last pushed 2026-10-21; see `git log`** (not merged into main).
 > - **Format:** the paper is now a Word file, `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v3.docx`, with 44 `[[FILL-…]]` markers. `paper/` (LaTeX) is frozen.
 > - **Ledger:** every value, with its source and command, is in `paper_docx/RESULTS_FOR_PAPER.md`. Read that first.
 >
 > **Phase status:**
 > - **Phase 0 (inventory) and Phase 1 (fill from existing data): done.** Four offline scripts in `scripts/`, outputs in `data/paper_revision_oct/`, each fatal unless it reproduces the committed numbers. All passed. Figs 4–6 are in `paper_docx/fig/`.
-> - **Phase 2 (real-world tickets): in progress.**
->   - Dataset: Zenodo 10.5281/zenodo.7648117 (CC BY 4.0), md5-pinned under `data/external_zenodo_7648117/`.
->   - English filter (langid): 1,734 of 2,229. All 1,734 have been routed through the unchanged pipeline, with no LLM call. The output is identical across two runs.
->   - **Blocked on the author confirming the category mapping** (`category_mapping.json` says `proposed`; `score_realworld.py` refuses to run until it says `confirmed`). Then scoring, then at most 30 drafts.
+> - **Phase 2 (real-world tickets): scored and drafted (2026-10-21).**
+>   - Dataset: Zenodo 10.5281/zenodo.7648117 (CC BY 4.0), md5-pinned under `data/external_zenodo_7648117/`. English (langid): 1,734 of 2,229.
+>   - Mapping confirmed by AW: Fileservice and Active Directory -> Access Management; Software and O365 -> Application; 750 excluded. Only 2 teams covered. A sensitivity variant maps Fileservice -> Storage.
+>   - **Distinct texts (headline): cascade 115/583 (19.7%); Tier-2-only 114/583; escalated 129/583 (22.1%); Tier-1 share 238/583 (40.8%).** Under the sensitivity mapping, accuracy is 294/583 (50.4%). Of the 468 misrouted tickets, 371 still reached the drafter.
+>   - 30 Gemini drafts (3 dry-run calls + 27 live) are in `drafts.json`, **not yet labelled by AW**.
+>   - Fills are drafted in RESULTS_FOR_PAPER.md. Open items: draft labels; OK for an optional Tier-1 column in Table VIII; where the supplement table goes.
 > - **Phase 3 (independent set): setup done; design changed 2026-10-19 to ONE writer (AW, about 100 tickets) plus ONE blind second labeller (name to be confirmed), with disagreements resolved by discussion.**
 >   - `data/independent_test/` holds GUIDELINES.md and the templates.
 >   - `scripts/eval_independent.py` supports two annotators (κ) or `--single-annotator` (no κ; the paper must then say "single annotator"). Every path was tested on scratch fixtures.

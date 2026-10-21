@@ -11,7 +11,8 @@ outputs without `--force`. New result files live in `data/paper_revision_oct/`.
 No existing result file, threshold, model or the `v1.0` tag was changed.
 
 Status: **Phase 1 complete** (21 fillable-now markers + 3 new offline analyses).
-Phases 2 and 3 (new data) are pending; see the end of this file.
+**Phase 2 (real-world tickets) scored and drafted** (2026-10-21); fills drafted,
+draft labels pending. Phase 3 is waiting on the author-written tickets.
 
 ---
 
@@ -206,13 +207,113 @@ Other places that mention 3,200 were checked and are correct as written: §VI-C 
 
 **Duplicates.** 745 of the 2,229 texts are exact duplicates of another. Within the English set: Fileservice 360/597, Support general 217/601, EOL 101/103 and Software 34/158. They are mostly system-generated subjects such as "File Share Access - [TICKET ID] - [NAME] (…)". The scoring script reports an **all** reading and a **distinct-text** reading.
 
-**Mapping: awaiting author confirmation.** `category_mapping.json` has `status: proposed`, and `score_realworld.py` refuses to run until it is `confirmed`. The review samples are in `mapping_review_samples.csv` (5 per category, seed 42).
+**Mapping: confirmed by AW on 2026-10-21** (`category_mapping.json`, `status: confirmed`).
+- **Primary mapping:**
+  - Fileservice → Access Management. 546 of its 597 English tickets are "File Share Access" grant requests.
+  - Active Directory → Access Management.
+  - Software and O365 → Application.
+  - Computer-Services, Support general and EOL are excluded.
+- **Order of events:** the mapping was chosen from the review samples (`mapping_review_samples.csv`) before anyone looked at per-category predictions. `routing_results.csv` existed and was committed, but no per-category prediction was shown or examined before confirmation. *AW: confirm this holds for you too before the paper says so.*
+- **Sensitivity (secondary, author's request):** Fileservice → Storage, everything else unchanged (`sensitivity.fileservice_storage` in the same file).
+- **Covered teams:** Access Management and Application only. Database, Infrastructure, Network, Security and Storage are **not covered** by the primary mapping.
 
 **Routing:** `python scripts/run_realworld_routing.py` runs the unchanged pipeline over all 1,734 English tickets, with no LLM call. Config fingerprint 9c9a5cbcb53f.
 
+**Scoring** (offline; refuses to overwrite without `--force`):
+```
+python scripts/score_realworld.py
+python scripts/score_realworld.py --variant fileservice_storage
+```
+- **Primary outputs:** `realworld_summary.csv`, `realworld_by_source.csv`, `realworld_confusion.csv`.
+- **Sensitivity outputs:** the same three names with the suffix `_sens_fileservice_storage`.
+- **Location:** all six files are in `data/external_zenodo_7648117/`.
+- **Method:** Wilson intervals use z = 1.96 via `score_groundedness_set.wilson_interval`. The exact McNemar test uses `compare_cascade_vs_tier2.mcnemar_from_pairs`. Both are the committed implementations.
+
+### Real-world results (primary mapping). Headline = distinct texts; all tickets beside it.
+
+All values come from `realworld_summary.csv` (keys in brackets).
+
+| Quantity | Distinct texts | All tickets |
+|---|---|---|
+| English tickets excluded (unmapped) | — | 750: Computer-Services 46, Support general 601, EOL 103 [`excluded.*`] |
+| n (mapped) | **583** [`distinct.n`] | 984 [`all.n`] |
+| Cascade correct | **115/583 = 19.7% [16.7, 23.1]** | 119/984 = 12.1% [10.2, 14.3] |
+| Tier-2-only correct | 114/583 = 19.6% [16.5, 23.0] | 118/984 = 12.0% [10.1, 14.2] |
+| Cascade vs Tier-2-only, exact McNemar | b = 9, c = 8, p = 1.0 | b = 9, c = 8, p = 1.0 |
+| **Escalated at the 0.67 gate** | **129/583 = 22.1% [18.9, 25.7]** | 159/984 = 16.2% [14.0, 18.6] |
+| **Tier-1 share (kept at 0.50)** | **238/583 = 40.8% [36.9, 44.9]** | 568/984 = 57.7% [54.6, 60.8] |
+| Tier-1 kept and correct | 39/238 | 39/568 |
+| Recall, Access Management | 86/319 | 90/682 |
+| Recall, Application | 29/264 | 29/302 |
+| Misrouted: escalated / drafted | 97 / 371 of 468 | 127 / 738 of 865 |
+| Reached the drafter and correctly routed | 83/454 = 18.3% [15.0, 22.1] | 87/825 = 10.5% [8.6, 12.8] |
+
+**Label-free gate readings over the whole English set** (no mapping needed; `english_*` keys):
+
+| Reading | Escalated | Tier-1 share |
+|---|---|---|
+| 1,015 distinct texts | 223 = 22.0% [19.5, 24.6] | 352 = 34.7% [31.8, 37.7] |
+| All 1,734 tickets | 261 = 15.1% [13.4, 16.8] | 822 = 47.4% [45.1, 49.8] |
+
+**Reference points for the comparison** (existing committed files):
+- **Benchmark-45:** escalation 15/45 (X2). Tier-1 share 4/45, 2 of them correct (`data/ablation_baseline_results.csv`, `tier_used`).
+- **Deployment-175:** Tier-1 share 33/175 (`data/ablation_baseline_results_deployment175.csv`, `tier_used`).
+- **Paraphrased-175:** Tier-1 share 23/175 (T1).
+
+**Where the errors come from** (`realworld_by_source.csv`, with `reading` = all or distinct, and `realworld_confusion.csv`):
+- **Fileservice:** of its 238 distinct texts, the pipeline sends 203 to Storage, 25 to Access Management and 8 to Security. In our generator, "Permissions incorrect on {share}" is a **Storage** template (`data/generate_dataset.py:428`), so these grant requests sit on a boundary of our own taxonomy.
+- **Why 238 here but 237 in the sensitivity recall (203/237):** in `realworld_by_source.csv` "distinct" dedups within each source, so the four mapped sources sum to 82 + 238 + 140 + 124 = 584. The summary dedups across the mapped subset, giving 583: one text occurs under both Active Directory and Fileservice, and both map to Access Management. Quote 203/238 for the per-source statement and 203/237 for recall.
+- **Application (Software, O365):** in the all reading, predicted mostly as Access Management (110) and Security (105). Distinct Software: 41 of 124 went to Security.
+  - Observation only, not a paper number: a handful of these are vulnerability-scan tickets ("Vulnerable Internet Explorer on [SERVER]"), which our taxonomy would also file under Security. This was a keyword count, not a committed result.
+- **The gate does not separate misrouted tickets:** it escalates 97/468 misrouted texts (20.7%) and 32/115 correctly routed ones (27.8%). Source: `distinct.misclassified_escalated`, `distinct.misclassified`, `distinct.escalated.k` and `distinct.cascade_correct.k`; 32 = 129 − 97.
+
+### Sensitivity: Fileservice → Storage (one sentence in the paper + a supplement table)
+
+All values come from `realworld_summary_sens_fileservice_storage.csv`.
+
+| Quantity | Primary (Fileservice → AM) | Sensitivity (Fileservice → Storage) |
+|---|---|---|
+| Distinct: cascade correct | 115/583 = 19.7% [16.7, 23.1] | **294/583 = 50.4% [46.4, 54.5]** |
+| All: cascade correct | 119/984 = 12.1% | 651/984 = 66.2% [63.1, 69.0] |
+| Distinct recall | AM 86/319, App 29/264 | AM 62/82, App 29/264, Storage 203/237 |
+| Distinct: drafted and correctly routed | 83/454 | 262/454 = 57.7% [53.1, 62.2] |
+| Distinct: Tier-1 kept and correct | 39/238 | 199/238 |
+| Escalation, Tier-1 share | unchanged (label-free) | unchanged |
+| Exact McNemar, distinct | b = 9, c = 8, p = 1.0 | b = 8, c = 6, p = 0.79 |
+
+**Sensitivity sentence (draft, §VI-E):** "The result depends heavily on one mapping decision: if the file-share access requests are mapped to Storage, where our generator files share-permission faults, distinct-text accuracy is 294/583 (50.4%, 95% CI [46.4, 54.5]); the escalation rate and Tier-1 share do not depend on the mapping."
+
+### Drafted fills (real-world parts)
+
+- **S7 (Table III, size):** "583 distinct (984)"
+- **S8 (Table III, source):** "Real user tickets, Pereira [ref], CC BY 4.0"
+- **X8–X11 (Table VIII, Real-world row):** X8 "583", X9 "115/583", X10 "114/583", X11 "129/583 (22.1%)". These use X2's format. The all-ticket reading goes in the X3 text.
+  - *Optional, needs your OK:* add a "Tier-1 share" column to Table VIII, filled as 4/45, {independent}, 238/583. This is a structural change, so it is not applied without your OK.
+- **D2:** the {N} in the Phase 3 draft = 583 distinct real tickets.
+- **X1, real-world part (draft):** "The real-world set is the public dataset of Pereira [ref], released under CC BY 4.0: 2,229 tickets typed by the users of an IT-support company and labelled into seven categories by three IT professionals. We kept the 1,734 tickets that langid.py [ref] identifies as English. Four source categories correspond to one of our teams, and the mapping was fixed before predictions were examined: Active Directory and Fileservice (almost entirely file-share access requests) to Access Management, and Software and O365 to Application. The other three categories (750 tickets) have no single counterpart and were excluded, so Database, Infrastructure, Network, Security and Storage are not covered. Of the 984 mapped tickets, 401 repeat an earlier text exactly, mostly system-generated subject lines, so we report the 583 distinct texts and give all 984 alongside."
+- **X3, real-world part (draft):** "On real tickets, routing accuracy is low: the cascade routes 115 of 583 distinct texts to the right team (19.7%, 95% CI [16.7, 23.1]; 119/984 over all tickets), with recall 86/319 for Access Management and 29/264 for Application, and Tier 2 alone does no better (114/583, exact McNemar p = 1.0). Tier 1 answers far more often than on generated text (238/583, 40.8% [36.9, 44.9], against 4/45 on the benchmark), but only 39 of those 238 are correct. The retrieval gate escalates 129/583 (22.1% [18.9, 25.7]; 159/984, 16.2%, over all tickets), but it does not separate misrouted tickets: 371 of the 468 misrouted texts reached the drafter, and only 83 of the 454 drafted texts had been routed correctly." Then the sensitivity sentence above.
+- **A1 (abstract, draft):** "On 583 distinct real user tickets from a public dataset, covering two of the seven teams, the pipeline routed 19.7% correctly (50.4% under an alternative mapping of file-share requests), and the retrieval gate escalated 22.1% but did not stop misrouted tickets reaching the drafter."
+- **C1 (draft):** "On real user-written tickets for the two teams we could test, routing accuracy fell to 19.7% (50.4% under an alternative category mapping) while Tier 1 kept 40.8% of tickets, which places the main weakness outside the synthetic corpus in the classifier's training data rather than in the gates' calibration."
+- **L1, real-world part (draft):** "The real-world set removes the dependence on generated evaluation text for two teams only; five teams remain untested on real tickets, accuracy on it depends strongly on how the source categories are mapped to ours (19.7% or 50.4%), and the tickets come from one organisation."
+- **T0, real-world part:** "583 real tickets [ref]". The independent part is pending.
+
+### Drafts on real tickets (at most 30)
+
+`python scripts/draft_realworld.py --limit 3` (the dry run), then `python scripts/draft_realworld.py`.
+- **Calls:** 30 Gemini calls in total. The dry run's 3 were reused from the cache, so the full run made 27 live calls.
+- **Model and config:** `gemini-flash-lite-latest`, config fingerprint 9c9a5cbcb53f.
+- **Sample:** distinct mapped texts that the gate does not escalate (population: Active Directory 51, Fileservice 224, O365 98, Software 81). Stratified by source with equal allocation (AD 7, Fileservice 8, O365 8, Software 7), `random.Random(42)`. The sample was fixed before any call.
+- **Outputs:** `data/external_zenodo_7648117/drafts.json`, plus one cached raw response per ticket in `drafts_raw/<id>.json`, keyed by prompt sha256.
+- **Routing of the 30 (mechanical, from drafts.json):** 9 correctly routed, 21 misrouted.
+- **Not yet labelled.** Groundedness or usefulness labels are human work (AW). Nothing about draft quality goes into the paper until those labels exist.
+- **Observation, not a paper number:** in at least 2 of the 30 (ids 1077 and 1212) the user's text is Spanish or German. The English system-generated subject line carried them through langid. The English filter therefore lets some non-English text through.
+
 ## Pending
 
-- **Real-world tickets (Phase 2):** S7, S8, X8–X11, and the real-world parts of X1, X3, A1, C1, L1, T0, D2. Waiting on the mapping confirmation, then scoring and at most 30 drafts.
+- **Real-world tickets (Phase 2):** scoring and drafts are done, and fills are drafted above. Open items:
+  - AW to label the 30 drafts, if the paper should say anything about draft quality on real tickets;
+  - OK for the optional Tier-1 column in Table VIII;
+  - where the supplement table goes in the docx (the LaTeX supplement is frozen).
 - **Independent author-written set (Phase 3):** S6, X4–X7, and the independent parts of the same shared markers. See below.
 
 ## Phase 3 — independent set (setup done; tickets not yet written)
@@ -239,4 +340,4 @@ Other places that mention 3,200 were checked and are correct as written: §VI-C 
 
 | Where | Current | Proposed |
 |---|---|---|
-| Table III, independent-set row, Source | "Written blind by the authors" | "Written blind by one author; second annotator" (or "…; single annotator" in that mode) |
+| Table III, independent-set row, Source | "Written blind by the authors" | "Written blind by one author; second annotator" (or "…; single annotator" in that mode). **Approved by AW 2026-10-21; apply in v4.** |

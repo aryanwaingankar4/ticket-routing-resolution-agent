@@ -1,0 +1,62 @@
+{
+  "ticket_id": "1274",
+  "source_category": "Software",
+  "mapped_category": "Application",
+  "ticket_text": "[TICKET ID] - New Support Ticket received  - Need to have Extech RHT10 Software Installed",
+  "cascade_category": "Application",
+  "tier": 2,
+  "top_similarity": 0.6850007176399231,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 1733,
+      "title": "Ticketing System integration with Zoom failing",
+      "description": "[TCK-99417] Ticket raised because the Ticketing System integration with Zoom has stopped syncing and shows repeated authentication failures. This is impacting daily work.",
+      "category": "Application",
+      "resolution": "The Zoom API credentials used by Ticketing System had expired; rotated the token, stored it in the secrets manager, and re-enabled the sync job.",
+      "similarity": 0.6850007176399231
+    },
+    {
+      "rank": 2,
+      "id": 3009,
+      "title": "Cannot mount \\\\fs02\\marketing on new machines",
+      "description": "[TCK-15852] Ticket raised because recently provisioned machines fail to map the file share \\\\fs02\\marketing, though existing machines connect fine. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully.",
+      "similarity": 0.6822201609611511
+    },
+    {
+      "rank": 3,
+      "id": 3876,
+      "title": "Ticketing System throwing errors after latest deploy",
+      "description": "[TCK-98029] Reported by the Ahmedabad Office team: immediately after the most recent Ticketing System release, users are seeing unexpected errors on pages that worked yesterday. Please investigate and resolve.",
+      "category": "Application",
+      "resolution": "A missed database migration accompanied the Ticketing System deploy; ran the pending migration and redeployed, and the post-release errors cleared.",
+      "similarity": 0.6804925799369812
+    },
+    {
+      "rank": 4,
+      "id": 508,
+      "title": "Cannot mount \\\\fs02\\marketing on new machines",
+      "description": "[TCK-82468] Ticket raised because recently provisioned machines fail to map the file share \\\\fs02\\marketing, though existing machines connect fine. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The new machines were missing the updated SMB protocol setting required by \\\\fs02\\marketing; pushed the correct client configuration via policy and the share mapped successfully.",
+      "similarity": 0.6783539056777954
+    },
+    {
+      "rank": 5,
+      "id": 309,
+      "title": "Ticketing System throwing errors after latest deploy",
+      "description": "[TCK-60413] Issue summary: immediately after the most recent Ticketing System release, users are seeing unexpected errors on pages that worked yesterday. It started earlier today and has not self-resolved.",
+      "category": "Application",
+      "resolution": "A missed database migration accompanied the Ticketing System deploy; ran the pending migration and redeployed, and the post-release errors cleared.",
+      "similarity": 0.677823543548584
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, none of the historical resolutions address installing the Extech RHT10 Software (the past examples only cover Zoom integrations, file share mounting issues, and Ticketing System database migrations). \n\n**Suggested Action:** Because the retrieved examples do not match this request, a human agent should double-check and manually handle the software installation for the Extech RHT10 device.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "709f5f0c951efe42723d7c51f6fb8df29c356c1be5a5aad7ec1a489ca3847729",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.29,
+  "generated_at": "2026-10-21T14:40:35"
+}

@@ -1,13 +1,20 @@
 {
-  "status": "proposed",
-  "note": "Awaiting author confirmation after reading mapping_review_samples.csv. null = excluded.",
+  "status": "confirmed",
+  "confirmed_by": "AW (author), 2026-10-21, after reading mapping_review_samples.csv",
+  "note": "null = excluded. Fileservice -> Access Management because 546 of its 597 English tickets are 'File Share Access' grant requests, which our taxonomy files under Access Management. Computer-Services (printers, drivers), Support general (mixed) and EOL (automated) have no single counterpart and are excluded. Covered teams: Access Management and Application only.",
   "mapping": {
-    "Fileservice": "Storage",
+    "Fileservice": "Access Management",
     "Active Directory": "Access Management",
     "Software": "Application",
     "O365": "Application",
-    "Computer-Services": "Infrastructure",
+    "Computer-Services": null,
     "Support general": null,
     "EOL": null
+  },
+  "sensitivity": {
+    "fileservice_storage": {
+      "note": "Secondary sensitivity analysis requested by the author: Fileservice -> Storage, everything else as the primary mapping.",
+      "overrides": {"Fileservice": "Storage"}
+    }
   }
 }

@@ -1,0 +1,62 @@
+{
+  "ticket_id": "6901",
+  "source_category": "Fileservice",
+  "mapped_category": "Access Management",
+  "ticket_text": "File Share Access - [TICKET ID] - [NAME]. [NAME] ([COMPANY]. [LOCATION])Service Request: File Share Access     Grant access to file share for the following user:  [USERNAME]. [NAME] ([COMPANY]. [LOCATION]) (Username: [USERNAME])  Access Type: (RW) Read / Write  File Share:  J:/ÖFZFOX/MOM-OSR     Requestor: [NAME] ([COMPANY]. [LOCATION])  Comment:",
+  "cascade_category": "Storage",
+  "tier": 1,
+  "top_similarity": 0.7491793632507324,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 2370,
+      "title": "File share \\\\fs02\\shared inaccessible",
+      "description": "[TCK-57838] Ticket raised because users cannot access the network file share \\\\fs02\\shared; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs02\\shared had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7491793632507324
+    },
+    {
+      "rank": 2,
+      "id": 581,
+      "title": "File share \\\\fs01\\operations inaccessible",
+      "description": "[TCK-37155] Ticket raised because users cannot access the network file share \\\\fs01\\operations; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs01\\operations had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7445821762084961
+    },
+    {
+      "rank": 3,
+      "id": 2634,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-99679] Ticket raised because several Mumbai HQ users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Mumbai HQ group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7432700395584106
+    },
+    {
+      "rank": 4,
+      "id": 2367,
+      "title": "File share \\\\fs04\\legal inaccessible",
+      "description": "[TCK-62307] Ticket raised because users cannot access the network file share \\\\fs04\\legal; it returns 'network path not found'. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "The share service backing \\\\fs04\\legal had crashed; restarted it, verified permissions, and remapped the share for affected users.",
+      "similarity": 0.7429598569869995
+    },
+    {
+      "rank": 5,
+      "id": 662,
+      "title": "Permissions incorrect on \\\\fs02\\shared",
+      "description": "[TCK-60127] Ticket raised because several Delhi Sales users report they can see the folder \\\\fs02\\shared but get 'access denied' when opening files inside it. This is impacting daily work.",
+      "category": "Storage",
+      "resolution": "Corrected the inherited NTFS permissions on \\\\fs02\\shared for the relevant Delhi Sales group and re-propagated ACLs so the files opened as expected.",
+      "similarity": 0.7389819622039795
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nVerify the user's permissions for the requested file share (`J:/ÖFZFOX/MOM-OSR`). Depending on whether access is missing due to ACL configuration or share issues, correct the inherited NTFS permissions for the user or group and re-propagate the ACLs so the user can open and write to files as expected.\n\n*Note: The retrieved examples deal with fixing existing share accessibility and permission errors rather than provisioning a brand-new user access request, so a human agent should double-check the exact provisioning steps.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "f2616f6cdd65efec9be404ab3c55cad21663c38059a9a4dbfbfc9f073efcfbe8",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.804,
+  "generated_at": "2026-10-21T14:38:28"
+}

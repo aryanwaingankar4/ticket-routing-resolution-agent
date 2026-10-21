@@ -1,0 +1,62 @@
+{
+  "ticket_id": "865",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "[PASSWORD] - New Support Ticket received  - Reset Password",
+  "cascade_category": "Access Management",
+  "tier": 1,
+  "top_similarity": 0.7575826644897461,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 3251,
+      "title": "Password reset for m.iyer",
+      "description": "[TCK-66755] Ticket raised because user m.iyer is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified the identity of m.iyer, reset the password, and required a change plus MFA re-registration at next login.",
+      "similarity": 0.7575826644897461
+    },
+    {
+      "rank": 2,
+      "id": 3958,
+      "title": "Password reset for a.patel",
+      "description": "[TCK-24708] Ticket raised because user a.patel is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified the identity of a.patel, reset the password, and required a change plus MFA re-registration at next login.",
+      "similarity": 0.7436448335647583
+    },
+    {
+      "rank": 3,
+      "id": 3737,
+      "title": "Password reset for m.chatterjee",
+      "description": "[TCK-43286] Ticket raised because user m.chatterjee is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified the identity of m.chatterjee, reset the password, and required a change plus MFA re-registration at next login.",
+      "similarity": 0.7425268888473511
+    },
+    {
+      "rank": 4,
+      "id": 2158,
+      "title": "Password reset for p.reddy",
+      "description": "[TCK-66644] Ticket raised because user p.reddy is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified the identity of p.reddy, reset the password, and required a change plus MFA re-registration at next login.",
+      "similarity": 0.7394831776618958
+    },
+    {
+      "rank": 5,
+      "id": 132,
+      "title": "Password reset for m.chatterjee",
+      "description": "[TCK-81864] Ticket raised because user m.chatterjee is locked out and has requested a password reset for their corporate account. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Verified the identity of m.chatterjee, reset the password, and required a change plus MFA re-registration at next login.",
+      "similarity": 0.7389802932739258
+    }
+  ],
+  "draft": "**Suggested Resolution:**\nVerify the identity of the user requesting the password reset, reset their corporate account password, and configure the settings to require a password change along with MFA re-registration at their next login. \n\n*Note:* The retrieved examples closely match the standard password reset procedure, but because the new ticket description lacks a specific username, a human agent should double-check the user's identity and details before proceeding.",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "8b93463c489fc51f33e6df6d7c85f3e7faec9a43efd581f9ea2a52b048bc5a62",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.21,
+  "generated_at": "2026-10-21T14:40:40"
+}

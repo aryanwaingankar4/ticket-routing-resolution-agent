@@ -1,0 +1,62 @@
+{
+  "ticket_id": "788",
+  "source_category": "Active Directory",
+  "mapped_category": "Access Management",
+  "ticket_text": "[TICKET ID] - A Support Ticket was forwarded to your role  - [NAME] AD account keeps getting disabled",
+  "cascade_category": "Access Management",
+  "tier": 2,
+  "top_similarity": 0.7109612822532654,
+  "retrieved": [
+    {
+      "rank": 1,
+      "id": 238,
+      "title": "Unauthorized privilege escalation detected for v.nair",
+      "description": "[TCK-72438] Ticket raised because audit logs show account v.nair was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Revoked the unauthorized admin rights from v.nair, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+      "similarity": 0.7109612822532654
+    },
+    {
+      "rank": 2,
+      "id": 946,
+      "title": "Unauthorized privilege escalation detected for d.mehta",
+      "description": "[TCK-78664] Ticket raised because audit logs show account d.mehta was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Revoked the unauthorized admin rights from d.mehta, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+      "similarity": 0.7072190046310425
+    },
+    {
+      "rank": 3,
+      "id": 1015,
+      "title": "Unauthorized privilege escalation detected for a.kulkarni",
+      "description": "[TCK-97539] Ticket raised because audit logs show account a.kulkarni was granted administrator rights outside the normal approval workflow. This is impacting daily work.",
+      "category": "Security",
+      "resolution": "Revoked the unauthorized admin rights from a.kulkarni, traced the change to a misconfigured group policy, and tightened the privileged-access approval controls.",
+      "similarity": 0.7048736810684204
+    },
+    {
+      "rank": 4,
+      "id": 2398,
+      "title": "Reports in Billing Portal won't generate",
+      "description": "[TCK-23848] Ticket raised because users trying to run reports in Billing Portal get stuck loading forever and eventually see a timeout error about the underlying data source. This is impacting daily work.",
+      "category": "Database",
+      "resolution": "Found the report queries in Billing Portal were timing out against audit_mysql due to a missing index; added the index and reports now generate within seconds.",
+      "similarity": 0.6924182772636414
+    },
+    {
+      "rank": 5,
+      "id": 2675,
+      "title": "Role change access review for s.khan",
+      "description": "[TCK-78986] Ticket raised because user s.khan has moved teams and still holds permissions from their previous Field Service App role that need to be reconciled. This is impacting daily work.",
+      "category": "Access Management",
+      "resolution": "Reviewed the entitlements for s.khan, removed the obsolete Field Service App permissions from the prior role, and assigned the correct role for their new team.",
+      "similarity": 0.690831184387207
+    }
+  ],
+  "draft": "Based on the retrieved past tickets, none of the examples address an Active Directory account repeatedly getting disabled (the past examples cover unauthorized privilege escalation, report timeouts, and role change access reviews). \n\n**Suggested Resolution:**\nBecause the retrieved past tickets do not contain a resolution for an AD account repeatedly getting disabled, please manually investigate the user's account lockout logs and associated group policies to identify the root cause.\n\n*Note: The retrieved examples do not closely match this new ticket, so a human agent should double-check and handle accordingly.*",
+  "llm_model": "gemini-flash-lite-latest",
+  "prompt_sha256": "54975050d8cc839ab4d43f2fbbae95d7f68531d7adaf38abbde684b61baf0da8",
+  "config_fingerprint": "9c9a5cbcb53f",
+  "elapsed_s": 1.331,
+  "generated_at": "2026-10-21T14:40:51"
+}
