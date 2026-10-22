@@ -542,3 +542,12 @@ python scripts/eval_independent.py                             # final run
 - **Total:** 9 pages.
 - **Main text plus references:** References now start at page 8, left column (2.7 in) and end in the right column, where Appendix A starts at 1.3 in. So main text plus references is about 7.6 pages, against about 8.0 before the cuts.
 - **Appendices A–F:** the rest of page 8 and page 9.
+
+### Final edits (2026-10-23, AW)
+
+- **Contribution 4 (§I):** added as list item 4, formatted like items 1–3 with a bold lead phrase. Text: "**An extended evaluation** on 108 tickets written and cross-labelled by two authors (κ = 0.936) and 583 real tickets from a public dataset, reported with its negative result." The numbers are read from `independent_summary.csv` and `realworld_summary.csv`.
+- **Abstract:**
+  - "(119 of all 984)" is now "(12.1% over all 984 tickets)". 12.1% = `all.cascade_correct` 119/984.
+  - The new wording is one word longer, so to stay at or under 240 words "so it is reported as a baseline" became "so it serves as a baseline".
+  - The abstract is now exactly 240 words.
+- **Layout:** still 9 pages in Word. References start at page 8, left column, and Appendix A at the top of page 8's right column.

@@ -289,15 +289,16 @@ def fills(v):
         "On a 9-ticket adversarial set the "
         "retrieval gate decides every ticket correctly, against 3 of 9 "
         "without it. A zero-shot LLM classifies more accurately (40/45 "
-        "against 33/45) but cannot abstain, so it is reported as a baseline. "
+        "against 33/45) but cannot abstain, so it serves as a baseline. "
         "On "
         f"{v['ind_n']} tickets written and cross-labelled by two authors "
         f"(κ = {v['k_cat']:.3f}), the cascade routes {v['ind_ok']} of "
         f"{v['ind_ncat']} correctly, but the retrieval gate also escalates "
         f"{v['ind_act_esc']} actionable tickets. On {v['rw_n']} distinct real "
         "tickets from a public dataset, covering two of seven teams, it "
-        f"routes {rw_pct} correctly ({v['rw_all_ok']} of all "
-        f"{v['rw_all_n']}), indistinguishable from Tier 2 alone "
+        f"routes {rw_pct} correctly "
+        f"({pct(v['rw_all_ok'], v['rw_all_n'])} over all {v['rw_all_n']} "
+        "tickets), indistinguishable from Tier 2 alone "
         f"(p = {p_rw}), or {sens_pct} under an alternative category mapping; "
         f"Tier 1 answers {v['rw_t1']} of them with {v['rw_t1_ok']} correct, "
         f"and {v['rw_mis_draft']} of {v['rw_mis']} misrouted tickets still "
@@ -999,6 +1000,21 @@ def main():
                 kn = ppr.makeelement(W("keepNext"), {})
                 st = ppr.find(W("pStyle"))
                 (st.addnext(kn) if st is not None else ppr.insert(0, kn))
+    # Contribution 4 in Section I (AW, 2026-10-23), formatted like items
+    # 1-3: a bold lead phrase, then the rest in the body font.
+    item3 = find_para("Transparent baselines and error analysis:")
+    tr3 = text_runs(item3)
+    if len(tr3) != 2 or not ptext(item3).startswith(
+            "Transparent baselines and error analysis:"):
+        die("contribution item 3 not as expected")
+    item4 = copy.deepcopy(item3)
+    tr4 = text_runs(item4)
+    set_text(tr4[0][1], "An extended evaluation")
+    set_text(tr4[1][1], (
+        f" on {v['ind_n']} tickets written and cross-labelled by two authors "
+        f"(κ = {v['k_cat']:.3f}) and {v['rw_n']} real tickets from a public "
+        "dataset, reported with its negative result."))
+    item3.addnext(item4)
     # New appendices D, E, F after Appendix C
     for el in ([appendix_heading("Appendix D: Model Configurations and "
                                  "Hyperparameters")] + block_iv
