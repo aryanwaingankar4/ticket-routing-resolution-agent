@@ -908,15 +908,142 @@ def main():
         anchor.addnext(el)
         anchor = el
 
+    # 8b. Length cuts approved by AW (2026-10-23): cuts 1, 4, 7, 8 (fold),
+    # 9. Moved material keeps its content and its table number; the text
+    # that cites it now names the appendix. Cuts 2, 3, 5 and 6 are NOT
+    # applied.
+    def appendix_heading(title):
+        h = copy.deepcopy(head_b)
+        replace_in(h, "Appendix B: Reproduction Steps", title)
+        return h
+
+    def table_block(caption_no):
+        """Caption number, caption text, table and its spacer paragraph."""
+        caps = [p for p in all_paras() if ptext(p).strip() == caption_no]
+        if len(caps) != 1:
+            die(f"{caption_no}: expected one caption, found {len(caps)}")
+        cap = caps[0]
+        txt = cap.getnext()
+        tbl_el = txt.getnext()
+        spacer = tbl_el.getnext()
+        if tbl_el.tag != W("tbl") or spacer.tag != W("p") or ptext(spacer):
+            die(f"{caption_no} block not as expected")
+        return [cap, txt, tbl_el, spacer]
+
+    # Cut 1: Table IV -> Appendix D
+    block_iv = table_block("TABLE IV")
+    old = "Table IV gives the configuration of every component."
+    replace_in(find_para(old), old, "Table IV (Appendix D) gives the "
+               "configuration of every component.")
+    # Cut 4: Table II -> Appendix E; §III-G kept as two sentences
+    block_ii = table_block("TABLE II")
+    old = ("A value that is wrong for its context but internally consistent "
+           "can produce a wrong result without raising any error. The checks "
+           "in Table II therefore run before any result is accepted. Routing "
+           "decisions are compared exactly, and floating-point values are "
+           "compared within tolerances derived from their arithmetic.")
+    replace_in(find_para(old), old,
+               "A value that is wrong for its context but internally "
+               "consistent can produce a wrong result without raising any "
+               "error, so the checks in Table II (Appendix E) run before any "
+               "result is accepted. Routing decisions are compared exactly, "
+               "and floating-point values within tolerances derived from "
+               "their arithmetic.")
+    # Cut 7: "Methodological lessons" paragraph -> Appendix F, with a pointer
+    lessons = find_para("Methodological lessons.")
+    if not ptext(lessons).startswith("Methodological lessons."):
+        die("Methodological lessons paragraph not as expected")
+    old = ("training on the corpus does not transfer to out-of-template "
+           "phrasing better than no training at all (Section VI-C).")
+    replace_in(find_para(old), old, old + " Methodological lessons from "
+               "these experiments are summarised in Appendix F.")
+    # Cut 8: fold §III-F into §III-A as one sentence; reletter G -> F
+    head_f = find_para("F. Automation candidates")
+    para_f = head_f.getnext()
+    fold = ("An offline job clusters resolved tickets by the similarity of "
+            "their resolution text at a threshold of 0.80 and shows recurring "
+            "clusters to a reviewer as candidates for automation.")
+    if ptext(para_f) != fold or ptext(head_f) != "F. Automation candidates":
+        die("§III-F not as expected")
+    old = "because a failed ticket needs a person rather than a retry."
+    replace_in(find_para(old), old, old + " An offline job also clusters "
+               "resolved tickets by the similarity of their resolution text "
+               "at a threshold of 0.80 and shows recurring clusters to a "
+               "reviewer as candidates for automation.")
+    for el in (head_f, para_f):
+        el.getparent().remove(el)
+    head_g = find_para("G. Verification")
+    if ptext(head_g) != "G. Verification":
+        die("§III-G heading not as expected")
+    replace_in(head_g, "G. Verification", "F. Verification")
+    # Cut 9: Fig. 1 at 85% (both dimensions, aspect kept)
+    A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
+    WP = "{http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing}"
+    for tag in (WP + "extent", A + "ext"):
+        for ext in fig1.iter(tag):
+            for k in ("cx", "cy"):
+                ext.set(k, str(round(int(ext.get(k)) * 0.85)))
+    # Keep Table III in one column: with the cuts it would otherwise break
+    # after its first row. keepNext on every row but the last.
+    t3 = [t for t in body.iter(W("tbl"))
+          if "Paraphrased calibration" in ptext(t)]
+    if len(t3) != 1:
+        die("Table III not found")
+    for tr in t3[0].findall(W("tr"))[:-1]:
+        for tp in tr.iter(W("p")):
+            ppr = tp.find(W("pPr"))
+            if ppr is None:
+                ppr = tp.makeelement(W("pPr"), {})
+                tp.insert(0, ppr)
+            if ppr.find(W("keepNext")) is None:
+                kn = ppr.makeelement(W("keepNext"), {})
+                st = ppr.find(W("pStyle"))
+                (st.addnext(kn) if st is not None else ppr.insert(0, kn))
+    # New appendices D, E, F after Appendix C
+    for el in ([appendix_heading("Appendix D: Model Configurations and "
+                                 "Hyperparameters")] + block_iv
+               + [appendix_heading("Appendix E: Verification Checks")]
+               + block_ii
+               + [appendix_heading("Appendix F: Methodological Lessons"),
+                  lessons]):
+        anchor.addnext(el)
+        anchor = el
+
     # 9. final checks ---------------------------------------------------------
     full = "".join(t.text or "" for t in body.iter(W("t")))
     left = sorted(set(marker_re.findall(full)))
     shaded = [r for r in body.iter(W("r")) if is_marker_run(r)]
     if left or shaded or "[[FILL" in full:
         die(f"unfilled markers {left}; {len(shaded)} shaded run(s) remain")
-    for ref in ("[ref]", "{v[", "{'"):
+    for ref in ("[ref]", "{v[", "{'", "??", "Error! Reference"):
         if ref in full:
-            die(f"leftover placeholder {ref!r}")
+            die(f"leftover placeholder or broken reference {ref!r}")
+    # Every cited table, figure, appendix and section must exist.
+    texts = [ptext(p) for p in all_paras()]
+    tables = {t.strip()[6:] for t in texts if re.fullmatch(r"TABLE [IVX]+", t.strip())}
+    figs = {m.group(1) for t in texts for m in [re.match(r"Fig\. (\d+)\. ", t)] if m}
+    apps = {m.group(1) for t in texts for m in [re.match(r"Appendix ([A-Z]): ", t)] if m}
+    secs, cur = set(), None
+    for t in texts:
+        m = re.match(r"(I|II|III|IV|V|VI|VII|VIII|IX|X)\. [A-Z]", t)
+        if m:
+            cur = m.group(1)
+            secs.add(cur)
+        m = re.match(r"([A-H])\. [A-Z]", t)
+        if m and cur and len(t) < 80:
+            secs.add(f"{cur}-{m.group(1)}")
+    cited = {
+        "Table": (set(re.findall(r"Tables? ([IVX]+)\b", full)), tables),
+        "Fig.": (set(re.findall(r"Fig\. (\d+)", full)), figs),
+        "Appendix": (set(re.findall(r"Appendix ([A-Z])\b", full)), apps),
+        "Section": (set(re.findall(r"Section ([IVX]+(?:-[A-H])?)\b", full)),
+                    secs),
+    }
+    for kind, (refs, have) in cited.items():
+        missing = sorted(refs - have)
+        if missing:
+            die(f"{kind} cited but not present: {missing} (have {sorted(have)})")
+    print("[refs] " + "; ".join(f"{k} {sorted(r)}" for k, (r, _) in cited.items()))
     d.save(V4)
     print(f"[write] {os.path.relpath(V4, PROJECT_ROOT)}")
 

@@ -10,7 +10,7 @@ and the **command** that regenerates it. Nothing here was typed from memory.
 outputs without `--force`. New result files live in `data/paper_revision_oct/`.
 No existing result file, threshold, model or the `v1.0` tag was changed.
 
-Status (2026-10-23): **Phases 1-4 complete; review fixes applied** (label-integrity check, adjudication reasons, stale sentences, 240-word abstract; cuts proposed, not applied). `Calibrated_Escalation_IT_Ticket_Triage_v4.docx`
+Status (2026-10-23): **Phases 1-4 complete; review fixes applied** (label-integrity check, adjudication reasons, stale sentences, 240-word abstract) and **cuts 1, 4, 7, 8 (fold) and 9 applied**; cuts 2, 3, 5 and 6 not applied. `Calibrated_Escalation_IT_Ticket_Triage_v4.docx`
 is built by `python scripts/build_v4_docx.py` from v3, which is never written. Every Phase 2
 and Phase 3 number in v4 is read by that script from its result file. The 30 real-ticket
 drafts are **not labelled**, and the paper says so. See "Phase 4" at the end.
@@ -503,7 +503,7 @@ python scripts/eval_independent.py                             # final run
 - **Main text plus references** ends at the foot of the right column on page 8: References start at page 8, right column, 1.8 in, and Appendix A starts at 10.2 in. So the main text is already about 8 pages including references, with no margin.
 - **Appendices A–C** fill page 9.
 
-**Proposed cuts (NOT applied, for AW).** Savings are estimates in column-inches, measured from the Word layout; a full column is about 9.5 in.
+**Proposed cuts.** AW's decision (2026-10-23): apply 1, 4, 7, 9, and 8 as a one-sentence fold; do NOT apply 2, 3, 5 or 6. See "Cuts applied" below. Savings are estimates in column-inches, measured from the Word layout; a full column is about 9.5 in.
 
 | # | Cut | Where it goes | Est. saving |
 |---|---|---|---|
@@ -520,3 +520,25 @@ python scripts/eval_independent.py                             # final run
 - **Total if all are applied:** about 1.7 columns, a little under one page. Main text plus references would end around the middle of page 8, with the appendices on pages 8–9.
 - **Two cuts give most of the margin:** #1 + #2, about 7.4 in, are enough for comfortable room under 8 pages.
 - **Nothing is cut** from the results the mentor asked for: thresholds, error analysis, reproducibility, and the new test sets.
+
+### Cuts applied (2026-10-23, AW's decision)
+
+`python scripts/build_v4_docx.py --force`, section "8b". Content is moved, never deleted, and moved tables keep their numbers.
+
+- **Cut 1:** Table IV moved to **Appendix D: Model Configurations and Hyperparameters**. §IV-D now reads "Table IV (Appendix D) gives the configuration of every component."
+- **Cut 4:** Table II moved to **Appendix E: Verification Checks**. §III-G is now two sentences: "…without raising any error, so the checks in Table II (Appendix E) run before any result is accepted. Routing decisions are compared exactly, and floating-point values within tolerances derived from their arithmetic."
+- **Cut 7:** the "Methodological lessons" paragraph moved, verbatim, to **Appendix F: Methodological Lessons**. §VI-F's first paragraph ends with the pointer "Methodological lessons from these experiments are summarised in Appendix F."
+- **Cut 8, folded:** the §III-F heading and its paragraph were removed, and the paragraph is kept as one sentence at the end of §III-A: "An offline job also clusters resolved tickets … as candidates for automation." "G. Verification" was relettered to "F. Verification"; nothing in the paper cited §III-F or §III-G.
+- **Cut 9:** Fig. 1 scaled to 85%, both dimensions, aspect kept.
+- **Layout fix, no text change:** Table III's rows are kept together (keep-with-next). Without it, the table broke after its first row.
+- **Not applied:** cuts 2 (Fig. 2), 3 (Table V), 5 (§VI-A) and 6 (§VI-E).
+
+**Cross-reference check, now part of the build:**
+- Every cited Table (I–X), Fig. (1–6), Appendix (A–F) and Section (III-C, III-D, V, V-A, V-B, VI-A, VI-C, VI-D, VI-E, VIII) exists in the document.
+- No "??" and no "Error! Reference" text appears.
+- The document has no Word fields, so nothing can render as "??" later.
+
+**Layout after the cuts (Word, A4, two columns):**
+- **Total:** 9 pages.
+- **Main text plus references:** References now start at page 8, left column (2.7 in) and end in the right column, where Appendix A starts at 1.3 in. So main text plus references is about 7.6 pages, against about 8.0 before the cuts.
+- **Appendices A–F:** the rest of page 8 and page 9.

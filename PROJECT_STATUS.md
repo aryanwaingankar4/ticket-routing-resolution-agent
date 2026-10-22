@@ -21,7 +21,12 @@
 >     - Labels match AW's pre-cross-labelling backups (case-only `none`→`NONE` differences).
 >     - Adjudication reasons are fixed; the re-run is identical.
 >     - The 3 stale sentences are updated, and the abstract is 240 words.
->   - **Open for AW:** the proposed cuts, listed at the end of RESULTS_FOR_PAPER.md and not applied. Main text plus references ends at the foot of page 8; the total is 9 pages.
+>   - **Cuts applied (2026-10-23):**
+>     - Table IV moved to Appendix D, Table II to Appendix E, and "Methodological lessons" to Appendix F.
+>     - §III-F folded into one sentence in §III-A; Fig. 1 at 85%.
+>     - Cuts 2, 3, 5 and 6 not applied.
+>   - **Length:** main text plus references now ends near the top of the right column on page 8 (about 7.6 pages). The total is 9 pages.
+>   - The build checks every cross-reference.
 >
 > **All approved text changes are applied in v4.**
 >
