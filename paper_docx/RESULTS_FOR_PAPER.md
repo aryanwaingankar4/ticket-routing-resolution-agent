@@ -10,9 +10,10 @@ and the **command** that regenerates it. Nothing here was typed from memory.
 outputs without `--force`. New result files live in `data/paper_revision_oct/`.
 No existing result file, threshold, model or the `v1.0` tag was changed.
 
-Status: **Phase 1 complete** (21 fillable-now markers + 3 new offline analyses).
-**Phase 2 (real-world tickets) scored and drafted** (2026-10-21); fills drafted,
-draft labels pending. Phase 3 is waiting on the author-written tickets.
+Status (2026-10-23): **Phases 1-4 complete.** `Calibrated_Escalation_IT_Ticket_Triage_v4.docx`
+is built by `python scripts/build_v4_docx.py` from v3, which is never written. Every Phase 2
+and Phase 3 number in v4 is read by that script from its result file. The 30 real-ticket
+drafts are **not labelled**, and the paper says so. See "Phase 4" at the end.
 
 ---
 
@@ -415,3 +416,72 @@ python scripts/eval_independent.py                             # final run
 - **X1, independent part (§VI-E):** "Two authors each wrote about 54 tickets, seven per category plus five off-topic or vague ones ({n} in total). They wrote without consulting the training data, the generation templates or the benchmarks, and without LLM assistance. Each author then labelled the category and the expected outcome (escalate or proceed) of the other's tickets without seeing the writer's labels. Before adjudication, Cohen's κ was {kappa.category} for category (bootstrap 95% CI [{lo}, {hi}]) and {kappa.outcome} for outcome ([{lo}, {hi}]). The {disagreements.category} category and {disagreements.outcome} outcome disagreements were resolved by discussion."
   - **Single-annotator variant:** replace the last two sentences with "The labels were assigned by each ticket's writer alone (a single annotator), so no inter-annotator agreement is reported."
 - **X3, independent part:** written once the results exist. It must include `all.outcome_correct` (escalation correctness on all rows).
+
+## Phase 3 — results (2026-10-23)
+
+**Inputs** (`data/independent_test/`):
+- `tickets_AW.csv` and `tickets_SP.csv`: 54 tickets each, 7 per category plus 5 `NONE`/escalate.
+- `second_labels_on_AW_by_SP.csv`, `second_labels_on_SP_by_AW.csv` and `adjudication.csv`.
+
+**Provenance notes:**
+- **AW's statement (2026-10-23):** "An earlier --check-only run used the wrong second-label files by mistake; the files now in place are the original labels." κ below is computed from the files now in place.
+- **File times (observation):** `tickets_AW.csv` was last saved at 02:28, after `second_labels_on_AW_by_SP.csv` (02:24). The script confirms the ticket text still matches the second-label file, but it cannot see whether a label column was edited after cross-labelling.
+- **Adjudication:** each disagreement was resolved by one person, not by discussion. `resolved_by` is `SP` for AW's tickets and `AW` for SP's. In all 6 rows the final label is the writer's own. The paper says "adjudicated, and in all 6 the writer's label was kept", not "resolved by discussion".
+- **Reasons that don't match their final label:** some recorded reasons do not obviously support the label that was kept. AW007's reason is "sign-in issue is for app", but the final is Access Management. SP007's reason is "forgot the password", but the final is Network. *AW to check.*
+
+**Command:** `python scripts/eval_independent.py` → `results/independent_summary.csv` and `independent_tickets_routed.csv`. It was run twice; apart from the adjudication keys renamed in between, all values are identical.
+
+| Quantity | Value | Key |
+|---|---|---|
+| Tickets / with a team | 108 / 98 | `n_tickets`, `n_with_category` |
+| κ category (before adjudication) | 0.936 [0.882, 0.979], 102/108 agreement | `kappa.category*` |
+| κ category per direction | 0.936 each way (51/54) | `kappa.category.on_*` |
+| κ outcome | 1.000, 108/108 | `kappa.outcome*` |
+| Disagreements | 6 category, 0 outcome; 6 adjudicated, writer's label kept in 6 | `disagreements.*`, `adjudicated*` |
+| Cascade correct | 74/98 = 75.5% [66.1, 83.0] | `with_category.cascade_correct.*` |
+| Tier 2 alone correct | 75/98 = 76.5% [67.2, 83.8] | `with_category.tier2_only_correct.*` |
+| Recall (cascade) | AM 10/14, App 9/14, DB 14/14, Infra 9/14, Net 12/14, Sec 8/14, Sto 12/14 | `with_category.recall.cascade.*` |
+| Escalated at 0.67 | 40/108 = 37.0% [28.5, 46.4] | `all.escalated.*` |
+| Should escalate → escalated | 8/10 | `should_escalate.escalated.*` |
+| Should proceed → proceeded | 66/98 (so 32 actionable tickets escalated) | `should_proceed.proceeded.*` |
+| Outcome correct | 74/108 = 68.5% [59.3, 76.5] | `all.outcome_correct.*` |
+| Misrouted: escalated / drafted | 8 / 16 of 24 | `with_category.misclassified*` |
+| Tier-1 share | 27/108 = 25.0% | `all.tier1_kept.*` |
+
+## Phase 4 — v4.docx (2026-10-23)
+
+**Build:** `python scripts/build_v4_docx.py` (`--force` to rebuild). It reads v3 and writes v4.
+- **Fatal checks:** the build stops if any target text is not found exactly once, or if any source value does not match. It also checks that every R1 command names a script that exists.
+- **Guarantees:** no marker or shaded run is left, and v3 is byte-identical to `HEAD` (checked with git).
+
+**What was applied:**
+- **Markers:** all 44 filled. S3 was removed together with its row (approved merge). Marker runs keep Times New Roman and their size, and lose the bold and the yellow shading.
+- **Approved edits:**
+  - 1a/1b/1c: noise band in Table IV, §VI-A and the Table VI caption;
+  - 2: Table III merge;
+  - 3a/3b: the 3,200/4,000 correction;
+  - 4: §V-A bucket wording, the dip sentence and the fine-grid sentence;
+  - 6: the §VII-B limitation;
+  - E5 wording;
+  - Table III source: "Written blind by two authors; cross-labelled";
+  - the Table VIII Tier-1 column;
+  - the dataset-availability sentence (§VI-E) and its Limitations clause;
+  - Appendix C (Table X);
+  - references [24] Pereira and [25] Lui & Baldwin.
+- **Figures:** Figs. 4–6 at 3.3 in, using Fig. 1's paragraph format (centred, keep-with-next).
+- **"Not labelled":** X3 ends with "The 30 drafts generated for a sample of the real tickets were not labelled." The build fails if `draft_labels.csv` contains any label.
+
+**Where the applied text differs from the drafts above (all small; each is in the commit):**
+- **A1:** "equal to Tier 2 alone" became "indistinguishable from Tier 2 alone". 115 and 114 are not equal; p = 1.0.
+- **Table VI caption (1c):** the drafted "±2 s.d. is the binomial standard deviation" was wrong by a factor of two. It now reads "The ±2 s.d. column is twice the binomial standard deviation of a coverage estimate at n = 175" (2 × 0.02268 = 0.045).
+- **X1, independent part:** "resolved by discussion" became "adjudicated, and in all 6 the writer's label was kept", which is what `adjudication.csv` records.
+- **§VII-B:** one clause added for the independent set: "16 of the 24 misrouted independent tickets reached the drafter".
+- **A1, C1 and L1:** each gains an independent-set clause in front of the approved real-world text; X3 gains the independent paragraph. All numbers come from `independent_summary.csv`.
+- **R1:** adds the revision requirements file and a step 6, "Extended evaluation", listing the Phase 2 and Phase 3 scripts.
+
+**Not changed, for AW to decide (sentences a new result may make stale):**
+1. §II "Two of the ticket-triage studies evaluate on real tickets, while our main evaluation does not (Section VIII)." This is still true, since the main evaluation is synthetic, but it reads oddly now that a real-ticket set exists.
+2. §VIII "No real ticket stream has passed through the system…". Real tickets have now been routed offline, though not as a live stream.
+3. §IX "established on a synthetic corpus and small, mostly LLM-generated evaluation sets". The 583 real and 108 hand-written tickets now outnumber the LLM-generated evaluation tickets.
+
+**Length:** v3 renders at 7 pages and v4 at 9, in Word (A4, two columns). The abstract grew from 237 to 360 words. The guide's page limit is not met. Cutting is AW's decision.

@@ -420,11 +420,21 @@ def main():
             tid = t["ticket_id"]
             t["gold_category"], t["gold_outcome"] = adj.get(tid, mine[tid])
             t["label_source"] = "resolved" if tid in adj else "agreed"
+        # Say what the adjudication file records -- who resolved each row and
+        # whose label survived -- not what the guidelines asked for.
+        who = Counter(r["resolved_by"] for r in read(p_adj(), ADJ_COLS)
+                      if r["ticket_id"] in adj) if adj else Counter()
         summary += [("annotation", "two authors, cross-labelled"),
                     ("disagreements.tickets", len(dis)),
                     ("disagreements.category", n_dis_cat),
                     ("disagreements.outcome", n_dis_out),
-                    ("resolved_by_discussion", len(adj))]
+                    ("adjudicated", len(adj)),
+                    ("adjudicated.final_equals_writer_label",
+                     sum(adj[t] == dis[t][0] for t in adj)),
+                    ("adjudicated.final_equals_second_label",
+                     sum(adj[t] == dis[t][1] for t in adj))]
+        summary += [(f"adjudicated.resolved_by.{k}", v)
+                    for k, v in sorted(who.items())]
 
     out_dir = os.path.join(DIR, "results")
     out_tickets = os.path.join(out_dir, "independent_tickets_routed.csv")

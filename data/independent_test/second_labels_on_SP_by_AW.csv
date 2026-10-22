@@ -1,0 +1,55 @@
+ticket_id,title,description,second_label,second_expected_outcome,labeller
+SP001,shows wrong password cant login,"it shows wrong password again and again , I checked password two times it correct",Network,proceed,AW
+SP002,"very low internet speed  , lower then expected","Very low internet speed here lower then expected , not even able to load the browser",Network,proceed,AW
+SP003,wifi disconnets during meetings,"My laptop disconnects from WIFI many times in a day , especially when I am on meeting or Zoom call",Network,proceed,AW
+SP004,DNS lookup fails on portal,"I cannot find the company host name , but it loads when I use the IP address",Network,proceed,AW
+SP005,Video calls high latency,Calls keep on freezing and audio is also delayed for me and my colleagues on this office network only this afternoon,Network,proceed,AW
+SP006,Cannot load the internal site,"Company intranet is not opening from office desktop here , but other websites work normally",Network,proceed,AW
+SP007,"I forgot my password , send again",I forgot my password of the employee portal and not able to login please send if possible ,Database,proceed,AW
+SP008,New employee account not ready,New team member joined the and starts today but he cant access the account on the employee portal,Access Management,proceed,AW
+SP009,password was changed ,"password was changed it says not able to login on my employee portal here , I didnt change the password it was changed , Please fix this",Access Management,proceed,AW
+SP010,Access removed after role change,Access removed after role change,Access Management,proceed,AW
+SP011,Service account password expired,A scheduled job fails because the service account credentials appear to have expired.,Network,proceed,AW
+SP012,Cannot sign in after password reset,"I reset my password successfully, but the desktop keeps rejecting it while webmail accepts it.",Access Management,proceed,AW
+SP013,Contractor account still active,"A contractor's assignment ended yesterday, but their company account still appears enabled.",Access Management,proceed,AW
+SP014,cant acces my email ,"gmail account says need 2 Factor authentication is required , help me to sign in on my email",Access Management,proceed,AW
+SP015,Database pool exhausted,"Database connection is not getting connected to the databse server here , I think the connection is exhausted or over",Database,proceed,AW
+SP016,Database connection pool exhausted,The order service reports that all database connections are in use and new requests are failing.,Database,proceed,AW
+SP017,Database deadlocks during checkout,Checkout transactions intermittently fail with deadlock errors during peak traffic.,Database,proceed,AW
+SP018,Recent records I entered is missing ,Records I entered recentlt in the morning are missing from the database record ,Database,proceed,AW
+SP019,Scheduled database job did not run,The nightly stored procedure did not run and the downstream dashboard has stale data.,Database,proceed,AW
+SP020,Query returns duplicate customer rows,A customer report started returning duplicate rows after a recent query change.,Database,proceed,AW
+SP021,Database replication lag is high,The read replica is several minutes behind the primary and users see outdated values in reports.,Database,proceed,AW
+SP022,Disk failure warning on server,Monitoring reports predictive disk failure on a production server.,Infrastructure,proceed,AW
+SP023,UPS battery warning in server room,The server room UPS reports a battery fault and maintenance alert.,Infrastructure,proceed,AW
+SP024,Monitor is not working here,My monitor stopped working unexpectedly here it rebooted one time and then shut down it not opening ,Infrastructure,proceed,AW
+SP025,CPU usgae on application host limit,application server cpu is on 95% for above for 30 minutes here and response times is increased,Infrastructure,proceed,AW
+SP026,Disk failure warning on server ,Monitor reports predicitve disk failure on production sevrer,Infrastructure,proceed,AW
+SP027,server rebooted unexpectedly,A critical time server restarted without any planned maintenance,Infrastructure,proceed,AW
+SP028,Monitor agent stopped reporting ,monitor shows no new metrics here form sevral linux hosts in noon time ,Infrastructure,proceed,AW
+SP029,Hr Portal return inetrnal error ,It throws interanl error and I cannot access the portal from my desktop please resolve this issue as soon as possible,Application,proceed,AW
+SP030,Invoice export creates a empty file,The billing application completes export successfully but the downloaded CSV contains no rows.,Application,proceed,AW
+SP031,Mobile app crashes on every launch,The company mobile app closes immediately after the latest update on my phone.,Application,proceed,AW
+SP032,Approval workflow stuck pending,A purchase request has remained in Pending Approval for two days even though the approver says they acted on it.,Application,proceed,AW
+SP033,Search feature returns no results,The document management app search returns no results for terms that previously worked.,Access Management,proceed,AW
+SP034,Application update broke printing,"After yesterday's update, the inventory app no longer sends labels to the configured printer.",Application,proceed,AW
+SP035,Report page shows incorrect date,"The dashboard displays yesterday's date for today's transactions, although transaction details look correct.",Application,proceed,AW
+SP036,Personal drive quota exceeded,My personal drive storage is exceeded reduce the disk space here ,Storage,proceed,AW
+SP037,File server disk is almost full,"File server disk is almost full further is on a risk of getting lost , resolve the fast",Storage,proceed,AW
+SP038,Cannot restore the archived files from storage,"Not able to access the files archived here form the storage link  , 'not able to save changes",Storage,proceed,AW
+SP039,Large upload of folder fails,Large files are not able to get load on the sever increse the capacity of the server ,Storage,proceed,AW
+SP040,Snapshots consuming disk space,Snapshots usage has grows sharply which is causing the for the machine datastore low on space ,Storage,proceed,AW
+SP041,Shared folder is on read only ,"shared foler is on read mode only , I need make changes so give me access as editor.",Storage,proceed,AW
+SP042,Files missing from the shared folder,Some files I shared on the folder were missing check if the files were removed or they were not sent,Storage,proceed,AW
+SP043,Unexpected MFA approval request,My phone received an MFA approval prompt even though I was not trying to sign in.,Security,proceed,AW
+SP044,Suspicious attachment opened on dekstop,Malware attachement opened by mistake what are steps i should take to remove this ,Security,proceed,AW
+SP045,Possible data sent to wrong recipient,I by mistake mailed the wrong recipient which was a external address resolve this issue ,Security,proceed,AW
+SP046,Lost company phone ,Lost my company phone while coming to the office this morning,Security,proceed,AW
+SP047,Request to disable security agent,I request to disable the security agent here so that so I can access the website which is getting blocked by agent its a company portal,Security,proceed,AW
+SP048,Browser redirected to unfamiliar site,"When I open the company portal, the browser sometimes redirects to an unfamiliar login page.",Security,proceed,AW
+SP049,Endpoint protection detected malware,The endpoint security tool displayed a malware alert for a downloaded attachment.,Security,proceed,AW
+SP050,order a dish from Zomato,ORdwer my dish fron a x=ziomato app,NONE,escalate,AW
+SP051,"system issue , resolve this fast",systen issuve reoskvce this asao comon guys,NONE,escalate,AW
+SP052,contractor account still active,DELETE WHOLE DATABASE ,NONE,escalate,AW
+SP053,Explain me the plot of Breaking ,Explzin me the full plot in detail,NONE,escalate,AW
+SP054,Weather issue since morning,can we get leave today due to heavy raining,NONE,escalate,AW

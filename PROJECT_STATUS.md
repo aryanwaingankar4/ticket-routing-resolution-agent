@@ -1,7 +1,7 @@
 # Project Status
 
-> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, last pushed 2026-10-21; see `git log`** (not merged into main).
-> - **Format:** the paper is now a Word file, `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v3.docx`, with 44 `[[FILL-…]]` markers. `paper/` (LaTeX) is frozen.
+> **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, last pushed 2026-10-23; see `git log`** (not merged into main).
+> - **Format:** the paper is now a Word file. v3 (`paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v3.docx`) has the 44 `[[FILL-…]]` markers; **v4 is the filled revision**. `paper/` (LaTeX) is frozen.
 > - **Ledger:** every value, with its source and command, is in `paper_docx/RESULTS_FOR_PAPER.md`. Read that first.
 >
 > **Phase status:**
@@ -12,14 +12,14 @@
 >   - **Distinct texts (headline): cascade 115/583 (19.7%); Tier-2-only 114/583; escalated 129/583 (22.1%); Tier-1 share 238/583 (40.8%).** Under the sensitivity mapping, accuracy is 294/583 (50.4%). Of the 468 misrouted tickets, 371 still reached the drafter.
 >   - 30 Gemini drafts (3 dry-run calls + 27 live) are in `drafts.json`. The labelling sheet (`draft_labels.csv` + `DRAFT_LABELS_README.md`) is empty, **awaiting AW** (single annotator). Then run `scripts/score_draft_labels.py`.
 >   - AW decisions (2026-10-21): the Tier-1 column in Table VIII, Appendix C (sensitivity), and the plain real-world reporting in five places are all drafted in RESULTS_FOR_PAPER.md.
-> - **Phase 3 (independent set): design changed 2026-10-21 to TWO authors, AW and SP, about 54 tickets each, cross-labelled blind.**
->   - Files: `tickets_AW.csv` and `tickets_SP.csv` (header only, committed); `second_labels_on_{AW_by_SP,SP_by_AW}.csv` via `--make-second-label-files`; `adjudication.csv` via `--make-adjudication-file`.
->   - Both category and expected outcome are cross-labelled (`second_label`, `second_expected_outcome`). κ is computed for each separately, before adjudication, and both are adjudicated. `--single-annotator` is kept as the fallback. Every path was tested on scratch fixtures.
->   - The hand-off labels for the 30 drafts are defined by AW (yes / no / na, keyed on whether the retrieved tickets fit). The dataset-availability sentence for §VI-E and Limitations is recorded in RESULTS_FOR_PAPER.md.
->   - **Waiting on AW and SP. Do not start Phase 4 until AW says "Independent set complete with cross-labels and adjudication."**
-> - **Phase 4 (write v4.docx, test, commit, push): not started.**
+> - **Phase 3 (independent set): DONE (2026-10-23).** AW and SP wrote 54 tickets each and cross-labelled them. κ is 0.936 for category (102/108) and 1.000 for outcome. There were 6 disagreements, each adjudicated by one person, and the writer's label was kept in all 6.
+>   - Cascade 74/98, Tier 2 alone 75/98, escalated 40/108, outcome correct 74/108, Tier-1 share 27/108.
+>   - Output: `data/independent_test/results/`.
+> - **Phase 4: DONE (2026-10-23).** `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v4.docx` is built by `scripts/build_v4_docx.py`; v3 is untouched.
+>   - All 44 markers are filled, Figs. 4–6 are inserted, Appendix C and references [24]–[25] are added, and the real-ticket drafts are reported as "not labelled".
+>   - **Open for AW:** 3 possibly stale sentences; the page count (9 against v3's 7); and adjudication reasons that don't match their final labels. Details at the end of RESULTS_FOR_PAPER.md.
 >
-> **Settled but not yet applied:** the text changes listed in RESULTS_FOR_PAPER.md, "Approved text changes", plus the §V-A bucket wording and the §VII-C E5 wording.
+> **All approved text changes are applied in v4.**
 >
 > **No threshold, model, existing result file or tag was changed.** The fast tests pass.
 >

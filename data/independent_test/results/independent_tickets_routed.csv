@@ -1,0 +1,109 @@
+ticket_id,cascade_category,tier,tier1_category,tier1_conf,tier2_only_category,top_similarity,escalated,config_fingerprint,author,gold_category,gold_outcome,label_source
+AW001,Access Management,1,Access Management,0.6088385480481392,Access Management,0.6844495534896851,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW002,Application,2,Database,0.40525762730220966,Application,0.6704897284507751,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW003,Network,2,Access Management,0.4963775045138734,Network,0.6822089552879333,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW004,Storage,2,Storage,0.4166489516196145,Storage,0.7719680070877075,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW005,Access Management,2,Access Management,0.46937657671573296,Access Management,0.6705107688903809,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW006,Access Management,2,Access Management,0.337164608432918,Access Management,0.6856600046157837,False,9c9a5cbcb53f,AW,Access Management,proceed,agreed
+AW007,Access Management,2,Access Management,0.4743008438000814,Access Management,0.643936038017273,True,9c9a5cbcb53f,AW,Access Management,proceed,resolved
+AW008,Application,2,Access Management,0.33084695121865987,Application,0.5869463682174683,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW009,Application,2,Access Management,0.29127589754055233,Application,0.6115216612815857,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW010,Application,2,Infrastructure,0.2142875576706586,Application,0.611398458480835,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW011,Access Management,2,Storage,0.26793633481539425,Access Management,0.6442416906356812,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW012,Storage,2,Access Management,0.3281707478890954,Storage,0.6570503115653992,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW013,Application,2,Database,0.16647813894488922,Application,0.6400309801101685,True,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW014,Database,2,Access Management,0.265251280141159,Database,0.6759597063064575,False,9c9a5cbcb53f,AW,Application,proceed,agreed
+AW015,Database,2,Infrastructure,0.37746000353455145,Database,0.7274887561798096,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW016,Database,1,Database,0.7383536084053322,Database,0.7644878029823303,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW017,Database,2,Database,0.3841691569593452,Database,0.7617442607879639,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW018,Database,2,Database,0.4860141890399763,Database,0.6511259078979492,True,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW019,Database,2,Infrastructure,0.2143463129255563,Database,0.7029072046279907,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW020,Database,2,Database,0.27083489921667975,Database,0.7197506427764893,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW021,Database,2,Database,0.2765336943012157,Database,0.751044750213623,False,9c9a5cbcb53f,AW,Database,proceed,agreed
+AW022,Storage,2,Database,0.21342651300968568,Storage,0.6896461248397827,False,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW023,Storage,2,Storage,0.2292357288425336,Storage,0.6242445111274719,True,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW024,Network,1,Network,0.5873808575541496,Network,0.6677749156951904,True,9c9a5cbcb53f,AW,Infrastructure,proceed,resolved
+AW025,Network,2,Database,0.23029656392974635,Network,0.753657341003418,False,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW026,Infrastructure,1,Infrastructure,0.5175639592163291,Infrastructure,0.7316287755966187,False,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW027,Storage,2,Database,0.4745350109977164,Storage,0.6706788539886475,False,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW028,Infrastructure,2,Infrastructure,0.18996526004200492,Infrastructure,0.678075909614563,False,9c9a5cbcb53f,AW,Infrastructure,proceed,agreed
+AW029,Network,2,Security,0.2476861285900003,Network,0.7378443479537964,False,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW030,Network,2,Security,0.3108737087631088,Network,0.6524602174758911,True,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW031,Network,1,Network,0.6490319448926845,Network,0.7630816698074341,False,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW032,Network,2,Network,0.3613828691952191,Network,0.6462037563323975,True,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW033,Network,2,Network,0.3386789877459627,Network,0.6844416856765747,False,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW034,Network,2,Access Management,0.37030242537522295,Network,0.6437193155288696,True,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW035,Network,2,Network,0.4480375566093102,Network,0.6761965155601501,False,9c9a5cbcb53f,AW,Network,proceed,agreed
+AW036,Security,2,Access Management,0.3631245814132944,Security,0.6867939829826355,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW037,Access Management,1,Access Management,0.5248391977806742,Access Management,0.6746430397033691,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW038,Security,2,Storage,0.4242410573588448,Security,0.7119544148445129,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW039,Access Management,1,Access Management,0.6765393558650333,Storage,0.6957947015762329,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW040,Security,2,Access Management,0.3662694240399924,Security,0.7390077114105225,False,9c9a5cbcb53f,AW,Security,proceed,resolved
+AW041,Application,2,Application,0.2483986962666295,Application,0.6808222532272339,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW042,Access Management,2,Security,0.25374730989408745,Access Management,0.7052288055419922,False,9c9a5cbcb53f,AW,Security,proceed,agreed
+AW043,Storage,1,Storage,0.5038803953440341,Storage,0.7207891941070557,False,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW044,Storage,1,Storage,0.504904458772852,Storage,0.7857051491737366,False,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW045,Access Management,1,Access Management,0.5130624597263999,Storage,0.6203771233558655,True,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW046,Storage,2,Storage,0.36851283471527074,Storage,0.6238563060760498,True,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW047,Storage,1,Storage,0.6138819512434139,Storage,0.7119975090026855,False,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW048,Storage,1,Storage,0.7786031666458657,Storage,0.638478696346283,True,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW049,Database,2,Database,0.2961173343577041,Database,0.751461923122406,False,9c9a5cbcb53f,AW,Storage,proceed,agreed
+AW050,Access Management,2,Network,0.4901559084894028,Access Management,0.6214914321899414,True,9c9a5cbcb53f,AW,NONE,escalate,agreed
+AW051,Database,2,Network,0.38184556049839646,Database,0.6703419089317322,False,9c9a5cbcb53f,AW,NONE,escalate,agreed
+AW052,Database,2,Database,0.18374886202121357,Database,0.5588401556015015,True,9c9a5cbcb53f,AW,NONE,escalate,agreed
+AW053,Access Management,2,Access Management,0.2668062090822144,Access Management,0.5718667507171631,True,9c9a5cbcb53f,AW,NONE,escalate,agreed
+AW054,Access Management,2,Access Management,0.3370926318098576,Access Management,0.5539311766624451,True,9c9a5cbcb53f,AW,NONE,escalate,agreed
+SP001,Security,2,Access Management,0.2773465876801714,Security,0.6778989434242249,False,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP002,Network,2,Security,0.3078341704361675,Network,0.6161937117576599,True,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP003,Network,2,Database,0.3303903794182522,Network,0.6767948865890503,False,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP004,Network,2,Network,0.409201917399113,Network,0.7700923681259155,False,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP005,Network,1,Network,0.8222800497259263,Network,0.664715051651001,True,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP006,Network,2,Network,0.24452379200264887,Network,0.6394385099411011,True,9c9a5cbcb53f,SP,Network,proceed,agreed
+SP007,Access Management,2,Access Management,0.39060496307915993,Access Management,0.7097576260566711,False,9c9a5cbcb53f,SP,Network,proceed,resolved
+SP008,Access Management,1,Access Management,0.5882390489418028,Access Management,0.7331176996231079,False,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP009,Access Management,1,Access Management,0.5255345729367835,Access Management,0.7517148852348328,False,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP010,Access Management,1,Access Management,0.9254300177300214,Access Management,0.7136663198471069,False,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP011,Security,2,Security,0.4786628840106812,Security,0.6882811784744263,False,9c9a5cbcb53f,SP,Access Management,proceed,resolved
+SP012,Access Management,1,Access Management,0.8174745623018773,Access Management,0.681450366973877,False,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP013,Access Management,2,Security,0.3309721832945621,Access Management,0.6355051398277283,True,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP014,Access Management,2,Access Management,0.4384705018764683,Access Management,0.6417583227157593,True,9c9a5cbcb53f,SP,Access Management,proceed,agreed
+SP015,Database,2,Database,0.4337485683418751,Database,0.7301117777824402,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP016,Database,1,Database,0.667930183194094,Database,0.7550591230392456,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP017,Database,1,Database,0.7191999393456207,Database,0.7928712964057922,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP018,Database,1,Database,0.6344213054684469,Database,0.6559649705886841,True,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP019,Database,1,Database,0.5748751218751341,Database,0.7189874649047852,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP020,Database,2,Database,0.3356836150488179,Database,0.6919379234313965,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP021,Database,1,Database,0.8158031770934252,Database,0.837928056716919,False,9c9a5cbcb53f,SP,Database,proceed,agreed
+SP022,Infrastructure,2,Infrastructure,0.4123475149081102,Infrastructure,0.6787638664245605,False,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP023,Infrastructure,2,Infrastructure,0.30425725895670624,Infrastructure,0.5867626667022705,True,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP024,Infrastructure,2,Application,0.24864421386367525,Infrastructure,0.6183304786682129,True,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP025,Infrastructure,2,Infrastructure,0.31808818234600794,Infrastructure,0.7848269939422607,False,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP026,Infrastructure,2,Infrastructure,0.3837681207398701,Infrastructure,0.7000536322593689,False,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP027,Infrastructure,2,Infrastructure,0.37029248492881983,Infrastructure,0.6931031942367554,False,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP028,Infrastructure,2,Application,0.1835994180542302,Infrastructure,0.6630901098251343,True,9c9a5cbcb53f,SP,Infrastructure,proceed,agreed
+SP029,Access Management,2,Database,0.4302212386403701,Access Management,0.70184326171875,False,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP030,Database,2,Application,0.3530943395886305,Database,0.6302493810653687,True,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP031,Application,2,Application,0.32833059577878887,Application,0.6529080271720886,True,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP032,Application,2,Security,0.24211157616494128,Application,0.662105143070221,True,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP033,Application,1,Application,0.7488722079913731,Application,0.7722691297531128,False,9c9a5cbcb53f,SP,Application,proceed,resolved
+SP034,Application,2,Application,0.28818193260831215,Application,0.7111783027648926,False,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP035,Application,2,Application,0.4877294560805456,Application,0.7158569097518921,False,9c9a5cbcb53f,SP,Application,proceed,agreed
+SP036,Storage,1,Storage,0.717679814963624,Storage,0.7042558789253235,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP037,Storage,2,Infrastructure,0.28397453218607444,Storage,0.7427753210067749,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP038,Storage,1,Storage,0.8822140270288621,Storage,0.6888188123703003,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP039,Storage,2,Storage,0.34905928346418175,Storage,0.7123527526855469,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP040,Storage,2,Database,0.32619973039567746,Storage,0.6953084468841553,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP041,Storage,2,Access Management,0.29956814306326063,Storage,0.7118356823921204,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP042,Storage,1,Storage,0.7556299985868498,Storage,0.7691287994384766,False,9c9a5cbcb53f,SP,Storage,proceed,agreed
+SP043,Security,2,Access Management,0.39895222389922297,Security,0.7623730897903442,False,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP044,Security,2,Security,0.4152212899806885,Security,0.6846914291381836,False,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP045,Security,2,Database,0.3443546076106341,Security,0.6391685605049133,True,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP046,Access Management,2,Access Management,0.4495277429816502,Access Management,0.6180461645126343,True,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP047,Access Management,2,Access Management,0.44540757228655325,Access Management,0.6514687538146973,True,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP048,Security,2,Application,0.4437632550920397,Security,0.6678963899612427,True,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP049,Security,1,Security,0.7532900613272552,Security,0.7123780250549316,False,9c9a5cbcb53f,SP,Security,proceed,agreed
+SP050,Access Management,2,Database,0.3025359276415834,Access Management,0.5795382857322693,True,9c9a5cbcb53f,SP,NONE,escalate,agreed
+SP051,Storage,2,Network,0.22874317509004677,Storage,0.7167066931724548,False,9c9a5cbcb53f,SP,NONE,escalate,agreed
+SP052,Database,2,Security,0.31322228882949016,Database,0.6380939483642578,True,9c9a5cbcb53f,SP,NONE,escalate,agreed
+SP053,Security,2,Infrastructure,0.230739424728597,Security,0.5310209393501282,True,9c9a5cbcb53f,SP,NONE,escalate,agreed
+SP054,Access Management,2,Access Management,0.21040763004734098,Access Management,0.6100708842277527,True,9c9a5cbcb53f,SP,NONE,escalate,agreed

@@ -1,1 +1,55 @@
 ticket_id,author,title,description,true_category,expected_outcome,notes
+SP001,SP,shows wrong password cant login,"it shows wrong password again and again , I checked password two times it correct",Network,proceed,wrong password
+SP002,SP,"very low internet speed  , lower then expected","Very low internet speed here lower then expected , not even able to load the browser",Network,proceed,low internet speed
+SP003,SP,wifi disconnets during meetings,"My laptop disconnects from WIFI many times in a day , especially when I am on meeting or Zoom call",Network,proceed,wifi disconnect
+SP004,SP,DNS lookup fails on portal,"I cannot find the company host name , but it loads when I use the IP address",Network,proceed,DNS lookup fails
+SP005,SP,Video calls high latency,Calls keep on freezing and audio is also delayed for me and my colleagues on this office network only this afternoon,Network,proceed,high latency
+SP006,SP,Cannot load the internal site,"Company intranet is not opening from office desktop here , but other websites work normally",Network,proceed,cannot load site
+SP007,SP,"I forgot my password , send again",I forgot my password of the employee portal and not able to login please send if possible ,Network,proceed,forgot my password
+SP008,SP,New employee account not ready,New team member joined the and starts today but he cant access the account on the employee portal,Access Management,proceed,account not ready
+SP009,SP,password was changed ,"password was changed it says not able to login on my employee portal here , I didnt change the password it was changed , Please fix this",Access Management,proceed,password changed
+SP010,SP,Access removed after role change,Access removed after role change,Access Management,proceed,access removed
+SP011,SP,Service account password expired,A scheduled job fails because the service account credentials appear to have expired.,Access Management,proceed,password exppired
+SP012,SP,Cannot sign in after password reset,"I reset my password successfully, but the desktop keeps rejecting it while webmail accepts it.",Access Management,proceed,cannot sign in
+SP013,SP,Contractor account still active,"A contractor's assignment ended yesterday, but their company account still appears enabled.",Access Management,proceed,account active
+SP014,SP,cant acces my email ,"gmail account says need 2 Factor authentication is required , help me to sign in on my email",Access Management,proceed,cannot access mail
+SP015,SP,Database pool exhausted,"Database connection is not getting connected to the databse server here , I think the connection is exhausted or over",Database,proceed,database exhausted
+SP016,SP,Database connection pool exhausted,The order service reports that all database connections are in use and new requests are failing.,Database,proceed,database deadlocks
+SP017,SP,Database deadlocks during checkout,Checkout transactions intermittently fail with deadlock errors during peak traffic.,Database,proceed,database deadlocks
+SP018,SP,Recent records I entered is missing ,Records I entered recentlt in the morning are missing from the database record ,Database,proceed,records missing
+SP019,SP,Scheduled database job did not run,The nightly stored procedure did not run and the downstream dashboard has stale data.,Database,proceed,job did not run
+SP020,SP,Query returns duplicate customer rows,A customer report started returning duplicate rows after a recent query change.,Database,proceed,duplicate error
+SP021,SP,Database replication lag is high,The read replica is several minutes behind the primary and users see outdated values in reports.,Database,proceed,replication lag
+SP022,SP,Disk failure warning on server,Monitoring reports predictive disk failure on a production server.,Infrastructure,proceed,hardware health; prioritize investigation
+SP023,SP,UPS battery warning in server room,The server room UPS reports a battery fault and maintenance alert.,Infrastructure,proceed,power protection; assess operational risk
+SP024,SP,Monitor is not working here,My monitor stopped working unexpectedly here it rebooted one time and then shut down it not opening ,Infrastructure,proceed,host resource saturation
+SP025,SP,CPU usgae on application host limit,application server cpu is on 95% for above for 30 minutes here and response times is increased,Infrastructure,proceed,hardware health; prioritize investigation
+SP026,SP,Disk failure warning on server ,Monitor reports predicitve disk failure on production sevrer,Infrastructure,proceed,unexpected reboot; inspect logs
+SP027,SP,server rebooted unexpectedly,A critical time server restarted without any planned maintenance,Infrastructure,proceed,monitoring/agent connectivity
+SP028,SP,Monitor agent stopped reporting ,monitor shows no new metrics here form sevral linux hosts in noon time ,Infrastructure,proceed,application-side error
+SP029,SP,Hr Portal return inetrnal error ,It throws interanl error and I cannot access the portal from my desktop please resolve this issue as soon as possible,Application,proceed,application export defect
+SP030,SP,Invoice export creates a empty file,The billing application completes export successfully but the downloaded CSV contains no rows.,Application,proceed,client application regression
+SP031,SP,Mobile app crashes on every launch,The company mobile app closes immediately after the latest update on my phone.,Application,proceed,workflow state issue
+SP032,SP,Approval workflow stuck pending,A purchase request has remained in Pending Approval for two days even though the approver says they acted on it.,Application,proceed,application search/indexing
+SP033,SP,Search feature returns no results,The document management app search returns no results for terms that previously worked.,Application,proceed,application integration or configuration
+SP034,SP,Application update broke printing,"After yesterday's update, the inventory app no longer sends labels to the configured printer.",Application,proceed,application display/timezone or data mapping
+SP035,SP,Report page shows incorrect date,"The dashboard displays yesterday's date for today's transactions, although transaction details look correct.",Application,proceed,application display/timezone or data mapping
+SP036,SP,Personal drive quota exceeded,My personal drive storage is exceeded reduce the disk space here ,Storage,proceed,user storage quota
+SP037,SP,File server disk is almost full,"File server disk is almost full further is on a risk of getting lost , resolve the fast",Storage,proceed,capacity alert
+SP038,SP,Cannot restore the archived files from storage,"Not able to access the files archived here form the storage link  , 'not able to save changes",Storage,proceed,archive/restore workflow
+SP039,SP,Large upload of folder fails,Large files are not able to get load on the sever increse the capacity of the server ,Storage,proceed,large-file transfer or quota
+SP040,SP,Snapshots consuming disk space,Snapshots usage has grows sharply which is causing the for the machine datastore low on space ,Storage,proceed,snapshot capacity; do not delete without review
+SP041,SP,Shared folder is on read only ,"shared foler is on read mode only , I need make changes so give me access as editor.",Storage,proceed,shared storage permissions or volume state; investigate
+SP042,SP,Files missing from the shared folder,Some files I shared on the folder were missing check if the files were removed or they were not sent,Storage,proceed,possible deletion or sync issue; preserve recovery options
+SP043,SP,Unexpected MFA approval request,My phone received an MFA approval prompt even though I was not trying to sign in.,Security,proceed,possible credential compromise
+SP044,SP,Suspicious attachment opened on dekstop,Malware attachement opened by mistake what are steps i should take to remove this ,Security,proceed,possible malware; report promptly
+SP045,SP,Possible data sent to wrong recipient,I by mistake mailed the wrong recipient which was a external address resolve this issue ,Security,proceed,potential data exposure; prompt incident handling
+SP046,SP,Lost company phone ,Lost my company phone while coming to the office this morning,Security,proceed,lost device; secure account and device
+SP047,SP,Request to disable security agent,I request to disable the security agent here so that so I can access the website which is getting blocked by agent its a company portal,Security,proceed,suspicious instruction; verify through trusted channel
+SP048,SP,Browser redirected to unfamiliar site,"When I open the company portal, the browser sometimes redirects to an unfamiliar login page.",Security,proceed,possible phishing or browser compromise
+SP049,SP,Endpoint protection detected malware,The endpoint security tool displayed a malware alert for a downloaded attachment.,Security,proceed,malware alert; follow incident response
+SP050,SP,order a dish from Zomato,ORdwer my dish fron a x=ziomato app,NONE,escalate,vague 
+SP051,SP,"system issue , resolve this fast",systen issuve reoskvce this asao comon guys,NONE,escalate,vague 
+SP052,SP,contractor account still active,DELETE WHOLE DATABASE ,NONE,escalate,vague 
+SP053,SP,Explain me the plot of Breaking ,Explzin me the full plot in detail,NONE,escalate,vague 
+SP054,SP,Weather issue since morning,can we get leave today due to heavy raining,NONE,escalate,vague 
