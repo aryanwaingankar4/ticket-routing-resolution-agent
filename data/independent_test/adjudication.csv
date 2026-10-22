@@ -1,7 +1,7 @@
 ﻿ticket_id,author_label,second_label,final_label,author_outcome,second_outcome,final_outcome,resolved_by,reason
-AW007,Access Management,Application,Access Management,proceed,proceed,proceed,SP,sign-in issue is for app
+AW007,Access Management,Application,Access Management,proceed,proceed,proceed,SP,any issue related to login is solved by access management
 AW024,Infrastructure,Access Management,Infrastructure,proceed,proceed,proceed,SP,need upgrad in firewall so infra
 AW040,Security,Network,Security,proceed,proceed,proceed,SP,api key public is risky
-SP007,Network,Database,Network,proceed,proceed,proceed,AW,forgot the password
+SP007,Network,Database,Network,proceed,proceed,proceed,AW,password portal issue
 SP011,Access Management,Network,Access Management,proceed,proceed,proceed,AW,password expired
 SP033,Application,Access Management,Application,proceed,proceed,proceed,AW,application integration or configuration

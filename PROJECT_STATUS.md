@@ -17,7 +17,11 @@
 >   - Output: `data/independent_test/results/`.
 > - **Phase 4: DONE (2026-10-23).** `paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v4.docx` is built by `scripts/build_v4_docx.py`; v3 is untouched.
 >   - All 44 markers are filled, Figs. 4–6 are inserted, Appendix C and references [24]–[25] are added, and the real-ticket drafts are reported as "not labelled".
->   - **Open for AW:** 3 possibly stale sentences; the page count (9 against v3's 7); and adjudication reasons that don't match their final labels. Details at the end of RESULTS_FOR_PAPER.md.
+>   - **Review fixes (2026-10-23):**
+>     - Labels match AW's pre-cross-labelling backups (case-only `none`→`NONE` differences).
+>     - Adjudication reasons are fixed; the re-run is identical.
+>     - The 3 stale sentences are updated, and the abstract is 240 words.
+>   - **Open for AW:** the proposed cuts, listed at the end of RESULTS_FOR_PAPER.md and not applied. Main text plus references ends at the foot of page 8; the total is 9 pages.
 >
 > **All approved text changes are applied in v4.**
 >

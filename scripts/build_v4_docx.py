@@ -276,23 +276,59 @@ def fills(v):
         f"do not compensate for it. The {v['n_drafts']} drafts generated for a "
         "sample of the real tickets were not labelled.")
 
-    a1 = (
-        f"On {v['ind_n']} tickets written and cross-labelled blind by two of "
-        f"the authors (Cohen's κ = {v['k_cat']:.3f} for category), the "
-        f"cascade routed {v['ind_ok']} of the {v['ind_ncat']} tickets that "
-        "belong to a team correctly, similar to the out-of-template "
-        f"benchmark, and the retrieval gate escalated {v['ind_esc']} of "
-        f"{v['ind_n']}, including {v['ind_act_esc']} actionable tickets. On "
-        f"{v['rw_n']} distinct real user tickets from a public dataset, "
-        f"covering two of the seven teams, the pipeline routed {rw_pct} "
-        f"correctly ({v['rw_all_ok']} of all {v['rw_all_n']} tickets), "
-        f"indistinguishable from Tier 2 alone (p = {p_rw}). Accuracy rises to "
-        f"{sens_pct} if file-share requests are mapped to a different team. "
-        f"Tier 1 answered {v['rw_t1']} tickets but only {v['rw_t1_ok']} "
-        f"correctly, and the retrieval gate escalated {rw_esc_pct} but let "
-        f"{v['rw_mis_draft']} of {v['rw_mis']} misrouted tickets reach the "
-        "drafter, so a classifier trained only on synthetic templates does "
-        "not transfer to real tickets.")
+    # The whole abstract body (after "Abstract—"), shortened to <= 240 words
+    # at the authors' request (2026-10-23); it replaces v3's body and A1.
+    abstract = (
+        "A triage system for IT support tickets must route each ticket to the "
+        "right team and recognise when to hand it to a person. Our pipeline "
+        "has two separately calibrated escalation gates: a 0.50 confidence "
+        "threshold on a fast "
+        "lexical classifier decides whether a slower embedding classifier is "
+        "consulted, and a 0.67 cosine-similarity threshold on retrieved past "
+        "tickets decides whether a language model may draft a resolution. "
+        "On a 9-ticket adversarial set the "
+        "retrieval gate decides every ticket correctly, against 3 of 9 "
+        "without it. A zero-shot LLM classifies more accurately (40/45 "
+        "against 33/45) but cannot abstain, so it is reported as a baseline. "
+        "On "
+        f"{v['ind_n']} tickets written and cross-labelled by two authors "
+        f"(κ = {v['k_cat']:.3f}), the cascade routes {v['ind_ok']} of "
+        f"{v['ind_ncat']} correctly, but the retrieval gate also escalates "
+        f"{v['ind_act_esc']} actionable tickets. On {v['rw_n']} distinct real "
+        "tickets from a public dataset, covering two of seven teams, it "
+        f"routes {rw_pct} correctly ({v['rw_all_ok']} of all "
+        f"{v['rw_all_n']}), indistinguishable from Tier 2 alone "
+        f"(p = {p_rw}), or {sens_pct} under an alternative category mapping; "
+        f"Tier 1 answers {v['rw_t1']} of them with {v['rw_t1_ok']} correct, "
+        f"and {v['rw_mis_draft']} of {v['rw_mis']} misrouted tickets still "
+        "reach the drafter. One pattern repeats across experiments: the data "
+        "a component is "
+        "trained or calibrated on limits it more than the method chosen, and "
+        "a classifier trained only on synthetic templates does not transfer "
+        "to real tickets. We report negative results, an error analysis and "
+        "reproduction steps; conclusions are scoped to small evaluation "
+        "sets.")
+    if len(abstract.split()) > 240:
+        die(f"abstract is {len(abstract.split())} words (limit 240)")
+    # Sentences the new sets made stale (authors' request, 2026-10-23)
+    stale = [
+        ("Two of the ticket-triage studies evaluate on real tickets, while our "
+         "main evaluation does not (Section VIII).",
+         "Two of the ticket-triage studies evaluate on real tickets, while our "
+         f"main evaluation is synthetic, supplemented by {v['ind_n']} "
+         f"hand-written tickets and {v['rw_n']} real tickets that cover only "
+         "two of our seven teams (Section VI-E)."),
+        ("No real ticket stream has passed through the system and",
+         f"The system has not been deployed: {v['rw_n']} real tickets were "
+         "routed offline, but no live ticket stream has passed through it "
+         "and"),
+        ("These conclusions are established on a synthetic corpus and small, "
+         "mostly LLM-generated evaluation sets, and they",
+         "These conclusions are established on a synthetic corpus, small "
+         f"LLM-generated evaluation sets, {v['ind_n']} hand-written tickets "
+         f"and {v['rw_n']} real tickets that cover only two of the seven "
+         "teams, and they"),
+    ]
     c1 = (
         f"On the independent author-written set, routing accuracy "
         f"({v['ind_ok']}/{v['ind_ncat']}) was similar to that on the "
@@ -348,7 +384,8 @@ def fills(v):
         "target and 0.36 for 0.70; kept accuracy peaks at 25/30 at 0.46, so "
         "0.50 sits near the peak.")
     return {
-        "A1": a1, "C1": c1, "L1": l1, "E4": e4, "T1": t1,
+        "ABSTRACT": abstract, "STALE": stale,
+        "C1": c1, "L1": l1, "E4": e4, "T1": t1,
         "X1": ind_x1 + " " + rw_x1, "X3": ind_x3 + " " + rw_x3,
         "D1": ("The seven categories are Access Management, Application, "
                "Database, Infrastructure, Network, Security and Storage."),
@@ -598,7 +635,15 @@ def main():
         return p
 
     # 1. markers -------------------------------------------------------------
-    for mid in ("A1", "D1", "D2", "T0", "S1", "S4", "S5", "S6", "S7", "S8",
+    # Abstract: replace the whole body. Its first run is bold body text, so
+    # the new text keeps the abstract's bold (an A1 fill on its own would
+    # inherit the marker run, whose bold is stripped).
+    p = marker_para("A1")
+    body_old = ptext(p)[ptext(p).index("Automatic triage"):]
+    if not body_old.endswith("all conclusions are scoped accordingly."):
+        die("v3 abstract body not as expected")
+    replace_in(p, body_old, F["ABSTRACT"])
+    for mid in ("D1", "D2", "T0", "S1", "S4", "S5", "S6", "S7", "S8",
                 "H1", "H2", "H3", "H4", "H5", "H7", "T1", "X1", "X2", "X3",
                 "X4", "X5", "X6", "X7", "X8", "X9", "X10", "X11", "E1", "E2",
                 "E3", "E4", "E5", "L1", "C1"):
@@ -640,7 +685,7 @@ def main():
                "Written blind by two authors; cross-labelled")
 
     # 2. approved text edits -------------------------------------------------
-    for old, new in TEXT_EDITS:
+    for old, new in TEXT_EDITS + F["STALE"]:
         replace_in(find_para(old), old, new)
 
     # 3. Table VIII: Tier-1 share column ---------------------------------------

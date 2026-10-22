@@ -10,7 +10,7 @@ and the **command** that regenerates it. Nothing here was typed from memory.
 outputs without `--force`. New result files live in `data/paper_revision_oct/`.
 No existing result file, threshold, model or the `v1.0` tag was changed.
 
-Status (2026-10-23): **Phases 1-4 complete.** `Calibrated_Escalation_IT_Ticket_Triage_v4.docx`
+Status (2026-10-23): **Phases 1-4 complete; review fixes applied** (label-integrity check, adjudication reasons, stale sentences, 240-word abstract; cuts proposed, not applied). `Calibrated_Escalation_IT_Ticket_Triage_v4.docx`
 is built by `python scripts/build_v4_docx.py` from v3, which is never written. Every Phase 2
 and Phase 3 number in v4 is read by that script from its result file. The 30 real-ticket
 drafts are **not labelled**, and the paper says so. See "Phase 4" at the end.
@@ -426,8 +426,13 @@ python scripts/eval_independent.py                             # final run
 **Provenance notes:**
 - **AW's statement (2026-10-23):** "An earlier --check-only run used the wrong second-label files by mistake; the files now in place are the original labels." κ below is computed from the files now in place.
 - **File times (observation):** `tickets_AW.csv` was last saved at 02:28, after `second_labels_on_AW_by_SP.csv` (02:24). The script confirms the ticket text still matches the second-label file, but it cannot see whether a label column was edited after cross-labelling.
+- **Label integrity check (2026-10-23, resolves the file-times note):** both ticket files were compared, row by row on `ticket_id`, with AW's read-only backups `../ticket_backup/tickets_AW.csv.xlsx` (saved 22 Oct, 20:02) and `tickets_SP.csv.xlsx` (20:13). Both backups predate the second-label files (23 Oct, 02:04–02:05).
+  - **Result:** the same 54 IDs in each file. 10 `true_category` cells differ, and only in case: `none` in the backup, `NONE` now (AW050–AW054, SP050–SP054). The script requires upper-case `NONE`.
+  - **Everything else matches:** no category or `expected_outcome` value differs in meaning, and no title, description, author or note differs.
+  - **Backups untouched:** their sha256 was the same before and after the read. AW reviewed this and said to continue.
 - **Adjudication:** each disagreement was resolved by one person, not by discussion. `resolved_by` is `SP` for AW's tickets and `AW` for SP's. In all 6 rows the final label is the writer's own. The paper says "adjudicated, and in all 6 the writer's label was kept", not "resolved by discussion".
-- **Reasons that don't match their final label:** some recorded reasons do not obviously support the label that was kept. AW007's reason is "sign-in issue is for app", but the final is Access Management. SP007's reason is "forgot the password", but the final is Network. *AW to check.*
+- **Reasons that don't match their final label:** some recorded reasons do not obviously support the label that was kept. AW007's reason is "sign-in issue is for app", but the final is Access Management. SP007's reason is "forgot the password", but the final is Network.
+  - **Fixed by AW (2026-10-23):** only the two `reason` cells changed. AW007 now reads "any issue related to login is solved by access management", and SP007 "password portal issue". No label changed. The re-run summary is byte-identical to the previous one.
 
 **Command:** `python scripts/eval_independent.py` → `results/independent_summary.csv` and `independent_tickets_routed.csv`. It was run twice; apart from the adjudication keys renamed in between, all values are identical.
 
@@ -479,9 +484,39 @@ python scripts/eval_independent.py                             # final run
 - **A1, C1 and L1:** each gains an independent-set clause in front of the approved real-world text; X3 gains the independent paragraph. All numbers come from `independent_summary.csv`.
 - **R1:** adds the revision requirements file and a step 6, "Extended evaluation", listing the Phase 2 and Phase 3 scripts.
 
-**Not changed, for AW to decide (sentences a new result may make stale):**
+**Possibly stale sentences.** AW asked on 2026-10-23 for all three to be updated, and they are applied in v4, with numbers read from the result files. The original note follows:
 1. §II "Two of the ticket-triage studies evaluate on real tickets, while our main evaluation does not (Section VIII)." This is still true, since the main evaluation is synthetic, but it reads oddly now that a real-ticket set exists.
 2. §VIII "No real ticket stream has passed through the system…". Real tickets have now been routed offline, though not as a live stream.
 3. §IX "established on a synthetic corpus and small, mostly LLM-generated evaluation sets". The 583 real and 108 hand-written tickets now outnumber the LLM-generated evaluation tickets.
 
-**Length:** v3 renders at 7 pages and v4 at 9, in Word (A4, two columns). The abstract grew from 237 to 360 words. The guide's page limit is not met. Cutting is AW's decision.
+**Applied wording for those three sentences (2026-10-23):**
+- **§II:** "Two of the ticket-triage studies evaluate on real tickets, while our main evaluation is synthetic, supplemented by 108 hand-written tickets and 583 real tickets that cover only two of our seven teams (Section VI-E)."
+- **§VIII:** "The system has not been deployed: 583 real tickets were routed offline, but no live ticket stream has passed through it and no help-desk user has acted on its output, …"
+- **§IX:** "These conclusions are established on a synthetic corpus, small LLM-generated evaluation sets, 108 hand-written tickets and 583 real tickets that cover only two of the seven teams, and they should not be read as …"
+
+**Abstract (2026-10-23):** rewritten to 240 words; the build fails above 240.
+- **Why the whole abstract:** the build replaces the whole v3 abstract body, not just A1, so the new text keeps the abstract's bold. In the first v4, A1 had come out in regular weight.
+- **What it keeps:** every point AW required: 115/583 = 19.7% with 119/984, 371 of 468 misrouted reaching the drafter, 50.4% under the other mapping, Tier 1 238 with 39 correct, p = 1.0 against Tier 2, two teams, and the recurring finding. It also keeps the independent-set result.
+
+**Length (measured in Word, A4, two columns, 2026-10-23):**
+- **Totals:** 9 pages. v3 was 7.
+- **Main text plus references** ends at the foot of the right column on page 8: References start at page 8, right column, 1.8 in, and Appendix A starts at 10.2 in. So the main text is already about 8 pages including references, with no margin.
+- **Appendices A–C** fill page 9.
+
+**Proposed cuts (NOT applied, for AW).** Savings are estimates in column-inches, measured from the Word layout; a full column is about 9.5 in.
+
+| # | Cut | Where it goes | Est. saving |
+|---|---|---|---|
+| 1 | Move Table IV (configurations) to a new appendix and keep one sentence in §IV-D pointing to it | Appendix | ~4.5 in |
+| 2 | Drop Fig. 2. Table VI already gives the same coverage gaps with the noise band. Keep the table | — | ~2.9 in |
+| 3 | Drop Table V. Every value is already in the §V-B text (175/175, 13.3%, 37.8%, safe range, 9/9 vs 3/9) or in Table VII (latencies) | — | ~2.7 in |
+| 4 | Move Table II (verification checks) to an appendix; keep §III-G as two sentences | Appendix | ~2.4 in |
+| 5 | Tighten §VI-A: keep bullet 1; merge bullets 2–3 (external replication inconclusive; post-hoc accuracy evidence) into one sentence, keeping the three clauses together; move the AUC/band details to an appendix | Appendix | ~1.2 in |
+| 6 | Shorten §VI-E: move the per-team recall and all-ticket CIs into Table VIII and Appendix C, so the prose keeps only the headline numbers | Table VIII / App. C | ~1.0 in |
+| 7 | Move "Methodological lessons" (§VI-F, second paragraph) to an appendix | Appendix | ~1.4 in |
+| 8 | Drop §III-F (automation candidates, which no result in the paper evaluates) or fold it into §III-A as one clause | — | ~0.6 in |
+| 9 | Scale Fig. 1 (full width) to about 85% height | — | ~0.8 in in each column |
+
+- **Total if all are applied:** about 1.7 columns, a little under one page. Main text plus references would end around the middle of page 8, with the appendices on pages 8–9.
+- **Two cuts give most of the margin:** #1 + #2, about 7.4 in, are enough for comfortable room under 8 pages.
+- **Nothing is cut** from the results the mentor asked for: thresholds, error analysis, reproducibility, and the new test sets.
