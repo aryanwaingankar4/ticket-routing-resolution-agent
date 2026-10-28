@@ -1,0 +1,140 @@
+# Software Requirements Specification
+
+This chapter specifies the software and hardware used, the work breakdown and schedule, the functional and non-functional requirements, and the cost of the project. Measured values are given with their sources.
+
+## Software tools, platforms and frameworks {#s_tools}
+
+The system is written in Python, and every library version is pinned in `requirements.txt` because a newer release could change a published number silently ({tab:software}).
+
+[[TAB software | Software tools and frameworks, with the versions pinned in requirements.txt | 1.6,1.0,3.3 | 8.5]]
+| Tool or library | Version | Role in the project |
+| Python | 3.14.3 | Pipeline, experiments and tests |
+| scikit-learn | 1.9.0 | TF-IDF vectoriser and logistic regression for both cascade tiers; metrics |
+| sentence-transformers | 5.6.1 | Loads the BGE encoder (BAAI/bge-base-en-v1.5) and comparison encoders |
+| transformers / torch | 5.14.1 / 2.13.0 | Encoder back end; DistilBERT baseline (CPU build) |
+| faiss-cpu | 1.14.3 | Inner-product index over 4,000 normalised ticket embeddings |
+| numpy, pandas, scipy | 2.5.1, 3.0.5, 1.18.0 | Data handling; statistical tests in the drift module |
+| google-genai | 2.14.0 | Gemini SDK; `gemini-flash-lite-latest` drafts resolutions and is a zero-shot baseline |
+| Ollama + Qwen2.5-3B | Ollama 0.40.8 at the time of writing; `qwen2.5:3b-instruct` | Local, free zero-shot baseline and second rater on the laptop CPU |
+| pydantic | 2.13.4 | Frozen typed configuration; schema of every pipeline stage |
+| FastAPI / uvicorn | 0.140.0 / 0.51.0 | HTTP service with per-agent endpoints and `/triage` |
+| Streamlit, matplotlib | 1.60.0, 3.11.1 | Demonstration interface; all figures |
+| pytest, pytest-cov, httpx | 9.1.1, 7.1.0, 0.28.1 | Offline test suite (456 tests) |
+| langid, huggingface-hub | 1.1.6, 1.24.0 | English filter for real tickets; pinned download of an external corpus |
+| Docker | python:3.14.3-slim, pinned by digest | Container that builds its own artifacts |
+| GitHub Actions | ubuntu-latest | `ci.yml` on every push; `gates.yml` on demand |
+| python-docx, Playwright | 1.2.0, 1.64.1 | Building this report and its screenshots (not part of the system) |
+
+We use the current unified `google-genai` SDK, not the deprecated `google-generativeai`. The Gemini free tier allows 15 requests per minute and 500 per day, so every calling script waits at least four seconds between calls, dry-runs first and caches each raw response on disk. The local **Qwen2.5-3B** model [@qwen] costs nothing and, since it wrote none of our evaluation sets, partly controls for the fact that our main benchmark was written with Gemini.
+
+## Hardware tools {#s_hardware}
+
+All development and measurement used one laptop ({tab:hardware}). CPU, core count, operating system and Python version are recorded by the latency script; the memory size is stated by the team.
+
+[[TAB hardware | Hardware used for development and measurement | 2.0,3.9 | 9.5]]
+| Component | Specification |
+| Processor | 13th Gen Intel Core i5-1334U, 12 logical CPUs |
+| Memory | 16 GB RAM |
+| Graphics | Integrated only; no discrete GPU is used by any part of the pipeline |
+| Operating system | Windows 11 |
+| Continuous integration | GitHub-hosted Linux runners (ubuntu-latest) |
+
+No GPU is needed: the heaviest live step, encoding a ticket with BGE, takes a median of 156.4 ms on this CPU. Memory was the real constraint: a local language model and BGE running together once got an experiment killed, so a local model is unloaded before embedding work and refuses to start below a free-memory floor.
+
+## Work breakdown structure {#s_wbs}
+
+The work was organised into six streams ({fig:wbs}) and delivered in numbered phases. Each phase opened with a written plan reviewed before coding and closed with a report at a review gate, which made it natural to record results that did not work out.
+
+[[FIG wbs | reports/black_book/fig/f_wbs.png | 5.0 | Work breakdown structure of the project. Six streams, each broken into four work packages.]]
+
+{tab:phases} lists the phases with the dates of their first and last commits from the git history, and {fig:timeline} shows them as a timeline.
+
+[[TAB phases | Project phases with dates from the git history | 1.45,1.1,3.35 | 8.5]]
+| Phase | Dates (2026) | Main work and outcome |
+| Prototype | 28 Jul – 15 Aug | Dataset generator (scaled to 4,000 tickets), TF-IDF, MiniLM and DistilBERT classifiers, FAISS retrieval with Gemini drafting, Streamlit demo, cascade calibration, clustering, benchmark and adversarial sets |
+| Embedding migration | 26 Aug – 1 Sep | Encoder moved from MiniLM to BGE; retrieval threshold recalibrated to 0.67 |
+| Phase 0 | 13 Sep | Four duplicated pipeline copies consolidated into one package |
+| Phases 1–2 | 14 Sep | Conformal prediction; automation-flag validation; groundedness study and judge audit |
+| Phase 3 | 14–15 Sep | Persisted Tier 1; agents and orchestrator; HTTP service |
+| Phase 4 | 15–20 Sep | Decision log; drift detector and its evaluation (measured, not shipped) |
+| Phase 5 | 20–21 Sep | Template-grouping correction; controlled cascade ablation; zero-shot baselines |
+| Phase 6 | 21–22 Sep | Conformal deferral; weighted conformal; sufficiency rater |
+| Phase 7 | 22 Sep | External-validity experiments |
+| Phase 8 | 22–23 Sep | Paper numbers generated from committed files; Docker and CI |
+| Phase 9 | 23–28 Sep | IEEE paper, audit, release v1.0, guide's revisions |
+| Paper revision | 19–23 Oct | Independent set, real-world tickets, error analysis, paper v4 |
+| Project report | 25–28 Oct | This report |
+
+[[FIG timeline | reports/black_book/fig/f_timeline.png | 4.3 | Project timeline. Each bar runs from the first to the last commit of a phase.]]
+
+## Functional requirements {#s_fr}
+
+{tab:fr} lists what the system must do and traces each requirement to the endpoint, agent or orchestrator that implements it (architecture in {sec:s_arch}).
+
+[[TAB fr | Functional requirements and where each is implemented | 0.55,3.15,2.2 | 8.5]]
+| ID | Requirement | Implemented by |
+| FR-1 | Accept a ticket (title, description, optional identifier) and validate it against a typed schema | `TicketIn`; `POST /triage`, `/agents/*` |
+| FR-2 | Assign every ticket to exactly one of the seven teams | `ClassificationAgent`; `POST /agents/classify` |
+| FR-3 | Accept the Tier-1 label when its top-class probability is at least 0.50, else use Tier 2; report the tier and Tier 1's prediction and confidence | `classifier.py` |
+| FR-4 | Retrieve the five most similar resolved tickets with category, resolution and similarity | `RetrievalAgent`; `POST /agents/retrieve` |
+| FR-5 | Escalate to a human, calling no language model, when the top-1 similarity is below 0.67 | Orchestrator; `POST /policy/rag-gate` |
+| FR-6 | When the gate passes and drafting is requested, draft a resolution grounded only in the retrieved tickets | `ResolutionAgent`; `POST /agents/resolve` |
+| FR-7 | Spend language-model quota only on request: `/triage` drafts only with `generate_resolution=true` | `/triage` query parameter (default false) |
+| FR-8 | Return the decision, its reason, the threshold, the observed value and a trace of every agent, including skipped ones | `PipelineResult`, `StepTrace` |
+| FR-9 | Answer a known agent failure with HTTP 200 and an escalation; an unknown error with HTTP 500 | `/triage` failure boundary |
+| FR-10 | Report configuration fingerprint, model, index size and thresholds | `GET /health` |
+| FR-11 | Let a user type or pick a ticket and see the classification, neighbours and draft or escalation | Streamlit demo |
+| FR-12 | Offline, cluster resolution texts at 0.80 and list recurring clusters as automation candidates for human review | `flag_automation_candidates.py` |
+| FR-13 | Optionally log every decision as JSON lines for drift analysis (off by default) | `configure_logging(...)` |
+
+FR-7 protects the daily quota from a looping client; FR-9 sends a failed ticket to a person while never hiding an unknown bug behind an escalation.
+
+## Non-functional requirements {#s_nfr}
+
+{tab:nfr} gives the required qualities, with measured values where they exist.
+
+[[TAB nfr | Non-functional requirements with measured values | 1.25,2.25,2.4 | 8.5]]
+| Quality | Requirement | Measured value or mechanism |
+| Latency, Tier 1 | Fast path almost free | Median 1.04 ms, 95th percentile 1.74 ms (warm, batch size 1) |
+| Latency, Tier 2 | Slow path well under a second on a laptop CPU | Median 156.4 ms, 95th percentile 227.0 ms; 151.0 × Tier 1 |
+| Latency, cascade | Cheaper than always using Tier 2 | Expected median 143.5 ms (45-ticket benchmark) and 127.9 ms (175-ticket set): savings of 8.2% and 18.2% |
+| Safety | No language model below the retrieval gate | Enforced by the orchestrator; 9/9 adversarial tickets decided correctly |
+| Reproducibility | Every number regenerable from committed files | Seed 42, pinned versions, committed TF-IDF vocabulary, results written to files |
+| Determinism | Identical decisions across machines | Decisions on 54 recorded tickets compared exactly; Tier-1 confidence within 10⁻¹²; similarity within a derived 4.578 × 10⁻⁵ |
+| Artifact integrity | Stale models or indexes stop the system | Three load-time guards on index, encoder dimension and Tier-1 manifest |
+| Maintainability | One source of truth for constants | Frozen typed configuration; a test fails if a threshold changes |
+| Testability, portability | Offline checks; runs off the developer's machine | 456 tests with no paid API calls; Docker image builds its own artifacts |
+| Cost, security | Free tiers; no secrets in the repository | Cached Gemini calls; key in a git-ignored `.env`; container runs as non-root |
+| Usability | Usable by a non-programmer | Streamlit interface; interactive API documentation at `/docs` |
+
+Determinism taught us something. On a GitHub runner, Tier 1's confidence for one adversarial ticket came out as 0.31818032412549274 against 0.3182984770932253 locally, from an unchanged model: 11,834 terms tied for the last 760 of 5,000 vocabulary slots, and CPUs broke the tie differently. Committing the vocabulary fixed it; decisions now match exactly across platforms ({sec:s_testing}).
+
+## Project cost estimation {#s_cost}
+
+#### Actual cost
+
+The project cost nothing in money ({tab:cost_actual}); the team's time is not priced.
+
+[[TAB cost_actual | Actual cost of the project | 2.2,0.9,2.8 | 8.5]]
+| Resource | Cost (₹) | Reason |
+| Laptop (i5-1334U, 16 GB) | 0 | Already owned |
+| Python and all libraries; BGE, MiniLM, E5, DistilBERT, Qwen2.5-3B | 0 | Open-source licences and open weights, run locally |
+| Gemini API | 0 | Free tier, every call cached (e.g. 59 zero-shot calls, 33 drafts and 33 judge verdicts, 30 real-ticket drafts of which 27 live) |
+| GitHub, Docker Desktop | 0 | Free plans for public and educational use |
+| Real-world dataset | 0 | Public Zenodo record under CC BY 4.0 |
+| **Total** | **0** | |
+
+#### Estimated deployment cost
+
+{tab:cost_est} estimates the monthly cost of a small deployment. **These are estimates, not measurements**: Gemini list prices were checked on 25 October 2026, and the server price is left to be filled in because we could not verify it.
+
+[[TAB cost_est | Estimated monthly cost of a small deployment (assumptions stated; not measured) | 1.6,2.7,1.6 | 8.5]]
+| Item | Assumption | Estimated cost per month |
+| Server | One VM with 4 vCPUs and 16 GB RAM, like the measurement laptop; no GPU | [[PH ₹ — fill in from a current cloud price list]] |
+| Volume and drafts | 10,000 tickets a month (assumed); about two-thirds pass the gate, as 30 of 45 did on the benchmark: about 6,700 drafts | — |
+| Tokens per draft | Up to 1,500 input and 200 output tokens (assumed) | — |
+| Gemini, cheapest Flash-Lite | USD 0.10 / 0.40 per million input / output tokens (2.5 Flash-Lite) | About USD 1.5 |
+| Gemini, dearest Flash-Lite | USD 0.30 / 2.50 per million input / output tokens (3.5 Flash-Lite) | About USD 6.4 |
+| Storage, classification, retrieval | Megabytes of data; run on the server CPU | Negligible / included |
+
+At the cheapest price, about 10 million input tokens cost about USD 1.0 and 1.3 million output tokens about USD 0.5. The dominant real cost would be the server and the engineering needed to connect a ticketing tool and recalibrate both gates on real tickets, which this project shows is necessary ({sec:s_res_real}).

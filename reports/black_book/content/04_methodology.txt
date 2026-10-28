@@ -1,0 +1,164 @@
+# Methodology
+
+This chapter describes how the system was built and evaluated: the data, the architecture and the flow of a ticket through it, the two gates and the evidence behind their thresholds, the service and deployment, the tests that guard every result, and the design of the evaluation.
+
+## Dataset and splits {#s_dataset}
+
+#### The synthetic corpus
+
+Following the brief, the training corpus is synthetic, produced by an offline generator (`data/generate_dataset.py`, seed 42) that makes no network calls. Each of 66 *templates* links a title pattern, a symptom phrase and the matching resolution, so a ticket can never pair a database title with a password-reset fix; placeholders are resolved once per ticket, priority follows a per-category distribution, and validation gates check balance, empty fields and duplicates. Gemini was used only for the separate calibration and benchmark sets.
+
+{fig:dataset} profiles the 4,000 tickets: 571 or 572 per category, 9 templates per category except Database (12), priorities High 1,684, Medium 1,473 and Low 843, and a median of 32 words per ticket (range 23–44). The 4,000 descriptions share only 962 distinct titles and 1,271 distinct resolutions.
+
+[[FIG dataset | reports/black_book/fig/f_dataset_distribution.png | 5.2 | Profile of the 4,000-ticket synthetic corpus: (a) tickets per category, (b) priority mix within each category.]]
+
+Memorisation happens at the template level: the 175 paraphrased calibration tickets touch 62 of the 66 templates, and removing every touched template would leave only 210 rows, so the corpus cannot be decontaminated by filtering. A held-out split is therefore uninformative (TF-IDF scores 100% on it), and every claim rests on sets written outside the templates.
+
+#### Splits and evaluation sets
+
+{tab:splits} lists every set and its role. Tier 2 and the DistilBERT baseline are trained on a stratified 3,200-row split (seed 42); the production Tier 1 is fitted on all 4,000 rows. The benchmark sets are fixed and read-only.
+
+[[TAB splits | Dataset splits and evaluation sets | 1.75,0.95,1.6,1.6 | 9]]
+| Set | Size | Source | Used for |
+| Training | 3,200 / 4,000 | Synthetic templates | Tier 2 and DistilBERT (3,200); Tier 1 (4,000) |
+| In-distribution held-out | 800 | Synthetic templates | Sanity check only |
+| Paraphrased calibration | 175 | Gemini paraphrases of training rows | Cascade threshold, conformal calibration, drift reference, in-domain arm of the retrieval sweep |
+| Out-of-domain calibration | 45 | Gemini variants of 15 hand-written off-topic and vague seeds | Retrieval threshold |
+| Deployment-style set | 175 | Gemini, benchmark style | Second calibration and evaluation distribution |
+| Hand-written benchmark | 14 | Written by the team | Evaluation |
+| Out-of-template benchmark | 45 | Gemini | Main evaluation |
+| Adversarial set | 9 | Off-topic, vague, slang | Gate evaluation |
+| Independent set | 108 | Two team members, blind cross-labelled | Extended evaluation |
+| Real-world tickets | 583 distinct (984) | Public Zenodo dataset [@pereira] | Extended evaluation |
+
+## System architecture and workflow {#s_arch}
+
+#### Overall architecture
+
+{fig:arch} shows the system in layers. The **data layer** holds the corpus, the FAISS index with aligned metadata, the resolved-ticket store and the frozen configuration. The **model layer** holds both classifiers, the shared BGE encoder and Gemini as an external API. The **agent layer** wraps each stage as an agent under one orchestrator that applies both gates; the **service layer** exposes them over FastAPI; and the **presentation layer** holds the demo, the API documentation and the experiment scripts. An **offline path** clusters resolved tickets by resolution-text similarity at 0.80 into automation candidates for human review, and a **DevOps layer** of tests, a container image and CI guards every change.
+
+[[FIG arch | reports/black_book/fig/f_architecture_full.png | 5.6 | Overall system architecture: data, model, agent, service and presentation layers, with the offline automation-flagging path and the DevOps layer.]]
+
+It is a sequential pipeline with agent boundaries and an HTTP interface, not a distributed multi-agent system: `/triage` runs the agents in-process, so measured latency has no network hops.
+
+#### Agents and the orchestrator
+
+Each agent declares the artifacts it needs (classification: vectoriser, both classifiers and the encoder; retrieval: encoder, index and metadata; resolution: a Gemini client), checked when the agent is created. **An agent decides nothing**: every threshold lives in the orchestrator, which records a trace entry for each agent, including skipped ones, so a `skipped` resolution step proves that no language model was called. One loader enforces three guards: index and metadata have the same length; encoder, index and configuration agree on 768 dimensions; and Tier 1 matches the dataset and committed vocabulary in its manifest. Each guard exists because a stale artifact once produced plausible but wrong results without any error.
+
+#### End-to-end workflow of one ticket
+
+{fig:workflow} follows one ticket through both gates. Below a similarity of 0.67 the ticket is escalated with the reason `low_retrieval_similarity` and Gemini is never called; every response carries the decision, its reason, the threshold, the observed value and the trace, and a known agent failure becomes an escalation rather than an error.
+
+[[FIG workflow | reports/black_book/fig/f_workflow.png | 3.9 | End-to-end workflow of one ticket through both gates.]]
+
+{fig:sequence} shows the messages of one `/triage` request; Gemini appears only on the branch above the retrieval gate.
+
+[[FIG sequence | reports/black_book/fig/f_sequence.png | 5.2 | Sequence diagram of one POST /triage request.]]
+
+#### Development workflow
+
+{fig:devworkflow} shows the order of development; each step was a phase with a reviewed plan and a reviewed report (Section {secn:s_wbs}).
+
+[[FIG devworkflow | reports/black_book/fig/f_devworkflow.png | 5.0 | Project development workflow.]]
+
+## Classification cascade and the 0.50 threshold {#s_cascade}
+
+**Tier 1** is a TF-IDF representation (unigrams and bigrams, English stop words removed) over a committed vocabulary of 5,000 features, followed by logistic regression (`max_iter = 1000`, otherwise scikit-learn defaults). It costs a median of 1.04 ms per ticket. **Tier 2** is logistic regression over frozen 768-dimensional BGE embeddings and costs 156.4 ms. The threshold between them decides when the cheap answer can be trusted.
+
+We made three calibration attempts and kept one. **Attempt 1**, on the 800 held-out tickets, found every populated bucket 100% accurate (5, 515 and 280 tickets in the 70–80%, 80–90% and 90–100% buckets), so any threshold looked safe; the same ceiling makes the in-distribution calibration errors (0.112 for Tier 1, 0.099 for Tier 2) show *under*-confidence. **Attempt 2**, a small hand-written set, was too sparse and never committed. **Attempt 3** used the 175 paraphrased tickets ({tab:buckets}).
+
+[[TAB buckets | Attempt 3: Tier-1 confidence buckets on the 175 paraphrased calibration tickets | 1.6,1.4,1.45,1.45 | 9.5]]
+| Tier-1 confidence | Tickets | Accuracy in bucket | Correct |
+| below 0.50 | 152 | 44.7% | 68 |
+| 0.50–0.60 | 13 | 100% | 13 |
+| 0.60–0.70 | 7 | 71.4% | 5 |
+| 0.70–0.80 | 3 | 33.3% | 1 |
+| 0.80 and above | 0 | — | — |
+
+The rule picks the lowest bucket edge whose cumulative accuracy meets a target. No edge met 0.90; the 0.80 and 0.70 targets both gave **0.50**, the live value, at which Tier 1 keeps 23 of 175 tickets (13.1%) and labels 19 correctly (82.6%). Above 0.60 only 10 tickets remain and 6 are correct ({fig:cascadecurve}); on a 0.01 grid kept accuracy peaks at 25/30 at 0.46, so 0.50 sits near the peak. The threshold depends only on Tier 1, so changing the Tier-2 encoder does not require recalibrating it.
+
+[[FIG cascadecurve | paper_docx/fig/fig4_cascade_threshold.png | 3.8 | Cascade threshold calibration on the 175 paraphrased tickets: share kept by Tier 1 and accuracy of the kept tickets. The dashed line marks the live threshold of 0.50.]]
+
+## Retrieval, the 0.67 gate and grounded drafting {#s_retrieval}
+
+All 4,000 tickets are embedded with BGE, normalised and stored in a FAISS inner-product index, so the inner product equals cosine similarity [@faiss]. For a new ticket, the five nearest past tickets are retrieved with their title, description, resolution, category and similarity.
+
+The threshold was chosen by sweeping candidate values over 175 paraphrased tickets (which should proceed) and 45 out-of-domain tickets (which should not) ({fig:sweep}). At **0.67** all 175 in-domain tickets proceed and 6/45 (13.3%) out-of-domain tickets leak; at 0.65 leakage rises to 17/45 (37.8%). The leaks are all vague "something is broken" messages from 3 of the 15 seeds; no off-topic ticket passes.
+
+[[FIG sweep | paper_docx/fig/fig5_retrieval_sweep.png | 3.8 | Retrieval threshold sweep: in-domain proceed rate and out-of-domain leakage. The shaded band is the adversarial safe range; the dashed line marks 0.67.]]
+
+On the adversarial set ({fig:adversarial}), any threshold between the highest similarity of a must-escalate ticket (0.6196) and the lowest of a must-proceed ticket (0.6704) separates the groups; 0.67 lies near the top of this range, so this threshold, unlike the cascade's, is recalibrated whenever the encoder changes (it was 0.35 under MiniLM).
+
+[[FIG adversarial | reports/black_book/fig/f_adversarial.png | 5.2 | Top-1 similarity of the nine adversarial tickets against the 0.67 gate. Circles must escalate, squares must proceed; the shaded band is the safe range.]]
+
+Above the gate, Gemini (`gemini-flash-lite-latest`, API defaults) drafts a resolution. The prompt lists the new ticket and the five past tickets with their similarities, and its instructions are:
+
+```
+- Base your suggestion ONLY on the RETRIEVED PAST TICKETS below.
+- Do NOT invent a generic answer from outside knowledge. Ground every
+  step in what the retrieved resolutions actually did.
+- If the retrieved examples do not fully match the new ticket, say so
+  explicitly and recommend that a human agent double-check.
+- Keep the suggestion concise: a few sentences of clear, actionable steps.
+```
+
+The language model never assigns the category; classification belongs entirely to the trained models.
+
+## API, demo, Docker and CI {#s_service}
+
+{tab:endpoints} lists the HTTP endpoints. `/triage` drafts only when `generate_resolution=true`, so a looping client cannot exhaust the 500-call daily quota, and `/health` returns a configuration fingerprint (`9c9a5cbcb53f` for the published results) that reveals a deployment serving stale artifacts.
+
+[[TAB endpoints | HTTP endpoints of the FastAPI service | 1.75,4.15 | 9.5]]
+| Endpoint | Behaviour |
+| GET /health | Fingerprint, embedding model, index size, both thresholds, whether drafting is available |
+| POST /agents/classify | Classification agent alone; HTTP 503 if it fails |
+| POST /agents/retrieve | Retrieval agent alone; HTTP 503 if it fails |
+| POST /agents/resolve | Drafting from a given retrieval; the only endpoint that always spends quota |
+| POST /policy/rag-gate | The escalation decision for a retrieval result, computed by the tested code, so a workflow tool never holds a threshold |
+| POST /triage | Whole pipeline in-process; a known agent failure returns HTTP 200 with an escalation, an unknown error returns HTTP 500 |
+
+The Streamlit demo ({fig:demo}) shows the classification, the five neighbours and a draft or an escalation. A weather question (left) has a closest similarity of only 57.0% and is escalated without a language-model call; a VPN ticket (right) gets a Tier-1 confidence of 0.30, is routed to Network by Tier 2, and with a similarity of 77.7% receives a grounded draft.
+
+[[FIG demo | reports/black_book/fig/f_demo_pair.png | 5.0 | The Streamlit demo on an off-topic ticket that is escalated (left) and on a VPN ticket that receives a grounded draft (right).]]
+
+The Docker image (`python:3.14.3-slim`, pinned by digest) **builds its own artifacts** during the build; a guard step fails the build if any pre-built artifact reaches the context, because an early image silently reused a stale embedding cache. The build runs the startup checks, so an image with mismatched artifacts cannot exist, and the container runs as a non-root user without an API key. In CI, `ci.yml` runs the fast tests and paper-parity checks on every push, and the manual `gates.yml` runs the full suite, the adversarial gate, the ablation checks and a container build verified over HTTP; neither spends quota.
+
+## Testing and verification {#s_testing}
+
+The suite has **456 automated tests**, none of which calls a paid API ({tab:tests}).
+
+[[TAB tests | The automated test suite, grouped by area | 2.2,0.7,3.0 | 9.5]]
+| Area | Tests | Examples of what is checked |
+| Pipeline, service and configuration | 109 | Orchestrator gates and traces; service failure boundary; frozen thresholds and their provenance; no silent fallback constants; golden parity; adversarial gate |
+| Conformal, deferral and drift | 121 | Quantile and coverage logic; weighted conformal; risk–coverage curves; drift tests and their null rates |
+| Shift experiments | 66 | External dataset profile; version and paraphrase shift analyses |
+| LLM baselines and raters | 110 | Zero-shot parsing, caching and prompt identity; summary statistics; sufficiency rater |
+| Reproducibility and paper | 50 | Every paper number regenerated from its file; gate-CSV comparison; draft wording rules |
+
+Three checks protect the results. **Golden parity** fixes every routing decision for the 45 benchmark and 9 adversarial tickets: decisions are compared exactly, Tier-1 confidence within 10⁻¹², and similarity within a float32 bound for a 768-term inner product (4.578 × 10⁻⁵) [@higham]; the closest recorded similarity is 3.18 times that tolerance from the gate, so the tolerance cannot hide a flipped decision. The **adversarial gate** must pass 9/9 before any change to a threshold, encoder or retrieval path, and has caught two real bugs. **Paper parity** regenerates every quoted number from its result file. These checks exist because the project recorded nine cases where a value was wrong for its context yet internally consistent, and produced a wrong result without any error.
+
+## Evaluation design {#s_ext_design}
+
+{fig:evalpipe} summarises how data flow into the evaluation: the corpus fits the models, the calibration sets fix the thresholds, and every evaluation set then runs through the **unchanged** pipeline, with no refitting or recalibration. Proportions carry Wilson 95% intervals [@wilson], paired comparisons use the exact McNemar test [@mcnemar], and agreement uses Cohen's kappa [@cohen]. A difference smaller than its own noise band is never reported as an ordering.
+
+[[FIG evalpipe | reports/black_book/fig/f_eval_pipeline.png | 5.0 | Data and evaluation pipeline: which data fit the models, which calibrate the thresholds, which evaluate the unchanged system, and what is measured.]]
+
+#### Conformal measurement {#s_conformal}
+
+Split conformal prediction [@vovk; @angelopoulos] is calibrated for each tier on the 175 paraphrased tickets, with score one minus the probability of the true label, for α ∈ {0.01, 0.05, 0.10, 0.20}, and coverage is measured on the 45-ticket benchmark. The *coverage gap* (measured coverage minus 1 − α) is compared with ±2 binomial standard deviations at n = 175 (±0.045 at α = 0.10). It runs offline and gates nothing.
+
+#### Independent author-written set
+
+Two team members each wrote 54 tickets, seven per team plus five off-topic or vague ones, without consulting the training data, the templates or the benchmarks and without LLM help. Each then labelled the category and the expected outcome (escalate or proceed) of the *other's* tickets without seeing the writer's labels. Before adjudication, Cohen's kappa was **0.936** for category (bootstrap 95% CI [0.882, 0.979]; 102/108 agreement) and 1.000 for outcome. The six category disagreements were adjudicated, and the writer's label was kept in all six.
+
+#### Real-world tickets
+
+The real-world set is Pereira's public dataset [@pereira] (CC BY 4.0): 2,229 user-typed tickets labelled into seven categories by three IT professionals, of which langid.py [@langid] finds 1,734 English. Four source categories map to our teams, fixed before any prediction was examined ({tab:mapping}). Of the 984 mapped tickets, 401 repeat an earlier text, mostly system-generated subjects, so the headline uses 583 distinct texts; a sensitivity reading maps Fileservice to Storage.
+
+[[TAB mapping | Mapping of the real-world categories to our teams (English tickets) | 2.0,1.1,2.8 | 9.5]]
+| Source category | English tickets | Mapped to |
+| Fileservice | 597 | Access Management (sensitivity: Storage) |
+| Active Directory | 85 | Access Management |
+| Software | 158 | Application |
+| O365 | 144 | Application |
+| Support general, EOL, Computer-Services | 601, 103, 46 | Excluded (750) |

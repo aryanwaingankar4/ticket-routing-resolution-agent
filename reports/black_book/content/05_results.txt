@@ -1,0 +1,169 @@
+# Results and Discussion
+
+Every number in this chapter comes from a committed result file; `reports/black_book/SOURCES.md` names the file behind each one. At 45 tickets a single ticket moves accuracy by 2.2 points, so differences inside a result's own interval are not read as orderings.
+
+## Benchmark accuracy and classifier comparison {#s_res_bench}
+
+{tab:classifiers} compares every classifier we trained or prompted, and {fig:accuracy} plots the 45-ticket results. In distribution every model is near perfect (TF-IDF scores 100% on the 800 held-out rows), so only the out-of-template sets discriminate.
+
+[[TAB classifiers | Accuracy of every classifier on the out-of-template sets | 2.55,1.05,1.1,1.2 | 9.5]]
+| Method | 14-ticket | 45-ticket | 175 deployment-style |
+| TF-IDF + logistic regression (Tier 1 alone) | 6/14 | 16/45 | 91/175 |
+| MiniLM embeddings + logistic regression | — | 32/45 | — |
+| E5 embeddings + logistic regression | — | 27/45 | — |
+| DistilBERT, fine-tuned (two runs) | 7/14 | 18/45 and 21/45 | — |
+| BGE embeddings + logistic regression (Tier 2 alone) | 10/14 | 33/45 | 132/175 |
+| **Production cascade (Tier 1 → Tier 2)** | **10/14** | **32/45** | **131/175** |
+| Gemini flash-lite, zero-shot | 14/14 | 40/45 | — |
+| Qwen2.5-3B, zero-shot (laptop CPU) | 12/14 | 34/45 | — |
+
+[[FIG accuracy | paper/figures/G1_benchmark45_accuracy_all_methods.png | 4.6 | Accuracy on the 45-ticket out-of-template benchmark, with Wilson 95% intervals where the result file records one.]]
+
+The representation matters more than the model family: TF-IDF reaches only 16/45 (95% CI [0.232, 0.502]) because new wording shares little vocabulary with the templates, frozen encoders do far better (BGE 33/45, MiniLM 32/45), and fine-tuned DistilBERT overfits the repetitive rows (its two runs differ by three tickets, so no ordering is drawn).
+
+## Cascade against Tier 2 alone, and latency {#s_res_cascade}
+
+Tier 1 alone scores 35.6 points below the pipeline, but that gap measures TF-IDF against BGE, not the value of cascading. The fair control is Tier 2 answering every ticket ({tab:cascade}).
+
+[[TAB cascade | The cascade against the control that isolates it (Tier 2 answering everything) | 1.2,1.0,0.9,1.0,1.0,0.8 | 9.5]]
+| Set | Tier 2 alone | Cascade | Tier 2 (ms) | Cascade (ms) | Saving |
+| Benchmark (45) | 33/45 | 32/45 | 156.4 | 143.5 | 8.2% |
+| Deployment-style (175) | 132/175 | 131/175 | 156.4 | 127.9 | 18.2% |
+
+The cascade is one ticket worse on each set, and the exact McNemar test gives p = 1.000 both times, so accuracy is indistinguishable. What it buys is speed ({fig:latency}): Tier 2 costs 151 times as much as Tier 1, and Tier 1 answers 4 of 45 benchmark tickets (8.9%) and 33 of 175 deployment-style tickets (18.9%), which is why the saving is larger on the second set. **H2 is supported for latency; the cascade brings no accuracy gain.**
+
+[[FIG latency | reports/black_book/fig/f_latency.png | 4.4 | Median per-ticket latency (warm, batch size 1, Intel Core i5-1334U).]]
+
+## Zero-shot LLM baselines {#s_res_zeroshot}
+
+Both language models received byte-identical prompts (verified by hash on all 45 tickets) and returned no unparseable answers ({tab:zeroshot}).
+
+[[TAB zeroshot | Zero-shot language models against the trained Tier 2 (45-ticket benchmark) | 1.9,1.0,1.4,1.6 | 9.5]]
+| Comparison | Accuracy | 95% CI | Exact McNemar p |
+| Gemini flash-lite vs Tier 2 (33/45) | 40/45 | [0.765, 0.952] | 0.039 |
+| Qwen2.5-3B vs Tier 2 (33/45) | 34/45 | [0.613, 0.858] | 1.000 |
+| Qwen2.5-3B vs Gemini | 34/45 vs 40/45 | — | 0.070 |
+
+Gemini is significantly more accurate than Tier 2; Qwen is indistinguishable from it, which is not the same as better; and the six-ticket gap between them is not significant. Because Gemini also wrote the benchmark, Qwen is a partial control for authorship [@maheshwari]. Infrastructure recall is 50% for Tier 2, Gemini and Qwen alike, which points to ambiguous wording rather than a weak method. This is a zero-shot model against a trained classifier: it shows what a template-generated training set is worth on new phrasing, while neither language model can abstain, which is the purpose of our gates.
+
+## The gates and the adversarial set {#s_res_gates}
+
+The retrieval gate decides all nine adversarial tickets correctly; with the gate removed, only the three that should proceed are right, because the six that should escalate would receive a drafted fix ({tab:adversarial}). **H1 is supported.**
+
+[[TAB adversarial | The adversarial set at the live gates | 0.6,1.4,2.15,0.8,0.95 | 9]]
+| ID | Type | Ticket (shortened) | Top-1 sim. | Outcome |
+| adv_01 | Off-topic | What's the weather like today? | 0.518 | Escalated (correct) |
+| adv_02 | Off-topic | Can you recommend a good pizza place…? | 0.523 | Escalated (correct) |
+| adv_03 | Vague | I can't access anything today… | 0.670 | Proceeded (correct) |
+| adv_04 | Vague | Things have been acting strange… | 0.620 | Escalated (correct) |
+| adv_05 | Uninformative | Something is wrong. It's not working… | 0.677 | Proceeded (correct) |
+| adv_06 | Very short | Help | 0.604 | Escalated (correct) |
+| adv_07 | Very short | Broken again. | 0.586 | Escalated (correct) |
+| adv_08 | Slang | YO MY LAPTOP IS DEAD AF PLS… | 0.612 | Escalated (correct) |
+| adv_09 | Over-formal | requesting immediate remediation of persistent authentication failure… | 0.690 | Proceeded (correct) |
+
+The gate errs in both directions on harder cases. It lets 13.3% of out-of-domain calibration tickets through, and on the 45-ticket benchmark it escalates 15 tickets (33.3%), including one whose context was adequate (Section {secn:s_res_errors}). adv_08 shows a design limit: a real problem written in slang is escalated because it resembles no past ticket, which is safe but not helpful.
+
+## Conformal coverage {#s_res_conformal}
+
+{tab:conformal} gives the split-conformal coverage gap of each tier on the 45-ticket benchmark, and {fig:coverage} plots it against the noise band. The result has three linked parts that must be read together.
+
+[[TAB conformal | Coverage gap on the 45-ticket benchmark; only the calibration set differs between the two gap columns | 0.6,0.6,1.35,1.4,0.85,1.1 | 9.5]]
+| Tier | α | Gap, paraphrased cal. | Gap, deployment cal. | ±2 s.d. | Mean set size |
+| 1 | 0.20 | −0.200 | −0.244 | 0.060 | 2.69 |
+| 1 | 0.10 | −0.233 | −0.144 | 0.045 | 3.40 |
+| 1 | 0.05 | −0.106 | −0.083 | 0.033 | 5.00 |
+| 2 | 0.20 | −0.044 | 0.000 | 0.060 | 1.11 |
+| 2 | 0.10 | −0.011 | −0.011 | 0.045 | 1.82 |
+| 2 | 0.05 | 0.028 | −0.039 | 0.033 | 2.60 |
+
+[[FIG coverage | paper/figures/F2_coverage_gap_by_representation_finding_1.png | 4.2 | Coverage gap on the out-of-template benchmark by representation and α, against the two-standard-deviation noise band.]]
+
+**On our corpus**, coverage transfers for BGE but not for TF-IDF: at α = 0.10 the gap is −0.233 for Tier 1 and −0.011 for Tier 2, against a band of ±0.045. **External replication is inconclusive**: on an independently generated corpus a version shift left the tiers indistinguishable (0.0009 against −0.0072), but that is the wrong kind of shift for a vocabulary effect, and the right kind, a paraphrase shift, was blocked by our own pre-registered degeneracy rule (domain AUC 0.9972). **Post-hoc evidence appears in accuracy**: under that paraphrase shift Tier 1 lost 10.5 points against 2.4 for Tier 2 (difference-in-differences −0.080, 95% CI [−0.136, −0.021]). Recalibrating on the deployment-style set moved Tier 1's gap from −0.233 to −0.144 with nothing else changed, and density-ratio reweighting [@tibshirani] moved it to −0.122, still 5.4 standard deviations below nominal: both are partial repairs. Compared directly with the 0.50 gate, conformal deferral showed no signal in any of 12 comparisons at the coverage the gate operates at, so it remains a measurement. **H3 is supported on our corpus.**
+
+A drift monitor built on the same paraphrased reference behaves similarly: legitimate deployment-style tickets are flagged at rates of 0.217 to 0.646 across four α levels, 3.2 to 38.2 times the per-ticket null rate, so it would alarm continuously whatever the test. The detector was measured but not shipped.
+
+## Groundedness, the LLM judge and the sufficiency rater {#s_res_ground}
+
+Every benchmark and adversarial ticket that passed the gate (33) received a draft, labelled by a human for support by the retrieved tickets ({tab:ground}).
+
+[[TAB ground | Draft quality and the two automated raters (33 drafts) | 2.6,1.3,2.0 | 9.5]]
+| Measure | Value | Reading |
+| Drafts grounded (human) | 31/33, 95% CI [0.804, 0.983] | Most drafts stay within the retrieved fixes |
+| Hedge appropriate (human) | 32/33 | Drafts say when the examples do not fit |
+| LLM judge: raw agreement with the human | 30/33 | Looks reliable… |
+| LLM judge: Cohen's kappa | −0.042 | …but agrees no better than chance |
+| Sufficiency rater: ungrounded drafts caught | 2/2 | Catches both failures… |
+| Sufficiency rater: grounded drafts flagged | 26/31 | …but would escalate 28 of 33 eligible tickets |
+
+**H5 is supported for drafts and rejected for the judge.** All three disagreements were the judge rating whether a fix was *appropriate* rather than *supported*, so 91% raw agreement concealed a kappa below zero. The sufficiency rater, which never sees the draft, would suppress about 85% of auto-resolution to recover two bad drafts and has no threshold to tune; it also judged one escalated ticket (N45, similarity 0.640) to have adequate context.
+
+## Results on the independent set {#s_res_independent}
+
+On the 108 tickets written by two team members ({tab:independent}), routing accuracy is similar to the Gemini-written benchmark, but the retrieval gate escalates many actionable tickets.
+
+[[TAB independent | Results on the independent author-written set (pipeline unchanged) | 2.75,1.25,1.9 | 9.5]]
+| Quantity | Value | 95% CI |
+| Tickets (with a team / off-topic or vague) | 108 (98 / 10) | — |
+| Cascade routing accuracy | 74/98 = 75.5% | [66.1, 83.0] |
+| Tier 2 alone | 75/98 = 76.5% | [67.2, 83.8] |
+| Per-team recall (cascade) | from 8/14 (Security) to 14/14 (Database) | — |
+| Escalated at the 0.67 gate | 40/108 = 37.0% | [28.5, 46.4] |
+| Off-topic or vague tickets escalated | 8/10 | — |
+| Actionable tickets escalated | 32/98 | — |
+| Escalate-or-proceed decision correct | 74/108 = 68.5% | [59.3, 76.5] |
+| Misrouted tickets that reached the drafter | 16 of 24 | — |
+| Tier-1 share | 27/108 = 25.0% | — |
+
+Human-written text written to our seven teams is routed about as well as the benchmark (74/98 against 32/45). The cost is on the gate: one actionable ticket in three goes to a person because its wording is unlike any template.
+
+## Results on real-world tickets {#s_res_real}
+
+On real user tickets the classifier does not transfer ({tab:realworld}).
+
+[[TAB realworld | Real-world results, 583 distinct texts, under the primary and the sensitivity mapping | 2.35,1.85,1.7 | 9.5]]
+| Quantity | Primary (Fileservice → Access Mgmt.) | Sensitivity (→ Storage) |
+| Cascade correct | 115/583 = 19.7% [16.7, 23.1] | 294/583 = 50.4% [46.4, 54.5] |
+| Tier 2 alone correct (McNemar p) | 114/583 (p = 1.0) | 292/583 (p = 0.79) |
+| Recall: Access Mgmt. / Application / Storage | 86/319 / 29/264 / — | 62/82 / 29/264 / 203/237 |
+| Tier-1 answers correct | 39/238 | 199/238 |
+| Escalated at 0.67 | 129/583 = 22.1% [18.9, 25.7] | same (label-free) |
+| Misrouted: escalated / reached the drafter | 97 / 371 of 468 | — |
+
+The cascade routes 19.7% of distinct texts correctly (12.1%, 119/984, over all tickets), the same as Tier 2 alone. Tier 1 answers far more often than on generated text (238/583 against 4/45), but only 39 of those answers are right. The gate escalates 20.7% of misrouted texts and 27.8% of correctly routed ones, so it does not separate misroutes: 371 of 468 misrouted texts reached the drafter. Accuracy hinges on one mapping: most Fileservice tickets are file-share access requests, which our generator files under Storage, where the pipeline sends 203 of the 238 distinct Fileservice texts. Only two teams are covered, and the 30 drafts generated for real tickets were not labelled. **H4 holds for human-written text in our taxonomy but not for real tickets.**
+
+## Error analysis {#s_res_errors}
+
+{tab:errors} groups the errors of the live pipeline into wrong category, wrong escalation decision and unsupported resolution, and {fig:confusion} shows the benchmark confusion matrix.
+
+[[TAB errors | Error taxonomy of the live pipeline | 1.5,0.75,3.65 | 9]]
+| Error type | Count | Cases and likely cause |
+| Misclassification (benchmark) | 13/45 | Database→Application, Infrastructure→Application and Security→Storage (2 each); 10 of 13 errors predict Application or Storage |
+| Safe ticket escalated | 1 | N45: context adequate, similarity 0.640 below the gate |
+| Unsafe ticket drafted | 2 | N26 (0.701), N31 (0.675): passed the gate; drafts labelled ungrounded |
+| Out-of-domain leakage | 13.3% | 6 vague "something is broken" tickets from 3 seeds; no off-topic ticket leaks |
+| Adversarial, gate removed | 6/9 | Off-topic and vague tickets would be drafted instead of escalated |
+
+[[FIG confusion | paper_docx/fig/fig6_confusion_matrix.png | 3.6 | Confusion matrix of the production cascade on the 45-ticket benchmark.]]
+
+Recall ranges from 3/6 (Infrastructure) to 7/7 (Storage). Tier 1 alone misclassifies 29 of 45 tickets, for example N31 (ransomware pop-ups) to Storage and N39 (VPN failure) to Database. Of the 13 misclassified tickets, 5 were escalated (the safe outcome) and 8 received a draft, 7 of them faithful to retrieved tickets from the wrong team: the classification gate does not stop a misrouted ticket from reaching the drafter, which the real-world set confirms at scale. In both ungrounded drafts the model noted that the examples did not match, then added outside-knowledge steps the prompt forbids.
+
+## Summary of results and discussion {#s_res_summary}
+
+{tab:hyp_outcomes} gives the verdict on each hypothesis, and {fig:byset} compares routing accuracy across all evaluation sets.
+
+[[TAB hyp_outcomes | Outcome of each research hypothesis | 0.5,1.1,4.3 | 9.5]]
+| No. | Verdict | Evidence |
+| H1 | Supported | 9/9 adversarial tickets decided correctly with the gate, 3/9 without; 13.3% out-of-domain leakage |
+| H2 | Supported for latency only | 8–18% lower median latency; accuracy 32/45 vs 33/45 and 131/175 vs 132/175 (p = 1.000) |
+| H3 | Supported on our corpus | Gap −0.233 (TF-IDF) vs −0.011 (BGE), band ±0.045; external replication inconclusive |
+| H4 | Partly; rejected for real tickets | 74/98 on author-written tickets; 19.7% (50.4% under the alternative mapping) on real tickets |
+| H5 | Drafts yes; judge no | 31/33 drafts grounded; LLM judge kappa −0.042 |
+
+[[FIG byset | reports/black_book/fig/f_accuracy_by_set.png | 5.2 | Cascade routing accuracy with Wilson 95% intervals on every evaluation set.]]
+
+**What worked.** The retrieval gate keeps a language model away from off-topic and vague tickets, the cascade saves latency at no measurable accuracy cost, drafts above the gate are almost always grounded, and every number can be regenerated and checked.
+
+**What did not.** Neither gate filters misrouted tickets; the gate escalates a third of actionable human-written tickets; an LLM judge and a sufficiency rater both failed as automatic checks; and the classifier does not transfer to real tickets.
+
+**The recurring finding.** Across coverage guarantees, drift monitoring and classification, the data a component is trained or calibrated on limits it more than the method chosen. Recalibrating on a different distribution moved a coverage gap more than any change of method, a drift monitor's verdict depended on its reference rather than its test, and the real-world result shows a classifier trained only on synthetic templates failing on real text while gates calibrated on the same material do not compensate.

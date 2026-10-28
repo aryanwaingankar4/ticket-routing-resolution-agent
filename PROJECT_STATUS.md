@@ -1,3 +1,9 @@
+> **BLACK BOOK (B.Tech project report), branch `black-book`, 28 Oct 2026.** `reports/black_book/Black_Book_v2.docx`, 57 pages, built by
+> `python scripts/build_black_book.py --pdf` from the author's edited base (`Black_Book_EDITED_BASE.docx`; front matter kept as edited).
+> Content sources: `reports/black_book/content/*.txt`; figures: `scripts/make_black_book_figures.py`; number sources: `reports/black_book/SOURCES.md`;
+> references: `REFERENCES_CHECK.md`; decisions: `DECISIONS.md`. Open author items: confirm Swapnil Samrat's PRN (cover 27070125010 vs the base declaration's 24070126510),
+> fill the server-price placeholder and the four appendix placeholders, confirm Paket et al. Not merged. No paper file, result, threshold or model changed.
+
 # Project Status
 
 > **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, last pushed 2026-10-23; see `git log`** (not merged into main).

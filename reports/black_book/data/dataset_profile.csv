@@ -1,0 +1,49 @@
+quantity,value
+rows,4000
+categories,7
+templates,66
+distinct_titles,962
+distinct_descriptions,4000
+distinct_resolutions,1271
+words_mean,32.6
+words_median,32
+words_min,23
+words_max,44
+category.Access Management,571
+category.Application,572
+category.Database,571
+category.Infrastructure,572
+category.Network,571
+category.Security,572
+category.Storage,571
+priority.High,1684
+priority.Medium,1473
+priority.Low,843
+templates.Access Management,9
+templates.Application,9
+templates.Database,12
+templates.Infrastructure,9
+templates.Network,9
+templates.Security,9
+templates.Storage,9
+priority_by_category.Access Management.High,58
+priority_by_category.Access Management.Medium,241
+priority_by_category.Access Management.Low,272
+priority_by_category.Application.High,217
+priority_by_category.Application.Medium,245
+priority_by_category.Application.Low,110
+priority_by_category.Database.High,275
+priority_by_category.Database.Medium,216
+priority_by_category.Database.Low,80
+priority_by_category.Infrastructure.High,269
+priority_by_category.Infrastructure.Medium,206
+priority_by_category.Infrastructure.Low,97
+priority_by_category.Network.High,261
+priority_by_category.Network.Medium,202
+priority_by_category.Network.Low,108
+priority_by_category.Security.High,401
+priority_by_category.Security.Medium,136
+priority_by_category.Security.Low,35
+priority_by_category.Storage.High,203
+priority_by_category.Storage.Medium,227
+priority_by_category.Storage.Low,141

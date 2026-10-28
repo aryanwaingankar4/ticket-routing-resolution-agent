@@ -1,0 +1,119 @@
+# Literature Review
+
+## Background {#s_background}
+
+Our system draws on several research areas ({fig:litmap}): ticket triage in IT service management, text classification, classifier cascades and selective prediction, conformal prediction, retrieval-augmented generation with abstention, language models as judges, and synthetic benchmarks. The subsections below review each briefly, and Section {secn:s_comparative} compares the approaches side by side.
+
+[[FIG litmap | reports/black_book/fig/f_literature_map.png | 4.0 | The research areas that this project draws on. Each surrounding area contributes a method or a caution; the project combines them in one ticket-triage pipeline.]]
+
+### Ticket triage and IT service management {#s_lit_triage}
+
+Early work on automated routing did not read the ticket text. Shao et al. [@shao] fitted a Markov model to the sequences of groups that historical tickets passed through and showed that the resolving group could often be reached with fewer transfers than human dispatchers needed, which confirms that reassignment is a measurable cost. Diao et al. [@diao] let experts author classification rules on a shared platform and found, on data from several IT delivery centres, that rules balance accuracy against the cost of labelling when pre-classified tickets are scarce. Recent systems use large language models. TickIt [@tickit], deployed on ByteDance's Volcano Engine platform, keeps ticket state up to date, routes tickets to suitable teams and fine-tunes a model with category guidance; there, "escalation" means moving a ticket between teams. Paket et al. [@paket] compared language models with BERT on Turkish service-desk tickets in 172 classes. Carroll et al. [@carroll] evaluated GPT-4o, with and without retrieval over documentation, on 90 REDCap support tickets: agreement with experts on complexity was high (kappa around 0.85), 81–89% of tickets were categorised correctly, and the authors still recommended human oversight. These studies report accuracy but rarely say what to do with tickets the system is likely to get wrong.
+
+### Text classification: from TF-IDF to sentence embeddings {#s_lit_text}
+
+TF-IDF weighting with a linear classifier is the classic baseline for short text: Salton and Buckley [@salton] showed that weighting terms by in-document frequency, discounting common terms and normalising length works well across collections, and Joachims [@joachims] showed that support vector machines on such features gave substantial gains for text categorisation. These features match words, not meaning, so "can't get on the internet" shares nothing with "network connectivity outage". Our Tier 1 is a TF-IDF logistic regression built with scikit-learn [@sklearn]. Transformers such as BERT [@devlin] capture meaning, with cheaper distilled versions such as DistilBERT [@distilbert] and MiniLM [@minilm]; Sentence-BERT [@sbert], E5 [@e5] and BGE [@bge] produce sentence vectors that can be compared directly. We use bge-base-en-v1.5 (768 dimensions) for Tier 2 and retrieval. Cosine similarities are **not comparable across embedding models**, so a threshold such as 0.67 is meaningful only for the model it was calibrated on.
+
+### Classifier cascades, deferral and selective prediction {#s_lit_cascade}
+
+A cascade runs a cheap model first and passes difficult inputs to an expensive one, as in Viola and Jones's face detector [@viola]. Deciding when to pass on is *selective prediction*: Chow [@chow] showed that, with known posteriors, rejecting below a confidence threshold is optimal for a given rejection rate, and Geifman and El-Yaniv [@geifman] chose such thresholds on held-out data to guarantee risk on deep networks. Guo et al. [@guo] showed that modern networks are often poorly calibrated. Jitkrittum et al. [@jitkrittum] found that confidence-based deferral can fail under specialisation, label noise or distribution shift; Conformal Cascade [@confcascade] defers unless a conformal set is a single label; and Fanconi and van der Schaar [@fanconi] end the cascade with abstention to a human expert. These are evaluated on question answering, and none gates generation on retrieved evidence.
+
+### Conformal prediction and distribution shift {#s_lit_conformal}
+
+Conformal prediction [@vovk; @angelopoulos] turns a classifier's output into a label *set* that contains the true label with probability at least 1 − α, provided calibration and test data are exchangeable. In the split version, an empirical quantile of nonconformity scores on a calibration set becomes the threshold. Tibshirani et al. [@tibshirani] restore the guarantee under covariate shift by likelihood-ratio weighting, Barber et al. [@barber] bound the loss when exchangeability fails, and Gibbs and Candès [@gibbs] adapt online. Drift detection [@gama; @rabanser] likewise needs a reference sample of normal traffic.
+
+### Retrieval-augmented generation and abstention {#s_lit_rag}
+
+RAG [@lewis] gives a generator the passages most relevant to a query and improved open-domain question answering. Nearest-neighbour search at scale uses libraries such as FAISS [@faiss], which indexes our 4,000 past tickets. RAG helps only when the context is relevant: Joren et al. [@joren] found that large models tend to answer wrongly rather than abstain when context is insufficient, and that a sufficiency signal improves selective answering; Corrective RAG [@crag] scores retrieved documents and triggers corrective actions. Our gate is a simpler version of this idea ({sec:s_res_ground}).
+
+### Large language models as judges {#s_lit_judge}
+
+Zheng et al. [@zheng] found that GPT-4 agreed with human preferences more than 80% of the time but showed position and length biases. Jung et al. [@jung] escalate to a stronger model or a human when the judge is unsure, and Jain et al. [@jain] found that judges accepted valid outputs more than 96% of the time but rejected invalid ones less than 25% of the time. Agreement should be reported with Cohen's kappa [@cohen], which corrects for chance; a judge that calls almost everything "good" can reach high raw agreement while carrying no information, as we observed ({sec:s_res_ground}).
+
+### Synthetic data as training and evaluation data {#s_lit_synth}
+
+Maheshwari et al. [@maheshwari] found that LLM-generated benchmarks rank methods well for simple tasks such as intent classification but less well for harder ones, and that a smaller model generating the data is favoured when it also performs the task. This matters for our zero-shot comparison, because our 45-ticket benchmark was written with Gemini ({sec:s_res_zeroshot}). Public real-ticket data rarely match a given set of teams: the Zenodo dataset of Pereira [@pereira], our real-world test set, has seven different categories and several languages, so we filtered it to English with langid.py [@langid] ({sec:s_ext_design}).
+
+### Comparative analysis of existing approaches {#s_comparative}
+
+{fig:taxonomy} arranges the related work into a taxonomy by the job each approach does in a triage system: routing a ticket, supporting its resolution, deciding when to stop, or evaluating outputs. {tab:approaches} compares the main families of approach for IT triage, and the paragraphs below discuss the eight most relevant ones.
+
+[[FIG taxonomy | reports/black_book/fig/f_taxonomy.png | 5.6 | Taxonomy of related work, grouped by the job each approach does in a triage system.]]
+
+[[TAB approaches | Comparative analysis of existing approaches for IT ticket triage | 1.15,1.05,1.85,1.85 | 8]]
+| Approach | Example works | Strengths | Weaknesses for IT triage |
+| Keyword or rule-based routing | Diao et al. [@diao] | Transparent; needs no labelled data; experts encode known patterns | Brittle to new wording; rules grow and conflict; no confidence measure |
+| Classical ML (TF-IDF + LR or SVM) | [@salton], [@joachims], [@sklearn] | Fast (about 1 ms per ticket here), cheap to train, probabilistic output | Matches words, not meaning; overfits template vocabulary |
+| Fine-tuned transformers | BERT [@devlin], DistilBERT [@distilbert], Paket et al. [@paket] | Capture meaning; strong with enough labelled data | Costly to train; overfit small or narrow corpora |
+| Frozen sentence embeddings + linear head | Sentence-BERT [@sbert], E5 [@e5], BGE [@bge] | Robust to paraphrase; no fine-tuning; same vectors serve retrieval | Slower than TF-IDF; similarity scale differs per model |
+| Zero-shot LLM classification | Carroll et al. [@carroll], Qwen2.5 [@qwen] | No training data; handles unseen phrasing well | No calibrated abstention; cost and quota per call; outputs vary |
+| Retrieval-augmented generation | RAG [@lewis], sufficient context [@joren], CRAG [@crag] | Grounds drafts in past fixes | Fluent but unsupported answers when retrieval is poor |
+| Cascades and deferral | [@viola], [@jitkrittum], [@fanconi], [@confcascade] | Save cost; can end with a human | Confidence can mislead under shift; evaluated mostly on QA benchmarks |
+| Conformal prediction | [@vovk], [@angelopoulos], [@tibshirani] | Finite-sample coverage guarantee | Guarantee needs exchangeable data; marginal only |
+| LLM-as-judge | [@zheng], [@jung], [@jain] | Scales evaluation of free text | Biased toward approval; must be audited against humans |
+
+**Keyword or rule-based routing.** Rules such as "if the text mentions *password*, route to Access Management" are easy to inspect and need no training data, which is why expert-authored rules remain attractive when labelled tickets are scarce [@diao]. Their weakness is the user's vocabulary: a rule cannot anticipate every phrasing, and a growing rule base becomes hard to maintain. A rule also gives no measure of confidence, so it cannot drive escalation.
+
+**Classical machine learning.** A TF-IDF representation with logistic regression or a support vector machine [@salton; @joachims] learns the rules from data and outputs class probabilities. It is extremely fast, which makes it attractive as a first stage, but it inherits the vocabulary of its training data; on our template-generated corpus it scores 100% in distribution yet only 16/45 on out-of-template tickets ({sec:s_res_bench}).
+
+**Fine-tuned transformers.** Fine-tuning BERT-style models [@devlin; @distilbert] gives representations that understand paraphrase and has been compared with LLMs for service-desk classification [@paket]. On small, narrow corpora they overfit; our fine-tuned DistilBERT scored 18/45 and 21/45 in two runs, well below a frozen encoder.
+
+**Frozen sentence embeddings.** Encoders trained for sentence similarity [@sbert; @e5; @bge] can be used without fine-tuning, with a linear classifier on top. The same vectors also drive retrieval, which keeps the system simple. Their cost is speed (156.4 ms per ticket on our CPU against 1.04 ms for TF-IDF) and a similarity scale that is specific to each model.
+
+**Zero-shot LLM classification.** A prompted language model needs no training data and handles unseen phrasing well; Carroll et al. [@carroll] report 81–89% correct categories, and on our benchmark Gemini scored 40/45 ({sec:s_res_zeroshot}). But it offers no calibrated way to abstain, each call costs time and quota, and its authorship overlap with a Gemini-written benchmark complicates comparison [@maheshwari].
+
+**Retrieval-augmented generation.** Grounding drafts in retrieved past fixes [@lewis] is the natural way to suggest resolutions from ticket history. Its risk is the case where retrieval fails: the model still writes something. Sufficiency raters [@joren] and corrective retrieval [@crag] address this with additional models; our design uses a single similarity threshold and tests a sufficiency rater against it.
+
+**Cascades and deferral.** Running a cheap model first and deferring hard cases [@viola; @jitkrittum] saves cost, and recent work ends the chain with a human [@fanconi] or uses conformal sets to defer [@confcascade]. Their guarantees and evaluations assume data like the calibration data, and they have been tested on question answering rather than support tickets.
+
+**Conformal prediction.** Conformal methods [@vovk; @angelopoulos] add a finite-sample coverage guarantee to any classifier and can be reweighted for covariate shift [@tibshirani]. The guarantee is marginal and requires exchangeability, which is exactly what a change in writing style breaks ({sec:s_res_conformal}).
+
+**LLM-as-judge.** Using a language model to grade drafts [@zheng] scales evaluation, but judges lean toward approval [@jain] and should escalate when unsure [@jung]. In our audit, a judge agreed with the human on 30/33 drafts yet reached a kappa below zero ({sec:s_res_ground}).
+
+## Summary of literature review and research gap {#s_gap}
+
+{tab:survey} summarises twenty of the works discussed above, based on each paper's published abstract.
+
+[[TAB survey | Survey of the literature most relevant to this project | 1.05,0.45,1.2,1.05,1.2,1.05 | 7.5]]
+| Work | Year | Method | Data | Key finding | Limitation for our problem |
+| Shao et al. [@shao] | 2008 | Markov model over ticket-transfer sequences | Historical enterprise ticket-transfer records | Resolver group often reached with fewer transfers than human dispatch | Ignores ticket text; no abstention |
+| TickIt [@tickit] | 2025 | LLM-based online escalation with category-guided fine-tuning | Volcano Engine cloud platform; 20,000+ tickets analysed | Deployed and validated in production | Proprietary data; "escalation" re-routes between teams |
+| Carroll et al. [@carroll] | 2026 | GPT-4o with and without RAG over documentation | 90 REDCap tickets from one medical centre | Kappa about 0.85 on complexity; 81–89% correct category | Single institution, small sample; oversight still needed |
+| BERT [@devlin] | 2019 | Bidirectional transformer pre-training, then fine-tuning | GLUE, SQuAD and other benchmarks | Improved results on eleven NLP tasks | Costly to fine-tune; no direct sentence embedding |
+| Sentence-BERT [@sbert] | 2019 | Siamese fine-tuning for sentence embeddings | NLI data; similarity benchmarks | Similar-pair search over 10,000 sentences in about 5 s instead of 65 h | Quality depends on training domain |
+| DistilBERT [@distilbert] | 2019 | Knowledge distillation of BERT | GLUE and other benchmarks | 40% smaller, 60% faster, 97% of BERT's performance | Needs fine-tuning, which can overfit narrow data |
+| BGE / C-Pack [@bge] | 2024 | Large-scale contrastive training of embeddings | C-MTEB and English counterparts | Among the strongest general embeddings at release | Similarities model-specific; thresholds must be recalibrated |
+| Selective classification [@geifman] | 2017 | Confidence threshold for a guaranteed risk | CIFAR-10/100, ImageNet | 2% top-5 error with 99.9% probability at about 60% coverage | Assumes test data match threshold data |
+| Calibration [@guo] | 2017 | Measuring calibration; temperature scaling | Image and text classification | Modern networks poorly calibrated; temperature scaling helps | Fixed in distribution only |
+| Jitkrittum et al. [@jitkrittum] | 2023 | Theory of optimal deferral; post-hoc deferral | Classifier cascades | Confidence deferral fails under specialisation, label noise or shift | Deferral between models, not to a human |
+| Conformal Cascade [@confcascade] | 2026 | Conformal set size as the deferral rule | 18 multiple-choice benchmarks | Beats the strongest heuristic cascade on most pairs | Multiple-choice only |
+| Fanconi et al. [@fanconi] | 2025 | Base model, larger model, then human | ARC, MMLU, MedQA, MedMCQA | More accurate than single models at lower cost | Question answering, not tickets |
+| Split conformal [@vovk; @angelopoulos] | 2005, 2023 | Calibrated prediction sets | General | Marginal coverage at least 1 − α under exchangeability | Breaks when data change style |
+| Weighted conformal [@tibshirani] | 2019 | Likelihood-ratio weighting of calibration points | Simulated and real regression data | Restores coverage under covariate shift | Needs a density ratio; ill-posed when domains separate |
+| Dataset-shift detection [@rabanser] | 2019 | Dimensionality reduction plus two-sample tests | Image classification benchmarks | Tests on a pre-trained classifier's outputs work best | Needs a reference sample of normal traffic |
+| RAG [@lewis] | 2020 | Seq2seq generator with dense retriever | Open-domain QA, fact checking | Best results on three open-domain QA tasks | No abstention when retrieval fails |
+| Sufficient context [@joren] | 2025 | Context-sufficiency rater and selective generation | Several LLMs and QA datasets | Large models answer wrongly instead of abstaining | Depends on an LLM rater |
+| CRAG [@crag] | 2024 | Retrieval evaluator triggers corrective actions | Four generation tasks | Improves RAG methods significantly | Corrects retrieval rather than handing off |
+| LLM-as-judge [@zheng] | 2023 | Strong LLMs judging chatbot answers | MT-Bench, Chatbot Arena | Over 80% agreement with human preferences | Position, length and self-preference biases |
+| Agreeableness bias [@jain] | 2025 | Minority-veto ensemble; regression on human labels | Feedback on student programs | Judges accept valid outputs (>96%), reject invalid ones rarely (<25%) | One task domain |
+
+Three themes emerge: escalation is usually treated as **routing, not abstention**; methods that decide when to stop carry guarantees that hold only when test data resemble calibration data and were evaluated mainly on question answering or images; and abstention in RAG relies on LLM raters that need checking against people. {tab:compare} compares the closest systems with ours.
+
+[[TAB compare | Comparison of the closest related systems with this project | 1.3,1.25,1.6,1.75 | 8.5]]
+| Work | Task | How it escalates or abstains | Evaluated on |
+| TickIt [@tickit] | Online ticket escalation | Routes the ticket to another support team | Production deployment on Volcano Engine |
+| Carroll et al. [@carroll] | Ticket triage and drafting | Not stated in the abstract; human oversight recommended | Real REDCap tickets, rated by experts |
+| Jitkrittum et al. [@jitkrittum] | Classifier cascade | Confidence-based and post-hoc deferral | Classification benchmarks |
+| Conformal Cascade [@confcascade] | Multi-tier LLM inference | Defers unless the conformal set is a single label | Multiple-choice benchmarks |
+| Fanconi et al. [@fanconi] | Human–AI decision making | Defers to a larger model, then abstains to a human | General and medical QA |
+| Sufficient context [@joren] | RAG error analysis | Abstains when a rater finds context insufficient | Several models and datasets |
+| CRAG [@crag] | Robust RAG | Evaluator triggers corrective retrieval | Generation tasks |
+| **This project** | IT ticket triage into seven teams | Two thresholds calibrated on measured data: a confidence gate and a retrieval gate that blocks drafting | Synthetic corpus; out-of-template and adversarial sets; 108 author-written tickets; 583 real tickets [@pereira] |
+
+#### Research gap
+
+No work we found combines, for ticket triage, (i) a classification cascade whose threshold is chosen from measured calibration data, (ii) a separate retrieval-similarity gate that decides whether a language model may draft at all, and (iii) an evaluation that reports where both gates fail and why. The guarantees of conformal and selective methods have not, to our knowledge, been tested on the shift that matters for tickets, a change in *how* people write, and whether a cheap similarity threshold suffices compared with an LLM rater has not been studied with human labels in this setting.
+
+#### How this project addresses the gap
+
+We build the two-gate pipeline and calibrate each threshold separately, recording rejected attempts (Sections {secn:s_cascade} and {secn:s_retrieval}); test the gates with ablations, an adversarial set and conformal alternatives (Sections {secn:s_res_gates} and {secn:s_res_conformal}); audit the language-model components, namely zero-shot classifiers, an LLM judge and a sufficiency rater (Sections {secn:s_res_zeroshot} and {secn:s_res_ground}); and evaluate the unchanged system on tickets that no language model wrote, reporting the negative result openly (Sections {secn:s_res_independent} and {secn:s_res_real}).

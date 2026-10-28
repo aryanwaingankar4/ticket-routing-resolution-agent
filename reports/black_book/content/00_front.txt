@@ -1,0 +1,61 @@
+%% Front matter for scripts/build_black_book.py. Sections start with @@NAME.
+%% Blank lines separate paragraphs. Numbers: see ../SOURCES.md (Front matter).
+
+@@ACK
+We are sincerely grateful to our project guide, **Dr. Madhvi Saxena**, Assistant Professor, Department of Artificial Intelligence & Machine Learning, for her steady guidance throughout this work. Her insistence that every claim be backed by a measurement, and that results which did not work be reported as carefully as those that did, shaped both the project and this report.
+
+We thank our co-guide, **Dr. Aditi Saxena**, for her reviews of our experiments and our paper, and for her suggestions on how to present the evaluation clearly.
+
+We thank the Head of the Department, **Dr. Sumit Kumar**, for providing the facilities and the encouragement that made this project possible.
+
+The problem we worked on comes from **Use Case 1 of the nasscom hackathon brief** on IT ticket routing and resolution. We thank the organisers for a well-specified problem statement that gave the project a clear starting point.
+
+As a team, each of us thanks the others, Aryan Manoj Waingankar, Shreyansh Pandey, Parth Bagle and Swapnil Samrat, for their hard work and cooperation at every stage, including the evenings spent writing and cross-labelling test tickets.
+
+We also thank our families and friends for their patience and support, and **Symbiosis Institute of Technology, Pune**, for giving us the opportunity to carry out this project.
+
+@@ABSTRACT
+When an employee raises an IT support ticket, a triage system must send it to the team that owns the problem and, just as importantly, recognise the tickets it should not handle on its own. This project builds and evaluates such a system for seven support teams, starting from Use Case 1 of the nasscom hackathon brief. The pipeline treats escalation to a human as a normal output. A fast TF-IDF classifier answers when its confidence is at least 0.50; otherwise a classifier over BGE sentence embeddings decides. The five most similar resolved tickets are then retrieved, and Gemini may draft a resolution only if the closest one has a cosine similarity of at least 0.67; below that the ticket goes to a person and no language model is called. Both thresholds were chosen from measured calibration data, and the report records the calibration attempts that were rejected.
+
+On a 9-ticket adversarial set the retrieval gate decides every ticket correctly, against 3 of 9 without it. The cascade is not more accurate than the embedding classifier alone (32/45 against 33/45, p = 1.000), but it cuts median per-ticket latency by 8% to 18%. A zero-shot language model classifies the 45-ticket benchmark better (40/45) but offers no way to abstain. A human judged 31 of 33 drafts grounded in the retrieved tickets, while an LLM judge reached a Cohen's kappa of −0.042 against that human. On 108 tickets written and cross-labelled by two team members (kappa = 0.936) the cascade routes 74 of 98 correctly, but the gate also escalates 32 actionable tickets. On 583 distinct real tickets covering two teams, accuracy falls to 19.7% (50.4% under an alternative category mapping), and 371 of 468 misrouted tickets still pass the gate. The recurring lesson is that the data a component is trained or calibrated on limits it more than the method chosen.
+
+The system is delivered as a FastAPI service, a Streamlit demonstration and a Docker image, with 456 automated tests.
+
+@@KEYWORDS
+IT ticket triage; escalation; selective prediction; classification cascade; retrieval-augmented generation; conformal prediction; calibration; sentence embeddings
+
+@@ABBREVIATIONS
+α | Target error rate (miscoverage level) in conformal prediction
+κ | Cohen's kappa, chance-corrected agreement between two annotators
+AI | Artificial Intelligence
+API | Application Programming Interface
+AUC | Area Under the (ROC) Curve
+AURC | Area Under the Risk–Coverage curve
+BERT | Bidirectional Encoder Representations from Transformers
+BGE | BAAI General Embedding (bge-base-en-v1.5 in this project)
+CC BY | Creative Commons Attribution licence
+CI | Confidence interval (statistics); continuous integration (software)
+CPU | Central Processing Unit
+CSV | Comma-Separated Values
+DiD | Difference-in-differences
+ECE | Expected Calibration Error
+FAISS | Facebook AI Similarity Search (vector-search library)
+FR | Functional Requirement
+GPU | Graphics Processing Unit
+HTTP | Hypertext Transfer Protocol
+ITSM | IT Service Management
+JSON | JavaScript Object Notation
+KS | Kolmogorov–Smirnov (test)
+LLM | Large Language Model
+LogReg | Logistic Regression
+ML | Machine Learning
+NFR | Non-Functional Requirement
+NLP | Natural Language Processing
+OOD | Out-of-Domain
+RAG | Retrieval-Augmented Generation
+RAM | Random-Access Memory
+SDK | Software Development Kit
+SRS | Software Requirements Specification
+TF-IDF | Term Frequency–Inverse Document Frequency
+UI | User Interface
+WBS | Work Breakdown Structure

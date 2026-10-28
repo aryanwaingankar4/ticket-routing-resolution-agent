@@ -1,0 +1,100 @@
+{
+  "ok": true,
+  "result": {
+    "ticket": {
+      "title": "Cannot connect to company VPN",
+      "description": "Since this morning I keep getting a timeout error when I try to connect to the corporate VPN from home. The client says 'connection failed' after about 30 seconds. Restarting the client and my router did not help.",
+      "ticket_id": null
+    },
+    "classification": {
+      "category": "Network",
+      "confidence": 0.7004932165145874,
+      "tier": 2,
+      "tier1_pred": "Network",
+      "tier1_conf": 0.30067822464823823
+    },
+    "retrieval": {
+      "retrieved": [
+        {
+          "id": 2272,
+          "title": "VPN failing for Remote/WFH users",
+          "description": "[TCK-64469] Ticket raised because remote users from Remote/WFH cannot establish a VPN connection and get a timeout during negotiation. This is impacting daily work.",
+          "category": "Network",
+          "resolution": "The VPN concentrator serving Remote/WFH had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access.",
+          "priority": "High",
+          "similarity": 0.7766040563583374
+        },
+        {
+          "id": 3462,
+          "title": "VPN failing for Remote/WFH users",
+          "description": "[TCK-42921] Issue summary: remote users from Remote/WFH cannot establish a VPN connection and get a timeout during negotiation. It started earlier today and has not self-resolved.",
+          "category": "Network",
+          "resolution": "The VPN concentrator serving Remote/WFH had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access.",
+          "priority": "High",
+          "similarity": 0.7702155113220215
+        },
+        {
+          "id": 2100,
+          "title": "VPN failing for Bangalore DC users",
+          "description": "[TCK-97454] Ticket raised because remote users from Bangalore DC cannot establish a VPN connection and get a timeout during negotiation. This is impacting daily work.",
+          "category": "Network",
+          "resolution": "The VPN concentrator serving Bangalore DC had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access.",
+          "priority": "High",
+          "similarity": 0.7670353055000305
+        },
+        {
+          "id": 2460,
+          "title": "VPN failing for Mumbai HQ users",
+          "description": "[TCK-55819] Monitoring alerted us that remote users from Mumbai HQ cannot establish a VPN connection and get a timeout during negotiation. Escalating for investigation.",
+          "category": "Network",
+          "resolution": "The VPN concentrator serving Mumbai HQ had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access.",
+          "priority": "Medium",
+          "similarity": 0.7619675993919373
+        },
+        {
+          "id": 3497,
+          "title": "VPN failing for Mumbai HQ users",
+          "description": "[TCK-80486] Monitoring alerted us that remote users from Mumbai HQ cannot establish a VPN connection and get a timeout during negotiation. Escalating for investigation.",
+          "category": "Network",
+          "resolution": "The VPN concentrator serving Mumbai HQ had exhausted its IP pool; enlarged the pool and cleared stale sessions, restoring VPN access.",
+          "priority": "Low",
+          "similarity": 0.7584731578826904
+        }
+      ]
+    },
+    "decision": {
+      "escalated": false,
+      "reason": "none",
+      "threshold_applied": 0.67,
+      "observed_value": 0.7766040563583374
+    },
+    "suggestion": null,
+    "status": "auto_resolved",
+    "config_fingerprint": "9c9a5cbcb53f",
+    "latency_ms": 195.48210001084954,
+    "error_kind": null,
+    "error_message": null,
+    "conformal": null,
+    "steps": [
+      {
+        "agent": "classification",
+        "status": "ok",
+        "latency_ms": 103.88689988758415,
+        "detail": null
+      },
+      {
+        "agent": "retrieval",
+        "status": "ok",
+        "latency_ms": 91.36830002535135,
+        "detail": null
+      },
+      {
+        "agent": "resolution",
+        "status": "skipped",
+        "latency_ms": 0.0,
+        "detail": "generation_disabled"
+      }
+    ]
+  },
+  "failure": null
+}

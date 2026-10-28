@@ -1,0 +1,78 @@
+# Introduction
+
+## Introduction {#s_intro}
+
+Every medium or large organisation runs an IT service desk. Employees report problems such as a laptop that will not join the VPN, a slow database query or a shared folder they can no longer open, and each report becomes a *ticket* with a short title, a free-text description and, once closed, a resolution note. Behind the desk sit specialist teams for networks, databases, security, storage and so on. The desk's first job is **triage**: deciding which team owns the problem and placing the ticket in that team's queue.
+
+Triage creates much of the delay in IT support. Users describe a *symptom* ("nothing loads since this morning"), not a *cause* ("the DNS server is down"), and one symptom can belong to several teams. A ticket in the wrong queue waits until someone there reads it, decides it is not theirs and passes it on, and every transfer adds another queue wait. {fig:lifecycle} shows this loop: a confident but wrong routing decision costs more than one that admits uncertainty and asks a person, because the error is discovered only after the wait.
+
+[[FIG lifecycle | reports/black_book/fig/f_ticket_lifecycle.png | 4.8 | The life of a support ticket. A confident but wrong routing decision sends the ticket into a reassignment loop, and each transfer adds a queue wait before any work starts.]]
+
+Automating triage with machine learning has been studied for many years [@shao], and modern language models can also draft a suggested fix. Most published work, however, reports only the share of tickets routed correctly. That hides the practical question: *what does the system do with the tickets it is likely to get wrong?* A classifier that is 75% accurate and silently guesses on the rest recreates the reassignment loop; the same classifier, if it hands a large part of its mistakes to a human, is far more useful. Drafted resolutions raise the same concern more sharply. A large language model (LLM) writes fluent, confident text whether or not it has a basis for it. Retrieval-augmented generation (RAG) [@lewis] grounds the model in similar past cases, but only helps when the retrieved cases are relevant.
+
+This project therefore treats **escalation to a human as a first-class output**. Our pipeline has two decision points, or *gates*. The first decides whether a fast classifier is confident enough to assign the team alone or whether a slower, stronger classifier must be consulted. The second decides whether the retrieved past tickets are similar enough for a language model to draft a resolution at all; if not, the ticket goes to a person and no language model is called. Each gate is a single threshold, and the central question is how to choose those thresholds from evidence rather than intuition. The work began as our final-year B.Tech project and grew into a research study written up as an IEEE-style paper; results that did not turn out as expected are reported as carefully as the positive ones.
+
+## Problem statement {#s_problem}
+
+The project is based on **Use Case 1 of the nasscom hackathon brief**, which asks for an AI-assisted agent that routes IT support tickets and suggests resolutions. The brief fixed:
+
+- **Seven support categories**, treated as seven teams: Access Management, Application, Database, Infrastructure, Network, Security and Storage.
+- **Routing**, **resolution suggestion** based on similar past tickets, **confidence-based escalation** to a human, and **automation flagging** of recurring issues.
+- **Data:** a synthetic dataset generated with a language model, about 1,000 tickets with the fields *title*, *description*, *category*, *resolution* and *priority*.
+
+{tab:brief} maps each element of the brief to a component of our system.
+
+[[TAB brief | Elements of the nasscom Use Case 1 brief and the components that address them | 1.7,2.6,1.6]]
+| Element of the brief | Component in this project | Described in |
+| Seven categories | Fixed label set used by every classifier and dataset | {sec:s_dataset} |
+| Routing | Two-tier classification cascade (TF-IDF, then BGE) | {sec:s_cascade} |
+| Resolution suggestion | FAISS retrieval of five similar tickets and grounded drafting with Gemini | {sec:s_retrieval} |
+| Confidence-based escalation | Cascade confidence gate (0.50) and retrieval similarity gate (0.67) | {sec:s_cascade}, {sec:s_retrieval} |
+| Automation flagging | Offline clustering of resolution texts at a similarity of 0.80 | {sec:s_arch} |
+| Synthetic dataset | 4,000 template-generated tickets with the five fields | {sec:s_dataset} |
+
+Stated as one problem: **given the text of a new IT ticket, assign it to one of seven teams and, when it is safe, draft a resolution grounded in similar past tickets; whenever either step is likely to be wrong, escalate the ticket to a human instead of guessing.** Mature tools exist for each component, so the difficulty lies in deciding *when* the system should act and showing with data that those decisions are sound. The brief asks for confidence-based escalation without saying how confidence should be measured or where the cut-off belongs, and it recommends synthetic data, which limits what any accuracy measured on it can mean. We therefore treated the corpus itself as an object of study (Sections {secn:s_dataset} and {secn:s_res_summary}).
+
+## Scope of research {#s_scope}
+
+The scope was set by the brief, by one academic year, and by our hardware, an ordinary laptop without a graphics card.
+
+#### In scope
+
+- English tickets (title and description) routed to the seven teams of the brief, through a complete pipeline: classification, retrieval, escalation, grounded drafting and offline automation flagging, exposed as an HTTP service and a demonstration interface.
+- Calibration of both thresholds from measured data, including rejected attempts, and evaluation on out-of-template benchmarks, an adversarial escalation set, 108 tickets written by two team members and real user tickets from a public dataset.
+- Comparisons that put the design in context (gate ablations, zero-shot LLM baselines, an audited LLM judge, conformal prediction and drift monitoring), and engineering practices that make every number reproducible.
+
+#### Out of scope
+
+- Live deployment: no real ticket stream has passed through the system and no engineer has acted on its output.
+- Languages other than English, attachments and conversation threads; predicting priority or assigning individual engineers; training or fine-tuning large language models; formal user studies.
+
+## Research hypothesis {#s_hypothesis}
+
+The project was framed around five testable hypotheses, each tied to one of the gates or to the data used to fit and calibrate them ({tab:hypotheses}). Chapter 5 reports the outcomes, and {tab:hyp_outcomes} summarises the verdicts.
+
+[[TAB hypotheses | Research hypotheses and how each one is tested | 0.45,2.2,1.75,1.5 | 9]]
+| No. | Hypothesis | Measurable prediction | Tested in |
+| H1 | One threshold on the top-1 retrieval similarity, chosen from in-domain and out-of-domain calibration tickets, decides escalation better than no gate | More adversarial tickets decided correctly with the gate than without | Gate ablation; similarity sweep ({sec:s_res_gates}) |
+| H2 | Letting the fast lexical classifier answer above a calibrated confidence reduces latency without reducing accuracy | Lower median latency; accuracy indistinguishable from Tier 2 alone | Exact McNemar; latency ({sec:s_res_cascade}) |
+| H3 | Coverage calibrated on paraphrased training tickets transfers to out-of-template text for embeddings but not for TF-IDF; the calibration distribution matters more than the method | Gap at α = 0.10 inside the noise band for BGE, outside it for TF-IDF | Split conformal prediction ({sec:s_res_conformal}) |
+| H4 | A classifier trained only on templates keeps its accuracy on human-written and real tickets | Accuracy close to the benchmark | 108 author-written and 583 real tickets ({sec:s_res_independent}, {sec:s_res_real}) |
+| H5 | Drafts above the gate are grounded, and an LLM judge can replace the human check | Most drafts grounded; judge agrees beyond chance | 33 human-labelled drafts; Cohen's kappa ({sec:s_res_ground}) |
+
+The hypotheses were written so that a negative outcome would be informative. H4 was expected to fail in some form; the questions were how badly, and whether the gates would catch the resulting errors.
+
+## Objectives {#s_objectives}
+
+1. Build a synthetic corpus that follows the nasscom brief and measure what it can and cannot support.
+2. Develop a two-tier cascade (TF-IDF backed by BGE embeddings) with a confidence threshold chosen from calibration data.
+3. Build retrieval over past tickets with FAISS and a Gemini drafting step allowed only above a calibrated similarity threshold.
+4. Evaluate both gates on out-of-template benchmarks and an adversarial set, with ablations that isolate each gate.
+5. Compare the pipeline with zero-shot language models and audit an LLM judge of draft quality.
+6. Study conformal prediction and drift monitoring as principled alternatives or additions to the fixed thresholds.
+7. Test the unchanged pipeline on tickets no language model wrote: an independent, cross-labelled set and real user tickets.
+8. Package the system as a tested HTTP service, a demonstration interface and a container image, with every number reproducible from committed files.
+
+## Organization of the report {#s_org}
+
+**Chapter 2** reviews the literature and compares existing approaches, ending with the research gap. **Chapter 3** specifies the requirements, tools, work breakdown and cost. **Chapter 4** describes the methodology: data, architecture and workflow, both gates, the service and deployment, testing, and the evaluation design. **Chapter 5** presents every result, including the negative ones, with an error analysis and a summary. **Chapter 6** concludes and outlines future work. References and appendices follow.

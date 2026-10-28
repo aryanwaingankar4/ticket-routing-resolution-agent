@@ -1,0 +1,15 @@
+# AIC Form
+
+[[PHBLOCK Insert the completed AIC Form here (mandatory)]]
+
+# Similarity Report
+
+[[PHBLOCK Insert the Similarity Report here (mandatory)]]
+
+# AI Plagiarism Report
+
+[[PHBLOCK Insert the AI Plag Report here (mandatory)]]
+
+# Research Paper
+
+[[PHBLOCK Attach approved paper v4]]

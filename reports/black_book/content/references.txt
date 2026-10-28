@@ -1,0 +1,46 @@
+%% key | IEEE reference text. *text* is set in italics.
+%% Ordered by first citation automatically; every entry must be cited.
+%% Sources of verification: reports/black_book/REFERENCES_CHECK.md
+tickit | F.-R. Liu *et al.*, "TickIt: Leveraging large language models for automated ticket escalation," in *Proc. 33rd ACM Int. Conf. Foundations of Software Engineering (FSE)*, 2025.
+paket | E. Paket *et al.*, "IT service desk ticket classification via large language models," in *Proc. 9th Int. Conf. Computer Science and Engineering (UBMK)*, 2024.
+carroll | A. Carroll *et al.*, "Evaluating large language models for automated REDCap support ticket triage and response," *JAMIA Open*, vol. 9, no. 3, 2026.
+jitkrittum | W. Jitkrittum *et al.*, "When does confidence-based cascade deferral suffice?" in *Advances in Neural Information Processing Systems (NeurIPS)*, 2023.
+confcascade | Y.-F. Dou *et al.*, "Conformal cascade: Distribution-free accuracy guarantees for multi-tier LLM inference," 2026, arXiv:2607.25018.
+fanconi | C. Fanconi *et al.*, "Cascaded language models for cost-effective human–AI decision-making," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2025.
+vovk | V. Vovk, A. Gammerman, and G. Shafer, *Algorithmic Learning in a Random World*. New York: Springer, 2005.
+angelopoulos | A. N. Angelopoulos and S. Bates, "Conformal prediction: A gentle introduction," *Foundations and Trends in Machine Learning*, vol. 16, no. 4, pp. 494–591, 2023.
+tibshirani | R. J. Tibshirani, R. F. Barber, E. J. Candès, and A. Ramdas, "Conformal prediction under covariate shift," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2019.
+barber | R. F. Barber, E. J. Candès, A. Ramdas, and R. J. Tibshirani, "Conformal prediction beyond exchangeability," *The Annals of Statistics*, vol. 51, no. 2, pp. 816–845, 2023.
+gibbs | I. Gibbs and E. J. Candès, "Adaptive conformal inference under distribution shift," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2021.
+lewis | P. Lewis *et al.*, "Retrieval-augmented generation for knowledge-intensive NLP tasks," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2020.
+joren | H. Joren *et al.*, "Sufficient context: A new lens on retrieval augmented generation systems," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2025.
+crag | S.-Q. Yan *et al.*, "Corrective retrieval augmented generation," 2024, arXiv:2401.15884.
+jung | J. Jung, F. Brahman, and Y. Choi, "Trust or escalate: LLM judges with provable guarantees for human agreement," in *Proc. Int. Conf. Learning Representations (ICLR)*, 2025.
+jain | S. Jain *et al.*, "Beyond consensus: Mitigating the agreeableness bias in LLM judge evaluations," 2025, arXiv:2510.11822.
+maheshwari | G. Maheshwari, D. Ivanov, and K. El Haddad, "Efficacy of synthetic data as a benchmark," 2024, arXiv:2409.11968.
+bge | S. Xiao *et al.*, "C-Pack: Packed resources for general Chinese embeddings," in *Proc. 47th Int. ACM SIGIR Conf. Research and Development in Information Retrieval*, 2024.
+faiss | J. Johnson, M. Douze, and H. Jégou, "Billion-scale similarity search with GPUs," *IEEE Transactions on Big Data*, vol. 7, no. 3, pp. 535–547, 2021.
+wilson | E. B. Wilson, "Probable inference, the law of succession, and statistical inference," *Journal of the American Statistical Association*, vol. 22, no. 158, pp. 209–212, 1927.
+mcnemar | Q. McNemar, "Note on the sampling error of the difference between correlated proportions or percentages," *Psychometrika*, vol. 12, no. 2, pp. 153–157, 1947.
+qwen | Qwen Team, "Qwen2.5 technical report," 2024, arXiv:2412.15115.
+cohen | J. Cohen, "A coefficient of agreement for nominal scales," *Educational and Psychological Measurement*, vol. 20, no. 1, pp. 37–46, 1960.
+pereira | L. S. B. Pereira, "Classification of IT support tickets," Zenodo, Dec. 2022, doi: 10.5281/zenodo.7648117. Dataset, CC BY 4.0.
+langid | M. Lui and T. Baldwin, "langid.py: An off-the-shelf language identification tool," in *Proc. ACL 2012 System Demonstrations*, Jeju Island, Korea, 2012, pp. 25–30.
+shao | Q. Shao, Y. Chen, S. Tao, X. Yan, and N. Anerousis, "Efficient ticket routing by resolution sequence mining," in *Proc. 14th ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining*, 2008, pp. 605–613.
+salton | G. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
+devlin | J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, "BERT: Pre-training of deep bidirectional transformers for language understanding," in *Proc. 2019 Conf. North American Chapter of the Association for Computational Linguistics (NAACL-HLT)*, 2019, pp. 4171–4186.
+sbert | N. Reimers and I. Gurevych, "Sentence-BERT: Sentence embeddings using Siamese BERT-networks," in *Proc. 2019 Conf. Empirical Methods in Natural Language Processing and 9th Int. Joint Conf. Natural Language Processing (EMNLP-IJCNLP)*, 2019, pp. 3980–3990.
+distilbert | V. Sanh, L. Debut, J. Chaumond, and T. Wolf, "DistilBERT, a distilled version of BERT: Smaller, faster, cheaper and lighter," presented at the *5th Workshop on Energy Efficient Machine Learning and Cognitive Computing, NeurIPS*, 2019, arXiv:1910.01108.
+minilm | W. Wang, F. Wei, L. Dong, H. Bao, N. Yang, and M. Zhou, "MiniLM: Deep self-attention distillation for task-agnostic compression of pre-trained transformers," in *Advances in Neural Information Processing Systems (NeurIPS)*, vol. 33, 2020.
+e5 | L. Wang *et al.*, "Text embeddings by weakly-supervised contrastive pre-training," 2022, arXiv:2212.03533.
+chow | C. K. Chow, "On optimum recognition error and reject tradeoff," *IEEE Transactions on Information Theory*, vol. 16, no. 1, pp. 41–46, 1970.
+geifman | Y. Geifman and R. El-Yaniv, "Selective classification for deep neural networks," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2017, pp. 4878–4887.
+guo | C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, "On calibration of modern neural networks," in *Proc. 34th Int. Conf. Machine Learning (ICML)*, 2017.
+viola | P. Viola and M. Jones, "Rapid object detection using a boosted cascade of simple features," in *Proc. IEEE Computer Society Conf. Computer Vision and Pattern Recognition (CVPR)*, 2001, pp. I-511–I-518.
+zheng | L. Zheng *et al.*, "Judging LLM-as-a-judge with MT-Bench and Chatbot Arena," in *Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track*, 2023.
+rabanser | S. Rabanser, S. Günnemann, and Z. C. Lipton, "Failing loudly: An empirical study of methods for detecting dataset shift," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2019.
+gama | J. Gama, I. Žliobaitė, A. Bifet, M. Pechenizkiy, and A. Bouchachia, "A survey on concept drift adaptation," *ACM Computing Surveys*, vol. 46, no. 4, pp. 1–37, 2014.
+sklearn | F. Pedregosa *et al.*, "Scikit-learn: Machine learning in Python," *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011.
+higham | N. J. Higham, *Accuracy and Stability of Numerical Algorithms*, 2nd ed. Philadelphia: SIAM, 2002.
+diao | Y. Diao, H. Jamjoom, and D. Loewenstern, "Rule-based problem classification in IT service management," in *Proc. 2009 IEEE Int. Conf. Cloud Computing*, 2009, pp. 221–228.
+joachims | T. Joachims, "Text categorization with support vector machines: Learning with many relevant features," in *Machine Learning: ECML-98*, Lecture Notes in Computer Science. Berlin: Springer, 1998, pp. 137–142.
