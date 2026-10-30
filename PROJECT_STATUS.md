@@ -1,3 +1,13 @@
+> **IConAECC 2026 SUBMISSION, branch `iconaecc-2026` (from `paper-revision-oct` @ 953291c), 30 Oct 2026.** Not merged into main.
+> - **The paper:** `paper_ieee_docx/Calibrated_Escalation_IConAECC2026.docx`.
+>   - It is built by `scripts/build_iconaecc_docx.py` in the IEEE A4 Word template, which is derived from the official letter template by `scripts/derive_ieee_a4_template.py`; ieee.org blocked the A4 download.
+>   - The figures come from `scripts/make_iconaecc_figures.py`.
+> - **Supplement:** `paper_ieee_docx/SUPPLEMENT.{docx,md}` holds v4's Appendices A–F and the removed Figs. 2 and 6.
+> - **Content is v4 only.** The build fails on any number that is not in v4's text.
+> - **Rules, template source and the full list of cuts for the mentor:** `paper_ieee_docx/README.md`.
+> - **Page count in Word:** 8 pages, then 7 (about 6.0), then about 300 more words cut. The final count was **not measured** (two-measurement limit): **AW must check it in Word**, export the PDF and upload it to Aconf.
+> - Fast tests and paper parity pass. No result, threshold, model or `paper/` file changed.
+
 # Project Status
 
 > **PAPER REVISION, OCTOBER 2026 — IN PROGRESS on branch `paper-revision-oct`, last pushed 2026-10-23; see `git log`** (not merged into main).
