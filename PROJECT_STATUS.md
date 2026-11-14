@@ -1,3 +1,22 @@
+> **IConAECC 2026 FINAL LaTeX, 6 PAGES, branch `iconaecc-2026`, 2026-11-14 (the commit after `930ff7c`; see `git log`).**
+> - **The final source is `paper_ieee_latex/main.tex`, AW's Overleaf version.** It is fitted to **6 pages**, read from the PDF's page tree. Its PDF is in `paper_ieee_latex/final/`, and `paper_ieee_latex.zip` was rebuilt with it.
+> - **The fit changed:**
+>   - float and caption spacing;
+>   - the three figure widths;
+>   - four tables set in `\scriptsize`;
+>   - four wording trims, each of which repeated text stated elsewhere.
+>
+>   The full list is under "Final LaTeX (6 pages)" in `paper_ieee_docx/REVISION_NOTES.md`.
+> - **Checked against the previous main.tex:**
+>   - only one occurrence each of 2, 10 and 13 is gone, and all three are still in Table VII;
+>   - citations and the reference list are identical;
+>   - every reviewer passage, the dataset sentence and the Acknowledgment are present.
+> - **The Word docx is NOT the final source.** It lacks the four trims.
+> - **`build_iconaecc_docx.py` no longer writes `main.tex`.** It checks the committed file against the rendered content, so text edits now go into `main.tex` directly, followed by a build run.
+> - **Next:**
+>   - IEEE PDF eXpress (conference ID 70685X, opens 20 Nov);
+>   - the final upload by 30 Nov. The guidelines read on 30 Oct asked for "a ZIP of the Word file, separate figure files and the PDF", so confirm that a LaTeX source is accepted.
+>
 > **IConAECC 2026 CAMERA-READY, branch `iconaecc-2026`, 2026-11-14 (commit `7c3d1ac`).** Paper #1251 was accepted. The reviews were 6.90, 6.60 and 6.90; Reviewer 3 asked for minor revisions.
 > - **Text-only revision** in `scripts/build_iconaecc_docx.py`:
 >   - ten reviewer points;

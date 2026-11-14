@@ -6,11 +6,13 @@ Offline, model-free, no LLM. Writes, under paper_ieee_docx/:
                                               conference template
     SUPPLEMENT.docx, SUPPLEMENT.md            v4's appendices, moved
 
-and the LaTeX version of the same content (camera-ready, paper #1251):
+and checks the LaTeX version of the same content (camera-ready, #1251):
 
-    paper_ieee_latex/main.tex + figure PNGs   IEEEtran conference, A4,
-                                              \\bibitem references
-    paper_ieee_latex.zip                      the folder, for Overleaf
+    paper_ieee_latex/main.tex + figure PNGs   THE FINAL SOURCE, fitted to 6
+                                              pages on Overleaf; read and
+                                              checked, never written here
+    paper_ieee_latex/final/*.pdf              the Overleaf PDF (6 pages)
+    paper_ieee_latex.zip                      the folder, rebuilt each run
 
 Content comes only from the mentor-approved v4
 (paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v4.docx) and the reviewer
@@ -1178,13 +1180,56 @@ def write_supplement(sb, title, path_docx, path_md):
     return md
 
 
-# ------------------------------------------------------------ LaTeX writer
-# The LaTeX version is written from the SAME resolved content as the Word
-# paper (text, tables, figures, numbers, references), so the two cannot
-# drift apart. Cross-references become \ref, citations \cite, and the
-# references are \bibitem entries in main.tex (no BibTeX run needed).
+# ------------------------------------------------------------ LaTeX
+# The LaTeX is rendered from the SAME resolved content as the Word paper
+# (text, tables, figures, numbers, references). Cross-references become \ref,
+# citations \cite, and the references are \bibitem entries (no BibTeX run).
+#
+# paper_ieee_latex/main.tex is NOT written by this build any more. It is the
+# FINAL source: the rendered file, fitted to 6 pages on Overleaf (spacing,
+# figure widths, table font size, four wording trims; REVISION_NOTES.md
+# "Final LaTeX (6 pages)"). Rewriting it would silently undo that. The build
+# renders the LaTeX in memory only, checks the final file with the same rules,
+# and fails if it lost any number, citation, label, reference entry or
+# reviewer-requested passage that the rendered version has.
 LATEX_DIR = os.path.join(PROJECT_ROOT, "paper_ieee_latex")
 LATEX_ZIP = os.path.join(PROJECT_ROOT, "paper_ieee_latex.zip")
+LATEX_MAIN = os.path.join(LATEX_DIR, "main.tex")
+LATEX_PDF = os.path.join(
+    LATEX_DIR, "final",
+    "Calibrated_Escalation_for_IT_Ticket_Triage__What_the_Calibration_"
+    "Distribution_Decides.pdf")
+# The only number occurrences the 6-page fit removed: the misclassification
+# paragraph's "(2 each)" and "10 of the 13", which now point to Table VII,
+# where both stand unchanged. Any other lost occurrence is fatal.
+FINAL_LATEX_TRIMMED_NUMBERS = {"2": 1, "10": 1, "13": 1}
+# Reviewer-requested passages (REVISION_NOTES.md, points 1-10), as they read
+# in the LaTeX. The final source must keep every one.
+REVIEWER_TEX = (
+    r"we choose and re-check each threshold on deliberately shifted sets",
+    r"Tier 2 costs 151.0$\times$ as much as Tier 1 per ticket",
+    r"A ticket escalated at the retrieval gate makes no language-model call",
+    r"score entailment with a natural-language-inference (NLI) model",
+    r"five of our seven teams have no real-ticket evaluation",
+    r"The jump is a semantic gap between synthetic and real categories",
+    r"The choice of mapping is a sensitivity analysis, not a deployable "
+    r"setting; a production system would need labels in its own categories.",
+    r"a structural limitation of the current design",
+    r"the teams of its top-5 retrieved tickets",
+    r"The real-world set covers only two of our seven teams",
+    r"\textbf{Future work.} Domain adaptation could narrow the "
+    r"synthetic-to-real gap",
+    r"self-training on unlabelled real tickets",
+    r"A real evaluation of all seven teams with a partner IT service desk",
+    r"hierarchical classification (coarse category first, then team) or "
+    r"zero-shot prompting",
+    r"periodic recalibration on a rolling window of recent labelled tickets, "
+    r"drift monitoring that triggers recalibration",
+    r"A shadow deployment, running alongside human triage without acting, "
+    r"would measure resolution time, re-routing",
+    r"Before production use, both thresholds must be recalibrated on the "
+    r"target desk's own tickets.",
+)
 LATEX_FIGS = {"pipe": (FIG1, "fig1_pipeline.png"),
               "thr": (FIG2, "fig2_thresholds.png"),
               "acc": (FIG3, "fig3_accuracy.png")}
@@ -1257,11 +1302,11 @@ LATEX_PREAMBLE = r"""\documentclass[conference,a4paper]{IEEEtran}
 """
 
 
-def write_latex(c, maps):
-    import shutil
+def render_latex(c, maps):
+    """The LaTeX of the resolved content, in memory only (see LATEX_MAIN)."""
+    import filecmp
     inv = {k: {v: key for key, v in m.items()} for k, m in maps.items()}
     T = lambda s: tex(s, inv)  # noqa: E731
-    os.makedirs(LATEX_DIR, exist_ok=True)
     L = [LATEX_PREAMBLE]
     L.append(r"\title{" + tex_escape(c["title"]) + "}\n")
     blocks = []
@@ -1319,7 +1364,13 @@ def write_latex(c, maps):
             src_png, name = LATEX_FIGS[key]
             if os.path.abspath(src_png) != os.path.abspath(fpath):
                 die(f"LaTeX: figure {key} source mismatch")
-            shutil.copyfile(fpath, os.path.join(LATEX_DIR, name))
+            # The final PDF was compiled with the committed PNGs: a rebuilt
+            # figure that differs from them is fatal, never a silent copy.
+            committed = os.path.join(LATEX_DIR, name)
+            if not (os.path.exists(committed)
+                    and filecmp.cmp(fpath, committed, shallow=False)):
+                die(f"LaTeX: {name} differs from {fpath}; the final PDF "
+                    "was compiled with the committed figure")
             env = "figure*" if wide else "figure"
             L.append(f"\\begin{{{env}}}[!t]\n\\centering\n"
                      f"\\includegraphics[width={width}in]{{{name}}}\n"
@@ -1330,11 +1381,7 @@ def write_latex(c, maps):
         f"\\bibitem{{b{k + 1}}} {tex_escape(r)}" for k, r in enumerate(c["refs"]))
         + "\n\\end{thebibliography}\n")
     L.append("\\end{document}\n")
-    out = "\n".join(L)
-    path = os.path.join(LATEX_DIR, "main.tex")
-    with open(path, "w", encoding="ascii", newline="\n") as fh:
-        fh.write(out)
-    return out
+    return "\n".join(L)
 
 
 def check_latex(out, src, c):
@@ -1362,13 +1409,8 @@ def check_latex(out, src, c):
     if cited != set(keys) or len(keys) != 25:
         die(f"LaTeX: cited {sorted(cited)} vs bibitems {keys}")
     # Numbers: strip markup, then the rule the Word paper obeys.
-    plain = re.sub(r"\\(?:cite|ref|label|url|bibitem|includegraphics)"
-                   r"(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
-    plain = re.sub(r"\\begin\{tabular\}\{(?:[^{}]|\{[^{}]*\})*\}", " ", plain)
-    plain = re.sub(r"\\multicolumn\{\d+\}", " ", plain)
-    plain = plain.replace(r"\begin{thebibliography}{00}", " ")
-    plain = plain.replace("$-$", "−").replace("--", "–")
-    extra = sorted(numbers_in(plain) - numbers_in(src.full) - {"2026"})
+    extra = sorted(numbers_in(latex_plain(body)) - numbers_in(src.full)
+                   - {"2026"})
     if extra:
         die(f"LaTeX: numbers not in v4: {extra}")
     for need in (PORTAL_TITLE, AFFIL, *AUTHORS, *(e for _, e in c["authors"])):
@@ -1376,11 +1418,59 @@ def check_latex(out, src, c):
             die(f"LaTeX: missing {need!r}")
 
 
+def latex_plain(body):
+    """The document body with markup that carries digits removed (citation
+    and label keys, widths, column specs, the bibliography's width arg)."""
+    plain = re.sub(r"\\(?:cite|ref|label|url|bibitem|includegraphics)"
+                   r"(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
+    plain = re.sub(r"\\begin\{tabular\}\{(?:[^{}]|\{[^{}]*\})*\}", " ", plain)
+    plain = re.sub(r"\\multicolumn\{\d+\}", " ", plain)
+    plain = plain.replace(r"\begin{thebibliography}{00}", " ")
+    return plain.replace("$-$", "−").replace("--", "–")
+
+
+def check_final_latex(final, rendered, src, c):
+    """The committed final main.tex (fitted to 6 pages on Overleaf) against
+    the rendering of the same content: the same structural and number rules,
+    and nothing lost. Returns the numbers that occur only in the rendering
+    (always empty when the check passes) for the report."""
+    from collections import Counter
+    check_latex(final, src, c)
+    fb = final[final.index(r"\begin{document}"):]
+    rb = rendered[rendered.index(r"\begin{document}"):]
+    # OCCURRENCES, not sets: a value repeated elsewhere (371, 468, a
+    # citation) must still be caught when one of its sentences goes.
+    nums = lambda s: Counter(NUM_RE.findall(latex_plain(s)))  # noqa: E731
+    lost = nums(rb) - nums(fb) - Counter(FINAL_LATEX_TRIMMED_NUMBERS)
+    if lost:
+        die(f"final LaTeX lost number occurrences: {dict(lost)}")
+    for what, pat in (("citation", r"\\cite\{([^}]+)\}"),
+                      ("label", r"\\label\{([^}]+)\}"),
+                      ("ref", r"\\ref\{([^}]+)\}")):
+        occ = lambda s: Counter(k.strip() for g in re.findall(pat, s)  # noqa: E731
+                                for k in g.split(","))
+        gone = occ(rb) - occ(fb)
+        if gone:
+            die(f"final LaTeX lost {what}s: {dict(gone)}")
+    bib = lambda s: s[s.index(r"\begin{thebibliography}"):  # noqa: E731
+                      s.index(r"\end{thebibliography}")]
+    if bib(fb).split() != bib(rb).split():
+        die("final LaTeX: the reference list differs from the rendered one")
+    for need in (*REVIEWER_TEX, tex_escape(DATASET_SENTENCE), tex_escape(ACK)):
+        if need not in rb:
+            die(f"REVIEWER_TEX is stale, the rendering lacks: {need!r}")
+        if need not in fb:
+            die(f"final LaTeX lost: {need!r}")
+
+
 def zip_latex():
     import zipfile
+    names = sorted(os.path.relpath(os.path.join(d, f), LATEX_DIR)
+                   .replace(os.sep, "/")
+                   for d, _, fs in os.walk(LATEX_DIR) for f in fs)
     with zipfile.ZipFile(LATEX_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
-        for name in sorted(os.listdir(LATEX_DIR)):
-            p = os.path.join(LATEX_DIR, name)
+        for name in names:
+            p = os.path.join(LATEX_DIR, *name.split("/"))
             # Fixed timestamp: a rebuild with unchanged inputs is byte-identical.
             info = zipfile.ZipInfo(f"paper_ieee_latex/{name}",
                                    date_time=(2026, 1, 1, 0, 0, 0))
@@ -1472,17 +1562,24 @@ def main():
     sb = supplement(src, v)
     md = write_supplement(sb, c["title"], SUPP_DOCX, SUPP_MD)
     n_abs, words = check_output(OUT, src, maps, md, c["abstract"])
-    tex_out = write_latex(c, maps)
-    check_latex(tex_out, src, c)
-    expected = {"main.tex", *(n for _, n in LATEX_FIGS.values())}
-    if set(os.listdir(LATEX_DIR)) != expected:
-        die(f"{LATEX_DIR} holds {sorted(os.listdir(LATEX_DIR))}, "
-            f"expected {sorted(expected)}")
+    rendered = render_latex(c, maps)
+    check_latex(rendered, src, c)
+    if not os.path.exists(LATEX_MAIN):
+        die(f"missing the final LaTeX source {LATEX_MAIN}")
+    with open(LATEX_MAIN, encoding="ascii") as fh:
+        final = fh.read()
+    check_final_latex(final, rendered, src, c)
+    expected = {"main.tex", *(n for _, n in LATEX_FIGS.values()),
+                os.path.relpath(LATEX_PDF, LATEX_DIR)}
+    present = {os.path.relpath(os.path.join(d, f), LATEX_DIR)
+               for d, _, fs in os.walk(LATEX_DIR) for f in fs}
+    if present != expected:
+        die(f"{LATEX_DIR} holds {sorted(present)}, expected {sorted(expected)}")
     zip_latex()
-    print("[ok] LaTeX: main.tex from the same content; braces, environments, "
-          "refs, 25 bibitems and the number rule checked")
-    for p in (os.path.join(LATEX_DIR, "main.tex"), LATEX_ZIP):
-        print(f"[write] {os.path.relpath(p, PROJECT_ROOT)}")
+    print("[ok] LaTeX: final main.tex checked (braces, environments, refs, "
+          "25 bibitems, the number rule) and keeps every number, citation, "
+          "label, reference entry and reviewer passage of the rendering")
+    print(f"[write] {os.path.relpath(LATEX_ZIP, PROJECT_ROOT)}")
     print("[refs] new order (v4 number -> new): "
           + ", ".join(f"{o}->{n}" for o, n in new.items() if o != n))
     print(f"[tables] {maps['T']}")

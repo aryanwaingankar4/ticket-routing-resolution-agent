@@ -17,6 +17,13 @@
 }
 \makeatother
 
+% Tighter spacing around figures and tables (fits the 6-page limit)
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{0pt}
+
 \begin{document}
 
 \title{Calibrated Escalation for IT Ticket Triage: What the Calibration Distribution Decides}
@@ -104,7 +111,7 @@ Fig.~\ref{fig:pipe} shows the pipeline: sequential, with agent boundaries and an
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=3.3in]{fig1_pipeline.png}
+\includegraphics[width=3.15in]{fig1_pipeline.png}
 \caption{The pipeline. Two separately calibrated gates decide escalation; the language model drafts only above the retrieval gate and never assigns the category. The offline path clusters resolved tickets into automation candidates.}\label{fig:pipe}
 \end{figure}
 
@@ -153,14 +160,14 @@ Swept over in-domain and out-of-domain calibration tickets (Fig.~\ref{fig:thr}(b
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=3.05in]{fig2_thresholds.png}
+\includegraphics[width=2.7in]{fig2_thresholds.png}
 \caption{Threshold calibration. (a) Cascade threshold on paraphrased tickets; the dashed line marks the live threshold of 0.50. (b) Retrieval threshold sweep; the shaded band is the adversarial safe range [0.6196, 0.6704], and the dashed line marks the live threshold of 0.67.}\label{fig:thr}
 \end{figure}
 
 \begin{table}[!t]
 \caption{The two gates at their live operating points. Leakage is the share of out-of-domain calibration tickets that clear the retrieval gate}\label{tab:gates}
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{|P{0.740}|P{0.260}|}
 \hline
@@ -198,7 +205,7 @@ Recalibrating on the deployment-distribution set, with nothing else changed, mov
 \begin{table}[!t]
 \caption{Split-conformal coverage gap on the 45-ticket benchmark. Only the calibration set changes between the two gap columns. The $\pm$2 s.d. column is twice the binomial standard deviation of a coverage estimate at n = 175}\label{tab:cov}
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{|P{0.090}|P{0.110}|P{0.220}|P{0.230}|P{0.180}|P{0.170}|}
 \hline
@@ -221,7 +228,7 @@ Tier 1 alone scores 16/45, 35.6 points below the full pipeline, but that is the 
 \begin{table}[!t]
 \caption{Cascade against the control that isolates it (Tier 2 answering everything)}\label{tab:casc}
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{|P{0.180}|P{0.160}|P{0.150}|P{0.170}|P{0.190}|P{0.150}|}
 \hline
@@ -233,11 +240,11 @@ Deployment & 132/175 & 131/175 & 156.4 & 127.9 & 18.2\%\\ \hline
 
 \subsection{Zero-shot LLM baselines}\label{sec:zs}
 
-Gemini and Qwen2.5-3B, a 3-billion-parameter open-weight model run on a laptop CPU \cite{b23}, received byte-identical prompts (Fig.~\ref{fig:acc}). Gemini scores 40/45 (95\% CI [0.765, 0.952]), significantly better than Tier 2 at 33/45 (p = 0.039); Qwen2.5-3B scores 34/45 ([0.613, 0.858]), indistinguishable from Tier 2 (p = 1.000), which does not mean better; Qwen2.5-3B against Gemini gives p = 0.070, not significant. As the benchmark was generated with Gemini, Qwen is a partial control for authorship, and Gemini's margin cannot be attributed to capability alone. This is not like-for-like: it measures what a template-generated training set is worth on differently phrased tickets, not whether an LLM outperforms the pipeline, whose contribution is the calibrated escalation neither zero-shot model provides. Among trained classifiers, representation matters more than model family: two other frozen encoders with the same logistic head score 32/45 and 27/45, and a fine-tuned DistilBERT 18/45 and 21/45 in two runs that differ, so we order neither.
+Gemini and Qwen2.5-3B, a 3-billion-parameter open-weight model run on a laptop CPU \cite{b23}, received byte-identical prompts (Fig.~\ref{fig:acc}). Gemini scores 40/45 (95\% CI [0.765, 0.952]), significantly better than Tier 2 at 33/45 (p = 0.039); Qwen2.5-3B scores 34/45 ([0.613, 0.858]), indistinguishable from Tier 2 (p = 1.000); Qwen2.5-3B against Gemini gives p = 0.070, not significant. As the benchmark was generated with Gemini, Qwen is a partial control for authorship, and Gemini's margin cannot be attributed to capability alone. This is not like-for-like: it measures what a template-generated training set is worth on differently phrased tickets, not whether an LLM outperforms the pipeline, whose contribution is the calibrated escalation neither zero-shot model provides. Among trained classifiers, representation matters more than model family: two other frozen encoders with the same logistic head score 32/45 and 27/45, and a fine-tuned DistilBERT 18/45 and 21/45 in two runs that differ, so we order neither.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=2.55in]{fig3_accuracy.png}
+\includegraphics[width=2.2in]{fig3_accuracy.png}
 \caption{Accuracy on the 45-ticket out-of-template benchmark. Error bars are Wilson 95\% intervals where the result file records one. Zero-shot models have no abstention mechanism, calibrated gate or cost model.}\label{fig:acc}
 \end{figure}
 
@@ -252,7 +259,7 @@ To test whether these results depend on Gemini-written evaluation text, the unch
 \begin{table}[!t]
 \caption{Results on the independent and real-world test sets (pipeline unchanged)}\label{tab:ext}
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{|P{0.250}|P{0.090}|P{0.160}|P{0.150}|P{0.200}|P{0.150}|}
 \hline
@@ -287,7 +294,7 @@ Adversarial, gate removed & 6/9 & Off-topic and vague tickets drafted instead of
 \end{tabular}
 \end{table}
 
-\textbf{Misclassification.} The cascade misroutes 13 of the 45 benchmark tickets (confusion matrix in the online supplement); the most frequent confusions are Database$\rightarrow$Application, Infrastructure$\rightarrow$Application and Security$\rightarrow$Storage (2 each), and 10 of the 13 errors predict Application or Storage. Infrastructure is hardest: recall is 50\% for the trained classifier and for both zero-shot LLMs, which suggests ambiguous wording rather than one weak method. Tier 1 alone misclassifies 29 of 45, mostly where the wording shares no vocabulary with the templates (examples in the supplement).
+\textbf{Misclassification.} The cascade misroutes 13 of the 45 benchmark tickets (Table~\ref{tab:err}; confusion matrix in the online supplement). Infrastructure is hardest: recall is 50\% for the trained classifier and for both zero-shot LLMs, which suggests ambiguous wording rather than one weak method. Tier 1 alone misclassifies 29 of 45, mostly where the wording shares no vocabulary with the templates (examples in the supplement).
 
 \textbf{Incorrect escalation decisions.} Of the 13 misclassified benchmark tickets, 5 were escalated (safe) and 8 drafted (unsafe): the classification gate does not stop a misrouted ticket from reaching the drafter, a structural limitation of the current design, seen at scale in 16 of 24 misrouted independent and 371 of 468 misrouted real texts. The retrieval gate cannot catch misrouting by construction: its only input is the top-1 similarity to past tickets of any team, so it checks whether a similar past ticket exists, not whether the predicted team is correct. The gate escalated 97 misrouted and 32 correctly routed real texts, so its similarity does not track routing correctness; nor does Tier-1 confidence (39 of the 238 real texts kept at 0.50 were correct). A cheap consistency check, which we have not tested, would escalate a ticket whose predicted team disagrees with the teams of its top-5 retrieved tickets.
 
@@ -295,13 +302,13 @@ Adversarial, gate removed & 6/9 & Off-topic and vague tickets drafted instead of
 
 \section{Limitations}\label{sec:lim}
 
-\textbf{Synthetic data and small evaluation sets.} All training data is synthetic and template-generated, and the evaluation sets are small: at 45 tickets the Wilson interval on Tier 2's 33/45 is [0.590, 0.840] and the conformal noise band at $\alpha$ = 0.10 is $\pm$0.045, so most comparisons between strong methods cannot be ordered. The benchmark and deployment set were written by Gemini, which also drafts resolutions and forms one baseline, and the external transfer corpus is itself generated. The independent set's 108 tickets were written and labelled by two authors who know the categories, so it is small and is not real traffic. The real-world set covers only two of our seven teams, as no public, real, English IT ticket dataset with matching categories was available, so the other five (Database, Infrastructure, Network, Security and Storage) have no real-ticket evaluation. Its accuracy depends strongly on the category mapping (19.7\% or 50.4\%), the tickets come from one organisation, and the English filter let a few non-English tickets through, because their system-generated subject lines were in English.
+\textbf{Synthetic data and small evaluation sets.} All training data is synthetic and template-generated, and the evaluation sets are small: at 45 tickets the Wilson interval on Tier 2's 33/45 is [0.590, 0.840] and the conformal noise band at $\alpha$ = 0.10 is $\pm$0.045, so most comparisons between strong methods cannot be ordered. The benchmark and deployment set were written by Gemini, which also drafts resolutions and forms one baseline, and the external transfer corpus is itself generated. The independent set's 108 tickets were written and labelled by two authors who know the categories, so it is small and is not real traffic. The real-world set covers only two of our seven teams, so the other five (Database, Infrastructure, Network, Security and Storage) have no real-ticket evaluation. Its accuracy depends strongly on the category mapping (19.7\% or 50.4\%), the tickets come from one organisation, and the English filter let a few non-English tickets through, because their system-generated subject lines were in English.
 
 \textbf{No live evaluation and few human quality labels.} The system has not been deployed: 583 real tickets were routed offline, but no live stream has passed through it and no help-desk user has acted on its output, so its effect on resolution time, misrouting cost and user trust is unmeasured, and the drift monitor has no deployment-traffic reference. Resolution quality rests on human labels for only 33 drafts; an LLM judge could not scale them, its 30/33 raw agreement concealing a Cohen's $\kappa$ of $-$0.042, so the share of grounded drafts is known only within [0.804, 0.983].
 
 \section{Conclusion and Future Work}\label{sec:concl}
 
-Of our two separately calibrated gates, the retrieval gate decides 9/9 adversarial tickets correctly against 3/9 without it, and the cascade cuts median latency by 8\% to 18\% without improving accuracy. These conclusions are established on a synthetic corpus, small LLM-generated evaluation sets, 108 hand-written tickets and 583 real tickets that cover only two of the seven teams, and they should not be read as performance claims for a production help desk. On real tickets the classifier did not transfer (19.7\% routed correctly, 50.4\% under the alternative mapping; 371 of 468 misroutes reached the drafter): the synthetic training data, not the choice of method or threshold, limits what the pipeline can do. Before production use, both thresholds must be recalibrated on the target desk's own tickets.
+Of our two separately calibrated gates, the retrieval gate decides 9/9 adversarial tickets correctly against 3/9 without it, and the cascade cuts median latency by 8\% to 18\% without improving accuracy. They rest on a synthetic corpus, small LLM-generated evaluation sets, 108 hand-written tickets and 583 real tickets covering two of seven teams, and are not performance claims for a production help desk. On real tickets the classifier did not transfer (19.7\% routed correctly, 50.4\% under the alternative mapping; 371 of 468 misroutes reached the drafter): the synthetic training data, not the choice of method or threshold, limits what the pipeline can do. Before production use, both thresholds must be recalibrated on the target desk's own tickets.
 
 \textbf{Future work.} Domain adaptation could narrow the synthetic-to-real gap: few-shot fine-tuning on a small labelled set of real tickets, prompt tuning, and self-training on unlabelled real tickets. A real evaluation of all seven teams with a partner IT service desk would replace the two-team test and probe the recurring finding outside our corpus, and hierarchical classification (coarse category first, then team) or zero-shot prompting could handle unseen categories. A shadow deployment, running alongside human triage without acting, would measure resolution time, re-routing rate and cost, and supply the labelled tickets needed to keep the gates current as traffic changes: periodic recalibration on a rolling window of recent labelled tickets, drift monitoring that triggers recalibration, and weighted \cite{b9} or online \cite{b11} conformal methods. More drafts need human labels, for sufficiency as well as support.
 
