@@ -2,14 +2,23 @@
 
 Offline, model-free, no LLM. Writes, under paper_ieee_docx/:
 
-    Calibrated_Escalation_IConAECC2026.docx   the 6-page paper, built in the
-                                              IEEE A4 conference template
+    Calibrated_Escalation_IConAECC2026.docx   the paper, built in the IEEE A4
+                                              conference template
     SUPPLEMENT.docx, SUPPLEMENT.md            v4's appendices, moved
 
-Content comes only from the mentor-approved v4
-(paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v4.docx):
+and the LaTeX version of the same content (camera-ready, paper #1251):
 
-  * tables, references, the author block, the prompts, the reproduction steps,
+    paper_ieee_latex/main.tex + figure PNGs   IEEEtran conference, A4,
+                                              \\bibitem references
+    paper_ieee_latex.zip                      the folder, for Overleaf
+
+Content comes only from the mentor-approved v4
+(paper_docx/Calibrated_Escalation_IT_Ticket_Triage_v4.docx) and the reviewer
+responses of the camera-ready revision (paper_ieee_docx/REVISION_NOTES.md):
+
+  * the author block follows the conference portal (AUTHORS, AFFIL), with
+    each author's e-mail taken from v4;
+  * tables, references, the prompts, the reproduction steps,
     the limitations and the groundedness paragraph are READ from v4 and
     copied verbatim (Table I's cells are shortened, without changing a
     number);
@@ -65,6 +74,14 @@ ACK = (
     "labelled by the authors without AI assistance.")
 SUPP_POINTER = ("Prompts, configurations, reproduction steps and additional "
                 f"tables are in the online supplement at {SUPP_URL}.")
+# Camera-ready (paper #1251): title and author order exactly as the Aconf
+# portal lists them; every affiliation is the institute and city, then the
+# country. The e-mail addresses are v4's, matched to each author by name.
+PORTAL_TITLE = ("Calibrated Escalation for IT Ticket Triage: What the "
+                "Calibration Distribution Decides")
+AUTHORS = ("Aryan Waingankar", "Shreyansh Pandey", "Parth Bagle",
+           "Swapnil Samrat", "Madhvi Saxena", "Aditi Saxena")
+AFFIL, COUNTRY = "Symbiosis Institute of Technology, Pune", "India"
 # Template sample text that must not survive into the paper.
 TEMPLATE_LEFTOVERS = ("Paper Title", "Given Name", "dept. name", "This template",
                       "(Heading", "use style", "Identify applicable funding",
@@ -140,6 +157,22 @@ class V4Source:
         if len(lines) != 8 or not lines[0].startswith("Aryan Manoj Waingankar"):
             die(f"v4: author block not as expected: {lines}")
         return lines
+
+    def author_block(self):
+        """[(name, email)] in the portal's order, e-mails taken from v4."""
+        emails = [e.strip() for line in self.authors()[5:]
+                  for e in line.split(",") if e.strip()]
+        out = []
+        for name in AUTHORS:
+            first, last = name.lower().split()
+            hit = [e for e in emails
+                   if e.split("@")[0].split(".")[:2] == [first, last]]
+            if len(hit) != 1:
+                die(f"v4: no unique e-mail for {name}: {hit}")
+            out.append((name, hit[0]))
+        if sorted(e for _, e in out) != sorted(emails):
+            die("v4: the author e-mails do not match the portal's authors")
+        return out
 
 
 NUM_RE = re.compile(r"\d+(?:[.,]\d+)*")
@@ -319,14 +352,19 @@ def content(v, src):
           "generation (RAG) system [12] can abstain when the retrieved context "
           "is insufficient [13] or correct itself when retrieval is poor "
           "[14]. LLM judges can come with guaranteed human agreement [15] and "
-          "show an agreeableness bias [16]; the judge we audited shows the "
-          "failure these works warn about. The value of synthetic data as a "
-          "benchmark has itself been studied [17]. Table {T:rel} compares the "
+          "show an agreeableness bias [16]. Synthetic data's value as a "
+          "benchmark has been studied [17]. Table {T:rel} compares the "
           "closest works using only their abstracts: two ticket-triage "
           "studies evaluate on real tickets, while our main evaluation is "
           "synthetic (Section {S:ext}), and none combines gates calibrated on "
           "measured data with generation permitted only after retrieval "
-          "passes such a gate."),
+          "passes such a gate. Confidence-based [4] and conformal [5] "
+          "cascades set their thresholds on held-out in-distribution data, "
+          "and split conformal guarantees [7], [8] assume exchangeable "
+          "calibration and test tickets; we choose and re-check each "
+          "threshold on deliberately shifted sets (paraphrased, adversarial, "
+          "human-written, real) and report where the guarantees fail "
+          "(Section {S:cov})."),
         TAB("rel", cap_rel, rel_short, [1050, 1150, 1400, 1400], size=14),
 
         H1("meth", "Methodology"),
@@ -368,8 +406,8 @@ def content(v, src):
         P("Following the nasscom use-case brief, which specified seven "
           "categories, routing, resolution suggestion, confidence-based "
           "escalation and automation flagging and recommended a synthetic, "
-          "LLM-generated dataset, we generated 4,000 tickets with title, "
-          "description, category, resolution and priority fields. "
+          "LLM-generated dataset, we generated 4,000 tickets (title, "
+          "description, category, resolution, priority). "
           + F["D1"] + " The synthetic corpus, a requirement of the brief, "
           "limits what can be claimed (Section {S:lim}): the "
           "generation templates coincide with the resolution classes, so "
@@ -434,7 +472,7 @@ def content(v, src):
              "tickets; the dashed line marks the live threshold of 0.50. (b) "
              "Retrieval threshold sweep; the shaded band is the adversarial "
              "safe range [0.6196, 0.6704], and the dashed line marks the live "
-             "threshold of 0.67."),
+             "threshold of 0.67.", width=3.05),
         TAB("gates", cap_gates, gates, [3700, 1300],
             subheads=("Retrieval gate", "Cascade gate")),
 
@@ -476,12 +514,14 @@ def content(v, src):
           "every ticket (Table {T:casc}), the cascade is one ticket worse on "
           "each set (32/45 against 33/45, and 131/175 against 132/175; exact "
           "McNemar p = 1.000 for both). It buys speed: Tier 2 costs 151.0× as "
-          "much as Tier 1 (156.4 ms against 1.04 ms median), so median "
-          "latency falls by 8% on the benchmark and 18% on the deployment "
-          "set."),
+          "much as Tier 1 per ticket (156.4 ms against 1.04 ms median), so "
+          "median latency falls by 8% on the benchmark and 18% on the "
+          "deployment set. A ticket escalated at the retrieval gate makes no "
+          "language-model call, so drafting is paid only for tickets that "
+          "pass it."),
         TAB("casc", cap_casc, casc, [900, 800, 750, 850, 950, 750]),
         H2("zs", "Zero-shot LLM baselines"),
-        P("Gemini (gemini-flash-lite) and Qwen2.5-3B, a 3-billion-parameter "
+        P("Gemini and Qwen2.5-3B, a 3-billion-parameter "
           "open-weight model run on a laptop CPU [22], received byte-identical "
           "prompts (Fig. {F:acc}). Gemini scores 40/45 (95% CI [0.765, "
           "0.952]), significantly better than Tier 2 at 33/45 (p = 0.039); "
@@ -499,7 +539,7 @@ def content(v, src):
           "encoders with the same logistic head score 32/45 and 27/45, and a "
           "fine-tuned DistilBERT 18/45 and 21/45 in two runs that differ, so "
           "we order neither."),
-        FIGC("acc", FIG3, src.fig_caption(3), width=2.8),
+        FIGC("acc", FIG3, src.fig_caption(3), width=2.55),
         H2("grd", "Groundedness, an LLM judge, and a sufficiency gate"),
         P("All 33 benchmark and adversarial tickets that passed the "
           "retrieval gate received a draft, and a human labelled 31/33 as "
@@ -507,7 +547,11 @@ def content(v, src):
           "judge using the same rubric agreed on 30/33 yet reached Cohen's "
           "κ = −0.042 [23], every disagreement being the judge rating "
           "appropriateness instead of support, so we treat an LLM judge as "
-          "something to audit, not a way to scale labelling. A "
+          "something to audit, not a way to scale labelling. Future work "
+          "should check drafts claim by claim against the retrieved text, "
+          "score entailment with a natural-language-inference (NLI) model, "
+          "calibrate any automated judge on a small human-labelled set and "
+          "report judge–human agreement before using it. A "
           "retrieval-sufficiency rater that never sees the draft caught 2/2 "
           "ungrounded drafts but flagged 26/31 grounded ones, so it cannot be "
           "used as a gate."),
@@ -532,8 +576,8 @@ def content(v, src):
           "Directory and Fileservice (almost entirely file-share access "
           "requests) to Access Management and Software and O365 to "
           f"Application; the other three categories ({v['rw_excluded']} "
-          "tickets) have no counterpart, so Database, Infrastructure, "
-          "Network, Security and Storage are not covered. Of the "
+          "tickets) have no counterpart, so five of our seven teams have no "
+          "real-ticket evaluation (Section {S:lim}). Of the "
           f"{v['rw_all_n']} mapped tickets {v['rw_dup']} repeat an earlier "
           f"text exactly, so we report the {v['rw_n']} distinct texts, with "
           f"all {v['rw_all_n']} alongside. " + DATASET_SENTENCE),
@@ -565,11 +609,17 @@ def content(v, src):
           f"{v['rw_all_esc']}/{v['rw_all_n']}, "
           f"{pct(v['rw_all_esc'], v['rw_all_n'])}, over all tickets) but does "
           f"not filter misroutes: {v['rw_mis_draft']} of the {v['rw_mis']} "
-          "misrouted texts still reached the drafter. Mapping the file-share "
-          "access requests to Storage instead, where our generator files "
-          f"share-permission faults, gives {v['sens_ok']}/{v['rw_n']} "
+          "misrouted texts still reached the drafter. The alternative mapping "
+          "changes one assignment, Fileservice to Storage (where our "
+          "generator files share-permission faults) instead of Access "
+          f"Management, and gives {v['sens_ok']}/{v['rw_n']} "
           f"({sens_pct}, {v['sens_ok_ci']}; online supplement); the "
-          "escalation rate and Tier-1 share do not depend on the mapping. A "
+          "escalation rate and Tier-1 share do not depend on the mapping. "
+          "The jump is a semantic gap between synthetic and real categories: "
+          "the classifier files real file-share access requests as Storage. "
+          "The choice of mapping is a sensitivity analysis, not a deployable "
+          "setting; a production system would need labels in its own "
+          "categories. A "
           "classifier trained only on synthetic templates does not transfer "
           "to real tickets, and gates calibrated on the same material do not "
           f"compensate. The {v['n_drafts']} drafts generated for a sample of "
@@ -600,14 +650,20 @@ def content(v, src):
           lead="Misclassification."),
         P("Of the 13 misclassified benchmark tickets, 5 were escalated "
           "(safe) and 8 drafted (unsafe): the classification gate does not "
-          "stop a misrouted ticket from reaching the drafter, a limitation of "
-          f"the current design, seen at scale in {v['ind_mis_draft']} of "
-          f"{v['ind_mis']} misrouted independent and {v['rw_mis_draft']} of "
-          f"{v['rw_mis']} misrouted real texts. The gate escalated "
+          "stop a misrouted ticket from reaching the drafter, a structural "
+          f"limitation of the current design, seen at scale in "
+          f"{v['ind_mis_draft']} of {v['ind_mis']} misrouted independent and "
+          f"{v['rw_mis_draft']} of {v['rw_mis']} misrouted real texts. The "
+          "retrieval gate cannot catch misrouting by construction: its only "
+          "input is the top-1 similarity to past tickets of any team, so it "
+          "checks whether a similar past ticket exists, not whether the "
+          "predicted team is correct. The gate escalated "
           f"{v['rw_mis_esc']} misrouted and {v['rw_ok_esc']} correctly routed "
           "real texts, so its similarity does not track routing correctness; "
           f"nor does Tier-1 confidence ({v['rw_t1_ok']} of the {v['rw_t1']} "
-          "real texts kept at 0.50 were correct).",
+          "real texts kept at 0.50 were correct). A cheap consistency check, "
+          "which we have not tested, would escalate a ticket whose predicted "
+          "team disagrees with the teams of its top-5 retrieved tickets.",
           lead="Incorrect escalation decisions."),
         P("In both ungrounded drafts the model noted that the retrieved "
           "tickets did not match (N26 retrieved fixes for failing disks "
@@ -628,11 +684,11 @@ def content(v, src):
           "and the external transfer corpus is itself generated. The "
           f"independent set's {v['ind_n']} tickets were written and labelled "
           "by two authors who know the categories, so it is small and is not "
-          "real traffic. The real-world set covers two teams only, as no "
-          "public, real, English IT ticket dataset with matching categories "
-          "was available: Database, "
-          "Infrastructure, Network, Security and Storage remain untested on "
-          "real tickets. Its accuracy depends strongly on the category "
+          "real traffic. The real-world set covers only two of our seven "
+          "teams, as no public, real, English IT ticket dataset with matching "
+          "categories was available, so the other five (Database, "
+          "Infrastructure, Network, Security and Storage) have no real-ticket "
+          "evaluation. Its accuracy depends strongly on the category "
           f"mapping ({rw_pct} or {sens_pct}), the tickets come from one "
           "organisation, and the English filter let a few non-English "
           "tickets through, because their system-generated subject lines "
@@ -649,11 +705,8 @@ def content(v, src):
           lead="No live evaluation and few human quality labels."),
 
         H1("concl", "Conclusion and Future Work"),
-        P("A triage pipeline is valuable only if it knows when not to answer. "
-          "Our two separately calibrated gates decide when a lexical "
-          "classifier may answer alone and when a language model may draft a "
-          "fix grounded in past tickets. The retrieval gate decides 9/9 "
-          "adversarial tickets correctly against 3/9 without it, and the "
+        P("Of our two separately calibrated gates, the retrieval gate decides "
+          "9/9 adversarial tickets correctly against 3/9 without it, and the "
           "cascade cuts median latency by 8% to 18% without improving "
           "accuracy. These conclusions are established on a synthetic corpus, "
           f"small LLM-generated evaluation sets, {v['ind_n']} hand-written "
@@ -664,14 +717,29 @@ def content(v, src):
           f"alternative mapping; {v['rw_mis_draft']} of {v['rw_mis']} "
           "misroutes reached the drafter): the synthetic training data, not "
           "the choice of method or threshold, limits what the pipeline can "
-          "do. Future work is live deployment, to recalibrate both gates on "
-          "real tickets and measure misrouting cost; more human-labelled "
-          "drafts, with sufficiency as well as support labels; and a larger "
-          "real-ticket benchmark, to test the recurring finding outside our "
-          "corpus."),
+          "do. Before production use, both thresholds must be recalibrated "
+          "on the target desk's own tickets."),
+        P("Domain adaptation could narrow the synthetic-to-real gap: "
+          "few-shot fine-tuning on a small labelled set of real tickets, "
+          "prompt tuning, and self-training on unlabelled real tickets. A "
+          "real evaluation of all seven teams with a partner IT service desk "
+          "would replace the two-team test and probe the recurring finding "
+          "outside our corpus, and hierarchical classification (coarse "
+          "category first, then team) or zero-shot prompting could handle "
+          "unseen categories. A shadow deployment, running alongside "
+          "human triage without acting, would measure resolution time, "
+          "re-routing rate and cost, and supply the labelled tickets needed "
+          "to keep the gates current as traffic changes: periodic "
+          "recalibration on a rolling window of recent labelled tickets, "
+          "drift monitoring that triggers recalibration, and weighted [9] or "
+          "online [11] conformal methods. More drafts need human labels, for "
+          "sufficiency as well as support.",
+          lead="Future work."),
     ]
+    if src.texts[0] != PORTAL_TITLE:
+        die(f"v4's title differs from the portal's: {src.texts[0]!r}")
     return {"abstract": abstract, "keywords": keywords, "blocks": blocks,
-            "title": src.texts[0], "authors": src.authors(),
+            "title": PORTAL_TITLE, "authors": src.author_block(),
             "refs": src.references()}
 
 
@@ -812,6 +880,17 @@ class Writer:
             for tag in ("headerReference", "footerReference", "titlePg"):
                 for x in s.findall(W(tag)):
                     s.remove(x)
+        # The template's own author section (continuous, multi-column),
+        # set to three columns for a six-author block.
+        auth = [s for s in sects if s.find(W("cols")) is not None
+                and (s.find(W("cols")).get(W("num")) or "1") not in ("1", "2")]
+        if not auth:
+            die("template: no multi-column author section")
+        self.sect_authors = copy.deepcopy(auth[0])
+        for tag in ("headerReference", "footerReference", "titlePg"):
+            for x in self.sect_authors.findall(W(tag)):
+                self.sect_authors.remove(x)
+        self.sect_authors.find(W("cols")).set(W("num"), "3")
         tbls = list(body.iter(W("tbl")))
         self.tbl_pr = copy.deepcopy(tbls[0].find(W("tblPr")))
         for x in self.tbl_pr.findall(W("tblW")):
@@ -925,19 +1004,30 @@ class Writer:
 def write_paper(c, path):
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     w = Writer(TEMPLATE)
-    w.para(c["title"], style="paper title")
-    names = c["authors"][:2]
-    for k, line in enumerate(c["authors"]):
+    last = w.para(c["title"], style="paper title")
+    w.end_section(last, w.sect_title)
+    # Author block as the IEEE template lays out six authors: two rows of
+    # three, each row a continuous three-column section. A row is ONE
+    # paragraph (name; italic affiliation; country; e-mail per author) with
+    # column breaks between authors, so no paragraph mark or space-before
+    # pushes the second and third columns below the first.
+    from docx.enum.text import WD_BREAK
+    for row in (c["authors"][:3], c["authors"][3:]):
         p = w.para(style="Author")
         pf = p.paragraph_format
-        pf.space_before = w.Pt(6 if k in (0, 2) else 0)
-        pf.space_after = w.Pt(0)
-        r = p.add_run(line)
-        if line not in names:
-            r.font.size = w.Pt(9)
-        if k in (2, 3):
-            r.italic = True
-    w.end_section(p, w.sect_title)
+        pf.space_before, pf.space_after = w.Pt(0), w.Pt(6)
+        for j, (name, email) in enumerate(row):
+            if j:
+                p.add_run().add_break(WD_BREAK.COLUMN)
+            for text, size, italic in ((name, None, False), (AFFIL, 9, True),
+                                       (COUNTRY, 9, False), (email, 8, False)):
+                r = p.add_run(text)
+                r.italic = italic
+                if size:
+                    r.font.size = w.Pt(size)
+                if text is not email:
+                    r.add_break()
+        w.end_section(p, w.sect_authors)
     a = w.para(style="Abstract")
     r = a.add_run("Abstract")
     r.italic = True
@@ -980,8 +1070,7 @@ def write_paper(c, path):
     tail.add_run("").font.size = w.Pt(1)
     del WD_ALIGN_PARAGRAPH
     cp = w.d.core_properties
-    cp.title, cp.author = c["title"], "; ".join(
-        x.strip() for x in ", ".join(names).split(",") if x.strip())
+    cp.title, cp.author = c["title"], "; ".join(n for n, _ in c["authors"])
     cp.subject = cp.keywords = cp.comments = cp.category = ""
     cp.last_modified_by = cp.author
     w.save(path)
@@ -1089,6 +1178,217 @@ def write_supplement(sb, title, path_docx, path_md):
     return md
 
 
+# ------------------------------------------------------------ LaTeX writer
+# The LaTeX version is written from the SAME resolved content as the Word
+# paper (text, tables, figures, numbers, references), so the two cannot
+# drift apart. Cross-references become \ref, citations \cite, and the
+# references are \bibitem entries in main.tex (no BibTeX run needed).
+LATEX_DIR = os.path.join(PROJECT_ROOT, "paper_ieee_latex")
+LATEX_ZIP = os.path.join(PROJECT_ROOT, "paper_ieee_latex.zip")
+LATEX_FIGS = {"pipe": (FIG1, "fig1_pipeline.png"),
+              "thr": (FIG2, "fig2_thresholds.png"),
+              "acc": (FIG3, "fig3_accuracy.png")}
+TEX_CHARS = {
+    "\\": r"\textbackslash{}", "&": r"\&", "%": r"\%", "$": r"\$",
+    "#": r"\#", "_": r"\_", "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}", "<": r"$<$", ">": r"$>$",
+    "—": "---", "–": "--", "−": "$-$", "×": r"$\times$", "κ": r"$\kappa$",
+    "α": r"$\alpha$", "±": r"$\pm$", "→": r"$\rightarrow$", "≥": r"$\geq$",
+    "≤": r"$\leq$", "‘": "`", "’": "'", "“": "``", "”": "''", "é": r"\'{e}",
+    "è": r"\`{e}", "\u00a0": "~", "…": r"\ldots{}",
+}
+
+
+def tex_escape(s):
+    out = []
+    for ch in s:
+        if ch in TEX_CHARS:
+            out.append(TEX_CHARS[ch])
+        elif ord(ch) > 127 or ch == '"':
+            die(f"LaTeX: no mapping for character {ch!r} in {s[:60]!r}")
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def tex(s, inv):
+    """Escape body text; turn resolved citations and cross-references into
+    \\cite and \\ref, and the supplement URL into \\url."""
+    marks = []
+
+    def mark(latex):
+        marks.append(latex)
+        return f"\x00{len(marks) - 1}\x00"
+
+    s = s.replace(SUPP_URL, mark(r"\url{" + SUPP_URL + "}"))
+    s = re.sub(r"\[(\d+)\]–\[(\d+)\]", lambda m: mark(r"\cite{" + ",".join(
+        f"b{k}" for k in range(int(m.group(1)), int(m.group(2)) + 1)) + "}"), s)
+    s = re.sub(r"\[(\d+)\]", lambda m: mark(r"\cite{b" + m.group(1) + "}"), s)
+    s = re.sub(r"Section ([IVX]+(?:-[A-H])?)\b",
+               lambda m: mark(r"Section~\ref{sec:" + inv["S"][m.group(1)] + "}"), s)
+    s = re.sub(r"Table ([IVX]+)\b",
+               lambda m: mark(r"Table~\ref{tab:" + inv["T"][m.group(1)] + "}"), s)
+    s = re.sub(r"Fig\. (\d+)",
+               lambda m: mark(r"Fig.~\ref{fig:" + inv["F"][m.group(1)] + "}"), s)
+    s = tex_escape(s)
+    return re.sub("\x00(\\d+)\x00", lambda m: marks[int(m.group(1))], s)
+
+
+LATEX_PREAMBLE = r"""\documentclass[conference,a4paper]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{array}
+\usepackage{url}
+% Ragged-right paragraph column whose width is a fraction of the column.
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{\dimexpr#1\columnwidth-2\tabcolsep\relax}}
+% Forces the second row of the six-author block (IEEEtran has no command).
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
+
+\begin{document}
+"""
+
+
+def write_latex(c, maps):
+    import shutil
+    inv = {k: {v: key for key, v in m.items()} for k, m in maps.items()}
+    T = lambda s: tex(s, inv)  # noqa: E731
+    os.makedirs(LATEX_DIR, exist_ok=True)
+    L = [LATEX_PREAMBLE]
+    L.append(r"\title{" + tex_escape(c["title"]) + "}\n")
+    blocks = []
+    for k, (name, email) in enumerate(c["authors"]):
+        blocks.append(
+            r"\IEEEauthorblockN{" + tex_escape(name) + "}\n"
+            r"\IEEEauthorblockA{\small\textit{" + tex_escape(AFFIL) + r"}\\" + "\n"
+            r"\small " + tex_escape(COUNTRY) + r"\\" + "\n"
+            r"\footnotesize " + tex_escape(email) + "}")
+    L.append(r"\author{" + "\n\\and\n".join(blocks[:3]) + "\n\\linebreakand\n"
+             + "\n\\and\n".join(blocks[3:]) + "}\n")
+    L.append(r"\maketitle" + "\n")
+    L.append(r"\begin{abstract}" + "\n" + T(c["abstract"]) + "\n"
+             + r"\end{abstract}" + "\n")
+    L.append(r"\begin{IEEEkeywords}" + "\n" + T(c["keywords"]) + "\n"
+             + r"\end{IEEEkeywords}" + "\n")
+    for b in c["blocks"]:
+        if b[0] in ("h1", "h2"):
+            cmd = "section" if b[0] == "h1" else "subsection"
+            L.append(f"\\{cmd}{{{tex_escape(b[2])}}}\\label{{sec:{b[1]}}}\n")
+        elif b[0] == "p":
+            lead = (r"\textbf{" + tex_escape(b[2]) + "} ") if b[2] else ""
+            L.append(lead + T(b[1]) + "\n")
+        elif b[0] == "bul":
+            items = []
+            for h, t in b[1]:
+                h = h.rstrip()
+                items.append(r"\item " + (r"\textbf{" + tex_escape(h) + "} "
+                                          if h else "") + T(t.lstrip()))
+            L.append("\\begin{itemize}\n" + "\n".join(items)
+                     + "\n\\end{itemize}\n")
+        elif b[0] == "tbl":
+            _, key, cap, rows, widths, size, subheads = b
+            total = sum(widths)
+            spec = "|" + "|".join(f"P{{{w / total:.3f}}}" for w in widths) + "|"
+            font = r"\scriptsize" if size == 14 else r"\footnotesize"
+            body = []
+            for i, row in enumerate(rows):
+                if row[0] in subheads and not any(x.strip() for x in row[1:]):
+                    body.append(f"\\multicolumn{{{len(widths)}}}{{|l|}}"
+                                f"{{\\textit{{{T(row[0])}}}}}\\\\ \\hline")
+                else:
+                    cells = [T(x).replace("\n", r"\newline ") for x in row]
+                    if i == 0:      # the template's column heads are bold
+                        cells = [r"\textbf{" + x + "}" for x in cells]
+                    body.append(" & ".join(cells) + r"\\ \hline"
+                                + (r"\hline" if i == 0 else ""))
+            L.append("\\begin{table}[!t]\n\\caption{" + T(cap) + "}\\label{tab:"
+                     + key + "}\n\\centering\n" + font + "\n"
+                     + "\\setlength{\\tabcolsep}{3pt}\n"
+                     + "\\begin{tabular}{" + spec + "}\n\\hline\n"
+                     + "\n".join(body) + "\n\\end{tabular}\n\\end{table}\n")
+        elif b[0] == "fig":
+            _, key, fpath, cap, width, wide = b
+            src_png, name = LATEX_FIGS[key]
+            if os.path.abspath(src_png) != os.path.abspath(fpath):
+                die(f"LaTeX: figure {key} source mismatch")
+            shutil.copyfile(fpath, os.path.join(LATEX_DIR, name))
+            env = "figure*" if wide else "figure"
+            L.append(f"\\begin{{{env}}}[!t]\n\\centering\n"
+                     f"\\includegraphics[width={width}in]{{{name}}}\n"
+                     f"\\caption{{{T(cap)}}}\\label{{fig:{key}}}\n"
+                     f"\\end{{{env}}}\n")
+    L.append("\\section*{Acknowledgment}\n" + tex_escape(ACK) + "\n")
+    L.append("\\begin{thebibliography}{00}\n" + "\n".join(
+        f"\\bibitem{{b{k + 1}}} {tex_escape(r)}" for k, r in enumerate(c["refs"]))
+        + "\n\\end{thebibliography}\n")
+    L.append("\\end{document}\n")
+    out = "\n".join(L)
+    path = os.path.join(LATEX_DIR, "main.tex")
+    with open(path, "w", encoding="ascii", newline="\n") as fh:
+        fh.write(out)
+    return out
+
+
+def check_latex(out, src, c):
+    """Structural sanity of main.tex (no LaTeX engine is installed) and the
+    same number rule as the Word paper."""
+    if out.count("{") != out.count("}"):
+        die("LaTeX: unbalanced braces")
+    for env in ("table", "figure", "figure*", "tabular", "itemize",
+                "abstract", "IEEEkeywords", "thebibliography", "document"):
+        if out.count(f"\\begin{{{env}}}") != out.count(f"\\end{{{env}}}"):
+            die(f"LaTeX: unbalanced environment {env}")
+    for bad in ("??", "TODO", "\x00", "{S:", "{T:", "{F:"):
+        if bad in out:
+            die(f"LaTeX: output contains {bad!r}")
+    body = out[out.index(r"\begin{document}"):]
+    if re.search(r"(?<!\\)[%#]", body):
+        die("LaTeX: unescaped % or #")
+    labels = set(re.findall(r"\\label\{([^}]+)\}", body))
+    for r in re.findall(r"\\ref\{([^}]+)\}", body):
+        if r not in labels:
+            die(f"LaTeX: \\ref{{{r}}} has no label")
+    keys = re.findall(r"\\bibitem\{([^}]+)\}", body)
+    cited = {k for grp in re.findall(r"\\cite\{([^}]+)\}", body)
+             for k in grp.split(",")}
+    if cited != set(keys) or len(keys) != 25:
+        die(f"LaTeX: cited {sorted(cited)} vs bibitems {keys}")
+    # Numbers: strip markup, then the rule the Word paper obeys.
+    plain = re.sub(r"\\(?:cite|ref|label|url|bibitem|includegraphics)"
+                   r"(?:\[[^\]]*\])?\{[^}]*\}", " ", body)
+    plain = re.sub(r"\\begin\{tabular\}\{(?:[^{}]|\{[^{}]*\})*\}", " ", plain)
+    plain = re.sub(r"\\multicolumn\{\d+\}", " ", plain)
+    plain = plain.replace(r"\begin{thebibliography}{00}", " ")
+    plain = plain.replace("$-$", "−").replace("--", "–")
+    extra = sorted(numbers_in(plain) - numbers_in(src.full) - {"2026"})
+    if extra:
+        die(f"LaTeX: numbers not in v4: {extra}")
+    for need in (PORTAL_TITLE, AFFIL, *AUTHORS, *(e for _, e in c["authors"])):
+        if tex_escape(need) not in out:
+            die(f"LaTeX: missing {need!r}")
+
+
+def zip_latex():
+    import zipfile
+    with zipfile.ZipFile(LATEX_ZIP, "w", zipfile.ZIP_DEFLATED) as z:
+        for name in sorted(os.listdir(LATEX_DIR)):
+            p = os.path.join(LATEX_DIR, name)
+            # Fixed timestamp: a rebuild with unchanged inputs is byte-identical.
+            info = zipfile.ZipInfo(f"paper_ieee_latex/{name}",
+                                   date_time=(2026, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            with open(p, "rb") as fh:
+                z.writestr(info, fh.read())
+
+
 # ------------------------------------------------------------------ checks
 def check_output(path, src, maps, supp_md, abstract):
     import docx
@@ -1111,9 +1411,17 @@ def check_output(path, src, maps, supp_md, abstract):
                 or s._sectPr.findall(d.element.body[0].tag.replace("}p", "}headerReference")):
             die("a section still references a header or footer")
     for need in (DATASET_SENTENCE, ACK, SUPP_URL, "19.7%", "50.4%",
-                 "371 of the 468"):
+                 "371 of the 468", PORTAL_TITLE, AFFIL, *AUTHORS):
         if need not in full:
             die(f"required text missing: {need[:60]!r}")
+    # The portal's author order, and nothing of v4's old author block left.
+    pos = [full.index(a) for a in AUTHORS]
+    if pos != sorted(pos):
+        die("authors are not in the portal's order")
+    for old in ("Manoj", "Dr. ", "Department of Artificial Intelligence",
+                "Deemed University"):
+        if old in full:
+            die(f"old author-block text left: {old!r}")
     # Every number in the paper and the supplement occurs in approved v4.
     v4nums = numbers_in(src.full)
     extra = sorted(numbers_in(full) - v4nums)
@@ -1164,6 +1472,17 @@ def main():
     sb = supplement(src, v)
     md = write_supplement(sb, c["title"], SUPP_DOCX, SUPP_MD)
     n_abs, words = check_output(OUT, src, maps, md, c["abstract"])
+    tex_out = write_latex(c, maps)
+    check_latex(tex_out, src, c)
+    expected = {"main.tex", *(n for _, n in LATEX_FIGS.values())}
+    if set(os.listdir(LATEX_DIR)) != expected:
+        die(f"{LATEX_DIR} holds {sorted(os.listdir(LATEX_DIR))}, "
+            f"expected {sorted(expected)}")
+    zip_latex()
+    print("[ok] LaTeX: main.tex from the same content; braces, environments, "
+          "refs, 25 bibitems and the number rule checked")
+    for p in (os.path.join(LATEX_DIR, "main.tex"), LATEX_ZIP):
+        print(f"[write] {os.path.relpath(p, PROJECT_ROOT)}")
     print("[refs] new order (v4 number -> new): "
           + ", ".join(f"{o}->{n}" for o, n in new.items() if o != n))
     print(f"[tables] {maps['T']}")

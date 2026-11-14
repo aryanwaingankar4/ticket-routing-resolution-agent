@@ -1,3 +1,21 @@
+> **IConAECC 2026 CAMERA-READY, branch `iconaecc-2026`, 2026-11-14.** Paper #1251 was accepted. The reviews were 6.90, 6.60 and 6.90; Reviewer 3 asked for minor revisions.
+> - **Text-only revision** in `scripts/build_iconaecc_docx.py`:
+>   - ten reviewer points;
+>   - the author block now follows the portal (Aryan Waingankar, Shreyansh Pandey, Parth Bagle, Swapnil Samrat, Madhvi Saxena, Aditi Saxena; "Symbiosis Institute of Technology, Pune" and India);
+>   - no new number. The v4 number check passes for Word and for LaTeX.
+>   - The full list is in `paper_ieee_docx/REVISION_NOTES.md`.
+> - **Word: measured 7 pages twice**, from the metadata of a Word-exported PDF. The overflow was about three reference lines.
+>   - An author-block alignment fix came after that and moves the body up by about 25 pt.
+>   - So the final file is **6 or 7 pages, not measured**. AW should check it in Word. Pages 7–8 cost USD 10 each.
+> - **LaTeX (the final upload):** `paper_ieee_latex/main.tex` and the zip are generated from the same content.
+>   - **Not compiled** here (no engine). **AW must compile it on Overleaf**, check the page count is ≤ 7, and fix anything IEEEtran reports. The author-block macro `\linebreakand` is the likeliest spot.
+> - **Response to the reviewers:** `paper_ieee_docx/Response_to_Reviewers.docx`. Its point lines are summaries.
+>   - **AW should check** that the "both reviewers" points are rightly attributed to R1 and R2.
+> - **Next:**
+>   - Overleaf compile;
+>   - IEEE PDF eXpress (conference ID 70685X, opens 20 Nov);
+>   - final upload by 30 Nov.
+>
 > **IConAECC 2026 SUBMISSION, branch `iconaecc-2026` (from `paper-revision-oct` @ 953291c), 30 Oct 2026.** Not merged into main.
 > - **The paper:** `paper_ieee_docx/Calibrated_Escalation_IConAECC2026.docx`.
 >   - It is built by `scripts/build_iconaecc_docx.py` in the IEEE A4 Word template, which is derived from the official letter template by `scripts/derive_ieee_a4_template.py`; ieee.org blocked the A4 download.
