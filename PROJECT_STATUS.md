@@ -1,4 +1,4 @@
-> **IConAECC 2026 CAMERA-READY, branch `iconaecc-2026`, 2026-11-14.** Paper #1251 was accepted. The reviews were 6.90, 6.60 and 6.90; Reviewer 3 asked for minor revisions.
+> **IConAECC 2026 CAMERA-READY, branch `iconaecc-2026`, 2026-11-14 (commit `7c3d1ac`).** Paper #1251 was accepted. The reviews were 6.90, 6.60 and 6.90; Reviewer 3 asked for minor revisions.
 > - **Text-only revision** in `scripts/build_iconaecc_docx.py`:
 >   - ten reviewer points;
 >   - the author block now follows the portal (Aryan Waingankar, Shreyansh Pandey, Parth Bagle, Swapnil Samrat, Madhvi Saxena, Aditi Saxena; "Symbiosis Institute of Technology, Pune" and India);
